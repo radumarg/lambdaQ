@@ -1,2 +1,2 @@
 # lambdaQ
-A functional quantum programming language
+A functional quantum programming language.
