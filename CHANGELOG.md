@@ -8,4 +8,4 @@ and this project adheres to the
 
 ## Unreleased
 
-## 0.1.0.0 - YYYY-MM-DD
+0.1.0.0 - 2022-08-20, Creating new Haskell project with Stack, generate standard files and folders configuration.
