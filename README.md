@@ -1,1 +1,1 @@
-A functional quantum programming language based on Quantum lambda calculus by Peter Selinger and Benoit Valiron: https://www.mscs.dal.ca/~selinger/papers/papers/qlambdabook.pdf
+A functional quantum programming language based on Quantum lambda calculus by Peter Selinger and Benoit Valiron: https://www.mscs.dal.ca/~selinger/papers/papers/qlambdabook.pdf. This is an ongoing project, still in the very early stages of implementation. For the moment the only reason for checking out this project is to contribute to the project.
