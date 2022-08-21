@@ -33,5 +33,5 @@
 ## Longer-term objectives:
 
 - Implement type inference.
-- Ad support for generic types.
+- Add support for generic types.
 - Add support for dependent types.
