@@ -49,7 +49,7 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 - BNFC converter tool [6] to be used to generate a compiler frontend from an LBNF [7] grammar: 
  	LBNF Grammar -> Lexer -> Abstract Syntax Tree -> Parser
 - Type checker will ensure the correctness of programs. 
-- A gate can be assigned any number of controls, except for Identity gate: CTRL term to be added to the grammar HOW? DETAILS STILL MISSING!
+- A gate can be assigned any number of controls, except for Identity gate: CTRL term to be added to the grammar.
 - Controls can be specified in standard Z basis ('0', '1').
 - Support for mid-circuit measurements and mid-circuit resets. 
 - Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assigments to a classical variable and measurements inside a conditioned code is posssible if the control variable is classical.
