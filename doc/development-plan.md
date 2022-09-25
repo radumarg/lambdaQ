@@ -3,7 +3,7 @@ lambdaQ - A new functional language for quantum computing based on an extension 
 
 What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15] is its semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
 
-- The LLVM Quantum Intermediate Representation [5] supported by Honeywell, Microsoft, Quantum Circuits Inc., and Rigetti.
+- The LLVM Quantum Intermediate Representation [5] supported by Microsoft, Quantum Circuits Inc., Quantinuum, Rigetti and others.
 - OpenQASM3 [11] supported by IBM which is regarded both as a high and a low-level IR.  
 
 Note: looks like IBM will also use LLVM in their software stack but details have not been yet made public.
@@ -13,7 +13,7 @@ This document describes a rather heterogeneous set of features and requirements.
 
 An interesting question is whether a functional language can be more expressive when coding quantum algorithms. Intuitively, it might be the case, since a functional language expresses math and quantum algorithms can be regarded as math, but this intuition must be made concrete.  
 
-Our intention is to make lambdaQ programs more expressive than plain circuit description languages. It remains to be seen during development what are those constructs that will prove useful to create a useful high-level quantum language. However, from the beginning, several features can be considered in this regard:
+Our intention is to make lambdaQ programs more expressive than plain circuit description languages. It remains to be seen during development what are those constructs that will prove suitable for creating a useful high-level quantum language. However, from the beginning, several features can be considered in this regard:
 
 - strive for increased readability, abstraction, and code reuse. 
 - quantum conditionals, express phase kick-back using language constructs.
@@ -31,7 +31,7 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 ## PLANNED FEATURES AND PRIORITIES FOR IMPLEMENTING
 
 ### Must Have Features - Immediate Objectives
-- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. The question wether a lambda term is quantum or not meaning that it cannot or it can be duplicated is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables.
+- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. The question whether a lambda term is quantum or not meaning that it cannot or it can be duplicated is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables.
 - Stand-alone language with specified syntax, type checker, and a compiler. 
 - The compiler outputs some form of IR code, in principle both OpenQASM3 and the LLVM QIR will be used.
 - An interpreter will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
@@ -49,10 +49,10 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 - BNFC converter tool [6] to be used to generate a compiler frontend from an LBNF  grammar [7]:  
  	LBNF Grammar -> Lexer -> Abstract Syntax Tree -> Parser
 - A type checker will ensure the correctness of programs. 
-- A gate can be assigned any number of controls, except for Identity gate. A CTRL term to be added to the grammar.
+- A gate can be assigned any number of controls, except for the Identity gate. A CTRL term to be added to the grammar.
 - Controls can be specified in standard Z basis ('0', '1').
 - Support for mid-circuit measurements and mid-circuit resets. 
-- Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assigments to a classical variable and resets or measurements inside a conditioned code is posssible only if the control variable is classical.
+- Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assignments to a classical variable and resets or measurements inside a conditioned code is posssible only if the control variable is classical.
 - Quantum conditionals (quantum branching) [18, 21, 25]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
     - Two programs that differ by a global phase have the same observable behavior, but when subjected to a conditional execution may behave differently.  
     - Measurements and reset do not seem to have a natural meaning when subjected to a quantum condition. Care should be taken when designing program semantics than encompass both irreversible operations and quantum branching.  
@@ -65,7 +65,7 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 - Support for declaring and using quantum and classical registers, see [25] for example and [26] section 2.1. 
     - Constant registers (qconst): an operator having a constant register as input may not modify it. 
     - Void register (qvoid) is guaranteed to be empty at the beginning of execution, useful when implementing Oracles as classical functions.
-    - Scratch register (qscratch) is assumed to be empty at the beginning of an operation and must be left empty after the operation is done. 
+    - Scratch register (qscratch) is assumed to be empty at the beginning of an operation and must be left empty after the operation has finished. 
    - Declaring quantum data type with advanced semantics as exemplified above may require facilities for automatic uncomputation and qubit borrowing [23]. 
 - Functions can be used as subroutines. Add modules and the ability to import code. Add a standard library.
 - Circuits can be encapsulated as classical functions - parametrized circuits. See for example boxing (and unboxing) operation where a circuit describing a linear operation is promoted as classical data and thus be reused multiple times as parts of a larger circuit (Quipper [9] and QWIRE [14]).
@@ -81,7 +81,8 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 - Libraries (e.g. QFT, amplitude amplification, phase estimation, quantum arithmetic).
 - Teleportation as primitive.
 - Barrier statement.
- 
+- Interpreter connects to a quantum cloud service like IBMQ [17] and sends the quantum program to be executed.
+
 ### Other Features - Currently Out of Scope
 - Implement type inference.
 - Add support for generic types using a Hindley-Milner type system.
@@ -91,13 +92,12 @@ Our intention is to make lambdaQ programs more expressive than plain circuit de
 - Implement optimization and error-correcting techniques.
 - Concurrent execution of independent code segments like for example extended circuits defined by the OpenQASM execution model.
 - Implement all quantum gates supported by the Uranium platform [8].
-- Interpreter connects to a quantum cloud service like IBMQ [17] and sends the quantum program to be executed.
 
 ### Open Issues
-- A quantum device has the ability to execute commuting operations to a quantum state in parallel. Same applies for measurements made on nonoverlapping memory addresses. It is expected that a quantum hardware controller has the ability to schedule gates in a manner that is optimal and this includes scheduling commuting operations. A language is typically written in a serial fashion but the ordering of instructions may vary when the program is executed in a parallel fashion. It is unclear if instruction parallelism semantics should be introduced at the lambdaQ language level. As a side note, OpenQASM3 has a very rich feature set for platform-dependent tuning of quantum instructions at the physical level including timing and optimization of operations, synchronization among different operations, and calibrating quantum instructions at the pulse level.
+- A quantum device has the ability to execute commuting operations to a quantum state in parallel. The same applies to measurements made on nonoverlapping memory addresses. It is expected that a quantum hardware controller has the ability to schedule gates in a manner that is optimal and this includes scheduling commuting operations. A language is typically written in a serial fashion but the ordering of instructions may vary when the program is executed in a parallel fashion. It is unclear if instruction parallelism semantics should be introduced at the lambdaQ language level. As a side note, OpenQASM3 has a very rich feature set for platform-dependent tuning of quantum instructions at the physical level including timing and optimization of operations, synchronization among different operations, and calibrating quantum instructions at the pulse level.
 
 ## EXECUTION MODEL FOR QUANTUM COMPUTATION
-In order to be able to make some rough plans regarding how a practical quantum computing language should be implemented it is useful to have a more precise image of how a real quantum device is expected to work, more precisely, which are the different phases for code execution. To this date, one of the most detailed descriptions was provided by IBM: [11, 19]. 
+In order to be able to make some rough plans regarding how a practical quantum computing language should be implemented it is useful to have a more precise image of how a real quantum device is expected to work, more precisely, which are the different phases for code execution. To this date, one of the most detailed descriptions was provided by IBM: [11, 19]. The LLVM QIR also supports integration and arbitrary interactions between quantum and classical computing resources which is intended to work with both the current limited quantum devices and future, more sophisticated, quantum computing resources.
  
 - Compilation takes place on a classical computer where the lambdaQ source code will be processed into some combination of classical and quantum code expressed in a high-level IR. Two IR formats are being considered: OpenQasm3 and LLVM quantum IR on the one hand and classical code IR generated using Haskell LLVM bindings on the other. At this phase, specific problem parameters may not be known.
 
