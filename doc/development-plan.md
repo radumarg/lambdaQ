@@ -13,7 +13,7 @@ This document describes a rather heterogeneous set of features and requirements.
 
 An interesting question is whether a functional language can be more expressive when coding quantum algorithms. Intuitively, it might be the case, since a functional language expresses math and quantum algorithms can be regarded as math, but this intuition must be made concrete.  
 
-Our intention is to make lambdaQ programs more expressive than plain circuit description languages. It remains to be seen during development what are those constructs that will prove suitable for creating a useful high-level quantum language. However, from the beginning, several features can be considered in this regard:
+Our intention is to make lambdaQ programs more expressive than plain circuit description languages for quantum programs in general. It remains to be seen during development what are those constructs that will prove suitable for creating a useful high-level quantum language. However, from the beginning, several features can be considered in this regard:
 
 - strive for increased readability, abstraction, and code reuse. 
 - quantum conditionals, express phase kick-back using language constructs.
