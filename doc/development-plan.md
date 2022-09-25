@@ -3,7 +3,7 @@ lambdaQ - A new functional language for quantum computing based on an extension 
 
 What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15] is its semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
 
-- The LLVM Quantum Intermediate Representation [5] which is supported by Honeywell, Microsoft, Quantum Circuits Inc., and Rigetti.
+- The LLVM Quantum Intermediate Representation [5] supported by Honeywell, Microsoft, Quantum Circuits Inc., and Rigetti.
 - OpenQASM3 [11] supported by IBM which is regarded both as a high and a low-level IR.  
 
 Note: looks like IBM will also use LLVM in their software stack but details have not been yet made public.
