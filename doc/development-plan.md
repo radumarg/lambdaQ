@@ -2,7 +2,7 @@
 
 lambdaQ - A new functional language for quantum computing based on an extension of classical lambda calculus [1] named quantum lambda calculus, based on the work of Peter Selinger and Benoit Valiron [2, 3]. The language is built as an external DSL for Haskell. Possibly later, it will be reconfigured as a Haskell Language Extension [4].
 
-What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
+What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15, 27] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
 
 - The LLVM Quantum Intermediate Representation (QIR) [5] supported by Microsoft, Quantum Circuits Inc., Quantinuum, Rigetti and others.
 - OpenQASM3 [11] supported by IBM which is regarded both as a high and a low-level Intermediate Representation (IR).  
@@ -134,8 +134,7 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [12] [Automatic Generation of Grover Quantum Oracles for Arbitrary Data Structures.](https://arxiv.org/abs/2110.07545)  
 [13] [A functional quantum programming language, Thorsten Altenkirch, and Jonathan Grattage.](http://www.cs.nott.ac.uk/~psztxa/publ/qml.pdf)  
 [14] [QWIRE: a core language for quantum circuits, Jennifer Paykin, Robert Rand, Steve Zdancewic.](https://dl.acm.org/doi/10.1145/3093333.3009894)  
-[15] https://github.com/NicklasBoto/funQ  
-  [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
+[15] https://github.com/NicklasBoto/funQ    
 [16] [Conventions for quantum pseudocode, E. Knill.](https://www.osti.gov/servlets/purl/366453-CZpmV6/webviewable/)  
 [17] https://quantum-computing.ibm.com/  
 [18] [Quantum conditional operations, Alessandro Bisio, Paolo Perinotti.](https://arxiv.org/pdf/1509.01062.pdf)  
@@ -147,5 +146,7 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [24] https://www.ibm.com/blogs/research/2021/02/quantum-phase-estimation  
 [25] [QCL Language, Bernhard Omer, PhD Thesis.](http://tph.tuwien.ac.at/~oemer/doc/structquprog.pdf)  
 [26] [Quantum Programming Languages, Dominique Unruh.](https://kodu.ut.ee/~unruh/publications/quantum-programming-languages.pdf)   
+[27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
+
  
  
