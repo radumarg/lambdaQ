@@ -135,6 +135,7 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [13] [A functional quantum programming language, Thorsten Altenkirch, and Jonathan Grattage.](http://www.cs.nott.ac.uk/~psztxa/publ/qml.pdf)  
 [14] [QWIRE: a core language for quantum circuits, Jennifer Paykin, Robert Rand, Steve Zdancewic.](https://dl.acm.org/doi/10.1145/3093333.3009894)  
 [15] https://github.com/NicklasBoto/funQ  
+  [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
 [16] [Conventions for quantum pseudocode, E. Knill.](https://www.osti.gov/servlets/purl/366453-CZpmV6/webviewable/)  
 [17] https://quantum-computing.ibm.com/  
 [18] [Quantum conditional operations, Alessandro Bisio, Paolo Perinotti.](https://arxiv.org/pdf/1509.01062.pdf)  
