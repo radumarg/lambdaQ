@@ -1,4 +1,5 @@
 ## Introduction
+
 lambdaQ - A new functional language for quantum computing based on an extension of classical lambda calculus [1] named quantum lambda calculus, based on the work of Peter Selinger and Benoit Valiron [2, 3]. The language is built as an external DSL for Haskell. Possibly later, it will be reconfigured as a Haskell Language Extension [4].
 
 What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
