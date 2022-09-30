@@ -54,7 +54,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Controls can be specified in standard Z basis ('0', '1').
 - Support for mid-circuit measurements and mid-circuit resets. 
 - Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assignments to a classical variable and resets or measurements inside a conditioned code is posssible only if the control variable is classical.
-- Quantum conditionals (quantum branching) [18, 21, 25]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
+- Quantum conditionals (quantum branching) [18, 21, 25, 28]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
     - Two programs that differ by a global phase have the same observable behavior, but when subjected to a conditional execution may behave differently.  
     - Measurements and reset do not seem to have a natural meaning when subjected to a quantum condition. Care should be taken when designing program semantics than encompass both irreversible operations and quantum branching.  
 - Express phase kick-back and amplitude amplification using language constructs. 
@@ -147,6 +147,7 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [25] [QCL Language, Bernhard Omer, PhD Thesis.](http://tph.tuwien.ac.at/~oemer/doc/structquprog.pdf)  
 [26] [Quantum Programming Languages, Dominique Unruh.](https://kodu.ut.ee/~unruh/publications/quantum-programming-languages.pdf)   
 [27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
+[28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage](https://arxiv.org/abs/0806.2735)
 
  
  
