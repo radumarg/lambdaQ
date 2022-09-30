@@ -8,6 +8,7 @@ and this project adheres to the
 
 ## Unreleased
 
-0.1.0.0 - 2022-08-20, Creating new Haskell project with Stack, generate standard files and folders configuration.
-0.1.0.0 - 2022-09-22, Adding a development plan.
-0.1.0.0 - 2022-09-30, Adding a LBNF grammar plus BNFC generated language frontend code files
+0.1.0.0 - 2022-08-20, Creating new Haskell project with Stack, generate standard files and folders configuration.  
+0.1.0.0 - 2022-09-22, Adding a development plan.  
+0.1.0.0 - 2022-09-30, Adding a LBNF grammar plus BNFC generated language frontend code files  
+
