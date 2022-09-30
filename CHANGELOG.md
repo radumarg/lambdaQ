@@ -10,7 +10,7 @@ and this project adheres to the
 
 ### [0.1.0] - 2022-08-20 
 #### Added
-- New Haskell project using Stack, generate standard files and folders configuration. 
+- New Haskell project using Stack, generated standard files and folders configuration. 
 
 ### [0.1.0] - 2022-09-22
 #### Added
