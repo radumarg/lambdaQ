@@ -1,0 +1,113 @@
+
+-- Documentation of LBNF Gramar: https://bnfc.readthedocs.io/en/latest/lbnf.html# --
+-- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
+
+-- Types --
+TypeBit  . Type1  ::= "Bit" ;
+TypeQbit . Type1  ::= "Qbit" ;
+TypeUnit . Type1  ::= "()" ;
+TypeExp  . Type1  ::= "!" Type1 ;
+TypeTens . Type  ::= Type1 "*" Type ;
+TypeFunc . Type  ::= Type1 "->" Type ;
+coercions Type 1 ;
+
+-- Angle is a fraction of 2π --
+AAngl . Angle ::= Double ;
+
+-- Control States --
+CStateZero   . ControlState ::= "0";
+CStateOne    . ControlState ::= "1";
+CStatePlus   . ControlState ::= "+";
+CStateMinus  . ControlState ::= "-";
+CStateIPlus  . ControlState ::= "+i";
+CStateIMinus . ControlState ::= "-i";
+
+-- Controls --
+CCtrl . Control ::= "Ctrl" Integer ControlState;
+separator nonempty Control "," ;
+
+-- Gates - Definition of gates can be found here: https://uranium.transilvania-quantum.org --
+
+GH        . Gate ::= "H" [Control] ;                     -- Hadamard Gate
+GX        . Gate ::= "X" [Control] ;                     -- Pauli X Gate
+GY        . Gate ::= "Y" [Control] ;                     -- Pauli Y Gate 
+GZ        . Gate ::= "Z" [Control] ;                     -- Pauli Z Gate
+GI        . Gate ::= "I" [Control] ;                     -- Identity Gate
+GXRt      . Gate ::= "XRoot" [Control] ;                 -- Root of Pauli X gate
+GXRtDag   . Gate ::= "XRootDagger" [Control] ;           -- Conjugate of Root of Pauli X gate
+GYRt      . Gate ::= "YRoot" [Control] ;                 -- Root of Pauli Y gate
+GYRtDag   . Gate ::= "YRootDagger" [Control] ;           -- Conjugate of Root of Pauli Y gate
+GZRt      . Gate ::= "ZRoot" [Control] ;                 -- Root of Pauli Z gate
+GZRtDag   . Gate ::= "ZRootDagger" [Control] ;           -- Conjugate of Root of Pauli Z gate
+GS        . Gate ::= "S" [Control] ;                     -- S gate: sqrt of X
+GSDag     . Gate ::= "SDagger" [Control] ;               -- Conjugate of S gate
+GT        . Gate ::= "T" [Control] ;                     -- T Gate: sqrt of S
+GTDag     . Gate ::= "TDagger" [Control] ;               -- Conjugate of T gate
+GV        . Gate ::= "V" [Control] ;                     -- V gate: sqrt of X
+GVDag     . Gate ::= "VDagger" [Control] ;               -- Conjugate of V gate
+Gh        . Gate ::= "h" [Control] ;                     -- h gate: sqrt of Y
+GhDag     . Gate ::= "hDagger" [Control] ;               -- Conjugate of h gate
+GRxTheta  . Gate ::= "RxTheta" Angle [Control] ;         -- Single parametric rotation around X axis on the Bloch sphere
+GRyTheta  . Gate ::= "RyTheta" Angle [Control] ;         -- Single parametric rotation around Y axis on the Bloch sphere
+GRzTheta  . Gate ::= "RzTheta" Angle [Control] ;         -- Single parametric rotation around Z axis on the Bloch sphere
+GU1       . Gate ::= "U1" Angle [Control] ;              -- One parametric generic gate
+GU2       . Gate ::= "U2" Angle Angle [Control] ;        -- Two parametric generic gate
+GU3       . Gate ::= "U3" Angle Angle Angle [Control] ;  -- Thee parametric generic gate
+GSWP      . Gate ::= "Swap" [Control] ;                  -- Swap gate
+GSQRTSWP  . Gate ::= "SqrtSwap" [Control] ;              -- Sqrt of Swap gate
+GISWP     . Gate ::= "ISwap" [Control] ;                 -- ISwap gate
+GFSWP     . Gate ::= "FSwap" [Control] ;                 -- FSwap gate
+GSWPRt    . Gate ::= "SwapRoot" [Control] ;              -- Root of Swap gate
+GSWPRtDag . Gate ::= "SwapRootDagger" [Control] ;        -- Conjugate of Root of Swap gate
+
+-- Names for Variables --
+position token Var (lower (letter | digit | '_' | '\'')*) ;
+
+LVar . LetVariable ::= Var ;
+separator nonempty LetVariable "," ;
+
+-- Names for Functions --
+position token FunVariable (lower (letter | digit | '_' | '\'')* (' ')* ':') ;
+
+-- Declaring Tuples --
+Tup . Tuple ::= "(" Term "," [Term] ")" ;
+separator nonempty Term "," ;
+
+-- Bit --
+BBit. Bit ::= Integer ;
+
+-- Lambda token --
+position token Lambda '\\' ;
+
+-- Terms --
+TVar   . Term3 ::= Var ;
+TBit   . Term3 ::= Bit ;
+TGate  . Term3 ::= Gate ;
+TTup   . Term3 ::= Tuple ;
+TUnit  . Term3 ::= "()" ;
+TApp   . Term2 ::= Term2 Term3 ;
+TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
+TLet   . Term1 ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term "in" Term ;
+TCase  . Term1 ::= "case" Term "of" Var "->" Term Var "->" Term ;
+TLmbd  . Term1 ::= Lambda FunVariable Type "." Term ;
+TDollr . Term1 ::= Term2 "$" Term1 ;
+coercions Term 3 ;
+
+-- Function Arguments --
+FunArg . Arg ::= Var ;
+separator Arg " " ;
+ 
+-- Function Definition --
+FunDef . Function ::= Var [Arg] "=" Term ;
+
+-- Function Declaration --
+FunDecl . FunDeclaration ::= FunVariable Type Function ;
+terminator FunDeclaration "" ;
+
+-- A program is a list of functions --
+ProgDef .  Program ::= [FunDeclaration] ;
+
+-- Format for specifying comments --
+comment "--" ; 
+comment "{-" "-}" ;
+
