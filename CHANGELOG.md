@@ -17,6 +17,6 @@ and this project adheres to the
 - Development plan document.
 ### [0.1.0] - 2022-09-30  
 #### Added
-- LBNF grammar plus BNFC generated language frontend code files.
+- LBNF grammar plus BNFC-generated language frontend code files.
 
 
