@@ -47,7 +47,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Support for standard classical data types: integer, floats, booleans, strings.
 - Angle data type = 2π * fraction as bit string, or perhaps 4π * fraction, similar to OpenQASM3 data type with the same name.
 - Call-by-value operational semantics.
-- BNFC converter tool [6] to be used to generate a compiler frontend from an LBNF  grammar [7]:  
+- BNFC converter tool [6] to be used to generate a compiler frontend from a LBNF  grammar [7]:  
  	LBNF Grammar -> Lexer -> Abstract Syntax Tree -> Parser
 - A type checker will ensure the correctness of programs. 
 - A gate can be assigned any number of controls, except for the Identity gate. A CTRL term to be added to the grammar.

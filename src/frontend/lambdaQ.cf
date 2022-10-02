@@ -88,7 +88,7 @@ TUnit  . Term3 ::= "()" ;
 TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet   . Term1 ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term "in" Term ;
-TCase  . Term1 ::= "case" Term "of" Var "->" Term Var "->" Term ;
+TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ;
 TLmbd  . Term1 ::= Lambda FunVariable Type "." Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;

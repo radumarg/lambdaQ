@@ -88,7 +88,7 @@ data Term
     | TApp Term Term
     | TIfEl Term Term Term
     | TLet LetVariable [LetVariable] Term Term
-    | TCase Term Var Term Var Term
+    | TCase Term Term Var Term Var
     | TLmbd Lambda FunVariable Type Term
     | TDollr Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)

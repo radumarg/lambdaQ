@@ -109,7 +109,7 @@ transTerm x = case x of
   LambdaQ.Abs.TApp term1 term2 -> failure x
   LambdaQ.Abs.TIfEl term1 term2 term3 -> failure x
   LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> failure x
-  LambdaQ.Abs.TCase term1 var1 term2 var2 term3 -> failure x
+  LambdaQ.Abs.TCase term1 term2 var1 term3 var2 -> failure x
   LambdaQ.Abs.TLmbd lambda funvariable type_ term -> failure x
   LambdaQ.Abs.TDollr term1 term2 -> failure x
 

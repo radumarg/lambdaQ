@@ -131,7 +131,7 @@ All other symbols are terminals.
   |  |  **|**  | //Term3//
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
   |  |  **|**  | ``let`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``in`` //Term//
-  |  |  **|**  | ``case`` //Term// ``of`` //Var// ``->`` //Term// //Var// ``->`` //Term//
+  |  |  **|**  | ``case`` //Term// ``of`` //Term// ``->`` //Var// //Term// ``->`` //Var//
   |  |  **|**  | //Lambda// //FunVariable// //Type// ``.`` //Term//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//

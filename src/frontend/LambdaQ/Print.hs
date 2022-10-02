@@ -241,7 +241,7 @@ instance Print LambdaQ.Abs.Term where
     LambdaQ.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     LambdaQ.Abs.TIfEl term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
     LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "in"), prt 0 term2])
-    LambdaQ.Abs.TCase term1 var1 term2 var2 term3 -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term1, doc (showString "of"), prt 0 var1, doc (showString "->"), prt 0 term2, prt 0 var2, doc (showString "->"), prt 0 term3])
+    LambdaQ.Abs.TCase term1 term2 var1 term3 var2 -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term1, doc (showString "of"), prt 0 term2, doc (showString "->"), prt 0 var1, prt 0 term3, doc (showString "->"), prt 0 var2])
     LambdaQ.Abs.TLmbd lambda funvariable type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 funvariable, prt 0 type_, doc (showString "."), prt 0 term])
     LambdaQ.Abs.TDollr term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
 

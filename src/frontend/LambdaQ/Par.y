@@ -245,7 +245,7 @@ Term1 :: { LambdaQ.Abs.Term }
 Term1
   : 'if' Term 'then' Term 'else' Term { LambdaQ.Abs.TIfEl $2 $4 $6 }
   | 'let' '(' LetVariable ',' ListLetVariable ')' '=' Term 'in' Term { LambdaQ.Abs.TLet $3 $5 $8 $10 }
-  | 'case' Term 'of' Var '->' Term Var '->' Term { LambdaQ.Abs.TCase $2 $4 $6 $7 $9 }
+  | 'case' Term 'of' Term '->' Var Term '->' Var { LambdaQ.Abs.TCase $2 $4 $6 $7 $9 }
   | Lambda FunVariable Type '.' Term { LambdaQ.Abs.TLmbd $1 $2 $3 $5 }
   | Term2 '$' Term1 { LambdaQ.Abs.TDollr $1 $3 }
   | Term2 { $1 }
