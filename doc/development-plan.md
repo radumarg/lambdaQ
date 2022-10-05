@@ -4,7 +4,7 @@ lambdaQ - A new functional language for quantum computing based on an extension 
 
 What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10] funQ [15, 27] or Q [29] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
 
-- The LLVM Quantum Intermediate Representation (QIR) [5] supported by Microsoft, Quantum Circuits Inc., Quantinuum, Rigetti and others.
+- The LLVM Quantum Intermediate Representation (QIR) [5] which is supported by Microsoft, Quantum Circuits Inc., Quantinuum, Rigetti and others.
 - OpenQASM3 [11] supported by IBM which is regarded both as a high and a low-level Intermediate Representation (IR).  
 
 Note: it looks like IBM will also use LLVM in their software stack but details have not been yet made public.
@@ -32,8 +32,8 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 #### Must Have Features - Immediate Objectives
 
-- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question whether a lambda term is 'quantum' or not, meaning that it cannot or it can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative approach to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideeas using a circuit model.  
-- Stand-alone language with specified syntax, type checker, and a compiler. Syntax is similar to Haskell syntax.
+- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question of whether a lambda term is 'quantum' or not, meaning that it cannot or can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideas using a circuit model.  
+- Stand-alone language with specified syntax, type checker, and a compiler. The syntax is similar to Haskell syntax.
 - The compiler outputs some form of IR code, in principle both OpenQASM3 and the LLVM QIR will be used.
 - An interpreter will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
 - The language is built as an external DSL written in Haskell (Haskell is used as the host language).
@@ -47,7 +47,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Support for standard classical data types: integer, floats, booleans, strings.
 - Angle data type = 2π * fraction as bit string, or perhaps 4π * fraction, similar to OpenQASM3 data type with the same name.
 - Call-by-value operational semantics.
-- BNFC converter tool [6] to be used to generate a compiler frontend from a LBNF  grammar [7]:  
+- BNFC converter tool [6] to be used to generate a compiler frontend from an LBNF  grammar [7]:  
  	LBNF Grammar -> Lexer -> Abstract Syntax Tree -> Parser
 - A type checker will ensure the correctness of programs. 
 - A gate can be assigned any number of controls, except for the Identity gate. A CTRL term to be added to the grammar.
@@ -81,9 +81,9 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Besides Z basis, controls can be specified also in X basis ('+', '-') and Y basis ('+i', '-i').
 - Support for inductive data types, and custom data types.
 - Libraries (e.g. QFT, amplitude amplification, phase estimation, quantum arithmetic).
-- Teleportation as primitive.
+- Teleportation as a primitive.
 - Barrier statement.
-- Interpreter connects to a quantum cloud services like IBMQ [17] and sends the quantum program to be executed.
+- Interpreter connects to a quantum cloud service like IBMQ [17] and sends the quantum program to be executed.
 
 #### Other Features - Currently Out of Scope
 
