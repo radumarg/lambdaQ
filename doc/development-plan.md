@@ -32,7 +32,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 #### Must Have Features - Immediate Objectives
 
-- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question whether a lambda term is 'quantum' or not, meaning that it cannot or it can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables.
+- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question whether a lambda term is 'quantum' or not, meaning that it cannot or it can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative approach to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideeas using a circuit model.  
 - Stand-alone language with specified syntax, type checker, and a compiler. Syntax is similar to Haskell syntax.
 - The compiler outputs some form of IR code, in principle both OpenQASM3 and the LLVM QIR will be used.
 - An interpreter will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
@@ -149,6 +149,8 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
 [28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage](https://arxiv.org/abs/0806.2735)  
 [29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
+[30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence](https://arxiv.org/abs/quant-ph/0612199v1)  
+
 
 
 
