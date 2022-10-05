@@ -2,7 +2,7 @@
 
 lambdaQ - A new functional language for quantum computing based on an extension of classical lambda calculus [1] named quantum lambda calculus, based on the work of Peter Selinger and Benoit Valiron [2, 3]. The language is built as an external DSL for Haskell. Possibly later, it will be reconfigured as a Haskell Language Extension [4].
 
-What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10], or funQ [15, 27] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
+What lambdaQ will bring to the table differently from other languages like QML [13], QCL [25], Quipper [9], QWire [14], Silq [10] funQ [15, 27] or Q [29] is a new semantics. The language will be practical rather than another theoretical language designed for the study of formal semantics of quantum computation. Programs will be compiled into the following two quantum intermediate representations code formats:
 
 - The LLVM Quantum Intermediate Representation (QIR) [5] supported by Microsoft, Quantum Circuits Inc., Quantinuum, Rigetti and others.
 - OpenQASM3 [11] supported by IBM which is regarded both as a high and a low-level Intermediate Representation (IR).  
@@ -147,7 +147,10 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [25] [QCL Language, Bernhard Omer, PhD Thesis.](http://tph.tuwien.ac.at/~oemer/doc/structquprog.pdf)  
 [26] [Quantum Programming Languages, Dominique Unruh.](https://kodu.ut.ee/~unruh/publications/quantum-programming-languages.pdf)   
 [27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
-[28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage](https://arxiv.org/abs/0806.2735)
+[28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage](https://arxiv.org/abs/0806.2735)  
+[29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
+
+
 
  
  
