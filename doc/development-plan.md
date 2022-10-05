@@ -146,10 +146,10 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [24] https://www.ibm.com/blogs/research/2021/02/quantum-phase-estimation  
 [25] [QCL Language, Bernhard Omer, PhD Thesis.](http://tph.tuwien.ac.at/~oemer/doc/structquprog.pdf)  
 [26] [Quantum Programming Languages, Dominique Unruh.](https://kodu.ut.ee/~unruh/publications/quantum-programming-languages.pdf)   
-[27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg](https://odr.chalmers.se/handle/20.500.12380/304169)  
-[28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage](https://arxiv.org/abs/0806.2735)  
-[29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
-[30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence](https://arxiv.org/abs/quant-ph/0612199v1)  
+[27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg.](https://odr.chalmers.se/handle/20.500.12380/304169)  
+[28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage.](https://arxiv.org/abs/0806.2735)  
+[29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi.](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
+[30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence.](https://arxiv.org/abs/quant-ph/0612199v1)  
 
 
 
