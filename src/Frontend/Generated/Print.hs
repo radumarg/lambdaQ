@@ -7,9 +7,9 @@
 {-# LANGUAGE OverlappingInstances #-}
 #endif
 
--- | Pretty-printer for LambdaQ.
+-- | Pretty-printer for Grammar.
 
-module LambdaQ.Print where
+module Grammar.Print where
 
 import Prelude
   ( ($), (.)
@@ -20,7 +20,7 @@ import Prelude
   , all, elem, foldr, id, map, null, replicate, shows, span
   )
 import Data.Char ( Char, isSpace )
-import qualified LambdaQ.Abs
+import qualified Grammar.Abs
 
 -- | The top-level printing method.
 
@@ -138,133 +138,137 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print LambdaQ.Abs.Var where
-  prt _ (LambdaQ.Abs.Var (_,i)) = doc $ showString i
-instance Print LambdaQ.Abs.FunVariable where
-  prt _ (LambdaQ.Abs.FunVariable (_,i)) = doc $ showString i
-instance Print LambdaQ.Abs.Lambda where
-  prt _ (LambdaQ.Abs.Lambda (_,i)) = doc $ showString i
-instance Print LambdaQ.Abs.Type where
+instance Print Grammar.Abs.GateGeneric where
+  prt _ (Grammar.Abs.GateGeneric i) = doc $ showString i
+instance Print Grammar.Abs.Var where
+  prt _ (Grammar.Abs.Var (_,i)) = doc $ showString i
+instance Print Grammar.Abs.FunVariable where
+  prt _ (Grammar.Abs.FunVariable (_,i)) = doc $ showString i
+instance Print Grammar.Abs.Lambda where
+  prt _ (Grammar.Abs.Lambda (_,i)) = doc $ showString i
+instance Print Grammar.Abs.Type where
   prt i = \case
-    LambdaQ.Abs.TypeBit -> prPrec i 1 (concatD [doc (showString "Bit")])
-    LambdaQ.Abs.TypeQbit -> prPrec i 1 (concatD [doc (showString "Qbit")])
-    LambdaQ.Abs.TypeUnit -> prPrec i 1 (concatD [doc (showString "()")])
-    LambdaQ.Abs.TypeExp type_ -> prPrec i 1 (concatD [doc (showString "!"), prt 1 type_])
-    LambdaQ.Abs.TypeTens type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "*"), prt 0 type_2])
-    LambdaQ.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
+    Grammar.Abs.TypeBit -> prPrec i 1 (concatD [doc (showString "Bit")])
+    Grammar.Abs.TypeQbit -> prPrec i 1 (concatD [doc (showString "Qbit")])
+    Grammar.Abs.TypeUnit -> prPrec i 1 (concatD [doc (showString "()")])
+    Grammar.Abs.TypeExp type_ -> prPrec i 1 (concatD [doc (showString "!"), prt 1 type_])
+    Grammar.Abs.TypeTens type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "*"), prt 0 type_2])
+    Grammar.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
 
-instance Print LambdaQ.Abs.Angle where
+instance Print Grammar.Abs.Angle where
   prt i = \case
-    LambdaQ.Abs.AAngl d -> prPrec i 0 (concatD [prt 0 d])
+    Grammar.Abs.AAngl d -> prPrec i 0 (concatD [prt 0 d])
 
-instance Print LambdaQ.Abs.ControlState where
+instance Print Grammar.Abs.ControlState where
   prt i = \case
-    LambdaQ.Abs.CStateZero -> prPrec i 0 (concatD [doc (showString "0")])
-    LambdaQ.Abs.CStateOne -> prPrec i 0 (concatD [doc (showString "1")])
-    LambdaQ.Abs.CStatePlus -> prPrec i 0 (concatD [doc (showString "+")])
-    LambdaQ.Abs.CStateMinus -> prPrec i 0 (concatD [doc (showString "-")])
-    LambdaQ.Abs.CStateIPlus -> prPrec i 0 (concatD [doc (showString "+i")])
-    LambdaQ.Abs.CStateIMinus -> prPrec i 0 (concatD [doc (showString "-i")])
+    Grammar.Abs.CStateZero -> prPrec i 0 (concatD [doc (showString "0")])
+    Grammar.Abs.CStateOne -> prPrec i 0 (concatD [doc (showString "1")])
+    Grammar.Abs.CStatePlus -> prPrec i 0 (concatD [doc (showString "+")])
+    Grammar.Abs.CStateMinus -> prPrec i 0 (concatD [doc (showString "-")])
+    Grammar.Abs.CStateIPlus -> prPrec i 0 (concatD [doc (showString "+i")])
+    Grammar.Abs.CStateIMinus -> prPrec i 0 (concatD [doc (showString "-i")])
 
-instance Print LambdaQ.Abs.Control where
+instance Print Grammar.Abs.Control where
   prt i = \case
-    LambdaQ.Abs.CCtrl n controlstate -> prPrec i 0 (concatD [doc (showString "Ctrl"), prt 0 n, prt 0 controlstate])
+    Grammar.Abs.CCtrl n controlstate -> prPrec i 0 (concatD [doc (showString "Ctrl"), prt 0 n, prt 0 controlstate])
 
-instance Print [LambdaQ.Abs.Control] where
+instance Print [Grammar.Abs.Control] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print LambdaQ.Abs.Gate where
+instance Print Grammar.Abs.Gate where
   prt i = \case
-    LambdaQ.Abs.GH controls -> prPrec i 0 (concatD [doc (showString "H"), prt 0 controls])
-    LambdaQ.Abs.GX controls -> prPrec i 0 (concatD [doc (showString "X"), prt 0 controls])
-    LambdaQ.Abs.GY controls -> prPrec i 0 (concatD [doc (showString "Y"), prt 0 controls])
-    LambdaQ.Abs.GZ controls -> prPrec i 0 (concatD [doc (showString "Z"), prt 0 controls])
-    LambdaQ.Abs.GI controls -> prPrec i 0 (concatD [doc (showString "I"), prt 0 controls])
-    LambdaQ.Abs.GXRt controls -> prPrec i 0 (concatD [doc (showString "XRoot"), prt 0 controls])
-    LambdaQ.Abs.GXRtDag controls -> prPrec i 0 (concatD [doc (showString "XRootDagger"), prt 0 controls])
-    LambdaQ.Abs.GYRt controls -> prPrec i 0 (concatD [doc (showString "YRoot"), prt 0 controls])
-    LambdaQ.Abs.GYRtDag controls -> prPrec i 0 (concatD [doc (showString "YRootDagger"), prt 0 controls])
-    LambdaQ.Abs.GZRt controls -> prPrec i 0 (concatD [doc (showString "ZRoot"), prt 0 controls])
-    LambdaQ.Abs.GZRtDag controls -> prPrec i 0 (concatD [doc (showString "ZRootDagger"), prt 0 controls])
-    LambdaQ.Abs.GS controls -> prPrec i 0 (concatD [doc (showString "S"), prt 0 controls])
-    LambdaQ.Abs.GSDag controls -> prPrec i 0 (concatD [doc (showString "SDagger"), prt 0 controls])
-    LambdaQ.Abs.GT controls -> prPrec i 0 (concatD [doc (showString "T"), prt 0 controls])
-    LambdaQ.Abs.GTDag controls -> prPrec i 0 (concatD [doc (showString "TDagger"), prt 0 controls])
-    LambdaQ.Abs.GV controls -> prPrec i 0 (concatD [doc (showString "V"), prt 0 controls])
-    LambdaQ.Abs.GVDag controls -> prPrec i 0 (concatD [doc (showString "VDagger"), prt 0 controls])
-    LambdaQ.Abs.Gh controls -> prPrec i 0 (concatD [doc (showString "h"), prt 0 controls])
-    LambdaQ.Abs.GhDag controls -> prPrec i 0 (concatD [doc (showString "hDagger"), prt 0 controls])
-    LambdaQ.Abs.GRxTheta angle controls -> prPrec i 0 (concatD [doc (showString "RxTheta"), prt 0 angle, prt 0 controls])
-    LambdaQ.Abs.GRyTheta angle controls -> prPrec i 0 (concatD [doc (showString "RyTheta"), prt 0 angle, prt 0 controls])
-    LambdaQ.Abs.GRzTheta angle controls -> prPrec i 0 (concatD [doc (showString "RzTheta"), prt 0 angle, prt 0 controls])
-    LambdaQ.Abs.GU1 angle controls -> prPrec i 0 (concatD [doc (showString "U1"), prt 0 angle, prt 0 controls])
-    LambdaQ.Abs.GU2 angle1 angle2 controls -> prPrec i 0 (concatD [doc (showString "U2"), prt 0 angle1, prt 0 angle2, prt 0 controls])
-    LambdaQ.Abs.GU3 angle1 angle2 angle3 controls -> prPrec i 0 (concatD [doc (showString "U3"), prt 0 angle1, prt 0 angle2, prt 0 angle3, prt 0 controls])
-    LambdaQ.Abs.GSWP controls -> prPrec i 0 (concatD [doc (showString "Swap"), prt 0 controls])
-    LambdaQ.Abs.GSQRTSWP controls -> prPrec i 0 (concatD [doc (showString "SqrtSwap"), prt 0 controls])
-    LambdaQ.Abs.GISWP controls -> prPrec i 0 (concatD [doc (showString "ISwap"), prt 0 controls])
-    LambdaQ.Abs.GFSWP controls -> prPrec i 0 (concatD [doc (showString "FSwap"), prt 0 controls])
-    LambdaQ.Abs.GSWPRt controls -> prPrec i 0 (concatD [doc (showString "SwapRoot"), prt 0 controls])
-    LambdaQ.Abs.GSWPRtDag controls -> prPrec i 0 (concatD [doc (showString "SwapRootDagger"), prt 0 controls])
+    Grammar.Abs.GH controls -> prPrec i 0 (concatD [doc (showString "H"), prt 0 controls])
+    Grammar.Abs.GX controls -> prPrec i 0 (concatD [doc (showString "X"), prt 0 controls])
+    Grammar.Abs.GY controls -> prPrec i 0 (concatD [doc (showString "Y"), prt 0 controls])
+    Grammar.Abs.GZ controls -> prPrec i 0 (concatD [doc (showString "Z"), prt 0 controls])
+    Grammar.Abs.GI controls -> prPrec i 0 (concatD [doc (showString "I"), prt 0 controls])
+    Grammar.Abs.GXRt n controls -> prPrec i 0 (concatD [doc (showString "RootX"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GXRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootXDagger"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GYRt n controls -> prPrec i 0 (concatD [doc (showString "RootY"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GYRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootYDagger"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GZRt n controls -> prPrec i 0 (concatD [doc (showString "RootZ"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GZRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootZDagger"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GS controls -> prPrec i 0 (concatD [doc (showString "S"), prt 0 controls])
+    Grammar.Abs.GSDag controls -> prPrec i 0 (concatD [doc (showString "SDagger"), prt 0 controls])
+    Grammar.Abs.GT controls -> prPrec i 0 (concatD [doc (showString "T"), prt 0 controls])
+    Grammar.Abs.GTDag controls -> prPrec i 0 (concatD [doc (showString "TDagger"), prt 0 controls])
+    Grammar.Abs.GSqrtX controls -> prPrec i 0 (concatD [doc (showString "SqrtX"), prt 0 controls])
+    Grammar.Abs.GSqrtXDag controls -> prPrec i 0 (concatD [doc (showString "SqrtXDagger"), prt 0 controls])
+    Grammar.Abs.GSqrtY controls -> prPrec i 0 (concatD [doc (showString "SqrtY"), prt 0 controls])
+    Grammar.Abs.GSqrtYDag controls -> prPrec i 0 (concatD [doc (showString "SqrtYDagger"), prt 0 controls])
+    Grammar.Abs.GRxTheta angle controls -> prPrec i 0 (concatD [doc (showString "RxTheta"), prt 0 angle, prt 0 controls])
+    Grammar.Abs.GRyTheta angle controls -> prPrec i 0 (concatD [doc (showString "RyTheta"), prt 0 angle, prt 0 controls])
+    Grammar.Abs.GRzTheta angle controls -> prPrec i 0 (concatD [doc (showString "RzTheta"), prt 0 angle, prt 0 controls])
+    Grammar.Abs.GU1 angle controls -> prPrec i 0 (concatD [doc (showString "U1"), prt 0 angle, prt 0 controls])
+    Grammar.Abs.GU2 angle1 angle2 controls -> prPrec i 0 (concatD [doc (showString "U2"), prt 0 angle1, prt 0 angle2, prt 0 controls])
+    Grammar.Abs.GU3 angle1 angle2 angle3 controls -> prPrec i 0 (concatD [doc (showString "U3"), prt 0 angle1, prt 0 angle2, prt 0 angle3, prt 0 controls])
+    Grammar.Abs.GSwp controls -> prPrec i 0 (concatD [doc (showString "Swap"), prt 0 controls])
+    Grammar.Abs.GSqrtSwp controls -> prPrec i 0 (concatD [doc (showString "SqrtSwap"), prt 0 controls])
+    Grammar.Abs.GSqrtSwpDag controls -> prPrec i 0 (concatD [doc (showString "SqrtSwapDagger"), prt 0 controls])
+    Grammar.Abs.GISwp controls -> prPrec i 0 (concatD [doc (showString "ISwap"), prt 0 controls])
+    Grammar.Abs.GFSwp controls -> prPrec i 0 (concatD [doc (showString "FSwap"), prt 0 controls])
+    Grammar.Abs.GSwpRt n controls -> prPrec i 0 (concatD [doc (showString "RootSwap"), prt 0 n, prt 0 controls])
+    Grammar.Abs.GSwpRtDag controls -> prPrec i 0 (concatD [doc (showString "RootSwapDagger"), prt 0 controls])
+    Grammar.Abs.GGeneric gategeneric -> prPrec i 0 (concatD [prt 0 gategeneric])
 
-instance Print LambdaQ.Abs.LetVariable where
+instance Print Grammar.Abs.LetVariable where
   prt i = \case
-    LambdaQ.Abs.LVar var -> prPrec i 0 (concatD [prt 0 var])
+    Grammar.Abs.LVar var -> prPrec i 0 (concatD [prt 0 var])
 
-instance Print [LambdaQ.Abs.LetVariable] where
+instance Print [Grammar.Abs.LetVariable] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print LambdaQ.Abs.Tuple where
+instance Print Grammar.Abs.Tuple where
   prt i = \case
-    LambdaQ.Abs.Tup term terms -> prPrec i 0 (concatD [doc (showString "("), prt 0 term, doc (showString ","), prt 0 terms, doc (showString ")")])
+    Grammar.Abs.Tup term terms -> prPrec i 0 (concatD [doc (showString "("), prt 0 term, doc (showString ","), prt 0 terms, doc (showString ")")])
 
-instance Print [LambdaQ.Abs.Term] where
+instance Print [Grammar.Abs.Term] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print LambdaQ.Abs.Bit where
+instance Print Grammar.Abs.Bit where
   prt i = \case
-    LambdaQ.Abs.BBit n -> prPrec i 0 (concatD [prt 0 n])
+    Grammar.Abs.BBit n -> prPrec i 0 (concatD [prt 0 n])
 
-instance Print LambdaQ.Abs.Term where
+instance Print Grammar.Abs.Term where
   prt i = \case
-    LambdaQ.Abs.TVar var -> prPrec i 3 (concatD [prt 0 var])
-    LambdaQ.Abs.TBit bit -> prPrec i 3 (concatD [prt 0 bit])
-    LambdaQ.Abs.TGate gate -> prPrec i 3 (concatD [prt 0 gate])
-    LambdaQ.Abs.TTup tuple -> prPrec i 3 (concatD [prt 0 tuple])
-    LambdaQ.Abs.TUnit -> prPrec i 3 (concatD [doc (showString "()")])
-    LambdaQ.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
-    LambdaQ.Abs.TIfEl term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
-    LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "in"), prt 0 term2])
-    LambdaQ.Abs.TCase term1 term2 var1 term3 var2 -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term1, doc (showString "of"), prt 0 term2, doc (showString "->"), prt 0 var1, prt 0 term3, doc (showString "->"), prt 0 var2])
-    LambdaQ.Abs.TLmbd lambda funvariable type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 funvariable, prt 0 type_, doc (showString "."), prt 0 term])
-    LambdaQ.Abs.TDollr term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
+    Grammar.Abs.TVar var -> prPrec i 3 (concatD [prt 0 var])
+    Grammar.Abs.TBit bit -> prPrec i 3 (concatD [prt 0 bit])
+    Grammar.Abs.TGate gate -> prPrec i 3 (concatD [prt 0 gate])
+    Grammar.Abs.TTup tuple -> prPrec i 3 (concatD [prt 0 tuple])
+    Grammar.Abs.TUnit -> prPrec i 3 (concatD [doc (showString "()")])
+    Grammar.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
+    Grammar.Abs.TIfEl term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
+    Grammar.Abs.TLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "in"), prt 0 term2])
+    Grammar.Abs.TCase term1 term2 var1 term3 var2 -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term1, doc (showString "of"), prt 0 term2, doc (showString "->"), prt 0 var1, prt 0 term3, doc (showString "->"), prt 0 var2])
+    Grammar.Abs.TLmbd lambda funvariable type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 funvariable, prt 0 type_, doc (showString "."), prt 0 term])
+    Grammar.Abs.TDollr term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
 
-instance Print LambdaQ.Abs.Arg where
+instance Print Grammar.Abs.Arg where
   prt i = \case
-    LambdaQ.Abs.FunArg var -> prPrec i 0 (concatD [prt 0 var])
+    Grammar.Abs.FunArg var -> prPrec i 0 (concatD [prt 0 var])
 
-instance Print [LambdaQ.Abs.Arg] where
+instance Print [Grammar.Abs.Arg] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, doc (showString " "), prt 0 xs]
 
-instance Print LambdaQ.Abs.Function where
+instance Print Grammar.Abs.Function where
   prt i = \case
-    LambdaQ.Abs.FunDef var args term -> prPrec i 0 (concatD [prt 0 var, prt 0 args, doc (showString "="), prt 0 term])
+    Grammar.Abs.FunDef var args term -> prPrec i 0 (concatD [prt 0 var, prt 0 args, doc (showString "="), prt 0 term])
 
-instance Print LambdaQ.Abs.FunDeclaration where
+instance Print Grammar.Abs.FunDeclaration where
   prt i = \case
-    LambdaQ.Abs.FunDecl funvariable type_ function -> prPrec i 0 (concatD [prt 0 funvariable, prt 0 type_, prt 0 function])
+    Grammar.Abs.FunDecl funvariable type_ function -> prPrec i 0 (concatD [prt 0 funvariable, prt 0 type_, prt 0 function])
 
-instance Print [LambdaQ.Abs.FunDeclaration] where
+instance Print [Grammar.Abs.FunDeclaration] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
 
-instance Print LambdaQ.Abs.Program where
+instance Print Grammar.Abs.Program where
   prt i = \case
-    LambdaQ.Abs.ProgDef fundeclarations -> prPrec i 0 (concatD [prt 0 fundeclarations])
+    Grammar.Abs.ProgDef fundeclarations -> prPrec i 0 (concatD [prt 0 fundeclarations])

@@ -14,12 +14,12 @@ ALEX_OPTS  = --ghc
 
 # Default goal.
 
-all : LambdaQ/Test
+all : Grammar/Test
 
 # Rules for building the parser.
 
-LambdaQ/Abs.hs LambdaQ/Lex.x LambdaQ/Par.y LambdaQ/Print.hs LambdaQ/Test.hs : lambdaQ.cf
-	bnfc --haskell -d lambdaQ.cf
+Grammar/Abs.hs Grammar/Lex.x Grammar/Par.y Grammar/Print.hs Grammar/Test.hs : Grammar.cf
+	bnfc --haskell -d Grammar.cf
 
 %.hs : %.y
 	${HAPPY} ${HAPPY_OPTS} $<
@@ -27,16 +27,16 @@ LambdaQ/Abs.hs LambdaQ/Lex.x LambdaQ/Par.y LambdaQ/Print.hs LambdaQ/Test.hs : la
 %.hs : %.x
 	${ALEX} ${ALEX_OPTS} $<
 
-LambdaQ/Test : LambdaQ/Abs.hs LambdaQ/Lex.hs LambdaQ/Par.hs LambdaQ/Print.hs LambdaQ/Test.hs
+Grammar/Test : Grammar/Abs.hs Grammar/Lex.hs Grammar/Par.hs Grammar/Print.hs Grammar/Test.hs
 	${GHC} ${GHC_OPTS} $@
 
 # Rules for cleaning generated files.
 
 clean :
-	-rm -f LambdaQ/*.hi LambdaQ/*.o LambdaQ/*.log LambdaQ/*.aux LambdaQ/*.dvi
+	-rm -f Grammar/*.hi Grammar/*.o Grammar/*.log Grammar/*.aux Grammar/*.dvi
 
 distclean : clean
-	-rm -f LambdaQ/Abs.hs LambdaQ/Abs.hs.bak LambdaQ/ComposOp.hs LambdaQ/ComposOp.hs.bak LambdaQ/Doc.txt LambdaQ/Doc.txt.bak LambdaQ/ErrM.hs LambdaQ/ErrM.hs.bak LambdaQ/Layout.hs LambdaQ/Layout.hs.bak LambdaQ/Lex.x LambdaQ/Lex.x.bak LambdaQ/Par.y LambdaQ/Par.y.bak LambdaQ/Print.hs LambdaQ/Print.hs.bak LambdaQ/Skel.hs LambdaQ/Skel.hs.bak LambdaQ/Test.hs LambdaQ/Test.hs.bak LambdaQ/XML.hs LambdaQ/XML.hs.bak LambdaQ/AST.agda LambdaQ/AST.agda.bak LambdaQ/Parser.agda LambdaQ/Parser.agda.bak LambdaQ/IOLib.agda LambdaQ/IOLib.agda.bak LambdaQ/Main.agda LambdaQ/Main.agda.bak LambdaQ/lambdaQ.dtd LambdaQ/lambdaQ.dtd.bak LambdaQ/Test LambdaQ/Lex.hs LambdaQ/Par.hs LambdaQ/Par.info LambdaQ/ParData.hs Makefile
-	-rmdir -p LambdaQ/
+	-rm -f Grammar/Abs.hs Grammar/Abs.hs.bak Grammar/ComposOp.hs Grammar/ComposOp.hs.bak Grammar/Doc.txt Grammar/Doc.txt.bak Grammar/ErrM.hs Grammar/ErrM.hs.bak Grammar/Layout.hs Grammar/Layout.hs.bak Grammar/Lex.x Grammar/Lex.x.bak Grammar/Par.y Grammar/Par.y.bak Grammar/Print.hs Grammar/Print.hs.bak Grammar/Skel.hs Grammar/Skel.hs.bak Grammar/Test.hs Grammar/Test.hs.bak Grammar/XML.hs Grammar/XML.hs.bak Grammar/AST.agda Grammar/AST.agda.bak Grammar/Parser.agda Grammar/Parser.agda.bak Grammar/IOLib.agda Grammar/IOLib.agda.bak Grammar/Main.agda Grammar/Main.agda.bak Grammar/Grammar.dtd Grammar/Grammar.dtd.bak Grammar/Test Grammar/Lex.hs Grammar/Par.hs Grammar/Par.info Grammar/ParData.hs Makefile
+	-rmdir -p Grammar/
 
 # EOF
