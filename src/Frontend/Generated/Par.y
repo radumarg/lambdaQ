@@ -65,70 +65,70 @@ import LambdaQ.Lex
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '!'              { PT _ (TS _ 1)           }
-  '$'              { PT _ (TS _ 2)           }
-  '('              { PT _ (TS _ 3)           }
-  '()'             { PT _ (TS _ 4)           }
-  ')'              { PT _ (TS _ 5)           }
-  '*'              { PT _ (TS _ 6)           }
-  '+'              { PT _ (TS _ 7)           }
-  '+i'             { PT _ (TS _ 8)           }
-  ','              { PT _ (TS _ 9)           }
-  '-'              { PT _ (TS _ 10)          }
-  '->'             { PT _ (TS _ 11)          }
-  '-i'             { PT _ (TS _ 12)          }
-  '.'              { PT _ (TS _ 13)          }
-  '0'              { PT _ (TS _ 14)          }
-  '1'              { PT _ (TS _ 15)          }
-  '='              { PT _ (TS _ 16)          }
-  'Bit'            { PT _ (TS _ 17)          }
-  'Ctrl'           { PT _ (TS _ 18)          }
-  'FSwap'          { PT _ (TS _ 19)          }
-  'H'              { PT _ (TS _ 20)          }
-  'I'              { PT _ (TS _ 21)          }
-  'ISwap'          { PT _ (TS _ 22)          }
-  'Qbit'           { PT _ (TS _ 23)          }
-  'RootSwap'       { PT _ (TS _ 24)          }
-  'RootSwapDagger' { PT _ (TS _ 25)          }
-  'RootX'          { PT _ (TS _ 26)          }
-  'RootXDagger'    { PT _ (TS _ 27)          }
-  'RootY'          { PT _ (TS _ 28)          }
-  'RootYDagger'    { PT _ (TS _ 29)          }
-  'RootZ'          { PT _ (TS _ 30)          }
-  'RootZDagger'    { PT _ (TS _ 31)          }
-  'RxTheta'        { PT _ (TS _ 32)          }
-  'RyTheta'        { PT _ (TS _ 33)          }
-  'RzTheta'        { PT _ (TS _ 34)          }
-  'S'              { PT _ (TS _ 35)          }
-  'SDagger'        { PT _ (TS _ 36)          }
-  'SqrtSwap'       { PT _ (TS _ 37)          }
-  'SqrtSwapDagger' { PT _ (TS _ 38)          }
-  'SqrtX'          { PT _ (TS _ 39)          }
-  'SqrtXDagger'    { PT _ (TS _ 40)          }
-  'SqrtY'          { PT _ (TS _ 41)          }
-  'SqrtYDagger'    { PT _ (TS _ 42)          }
-  'Swap'           { PT _ (TS _ 43)          }
-  'T'              { PT _ (TS _ 44)          }
-  'TDagger'        { PT _ (TS _ 45)          }
-  'U1'             { PT _ (TS _ 46)          }
-  'U2'             { PT _ (TS _ 47)          }
-  'U3'             { PT _ (TS _ 48)          }
-  'X'              { PT _ (TS _ 49)          }
-  'Y'              { PT _ (TS _ 50)          }
-  'Z'              { PT _ (TS _ 51)          }
-  'case'           { PT _ (TS _ 52)          }
-  'else'           { PT _ (TS _ 53)          }
-  'if'             { PT _ (TS _ 54)          }
-  'in'             { PT _ (TS _ 55)          }
-  'let'            { PT _ (TS _ 56)          }
-  'of'             { PT _ (TS _ 57)          }
-  'then'           { PT _ (TS _ 58)          }
-  L_doubl          { PT _ (TD $$)            }
-  L_integ          { PT _ (TI $$)            }
-  L_GateGeneric    { PT _ (T_GateGeneric $$) }
-  L_Var            { PT _ (T_Var _)          }
-  L_FunVariable    { PT _ (T_FunVariable _)  }
-  L_Lambda         { PT _ (T_Lambda _)       }
+  '!'              { PT _ (TS _ 1)          }
+  '$'              { PT _ (TS _ 2)          }
+  '('              { PT _ (TS _ 3)          }
+  '()'             { PT _ (TS _ 4)          }
+  ')'              { PT _ (TS _ 5)          }
+  '+'              { PT _ (TS _ 6)          }
+  '+i'             { PT _ (TS _ 7)          }
+  ','              { PT _ (TS _ 8)          }
+  '-'              { PT _ (TS _ 9)          }
+  '->'             { PT _ (TS _ 10)         }
+  '-i'             { PT _ (TS _ 11)         }
+  '.'              { PT _ (TS _ 12)         }
+  '0'              { PT _ (TS _ 13)         }
+  '1'              { PT _ (TS _ 14)         }
+  '='              { PT _ (TS _ 15)         }
+  'Bit'            { PT _ (TS _ 16)         }
+  'Ctrl'           { PT _ (TS _ 17)         }
+  'FSwap'          { PT _ (TS _ 18)         }
+  'H'              { PT _ (TS _ 19)         }
+  'I'              { PT _ (TS _ 20)         }
+  'ISwap'          { PT _ (TS _ 21)         }
+  'Qbit'           { PT _ (TS _ 22)         }
+  'RootSwap'       { PT _ (TS _ 23)         }
+  'RootSwapDagger' { PT _ (TS _ 24)         }
+  'RootX'          { PT _ (TS _ 25)         }
+  'RootXDagger'    { PT _ (TS _ 26)         }
+  'RootY'          { PT _ (TS _ 27)         }
+  'RootYDagger'    { PT _ (TS _ 28)         }
+  'RootZ'          { PT _ (TS _ 29)         }
+  'RootZDagger'    { PT _ (TS _ 30)         }
+  'RxTheta'        { PT _ (TS _ 31)         }
+  'RyTheta'        { PT _ (TS _ 32)         }
+  'RzTheta'        { PT _ (TS _ 33)         }
+  'S'              { PT _ (TS _ 34)         }
+  'SDagger'        { PT _ (TS _ 35)         }
+  'SqrtSwap'       { PT _ (TS _ 36)         }
+  'SqrtSwapDagger' { PT _ (TS _ 37)         }
+  'SqrtX'          { PT _ (TS _ 38)         }
+  'SqrtXDagger'    { PT _ (TS _ 39)         }
+  'SqrtY'          { PT _ (TS _ 40)         }
+  'SqrtYDagger'    { PT _ (TS _ 41)         }
+  'Swap'           { PT _ (TS _ 42)         }
+  'T'              { PT _ (TS _ 43)         }
+  'TDagger'        { PT _ (TS _ 44)         }
+  'U1'             { PT _ (TS _ 45)         }
+  'U2'             { PT _ (TS _ 46)         }
+  'U3'             { PT _ (TS _ 47)         }
+  'X'              { PT _ (TS _ 48)         }
+  'Y'              { PT _ (TS _ 49)         }
+  'Z'              { PT _ (TS _ 50)         }
+  '^'              { PT _ (TS _ 51)         }
+  'case'           { PT _ (TS _ 52)         }
+  'else'           { PT _ (TS _ 53)         }
+  'if'             { PT _ (TS _ 54)         }
+  'in'             { PT _ (TS _ 55)         }
+  'let'            { PT _ (TS _ 56)         }
+  'of'             { PT _ (TS _ 57)         }
+  'then'           { PT _ (TS _ 58)         }
+  L_doubl          { PT _ (TD $$)           }
+  L_integ          { PT _ (TI $$)           }
+  L_GateIdent      { PT _ (T_GateIdent $$)  }
+  L_Var            { PT _ (T_Var _)         }
+  L_FunVariable    { PT _ (T_FunVariable _) }
+  L_Lambda         { PT _ (T_Lambda _)      }
 
 %%
 
@@ -138,8 +138,8 @@ Double   : L_doubl  { (read $1) :: Double }
 Integer :: { Integer }
 Integer  : L_integ  { (read $1) :: Integer }
 
-GateGeneric :: { LambdaQ.Abs.GateGeneric }
-GateGeneric  : L_GateGeneric { LambdaQ.Abs.GateGeneric $1 }
+GateIdent :: { LambdaQ.Abs.GateIdent }
+GateIdent  : L_GateIdent { LambdaQ.Abs.GateIdent $1 }
 
 Var :: { LambdaQ.Abs.Var }
 Var  : L_Var { LambdaQ.Abs.Var (mkPosToken $1) }
@@ -160,7 +160,7 @@ Type1
 
 Type :: { LambdaQ.Abs.Type }
 Type
-  : Type1 '*' Type { LambdaQ.Abs.TypeTens $1 $3 }
+  : Type1 '^' Integer { LambdaQ.Abs.TypeTens $1 $3 }
   | Type1 '->' Type { LambdaQ.Abs.TypeFunc $1 $3 }
   | Type1 { $1 }
 
@@ -217,7 +217,7 @@ Gate
   | 'FSwap' ListControl { LambdaQ.Abs.GFSwp $2 }
   | 'RootSwap' Integer ListControl { LambdaQ.Abs.GSwpRt $2 $3 }
   | 'RootSwapDagger' Integer ListControl { LambdaQ.Abs.GSwpRtDag $2 $3 }
-  | GateGeneric { LambdaQ.Abs.GGeneric $1 }
+  | GateIdent { LambdaQ.Abs.GGateIdent $1 }
 
 LetVariable :: { LambdaQ.Abs.LetVariable }
 LetVariable : Var { LambdaQ.Abs.LVar $1 }

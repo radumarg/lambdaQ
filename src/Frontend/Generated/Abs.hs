@@ -19,7 +19,7 @@ data Type
     | TypeQbit
     | TypeUnit
     | TypeExp Type
-    | TypeTens Type Type
+    | TypeTens Type Integer
     | TypeFunc Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
@@ -71,7 +71,7 @@ data Gate
     | GFSwp [Control]
     | GSwpRt Integer [Control]
     | GSwpRtDag Integer [Control]
-    | GGeneric GateGeneric
+    | GGateIdent GateIdent
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LetVariable = LVar Var
@@ -109,7 +109,7 @@ data FunDeclaration = FunDecl FunVariable Type Function
 data Program = ProgDef [FunDeclaration]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-newtype GateGeneric = GateGeneric String
+newtype GateIdent = GateIdent String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype Var = Var ((C.Int, C.Int), String)

@@ -7,7 +7,7 @@ TypeBit  . Type1  ::= "Bit" ;
 TypeQbit . Type1  ::= "Qbit" ;
 TypeUnit . Type1  ::= "()" ;
 TypeExp  . Type1  ::= "!" Type1 ;
-TypeTens . Type  ::= Type1 "*" Type ;
+TypeTens . Type  ::= Type1 "^" Integer ;
 TypeFunc . Type  ::= Type1 "->" Type ;
 coercions Type 1 ;
 
@@ -28,7 +28,7 @@ separator nonempty Control "," ;
 
 -- Gates - Definition of gates can be found here: https://uranium.transilvania-quantum.org --
 
-token GateGeneric (upper (letter | digit)*) ;
+token GateIdent (upper (letter | digit)*) ;
 
 GH            . Gate ::= "H" [Control] ;                      -- Hadamard Gate
 GX            . Gate ::= "X" [Control] ;                      -- Pauli X Gate
@@ -62,7 +62,7 @@ GISwp         . Gate ::= "ISwap" [Control] ;                  -- ISwap gate
 GFSwp         . Gate ::= "FSwap" [Control] ;                  -- FSwap gate
 GSwpRt        . Gate ::= "RootSwap" Integer [Control] ;       -- Root of Swap gate (root is specified as k in 1/2^k)
 GSwpRtDag     . Gate ::= "RootSwapDagger" Integer [Control] ; -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
-GGeneric      . Gate ::= GateGeneric      ;                   -- Generic gate
+GGateIdent    . Gate ::= GateIdent ;                          -- Generic gate identifier
 
 -- Names for Variables --
 position token Var (lower (letter | digit | '_' | '\'')*) ;

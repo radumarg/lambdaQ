@@ -15,9 +15,9 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transGateGeneric :: LambdaQ.Abs.GateGeneric -> Result
-transGateGeneric x = case x of
-  LambdaQ.Abs.GateGeneric string -> failure x
+transGateIdent :: LambdaQ.Abs.GateIdent -> Result
+transGateIdent x = case x of
+  LambdaQ.Abs.GateIdent string -> failure x
 
 transVar :: LambdaQ.Abs.Var -> Result
 transVar x = case x of
@@ -37,7 +37,7 @@ transType x = case x of
   LambdaQ.Abs.TypeQbit -> failure x
   LambdaQ.Abs.TypeUnit -> failure x
   LambdaQ.Abs.TypeExp type_ -> failure x
-  LambdaQ.Abs.TypeTens type_1 type_2 -> failure x
+  LambdaQ.Abs.TypeTens type_ integer -> failure x
   LambdaQ.Abs.TypeFunc type_1 type_2 -> failure x
 
 transAngle :: LambdaQ.Abs.Angle -> Result
@@ -91,7 +91,7 @@ transGate x = case x of
   LambdaQ.Abs.GFSwp controls -> failure x
   LambdaQ.Abs.GSwpRt integer controls -> failure x
   LambdaQ.Abs.GSwpRtDag integer controls -> failure x
-  LambdaQ.Abs.GGeneric gategeneric -> failure x
+  LambdaQ.Abs.GGateIdent gateident -> failure x
 
 transLetVariable :: LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of

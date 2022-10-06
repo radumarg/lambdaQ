@@ -138,8 +138,8 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print LambdaQ.Abs.GateGeneric where
-  prt _ (LambdaQ.Abs.GateGeneric i) = doc $ showString i
+instance Print LambdaQ.Abs.GateIdent where
+  prt _ (LambdaQ.Abs.GateIdent i) = doc $ showString i
 instance Print LambdaQ.Abs.Var where
   prt _ (LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print LambdaQ.Abs.FunVariable where
@@ -152,7 +152,7 @@ instance Print LambdaQ.Abs.Type where
     LambdaQ.Abs.TypeQbit -> prPrec i 1 (concatD [doc (showString "Qbit")])
     LambdaQ.Abs.TypeUnit -> prPrec i 1 (concatD [doc (showString "()")])
     LambdaQ.Abs.TypeExp type_ -> prPrec i 1 (concatD [doc (showString "!"), prt 1 type_])
-    LambdaQ.Abs.TypeTens type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "*"), prt 0 type_2])
+    LambdaQ.Abs.TypeTens type_ n -> prPrec i 0 (concatD [prt 1 type_, doc (showString "^"), prt 0 n])
     LambdaQ.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
 
 instance Print LambdaQ.Abs.Angle where
@@ -211,7 +211,7 @@ instance Print LambdaQ.Abs.Gate where
     LambdaQ.Abs.GFSwp controls -> prPrec i 0 (concatD [doc (showString "FSwap"), prt 0 controls])
     LambdaQ.Abs.GSwpRt n controls -> prPrec i 0 (concatD [doc (showString "RootSwap"), prt 0 n, prt 0 controls])
     LambdaQ.Abs.GSwpRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootSwapDagger"), prt 0 n, prt 0 controls])
-    LambdaQ.Abs.GGeneric gategeneric -> prPrec i 0 (concatD [prt 0 gategeneric])
+    LambdaQ.Abs.GGateIdent gateident -> prPrec i 0 (concatD [prt 0 gateident])
 
 instance Print LambdaQ.Abs.LetVariable where
   prt i = \case
