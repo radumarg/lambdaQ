@@ -70,7 +70,7 @@ data Gate
     | GISwp [Control]
     | GFSwp [Control]
     | GSwpRt Integer [Control]
-    | GSwpRtDag [Control]
+    | GSwpRtDag Integer [Control]
     | GGeneric GateGeneric
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

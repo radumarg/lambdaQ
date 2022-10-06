@@ -210,7 +210,7 @@ instance Print Grammar.Abs.Gate where
     Grammar.Abs.GISwp controls -> prPrec i 0 (concatD [doc (showString "ISwap"), prt 0 controls])
     Grammar.Abs.GFSwp controls -> prPrec i 0 (concatD [doc (showString "FSwap"), prt 0 controls])
     Grammar.Abs.GSwpRt n controls -> prPrec i 0 (concatD [doc (showString "RootSwap"), prt 0 n, prt 0 controls])
-    Grammar.Abs.GSwpRtDag controls -> prPrec i 0 (concatD [doc (showString "RootSwapDagger"), prt 0 controls])
+    Grammar.Abs.GSwpRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootSwapDagger"), prt 0 n, prt 0 controls])
     Grammar.Abs.GGeneric gategeneric -> prPrec i 0 (concatD [prt 0 gategeneric])
 
 instance Print Grammar.Abs.LetVariable where

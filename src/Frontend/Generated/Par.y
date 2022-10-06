@@ -216,7 +216,7 @@ Gate
   | 'ISwap' ListControl { Grammar.Abs.GISwp $2 }
   | 'FSwap' ListControl { Grammar.Abs.GFSwp $2 }
   | 'RootSwap' Integer ListControl { Grammar.Abs.GSwpRt $2 $3 }
-  | 'RootSwapDagger' ListControl { Grammar.Abs.GSwpRtDag $2 }
+  | 'RootSwapDagger' Integer ListControl { Grammar.Abs.GSwpRtDag $2 $3 }
   | GateGeneric { Grammar.Abs.GGeneric $1 }
 
 LetVariable :: { Grammar.Abs.LetVariable }

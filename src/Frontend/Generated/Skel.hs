@@ -90,7 +90,7 @@ transGate x = case x of
   Grammar.Abs.GISwp controls -> failure x
   Grammar.Abs.GFSwp controls -> failure x
   Grammar.Abs.GSwpRt integer controls -> failure x
-  Grammar.Abs.GSwpRtDag controls -> failure x
+  Grammar.Abs.GSwpRtDag integer controls -> failure x
   Grammar.Abs.GGeneric gategeneric -> failure x
 
 transLetVariable :: Grammar.Abs.LetVariable -> Result

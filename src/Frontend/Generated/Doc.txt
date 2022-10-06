@@ -118,7 +118,7 @@ All other symbols are terminals.
   |  |  **|**  | ``ISwap`` //[Control]//
   |  |  **|**  | ``FSwap`` //[Control]//
   |  |  **|**  | ``RootSwap`` //Integer// //[Control]//
-  |  |  **|**  | ``RootSwapDagger`` //[Control]//
+  |  |  **|**  | ``RootSwapDagger`` //Integer// //[Control]//
   |  |  **|**  | //GateGeneric//
   | //LetVariable// | -> | //Var//
   | //[LetVariable]// | -> | //LetVariable//
