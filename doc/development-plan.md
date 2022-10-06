@@ -80,7 +80,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Rather than being an external DSL, the language will be packed as a Haskell Language Extension [4].
 - Output code can be executed on real quantum devices (IBMQ, IONQ, Rigetti, AQT).
 - Besides Z basis, controls can be specified also in X basis ('+', '-') and Y basis ('+i', '-i').
-- Support for inductive data types, and custom data types.
+- Suppor for custom data types and inductive data types.
 - Libraries (e.g. QFT, amplitude amplification, phase estimation, quantum arithmetic).
 - Teleportation as a primitive.
 - Barrier statement.
