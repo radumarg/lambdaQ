@@ -5,7 +5,7 @@
 {-# OPTIONS_GHC -fno-warn-incomplete-patterns -fno-warn-overlapping-patterns #-}
 {-# LANGUAGE PatternSynonyms #-}
 
-module Grammar.Par
+module LambdaQ.Par
   ( happyError
   , myLexer
   , pType1
@@ -34,8 +34,8 @@ module Grammar.Par
 
 import Prelude
 
-import qualified Grammar.Abs
-import Grammar.Lex
+import qualified LambdaQ.Abs
+import LambdaQ.Lex
 
 }
 
@@ -138,148 +138,148 @@ Double   : L_doubl  { (read $1) :: Double }
 Integer :: { Integer }
 Integer  : L_integ  { (read $1) :: Integer }
 
-GateGeneric :: { Grammar.Abs.GateGeneric }
-GateGeneric  : L_GateGeneric { Grammar.Abs.GateGeneric $1 }
+GateGeneric :: { LambdaQ.Abs.GateGeneric }
+GateGeneric  : L_GateGeneric { LambdaQ.Abs.GateGeneric $1 }
 
-Var :: { Grammar.Abs.Var }
-Var  : L_Var { Grammar.Abs.Var (mkPosToken $1) }
+Var :: { LambdaQ.Abs.Var }
+Var  : L_Var { LambdaQ.Abs.Var (mkPosToken $1) }
 
-FunVariable :: { Grammar.Abs.FunVariable }
-FunVariable  : L_FunVariable { Grammar.Abs.FunVariable (mkPosToken $1) }
+FunVariable :: { LambdaQ.Abs.FunVariable }
+FunVariable  : L_FunVariable { LambdaQ.Abs.FunVariable (mkPosToken $1) }
 
-Lambda :: { Grammar.Abs.Lambda }
-Lambda  : L_Lambda { Grammar.Abs.Lambda (mkPosToken $1) }
+Lambda :: { LambdaQ.Abs.Lambda }
+Lambda  : L_Lambda { LambdaQ.Abs.Lambda (mkPosToken $1) }
 
-Type1 :: { Grammar.Abs.Type }
+Type1 :: { LambdaQ.Abs.Type }
 Type1
-  : 'Bit' { Grammar.Abs.TypeBit }
-  | 'Qbit' { Grammar.Abs.TypeQbit }
-  | '()' { Grammar.Abs.TypeUnit }
-  | '!' Type1 { Grammar.Abs.TypeExp $2 }
+  : 'Bit' { LambdaQ.Abs.TypeBit }
+  | 'Qbit' { LambdaQ.Abs.TypeQbit }
+  | '()' { LambdaQ.Abs.TypeUnit }
+  | '!' Type1 { LambdaQ.Abs.TypeExp $2 }
   | '(' Type ')' { $2 }
 
-Type :: { Grammar.Abs.Type }
+Type :: { LambdaQ.Abs.Type }
 Type
-  : Type1 '*' Type { Grammar.Abs.TypeTens $1 $3 }
-  | Type1 '->' Type { Grammar.Abs.TypeFunc $1 $3 }
+  : Type1 '*' Type { LambdaQ.Abs.TypeTens $1 $3 }
+  | Type1 '->' Type { LambdaQ.Abs.TypeFunc $1 $3 }
   | Type1 { $1 }
 
-Angle :: { Grammar.Abs.Angle }
-Angle : Double { Grammar.Abs.AAngl $1 }
+Angle :: { LambdaQ.Abs.Angle }
+Angle : Double { LambdaQ.Abs.AAngl $1 }
 
-ControlState :: { Grammar.Abs.ControlState }
+ControlState :: { LambdaQ.Abs.ControlState }
 ControlState
-  : '0' { Grammar.Abs.CStateZero }
-  | '1' { Grammar.Abs.CStateOne }
-  | '+' { Grammar.Abs.CStatePlus }
-  | '-' { Grammar.Abs.CStateMinus }
-  | '+i' { Grammar.Abs.CStateIPlus }
-  | '-i' { Grammar.Abs.CStateIMinus }
+  : '0' { LambdaQ.Abs.CStateZero }
+  | '1' { LambdaQ.Abs.CStateOne }
+  | '+' { LambdaQ.Abs.CStatePlus }
+  | '-' { LambdaQ.Abs.CStateMinus }
+  | '+i' { LambdaQ.Abs.CStateIPlus }
+  | '-i' { LambdaQ.Abs.CStateIMinus }
 
-Control :: { Grammar.Abs.Control }
-Control : 'Ctrl' Integer ControlState { Grammar.Abs.CCtrl $2 $3 }
+Control :: { LambdaQ.Abs.Control }
+Control : 'Ctrl' Integer ControlState { LambdaQ.Abs.CCtrl $2 $3 }
 
-ListControl :: { [Grammar.Abs.Control] }
+ListControl :: { [LambdaQ.Abs.Control] }
 ListControl
   : Control { (:[]) $1 } | Control ',' ListControl { (:) $1 $3 }
 
-Gate :: { Grammar.Abs.Gate }
+Gate :: { LambdaQ.Abs.Gate }
 Gate
-  : 'H' ListControl { Grammar.Abs.GH $2 }
-  | 'X' ListControl { Grammar.Abs.GX $2 }
-  | 'Y' ListControl { Grammar.Abs.GY $2 }
-  | 'Z' ListControl { Grammar.Abs.GZ $2 }
-  | 'I' ListControl { Grammar.Abs.GI $2 }
-  | 'RootX' Integer ListControl { Grammar.Abs.GXRt $2 $3 }
-  | 'RootXDagger' Integer ListControl { Grammar.Abs.GXRtDag $2 $3 }
-  | 'RootY' Integer ListControl { Grammar.Abs.GYRt $2 $3 }
-  | 'RootYDagger' Integer ListControl { Grammar.Abs.GYRtDag $2 $3 }
-  | 'RootZ' Integer ListControl { Grammar.Abs.GZRt $2 $3 }
-  | 'RootZDagger' Integer ListControl { Grammar.Abs.GZRtDag $2 $3 }
-  | 'S' ListControl { Grammar.Abs.GS $2 }
-  | 'SDagger' ListControl { Grammar.Abs.GSDag $2 }
-  | 'T' ListControl { Grammar.Abs.GT $2 }
-  | 'TDagger' ListControl { Grammar.Abs.GTDag $2 }
-  | 'SqrtX' ListControl { Grammar.Abs.GSqrtX $2 }
-  | 'SqrtXDagger' ListControl { Grammar.Abs.GSqrtXDag $2 }
-  | 'SqrtY' ListControl { Grammar.Abs.GSqrtY $2 }
-  | 'SqrtYDagger' ListControl { Grammar.Abs.GSqrtYDag $2 }
-  | 'RxTheta' Angle ListControl { Grammar.Abs.GRxTheta $2 $3 }
-  | 'RyTheta' Angle ListControl { Grammar.Abs.GRyTheta $2 $3 }
-  | 'RzTheta' Angle ListControl { Grammar.Abs.GRzTheta $2 $3 }
-  | 'U1' Angle ListControl { Grammar.Abs.GU1 $2 $3 }
-  | 'U2' Angle Angle ListControl { Grammar.Abs.GU2 $2 $3 $4 }
-  | 'U3' Angle Angle Angle ListControl { Grammar.Abs.GU3 $2 $3 $4 $5 }
-  | 'Swap' ListControl { Grammar.Abs.GSwp $2 }
-  | 'SqrtSwap' ListControl { Grammar.Abs.GSqrtSwp $2 }
-  | 'SqrtSwapDagger' ListControl { Grammar.Abs.GSqrtSwpDag $2 }
-  | 'ISwap' ListControl { Grammar.Abs.GISwp $2 }
-  | 'FSwap' ListControl { Grammar.Abs.GFSwp $2 }
-  | 'RootSwap' Integer ListControl { Grammar.Abs.GSwpRt $2 $3 }
-  | 'RootSwapDagger' Integer ListControl { Grammar.Abs.GSwpRtDag $2 $3 }
-  | GateGeneric { Grammar.Abs.GGeneric $1 }
+  : 'H' ListControl { LambdaQ.Abs.GH $2 }
+  | 'X' ListControl { LambdaQ.Abs.GX $2 }
+  | 'Y' ListControl { LambdaQ.Abs.GY $2 }
+  | 'Z' ListControl { LambdaQ.Abs.GZ $2 }
+  | 'I' ListControl { LambdaQ.Abs.GI $2 }
+  | 'RootX' Integer ListControl { LambdaQ.Abs.GXRt $2 $3 }
+  | 'RootXDagger' Integer ListControl { LambdaQ.Abs.GXRtDag $2 $3 }
+  | 'RootY' Integer ListControl { LambdaQ.Abs.GYRt $2 $3 }
+  | 'RootYDagger' Integer ListControl { LambdaQ.Abs.GYRtDag $2 $3 }
+  | 'RootZ' Integer ListControl { LambdaQ.Abs.GZRt $2 $3 }
+  | 'RootZDagger' Integer ListControl { LambdaQ.Abs.GZRtDag $2 $3 }
+  | 'S' ListControl { LambdaQ.Abs.GS $2 }
+  | 'SDagger' ListControl { LambdaQ.Abs.GSDag $2 }
+  | 'T' ListControl { LambdaQ.Abs.GT $2 }
+  | 'TDagger' ListControl { LambdaQ.Abs.GTDag $2 }
+  | 'SqrtX' ListControl { LambdaQ.Abs.GSqrtX $2 }
+  | 'SqrtXDagger' ListControl { LambdaQ.Abs.GSqrtXDag $2 }
+  | 'SqrtY' ListControl { LambdaQ.Abs.GSqrtY $2 }
+  | 'SqrtYDagger' ListControl { LambdaQ.Abs.GSqrtYDag $2 }
+  | 'RxTheta' Angle ListControl { LambdaQ.Abs.GRxTheta $2 $3 }
+  | 'RyTheta' Angle ListControl { LambdaQ.Abs.GRyTheta $2 $3 }
+  | 'RzTheta' Angle ListControl { LambdaQ.Abs.GRzTheta $2 $3 }
+  | 'U1' Angle ListControl { LambdaQ.Abs.GU1 $2 $3 }
+  | 'U2' Angle Angle ListControl { LambdaQ.Abs.GU2 $2 $3 $4 }
+  | 'U3' Angle Angle Angle ListControl { LambdaQ.Abs.GU3 $2 $3 $4 $5 }
+  | 'Swap' ListControl { LambdaQ.Abs.GSwp $2 }
+  | 'SqrtSwap' ListControl { LambdaQ.Abs.GSqrtSwp $2 }
+  | 'SqrtSwapDagger' ListControl { LambdaQ.Abs.GSqrtSwpDag $2 }
+  | 'ISwap' ListControl { LambdaQ.Abs.GISwp $2 }
+  | 'FSwap' ListControl { LambdaQ.Abs.GFSwp $2 }
+  | 'RootSwap' Integer ListControl { LambdaQ.Abs.GSwpRt $2 $3 }
+  | 'RootSwapDagger' Integer ListControl { LambdaQ.Abs.GSwpRtDag $2 $3 }
+  | GateGeneric { LambdaQ.Abs.GGeneric $1 }
 
-LetVariable :: { Grammar.Abs.LetVariable }
-LetVariable : Var { Grammar.Abs.LVar $1 }
+LetVariable :: { LambdaQ.Abs.LetVariable }
+LetVariable : Var { LambdaQ.Abs.LVar $1 }
 
-ListLetVariable :: { [Grammar.Abs.LetVariable] }
+ListLetVariable :: { [LambdaQ.Abs.LetVariable] }
 ListLetVariable
   : LetVariable { (:[]) $1 }
   | LetVariable ',' ListLetVariable { (:) $1 $3 }
 
-Tuple :: { Grammar.Abs.Tuple }
-Tuple : '(' Term ',' ListTerm ')' { Grammar.Abs.Tup $2 $4 }
+Tuple :: { LambdaQ.Abs.Tuple }
+Tuple : '(' Term ',' ListTerm ')' { LambdaQ.Abs.Tup $2 $4 }
 
-ListTerm :: { [Grammar.Abs.Term] }
+ListTerm :: { [LambdaQ.Abs.Term] }
 ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 
-Bit :: { Grammar.Abs.Bit }
-Bit : Integer { Grammar.Abs.BBit $1 }
+Bit :: { LambdaQ.Abs.Bit }
+Bit : Integer { LambdaQ.Abs.BBit $1 }
 
-Term3 :: { Grammar.Abs.Term }
+Term3 :: { LambdaQ.Abs.Term }
 Term3
-  : Var { Grammar.Abs.TVar $1 }
-  | Bit { Grammar.Abs.TBit $1 }
-  | Gate { Grammar.Abs.TGate $1 }
-  | Tuple { Grammar.Abs.TTup $1 }
-  | '()' { Grammar.Abs.TUnit }
+  : Var { LambdaQ.Abs.TVar $1 }
+  | Bit { LambdaQ.Abs.TBit $1 }
+  | Gate { LambdaQ.Abs.TGate $1 }
+  | Tuple { LambdaQ.Abs.TTup $1 }
+  | '()' { LambdaQ.Abs.TUnit }
   | '(' Term ')' { $2 }
 
-Term2 :: { Grammar.Abs.Term }
-Term2 : Term2 Term3 { Grammar.Abs.TApp $1 $2 } | Term3 { $1 }
+Term2 :: { LambdaQ.Abs.Term }
+Term2 : Term2 Term3 { LambdaQ.Abs.TApp $1 $2 } | Term3 { $1 }
 
-Term1 :: { Grammar.Abs.Term }
+Term1 :: { LambdaQ.Abs.Term }
 Term1
-  : 'if' Term 'then' Term 'else' Term { Grammar.Abs.TIfEl $2 $4 $6 }
-  | 'let' '(' LetVariable ',' ListLetVariable ')' '=' Term 'in' Term { Grammar.Abs.TLet $3 $5 $8 $10 }
-  | 'case' Term 'of' Term '->' Var Term '->' Var { Grammar.Abs.TCase $2 $4 $6 $7 $9 }
-  | Lambda FunVariable Type '.' Term { Grammar.Abs.TLmbd $1 $2 $3 $5 }
-  | Term2 '$' Term1 { Grammar.Abs.TDollr $1 $3 }
+  : 'if' Term 'then' Term 'else' Term { LambdaQ.Abs.TIfEl $2 $4 $6 }
+  | 'let' '(' LetVariable ',' ListLetVariable ')' '=' Term 'in' Term { LambdaQ.Abs.TLet $3 $5 $8 $10 }
+  | 'case' Term 'of' Term '->' Var Term '->' Var { LambdaQ.Abs.TCase $2 $4 $6 $7 $9 }
+  | Lambda FunVariable Type '.' Term { LambdaQ.Abs.TLmbd $1 $2 $3 $5 }
+  | Term2 '$' Term1 { LambdaQ.Abs.TDollr $1 $3 }
   | Term2 { $1 }
 
-Term :: { Grammar.Abs.Term }
+Term :: { LambdaQ.Abs.Term }
 Term : Term1 { $1 }
 
-Arg :: { Grammar.Abs.Arg }
-Arg : Var { Grammar.Abs.FunArg $1 }
+Arg :: { LambdaQ.Abs.Arg }
+Arg : Var { LambdaQ.Abs.FunArg $1 }
 
-ListArg :: { [Grammar.Abs.Arg] }
+ListArg :: { [LambdaQ.Abs.Arg] }
 ListArg : {- empty -} { [] } | Arg ListArg { (:) $1 $2 }
 
-Function :: { Grammar.Abs.Function }
-Function : Var ListArg '=' Term { Grammar.Abs.FunDef $1 $2 $4 }
+Function :: { LambdaQ.Abs.Function }
+Function : Var ListArg '=' Term { LambdaQ.Abs.FunDef $1 $2 $4 }
 
-FunDeclaration :: { Grammar.Abs.FunDeclaration }
+FunDeclaration :: { LambdaQ.Abs.FunDeclaration }
 FunDeclaration
-  : FunVariable Type Function { Grammar.Abs.FunDecl $1 $2 $3 }
+  : FunVariable Type Function { LambdaQ.Abs.FunDecl $1 $2 $3 }
 
-ListFunDeclaration :: { [Grammar.Abs.FunDeclaration] }
+ListFunDeclaration :: { [LambdaQ.Abs.FunDeclaration] }
 ListFunDeclaration
   : {- empty -} { [] }
   | FunDeclaration ListFunDeclaration { (:) $1 $2 }
 
-Program :: { Grammar.Abs.Program }
-Program : ListFunDeclaration { Grammar.Abs.ProgDef $1 }
+Program :: { LambdaQ.Abs.Program }
+Program : ListFunDeclaration { LambdaQ.Abs.ProgDef $1 }
 
 {
 

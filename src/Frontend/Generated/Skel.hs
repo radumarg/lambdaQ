@@ -4,10 +4,10 @@
 
 {-# OPTIONS_GHC -fno-warn-unused-matches #-}
 
-module Grammar.Skel where
+module LambdaQ.Skel where
 
 import Prelude (($), Either(..), String, (++), Show, show)
-import qualified Grammar.Abs
+import qualified LambdaQ.Abs
 
 type Err = Either String
 type Result = Err String
@@ -15,122 +15,122 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transGateGeneric :: Grammar.Abs.GateGeneric -> Result
+transGateGeneric :: LambdaQ.Abs.GateGeneric -> Result
 transGateGeneric x = case x of
-  Grammar.Abs.GateGeneric string -> failure x
+  LambdaQ.Abs.GateGeneric string -> failure x
 
-transVar :: Grammar.Abs.Var -> Result
+transVar :: LambdaQ.Abs.Var -> Result
 transVar x = case x of
-  Grammar.Abs.Var string -> failure x
+  LambdaQ.Abs.Var string -> failure x
 
-transFunVariable :: Grammar.Abs.FunVariable -> Result
+transFunVariable :: LambdaQ.Abs.FunVariable -> Result
 transFunVariable x = case x of
-  Grammar.Abs.FunVariable string -> failure x
+  LambdaQ.Abs.FunVariable string -> failure x
 
-transLambda :: Grammar.Abs.Lambda -> Result
+transLambda :: LambdaQ.Abs.Lambda -> Result
 transLambda x = case x of
-  Grammar.Abs.Lambda string -> failure x
+  LambdaQ.Abs.Lambda string -> failure x
 
-transType :: Grammar.Abs.Type -> Result
+transType :: LambdaQ.Abs.Type -> Result
 transType x = case x of
-  Grammar.Abs.TypeBit -> failure x
-  Grammar.Abs.TypeQbit -> failure x
-  Grammar.Abs.TypeUnit -> failure x
-  Grammar.Abs.TypeExp type_ -> failure x
-  Grammar.Abs.TypeTens type_1 type_2 -> failure x
-  Grammar.Abs.TypeFunc type_1 type_2 -> failure x
+  LambdaQ.Abs.TypeBit -> failure x
+  LambdaQ.Abs.TypeQbit -> failure x
+  LambdaQ.Abs.TypeUnit -> failure x
+  LambdaQ.Abs.TypeExp type_ -> failure x
+  LambdaQ.Abs.TypeTens type_1 type_2 -> failure x
+  LambdaQ.Abs.TypeFunc type_1 type_2 -> failure x
 
-transAngle :: Grammar.Abs.Angle -> Result
+transAngle :: LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
-  Grammar.Abs.AAngl double -> failure x
+  LambdaQ.Abs.AAngl double -> failure x
 
-transControlState :: Grammar.Abs.ControlState -> Result
+transControlState :: LambdaQ.Abs.ControlState -> Result
 transControlState x = case x of
-  Grammar.Abs.CStateZero -> failure x
-  Grammar.Abs.CStateOne -> failure x
-  Grammar.Abs.CStatePlus -> failure x
-  Grammar.Abs.CStateMinus -> failure x
-  Grammar.Abs.CStateIPlus -> failure x
-  Grammar.Abs.CStateIMinus -> failure x
+  LambdaQ.Abs.CStateZero -> failure x
+  LambdaQ.Abs.CStateOne -> failure x
+  LambdaQ.Abs.CStatePlus -> failure x
+  LambdaQ.Abs.CStateMinus -> failure x
+  LambdaQ.Abs.CStateIPlus -> failure x
+  LambdaQ.Abs.CStateIMinus -> failure x
 
-transControl :: Grammar.Abs.Control -> Result
+transControl :: LambdaQ.Abs.Control -> Result
 transControl x = case x of
-  Grammar.Abs.CCtrl integer controlstate -> failure x
+  LambdaQ.Abs.CCtrl integer controlstate -> failure x
 
-transGate :: Grammar.Abs.Gate -> Result
+transGate :: LambdaQ.Abs.Gate -> Result
 transGate x = case x of
-  Grammar.Abs.GH controls -> failure x
-  Grammar.Abs.GX controls -> failure x
-  Grammar.Abs.GY controls -> failure x
-  Grammar.Abs.GZ controls -> failure x
-  Grammar.Abs.GI controls -> failure x
-  Grammar.Abs.GXRt integer controls -> failure x
-  Grammar.Abs.GXRtDag integer controls -> failure x
-  Grammar.Abs.GYRt integer controls -> failure x
-  Grammar.Abs.GYRtDag integer controls -> failure x
-  Grammar.Abs.GZRt integer controls -> failure x
-  Grammar.Abs.GZRtDag integer controls -> failure x
-  Grammar.Abs.GS controls -> failure x
-  Grammar.Abs.GSDag controls -> failure x
-  Grammar.Abs.GT controls -> failure x
-  Grammar.Abs.GTDag controls -> failure x
-  Grammar.Abs.GSqrtX controls -> failure x
-  Grammar.Abs.GSqrtXDag controls -> failure x
-  Grammar.Abs.GSqrtY controls -> failure x
-  Grammar.Abs.GSqrtYDag controls -> failure x
-  Grammar.Abs.GRxTheta angle controls -> failure x
-  Grammar.Abs.GRyTheta angle controls -> failure x
-  Grammar.Abs.GRzTheta angle controls -> failure x
-  Grammar.Abs.GU1 angle controls -> failure x
-  Grammar.Abs.GU2 angle1 angle2 controls -> failure x
-  Grammar.Abs.GU3 angle1 angle2 angle3 controls -> failure x
-  Grammar.Abs.GSwp controls -> failure x
-  Grammar.Abs.GSqrtSwp controls -> failure x
-  Grammar.Abs.GSqrtSwpDag controls -> failure x
-  Grammar.Abs.GISwp controls -> failure x
-  Grammar.Abs.GFSwp controls -> failure x
-  Grammar.Abs.GSwpRt integer controls -> failure x
-  Grammar.Abs.GSwpRtDag integer controls -> failure x
-  Grammar.Abs.GGeneric gategeneric -> failure x
+  LambdaQ.Abs.GH controls -> failure x
+  LambdaQ.Abs.GX controls -> failure x
+  LambdaQ.Abs.GY controls -> failure x
+  LambdaQ.Abs.GZ controls -> failure x
+  LambdaQ.Abs.GI controls -> failure x
+  LambdaQ.Abs.GXRt integer controls -> failure x
+  LambdaQ.Abs.GXRtDag integer controls -> failure x
+  LambdaQ.Abs.GYRt integer controls -> failure x
+  LambdaQ.Abs.GYRtDag integer controls -> failure x
+  LambdaQ.Abs.GZRt integer controls -> failure x
+  LambdaQ.Abs.GZRtDag integer controls -> failure x
+  LambdaQ.Abs.GS controls -> failure x
+  LambdaQ.Abs.GSDag controls -> failure x
+  LambdaQ.Abs.GT controls -> failure x
+  LambdaQ.Abs.GTDag controls -> failure x
+  LambdaQ.Abs.GSqrtX controls -> failure x
+  LambdaQ.Abs.GSqrtXDag controls -> failure x
+  LambdaQ.Abs.GSqrtY controls -> failure x
+  LambdaQ.Abs.GSqrtYDag controls -> failure x
+  LambdaQ.Abs.GRxTheta angle controls -> failure x
+  LambdaQ.Abs.GRyTheta angle controls -> failure x
+  LambdaQ.Abs.GRzTheta angle controls -> failure x
+  LambdaQ.Abs.GU1 angle controls -> failure x
+  LambdaQ.Abs.GU2 angle1 angle2 controls -> failure x
+  LambdaQ.Abs.GU3 angle1 angle2 angle3 controls -> failure x
+  LambdaQ.Abs.GSwp controls -> failure x
+  LambdaQ.Abs.GSqrtSwp controls -> failure x
+  LambdaQ.Abs.GSqrtSwpDag controls -> failure x
+  LambdaQ.Abs.GISwp controls -> failure x
+  LambdaQ.Abs.GFSwp controls -> failure x
+  LambdaQ.Abs.GSwpRt integer controls -> failure x
+  LambdaQ.Abs.GSwpRtDag integer controls -> failure x
+  LambdaQ.Abs.GGeneric gategeneric -> failure x
 
-transLetVariable :: Grammar.Abs.LetVariable -> Result
+transLetVariable :: LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of
-  Grammar.Abs.LVar var -> failure x
+  LambdaQ.Abs.LVar var -> failure x
 
-transTuple :: Grammar.Abs.Tuple -> Result
+transTuple :: LambdaQ.Abs.Tuple -> Result
 transTuple x = case x of
-  Grammar.Abs.Tup term terms -> failure x
+  LambdaQ.Abs.Tup term terms -> failure x
 
-transBit :: Grammar.Abs.Bit -> Result
+transBit :: LambdaQ.Abs.Bit -> Result
 transBit x = case x of
-  Grammar.Abs.BBit integer -> failure x
+  LambdaQ.Abs.BBit integer -> failure x
 
-transTerm :: Grammar.Abs.Term -> Result
+transTerm :: LambdaQ.Abs.Term -> Result
 transTerm x = case x of
-  Grammar.Abs.TVar var -> failure x
-  Grammar.Abs.TBit bit -> failure x
-  Grammar.Abs.TGate gate -> failure x
-  Grammar.Abs.TTup tuple -> failure x
-  Grammar.Abs.TUnit -> failure x
-  Grammar.Abs.TApp term1 term2 -> failure x
-  Grammar.Abs.TIfEl term1 term2 term3 -> failure x
-  Grammar.Abs.TLet letvariable letvariables term1 term2 -> failure x
-  Grammar.Abs.TCase term1 term2 var1 term3 var2 -> failure x
-  Grammar.Abs.TLmbd lambda funvariable type_ term -> failure x
-  Grammar.Abs.TDollr term1 term2 -> failure x
+  LambdaQ.Abs.TVar var -> failure x
+  LambdaQ.Abs.TBit bit -> failure x
+  LambdaQ.Abs.TGate gate -> failure x
+  LambdaQ.Abs.TTup tuple -> failure x
+  LambdaQ.Abs.TUnit -> failure x
+  LambdaQ.Abs.TApp term1 term2 -> failure x
+  LambdaQ.Abs.TIfEl term1 term2 term3 -> failure x
+  LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> failure x
+  LambdaQ.Abs.TCase term1 term2 var1 term3 var2 -> failure x
+  LambdaQ.Abs.TLmbd lambda funvariable type_ term -> failure x
+  LambdaQ.Abs.TDollr term1 term2 -> failure x
 
-transArg :: Grammar.Abs.Arg -> Result
+transArg :: LambdaQ.Abs.Arg -> Result
 transArg x = case x of
-  Grammar.Abs.FunArg var -> failure x
+  LambdaQ.Abs.FunArg var -> failure x
 
-transFunction :: Grammar.Abs.Function -> Result
+transFunction :: LambdaQ.Abs.Function -> Result
 transFunction x = case x of
-  Grammar.Abs.FunDef var args term -> failure x
+  LambdaQ.Abs.FunDef var args term -> failure x
 
-transFunDeclaration :: Grammar.Abs.FunDeclaration -> Result
+transFunDeclaration :: LambdaQ.Abs.FunDeclaration -> Result
 transFunDeclaration x = case x of
-  Grammar.Abs.FunDecl funvariable type_ function -> failure x
+  LambdaQ.Abs.FunDecl funvariable type_ function -> failure x
 
-transProgram :: Grammar.Abs.Program -> Result
+transProgram :: LambdaQ.Abs.Program -> Result
 transProgram x = case x of
-  Grammar.Abs.ProgDef fundeclarations -> failure x
+  LambdaQ.Abs.ProgDef fundeclarations -> failure x

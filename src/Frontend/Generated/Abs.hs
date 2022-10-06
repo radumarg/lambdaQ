@@ -3,9 +3,9 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE PatternSynonyms #-}
 
--- | The abstract syntax of language Grammar.
+-- | The abstract syntax of language LambdaQ.
 
-module Grammar.Abs where
+module LambdaQ.Abs where
 
 import Prelude (Double, Integer, String)
 import qualified Prelude as C

@@ -61,7 +61,7 @@ GSqrtSwpDag   . Gate ::= "SqrtSwapDagger" [Control] ;         -- Conjugate of ro
 GISwp         . Gate ::= "ISwap" [Control] ;                  -- ISwap gate
 GFSwp         . Gate ::= "FSwap" [Control] ;                  -- FSwap gate
 GSwpRt        . Gate ::= "RootSwap" Integer [Control] ;       -- Root of Swap gate (root is specified as k in 1/2^k)
-GSwpRtDag     . Gate ::= "RootSwapDagger" Integer [Control] ; -- Conjugate of Root of Swap gate
+GSwpRtDag     . Gate ::= "RootSwapDagger" Integer [Control] ; -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
 GGeneric      . Gate ::= GateGeneric      ;                   -- Generic gate
 
 -- Names for Variables --
