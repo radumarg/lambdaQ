@@ -55,7 +55,7 @@ The reserved words used in LambdaQ are the following:
   | ``of`` | ``then`` |  |
 
 The symbols used in LambdaQ are the following:
-  | () | ! | >< | ^
+  | () | ! | ^ | ><
   | -> | ( | ) | 0
   | 1 | + | - | +i
   | -i | , | = | .
@@ -74,9 +74,9 @@ All other symbols are terminals.
   |  |  **|**  | ``Qbit``
   |  |  **|**  | ``()``
   |  |  **|**  | ``!`` //Type1//
+  |  |  **|**  | //Type1// ``^`` //Integer//
   |  |  **|**  | ``(`` //Type// ``)``
   | //Type// | -> | //Type1// ``><`` //Type//
-  |  |  **|**  | //Type1// ``^`` //Integer//
   |  |  **|**  | //Type1// ``->`` //Type//
   |  |  **|**  | //Type1//
   | //Angle// | -> | //Double//

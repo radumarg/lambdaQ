@@ -41,7 +41,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Angle data type = 2π * fraction as bit string, or perhaps 4π * fraction, similar to OpenQASM3 data type with the same name.
 - Call-by-value operational semantics.
 - The compiler outputs some form of IR code, in principle both OpenQASM3 and the LLVM QIR will be used.
-- An interpreter will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
+- An interpreter + REPL will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
 - The language is built as an external DSL written in Haskell (Haskell is used as the host language).
 - Haskell and lambdaQ code will live side by side and be able to interop. LambdaQ should accommodate some classical data types and classical programming constructs. However, instead of replicating all features of Haskell, perhaps calling Haskell functions from lambdaQ should be supported instead.
 - Classical, non-linear fragments of lambdaQ code could in principle be cast to Haskell code or can be compiled directly into LLVM Haskell bindings.
@@ -55,16 +55,16 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Controls can be specified in standard Z basis ('0', '1').
 - Support for mid-circuit measurements and mid-circuit resets. 
 - Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assignments to a classical variable and resets or measurements inside a conditioned code is posssible only if the control variable is classical.
-- Quantum conditionals (quantum branching) [18, 21, 25, 28]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
-    - Two programs that differ by a global phase have the same observable behavior, but when subjected to a conditional execution may behave differently.  
-    - Measurements and reset do not seem to have a natural meaning when subjected to a quantum condition. Care should be taken when designing program semantics than encompass both irreversible operations and quantum branching.  
-- Express phase kick-back and amplitude amplification using language constructs. 
 - Support for tuples, lists, and recursion: map & fold.
 - A program is defined as a list of functions that includes a function named 'main'.
  
 
 #### Nice to Have Features - Medium Timeframe Objectives
 
+- Quantum conditionals (quantum branching) [18, 21, 25, 28]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
+    - Two programs that differ by a global phase have the same observable behavior, but when subjected to a conditional execution may behave differently.  
+    - Measurements and reset do not seem to have a natural meaning when subjected to a quantum condition. Care should be taken when designing program semantics than encompass both irreversible operations and quantum branching.  
+- Express phase kick-back and amplitude amplification using language constructs.  
 - Support for declaring and using quantum and classical registers, see [25] for example and [26] section 2.1. 
     - Constant registers (qconst): an operator having a constant register as input may not modify it. 
     - Void register (qvoid) is guaranteed to be empty at the beginning of execution, useful when implementing Oracles as classical functions.

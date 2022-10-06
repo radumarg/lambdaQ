@@ -157,12 +157,12 @@ Type1
   | 'Qbit' { LambdaQ.Abs.TypeQbit }
   | '()' { LambdaQ.Abs.TypeUnit }
   | '!' Type1 { LambdaQ.Abs.TypeExp $2 }
+  | Type1 '^' Integer { LambdaQ.Abs.TypeTensrs $1 $3 }
   | '(' Type ')' { $2 }
 
 Type :: { LambdaQ.Abs.Type }
 Type
   : Type1 '><' Type { LambdaQ.Abs.TypeTensr $1 $3 }
-  | Type1 '^' Integer { LambdaQ.Abs.TypeTensrs $1 $3 }
   | Type1 '->' Type { LambdaQ.Abs.TypeFunc $1 $3 }
   | Type1 { $1 }
 

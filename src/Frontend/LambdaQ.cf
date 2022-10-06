@@ -7,9 +7,9 @@ TypeBit    . Type1  ::= "Bit" ;
 TypeQbit   . Type1  ::= "Qbit" ;
 TypeUnit   . Type1  ::= "()" ;
 TypeExp    . Type1  ::= "!" Type1 ;
-TypeTensr  . Type  ::= Type1 "><" Type ;
-TypeTensrs . Type  ::= Type1 "^" Integer ;
-TypeFunc   . Type  ::= Type1 "->" Type ;
+TypeTensrs . Type1  ::= Type1 "^" Integer ;
+TypeTensr  . Type  ::= Type1 "><" Type ;    -- right-associative
+TypeFunc   . Type  ::= Type1 "->" Type ;    -- right-associative
 coercions Type 1 ;
 
 -- Angle is a fraction of 2π --

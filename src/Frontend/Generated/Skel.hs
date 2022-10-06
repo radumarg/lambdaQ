@@ -37,8 +37,8 @@ transType x = case x of
   LambdaQ.Abs.TypeQbit -> failure x
   LambdaQ.Abs.TypeUnit -> failure x
   LambdaQ.Abs.TypeExp type_ -> failure x
-  LambdaQ.Abs.TypeTensr type_1 type_2 -> failure x
   LambdaQ.Abs.TypeTensrs type_ integer -> failure x
+  LambdaQ.Abs.TypeTensr type_1 type_2 -> failure x
   LambdaQ.Abs.TypeFunc type_1 type_2 -> failure x
 
 transAngle :: LambdaQ.Abs.Angle -> Result
