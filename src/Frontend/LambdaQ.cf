@@ -3,12 +3,13 @@
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
 -- Types --
-TypeBit  . Type1  ::= "Bit" ;
-TypeQbit . Type1  ::= "Qbit" ;
-TypeUnit . Type1  ::= "()" ;
-TypeExp  . Type1  ::= "!" Type1 ;
-TypeTens . Type  ::= Type1 "^" Integer ;
-TypeFunc . Type  ::= Type1 "->" Type ;
+TypeBit    . Type1  ::= "Bit" ;
+TypeQbit   . Type1  ::= "Qbit" ;
+TypeUnit   . Type1  ::= "()" ;
+TypeExp    . Type1  ::= "!" Type1 ;
+TypeTensr  . Type  ::= Type1 "><" Type ;
+TypeTensrs . Type  ::= Type1 "^" Integer ;
+TypeFunc   . Type  ::= Type1 "->" Type ;
 coercions Type 1 ;
 
 -- Angle is a fraction of 2π --

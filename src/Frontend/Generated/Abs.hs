@@ -19,7 +19,8 @@ data Type
     | TypeQbit
     | TypeUnit
     | TypeExp Type
-    | TypeTens Type Integer
+    | TypeTensr Type Type
+    | TypeTensrs Type Integer
     | TypeFunc Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

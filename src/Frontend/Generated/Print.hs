@@ -152,7 +152,8 @@ instance Print LambdaQ.Abs.Type where
     LambdaQ.Abs.TypeQbit -> prPrec i 1 (concatD [doc (showString "Qbit")])
     LambdaQ.Abs.TypeUnit -> prPrec i 1 (concatD [doc (showString "()")])
     LambdaQ.Abs.TypeExp type_ -> prPrec i 1 (concatD [doc (showString "!"), prt 1 type_])
-    LambdaQ.Abs.TypeTens type_ n -> prPrec i 0 (concatD [prt 1 type_, doc (showString "^"), prt 0 n])
+    LambdaQ.Abs.TypeTensr type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "><"), prt 0 type_2])
+    LambdaQ.Abs.TypeTensrs type_ n -> prPrec i 0 (concatD [prt 1 type_, doc (showString "^"), prt 0 n])
     LambdaQ.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
 
 instance Print LambdaQ.Abs.Angle where
