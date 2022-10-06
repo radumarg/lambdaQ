@@ -34,6 +34,12 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 - Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question of whether a lambda term is 'quantum' or not, meaning that it cannot or can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideas using a circuit model.  
 - Stand-alone language with specified syntax, type checker, and a compiler. The syntax is similar to Haskell syntax.
+- The language is statically typed.  
+- Affine (linear) types will be used to represent quantum resources like qubits and operations on qubits.
+- Two basic data types: bits and qubits.
+- Support for standard classical data types: integer, floats, booleans, strings.
+- Angle data type = 2π * fraction as bit string, or perhaps 4π * fraction, similar to OpenQASM3 data type with the same name.
+- Call-by-value operational semantics.
 - The compiler outputs some form of IR code, in principle both OpenQASM3 and the LLVM QIR will be used.
 - An interpreter will probably be useful for development. For this, the simulator created for the Uranium Platform [8] will be used to simulate circuits.
 - The language is built as an external DSL written in Haskell (Haskell is used as the host language).
@@ -42,11 +48,6 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Quantum operations to be supported: new, ms (measure), reset, a fixed set of Unitary gates.
 - Quantum operations and gates are implemented as constant terms in a quantum lambda calculus.
 - Implement most common quantum gates: X, Y, Z, Pauli Root Gates, Hadamard, Id, RX, RY, RZ, S(S†), T(T†), V(V†), h(h†), U1, U2, U3, P, SWAP, SQRT-SWAP, ISWAP, FSWAP, SWAP-ROOT
-- Affine (linear) types will be used to represent quantum resources like qubits and operations on qubits.
-- Two basic data types: bits and qubits.
-- Support for standard classical data types: integer, floats, booleans, strings.
-- Angle data type = 2π * fraction as bit string, or perhaps 4π * fraction, similar to OpenQASM3 data type with the same name.
-- Call-by-value operational semantics.
 - BNFC converter tool [6] to be used to generate a compiler frontend from an LBNF  grammar [7]:  
  	LBNF Grammar -> Lexer -> Abstract Syntax Tree -> Parser
 - A type checker will ensure the correctness of programs. 
