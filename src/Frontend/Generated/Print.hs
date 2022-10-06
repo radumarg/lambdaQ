@@ -212,7 +212,7 @@ instance Print LambdaQ.Abs.Gate where
     LambdaQ.Abs.GFSwp controls -> prPrec i 0 (concatD [doc (showString "FSwap"), prt 0 controls])
     LambdaQ.Abs.GSwpRt n controls -> prPrec i 0 (concatD [doc (showString "RootSwap"), prt 0 n, prt 0 controls])
     LambdaQ.Abs.GSwpRtDag n controls -> prPrec i 0 (concatD [doc (showString "RootSwapDagger"), prt 0 n, prt 0 controls])
-    LambdaQ.Abs.GGateIdent gateident -> prPrec i 0 (concatD [prt 0 gateident])
+    LambdaQ.Abs.GGate gateident -> prPrec i 0 (concatD [prt 0 gateident])
 
 instance Print LambdaQ.Abs.LetVariable where
   prt i = \case

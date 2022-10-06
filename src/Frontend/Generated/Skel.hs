@@ -92,7 +92,7 @@ transGate x = case x of
   LambdaQ.Abs.GFSwp controls -> failure x
   LambdaQ.Abs.GSwpRt integer controls -> failure x
   LambdaQ.Abs.GSwpRtDag integer controls -> failure x
-  LambdaQ.Abs.GGateIdent gateident -> failure x
+  LambdaQ.Abs.GGate gateident -> failure x
 
 transLetVariable :: LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of

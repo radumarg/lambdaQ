@@ -72,7 +72,7 @@ data Gate
     | GFSwp [Control]
     | GSwpRt Integer [Control]
     | GSwpRtDag Integer [Control]
-    | GGateIdent GateIdent
+    | GGate GateIdent
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LetVariable = LVar Var

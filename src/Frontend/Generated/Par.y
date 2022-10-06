@@ -219,7 +219,7 @@ Gate
   | 'FSwap' ListControl { LambdaQ.Abs.GFSwp $2 }
   | 'RootSwap' Integer ListControl { LambdaQ.Abs.GSwpRt $2 $3 }
   | 'RootSwapDagger' Integer ListControl { LambdaQ.Abs.GSwpRtDag $2 $3 }
-  | GateIdent { LambdaQ.Abs.GGateIdent $1 }
+  | GateIdent { LambdaQ.Abs.GGate $1 }
 
 LetVariable :: { LambdaQ.Abs.LetVariable }
 LetVariable : Var { LambdaQ.Abs.LVar $1 }

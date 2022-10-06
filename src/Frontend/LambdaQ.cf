@@ -63,7 +63,7 @@ GISwp         . Gate ::= "ISwap" [Control] ;                  -- ISwap gate
 GFSwp         . Gate ::= "FSwap" [Control] ;                  -- FSwap gate
 GSwpRt        . Gate ::= "RootSwap" Integer [Control] ;       -- Root of Swap gate (root is specified as k in 1/2^k)
 GSwpRtDag     . Gate ::= "RootSwapDagger" Integer [Control] ; -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
-GGateIdent    . Gate ::= GateIdent ;                          -- Generic gate identifier
+GGate         . Gate ::= GateIdent ;                          -- Generic gate
 
 -- Names for Variables --
 position token Var (lower (letter | digit | '_' | '\'')*) ;

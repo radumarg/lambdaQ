@@ -34,7 +34,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 - Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question of whether a lambda term is 'quantum' or not, meaning that it cannot or can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideas using a circuit model.  
 - Stand-alone language with specified syntax, type checker, and a compiler. The syntax is similar to Haskell syntax.
-- The language is statically typed.  
+- The language is statically typed, types must be explicitly declared.  
 - Affine (linear) types will be used to represent quantum resources like qubits and operations on qubits.
 - Two basic data types: bits and qubits.
 - Support for standard classical data types: integer, floats, booleans, strings.
