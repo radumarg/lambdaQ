@@ -79,51 +79,52 @@ import LambdaQ.Lex
   '.'              { PT _ (TS _ 12)         }
   '0'              { PT _ (TS _ 13)         }
   '1'              { PT _ (TS _ 14)         }
-  '='              { PT _ (TS _ 15)         }
-  '><'             { PT _ (TS _ 16)         }
-  'Bit'            { PT _ (TS _ 17)         }
-  'Ctrl'           { PT _ (TS _ 18)         }
-  'FSwap'          { PT _ (TS _ 19)         }
-  'H'              { PT _ (TS _ 20)         }
-  'I'              { PT _ (TS _ 21)         }
-  'ISwap'          { PT _ (TS _ 22)         }
-  'Qbit'           { PT _ (TS _ 23)         }
-  'RootSwap'       { PT _ (TS _ 24)         }
-  'RootSwapDagger' { PT _ (TS _ 25)         }
-  'RootX'          { PT _ (TS _ 26)         }
-  'RootXDagger'    { PT _ (TS _ 27)         }
-  'RootY'          { PT _ (TS _ 28)         }
-  'RootYDagger'    { PT _ (TS _ 29)         }
-  'RootZ'          { PT _ (TS _ 30)         }
-  'RootZDagger'    { PT _ (TS _ 31)         }
-  'RxTheta'        { PT _ (TS _ 32)         }
-  'RyTheta'        { PT _ (TS _ 33)         }
-  'RzTheta'        { PT _ (TS _ 34)         }
-  'S'              { PT _ (TS _ 35)         }
-  'SDagger'        { PT _ (TS _ 36)         }
-  'SqrtSwap'       { PT _ (TS _ 37)         }
-  'SqrtSwapDagger' { PT _ (TS _ 38)         }
-  'SqrtX'          { PT _ (TS _ 39)         }
-  'SqrtXDagger'    { PT _ (TS _ 40)         }
-  'SqrtY'          { PT _ (TS _ 41)         }
-  'SqrtYDagger'    { PT _ (TS _ 42)         }
-  'Swap'           { PT _ (TS _ 43)         }
-  'T'              { PT _ (TS _ 44)         }
-  'TDagger'        { PT _ (TS _ 45)         }
-  'U1'             { PT _ (TS _ 46)         }
-  'U2'             { PT _ (TS _ 47)         }
-  'U3'             { PT _ (TS _ 48)         }
-  'X'              { PT _ (TS _ 49)         }
-  'Y'              { PT _ (TS _ 50)         }
-  'Z'              { PT _ (TS _ 51)         }
-  '^'              { PT _ (TS _ 52)         }
-  'case'           { PT _ (TS _ 53)         }
-  'else'           { PT _ (TS _ 54)         }
-  'if'             { PT _ (TS _ 55)         }
-  'in'             { PT _ (TS _ 56)         }
-  'let'            { PT _ (TS _ 57)         }
-  'of'             { PT _ (TS _ 58)         }
-  'then'           { PT _ (TS _ 59)         }
+  ';'              { PT _ (TS _ 15)         }
+  '='              { PT _ (TS _ 16)         }
+  '><'             { PT _ (TS _ 17)         }
+  'Bit'            { PT _ (TS _ 18)         }
+  'Ctrl'           { PT _ (TS _ 19)         }
+  'FSwap'          { PT _ (TS _ 20)         }
+  'H'              { PT _ (TS _ 21)         }
+  'I'              { PT _ (TS _ 22)         }
+  'ISwap'          { PT _ (TS _ 23)         }
+  'Qbit'           { PT _ (TS _ 24)         }
+  'RootSwap'       { PT _ (TS _ 25)         }
+  'RootSwapDagger' { PT _ (TS _ 26)         }
+  'RootX'          { PT _ (TS _ 27)         }
+  'RootXDagger'    { PT _ (TS _ 28)         }
+  'RootY'          { PT _ (TS _ 29)         }
+  'RootYDagger'    { PT _ (TS _ 30)         }
+  'RootZ'          { PT _ (TS _ 31)         }
+  'RootZDagger'    { PT _ (TS _ 32)         }
+  'RxTheta'        { PT _ (TS _ 33)         }
+  'RyTheta'        { PT _ (TS _ 34)         }
+  'RzTheta'        { PT _ (TS _ 35)         }
+  'S'              { PT _ (TS _ 36)         }
+  'SDagger'        { PT _ (TS _ 37)         }
+  'SqrtSwap'       { PT _ (TS _ 38)         }
+  'SqrtSwapDagger' { PT _ (TS _ 39)         }
+  'SqrtX'          { PT _ (TS _ 40)         }
+  'SqrtXDagger'    { PT _ (TS _ 41)         }
+  'SqrtY'          { PT _ (TS _ 42)         }
+  'SqrtYDagger'    { PT _ (TS _ 43)         }
+  'Swap'           { PT _ (TS _ 44)         }
+  'T'              { PT _ (TS _ 45)         }
+  'TDagger'        { PT _ (TS _ 46)         }
+  'U1'             { PT _ (TS _ 47)         }
+  'U2'             { PT _ (TS _ 48)         }
+  'U3'             { PT _ (TS _ 49)         }
+  'X'              { PT _ (TS _ 50)         }
+  'Y'              { PT _ (TS _ 51)         }
+  'Z'              { PT _ (TS _ 52)         }
+  '^'              { PT _ (TS _ 53)         }
+  'case'           { PT _ (TS _ 54)         }
+  'else'           { PT _ (TS _ 55)         }
+  'if'             { PT _ (TS _ 56)         }
+  'in'             { PT _ (TS _ 57)         }
+  'let'            { PT _ (TS _ 58)         }
+  'of'             { PT _ (TS _ 59)         }
+  'then'           { PT _ (TS _ 60)         }
   L_doubl          { PT _ (TD $$)           }
   L_integ          { PT _ (TI $$)           }
   L_GateIdent      { PT _ (T_GateIdent $$)  }
@@ -233,7 +234,11 @@ Tuple :: { LambdaQ.Abs.Tuple }
 Tuple : '(' Term ',' ListTerm ')' { LambdaQ.Abs.Tup $2 $4 }
 
 ListTerm :: { [LambdaQ.Abs.Term] }
-ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
+ListTerm
+  : Term { (:[]) $1 }
+  | Term ',' ListTerm { (:) $1 $3 }
+  | {- empty -} { [] }
+  | Term ';' ListTerm { (:) $1 $3 }
 
 Bit :: { LambdaQ.Abs.Bit }
 Bit : Integer { LambdaQ.Abs.BBit $1 }

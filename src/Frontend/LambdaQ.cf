@@ -109,6 +109,10 @@ FunDef . Function ::= Var [Arg] "=" Term ;
 FunDecl . FunDeclaration ::= FunVariable Type Function ;
 terminator FunDeclaration "" ;
 
+-- Polymorphic lists --
+[].  [Term] ::= ;
+(:). [Term] ::= Term ";" [Term] ;
+
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunDeclaration] ;
 

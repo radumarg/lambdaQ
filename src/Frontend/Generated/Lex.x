@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \( \) | \! | \^ | \> \< | \- \> | \( | \) | "0" | "1" | \+ | \- | \+ "i" | \- "i" | \, | \= | \. | \$
+@rsyms = \( \) | \! | \^ | \> \< | \- \> | \( | \) | "0" | "1" | \+ | \- | \+ "i" | \- "i" | \, | \= | \. | \$ | \;
 
 :-
 
@@ -182,37 +182,37 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "RootZ" 30
-    (b "=" 15
+  b "RootZ" 31
+    (b "=" 16
        (b "," 8
           (b "()" 4
              (b "$" 2 (b "!" 1 N N) (b "(" 3 N N))
              (b "+" 6 (b ")" 5 N N) (b "+i" 7 N N)))
           (b "." 12
              (b "->" 10 (b "-" 9 N N) (b "-i" 11 N N))
-             (b "1" 14 (b "0" 13 N N) N)))
-       (b "Qbit" 23
-          (b "FSwap" 19
-             (b "Bit" 17 (b "><" 16 N N) (b "Ctrl" 18 N N))
-             (b "I" 21 (b "H" 20 N N) (b "ISwap" 22 N N)))
-          (b "RootXDagger" 27
-             (b "RootSwapDagger" 25 (b "RootSwap" 24 N N) (b "RootX" 26 N N))
-             (b "RootYDagger" 29 (b "RootY" 28 N N) N))))
-    (b "TDagger" 45
-       (b "SqrtSwapDagger" 38
-          (b "RzTheta" 34
-             (b "RxTheta" 32 (b "RootZDagger" 31 N N) (b "RyTheta" 33 N N))
-             (b "SDagger" 36 (b "S" 35 N N) (b "SqrtSwap" 37 N N)))
-          (b "SqrtYDagger" 42
-             (b "SqrtXDagger" 40 (b "SqrtX" 39 N N) (b "SqrtY" 41 N N))
-             (b "T" 44 (b "Swap" 43 N N) N)))
-       (b "case" 53
-          (b "X" 49
-             (b "U2" 47 (b "U1" 46 N N) (b "U3" 48 N N))
-             (b "Z" 51 (b "Y" 50 N N) (b "^" 52 N N)))
-          (b "let" 57
-             (b "if" 55 (b "else" 54 N N) (b "in" 56 N N))
-             (b "then" 59 (b "of" 58 N N) N))))
+             (b "1" 14 (b "0" 13 N N) (b ";" 15 N N))))
+       (b "Qbit" 24
+          (b "FSwap" 20
+             (b "Bit" 18 (b "><" 17 N N) (b "Ctrl" 19 N N))
+             (b "I" 22 (b "H" 21 N N) (b "ISwap" 23 N N)))
+          (b "RootXDagger" 28
+             (b "RootSwapDagger" 26 (b "RootSwap" 25 N N) (b "RootX" 27 N N))
+             (b "RootYDagger" 30 (b "RootY" 29 N N) N))))
+    (b "TDagger" 46
+       (b "SqrtSwapDagger" 39
+          (b "RzTheta" 35
+             (b "RxTheta" 33 (b "RootZDagger" 32 N N) (b "RyTheta" 34 N N))
+             (b "SDagger" 37 (b "S" 36 N N) (b "SqrtSwap" 38 N N)))
+          (b "SqrtYDagger" 43
+             (b "SqrtXDagger" 41 (b "SqrtX" 40 N N) (b "SqrtY" 42 N N))
+             (b "T" 45 (b "Swap" 44 N N) N)))
+       (b "case" 54
+          (b "X" 50
+             (b "U2" 48 (b "U1" 47 N N) (b "U3" 49 N N))
+             (b "Z" 52 (b "Y" 51 N N) (b "^" 53 N N)))
+          (b "let" 58
+             (b "if" 56 (b "else" 55 N N) (b "in" 57 N N))
+             (b "then" 60 (b "of" 59 N N) N))))
   where
   b s n = B bs (TS bs n)
     where

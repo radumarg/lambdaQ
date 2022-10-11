@@ -231,6 +231,7 @@ instance Print [LambdaQ.Abs.Term] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ";"), prt 0 xs]
 
 instance Print LambdaQ.Abs.Bit where
   prt i = \case
