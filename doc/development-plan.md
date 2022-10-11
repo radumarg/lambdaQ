@@ -11,7 +11,7 @@ Note: it looks like IBM will also use LLVM in their software stack but details h
 
 ###  Guiding Principles 
 
-This document describes a rather heterogeneous set of features and requirements. While each one of these is important within some limited context or in general, the purpose of a functional language should be to provide a higher level of programming experience for a quantum developer. For example, an interesting question is whether a functional language can be more expressive than plain circuit lanuguages when coding quantum algorithms.  
+This document describes a rather heterogeneous set of features and requirements. The purpose of a functional language should be to provide a higher level of programming experience for a quantum developer. For example, an interesting question is whether a functional language can be more expressive than plain circuit lanuguages when coding quantum algorithms.  
 
 Our intention is to make lambdaQ programs more expressive than circuit description languages or jupyter notebooks for quantum programs in general. It remains to be seen during development which are those constructs that will prove suitable for creating a useful high-level quantum language. However, from the beginning, several features can be considered in this regard:
 
