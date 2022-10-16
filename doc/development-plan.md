@@ -32,7 +32,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 #### Must Have Features - Immediate Objectives
 
-- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question of whether a lambda term is 'quantum' or not, meaning that it cannot or can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative to the approach of functions as classical data is advanced in [30] but it is unclear how to implement such ideas using a circuit model.  
+- Using the QRAM [16] paradigm for quantum computation, where the quantum computer acts as a coprocessor. Lambda terms encode the control structure of the program and are implemented on a classical device but the data upon which lambda terms act can be quantum and thus stored on a QRAM quantum device. Since functions are considered classical data there cannot be a superposition of different functions at some point in the program. On the other hand the question of whether a lambda term is 'quantum' or not, meaning that it cannot or can be duplicated, is a different one and the answer does not depend on the type of its input/output variables alone but also on the type of its free variables. As a side note, an alternative to the approach of functions as classical data is advanced in [30], see also [31, 32, 33, 34], but it is unclear how to implement such ideas using a circuit model.  
 - Stand-alone language with specified syntax, type checker, and a compiler. The syntax is similar to Haskell syntax.
 - The language is statically typed, types must be explicitly declared.  
 - Affine (linear) types will be used to represent quantum resources like qubits and operations on qubits.
@@ -151,6 +151,11 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage.](https://arxiv.org/abs/0806.2735)  
 [29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi.](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
 [30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence.](https://arxiv.org/abs/quant-ph/0612199v1)  
+[31] [From Symmetric Pattern-Matching to Quantum Control, Amr Sabry Benoıt Valiron Juliana Kaizer Vizzotto.](https://arxiv.org/pdf/1804.00952.pdf)  
+[32] Foundations of Quantum Programming, Mingsheng Ying  
+[33] [The Vectorial λ-Calculus, Pablo Arrighi, Alejandro Dıaz-Carob, Benoıt Valiron.](https://arxiv.org/pdf/1308.1138.pdf)  
+[34] [The Algebraic Lambda-Calculus, Linoel Vaux](https://www.i2m.univ-amu.fr/perso/lionel.vaux/pub/alglam.pdf)  
+
 
 
 
