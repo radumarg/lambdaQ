@@ -61,7 +61,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 
 #### Nice to Have Features - Medium Timeframe Objectives
 
-- Quantum conditionals (quantum branching) [18, 21, 25, 28]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
+- Quantum conditionals (quantum branching) [18, 21, 25, 28, 31]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
     - Two programs that differ by a global phase have the same observable behavior, but when subjected to a conditional execution may behave differently.  
     - Measurements and reset do not seem to have a natural meaning when subjected to a quantum condition. Care should be taken when designing program semantics than encompass both irreversible operations and quantum branching.  
 - Express phase kick-back and amplitude amplification using language constructs.  
@@ -150,11 +150,11 @@ Following OpenQASM3 [11] a quantum program is defined as a model of computation 
 [27] [A Functional Quantum Programming Language, Matilda Blomqvist, Nicklas Botö, Beata Burreau, Fabian Forslund, Marcus Jörgensson, Joel Rudsberg.](https://odr.chalmers.se/handle/20.500.12380/304169)  
 [28] [An Overview of QML With a Concrete Implementation in Haskell, J. Grattage.](https://arxiv.org/abs/0806.2735)  
 [29] [On Quantum Lambda Calculi: a Foundational Perspective, Margherita Zorzi.](https://www.academia.edu/2370968/On_Quantum_Lambda_Calculi_a_Foundational_Perspective)  
-[30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence.](https://arxiv.org/abs/quant-ph/0612199v1)  
-[31] [From Symmetric Pattern-Matching to Quantum Control, Amr Sabry Benoıt Valiron Juliana Kaizer Vizzotto.](https://arxiv.org/pdf/1804.00952.pdf)  
+[30] [Linear-algebraic Lambda-calculus: higher-order, encodings and confluence, Pablo Arrighi, Gilles Dowek.](https://arxiv.org/abs/quant-ph/0612199v1)  
+[31] [From Symmetric Pattern-Matching to Quantum Control, Amr Sabry, Benoıt Valiron, Juliana Kaizer Vizzotto.](https://arxiv.org/pdf/1804.00952.pdf)  
 [32] Foundations of Quantum Programming, Mingsheng Ying  
 [33] [The Vectorial λ-Calculus, Pablo Arrighi, Alejandro Dıaz-Carob, Benoıt Valiron.](https://arxiv.org/pdf/1308.1138.pdf)  
-[34] [The Algebraic Lambda-Calculus, Linoel Vaux](https://www.i2m.univ-amu.fr/perso/lionel.vaux/pub/alglam.pdf)  
+[34] [The Algebraic Lambda-Calculus, Linoel Vaux.](https://www.i2m.univ-amu.fr/perso/lionel.vaux/pub/alglam.pdf)  
 
 
 
