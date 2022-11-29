@@ -2,7 +2,7 @@
 
 -- | Program to test parser.
 
-module Main where
+module Frontend.LambdaQ.Test where
 
 import Prelude
   ( ($), (.)
@@ -18,11 +18,11 @@ import System.Environment ( getArgs )
 import System.Exit        ( exitFailure )
 import Control.Monad      ( when )
 
-import LambdaQ.Abs   ()
-import LambdaQ.Lex   ( Token, mkPosToken )
-import LambdaQ.Par   ( pType1, myLexer )
-import LambdaQ.Print ( Print, printTree )
-import LambdaQ.Skel  ()
+import Frontend.LambdaQ.Abs   ()
+import Frontend.LambdaQ.Lex   ( Token, mkPosToken )
+import Frontend.LambdaQ.Par   ( pType1, myLexer )
+import Frontend.LambdaQ.Print ( Print, printTree )
+import Frontend.LambdaQ.Skel  ()
 
 type Err        = Either String
 type ParseFun a = [Token] -> Err a

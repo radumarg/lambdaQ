@@ -14,12 +14,12 @@ ALEX_OPTS  = --ghc
 
 # Default goal.
 
-all : LambdaQ/Test
+all : Frontend/LambdaQ/Test
 
 # Rules for building the parser.
 
-LambdaQ/Abs.hs LambdaQ/Lex.x LambdaQ/Par.y LambdaQ/Print.hs LambdaQ/Test.hs : LambdaQ.cf
-	bnfc --haskell -d LambdaQ.cf
+Frontend/LambdaQ/Abs.hs Frontend/LambdaQ/Lex.x Frontend/LambdaQ/Par.y Frontend/LambdaQ/Print.hs Frontend/LambdaQ/Test.hs : LambdaQ.cf
+	bnfc --haskell -p Frontend -d LambdaQ.cf
 
 %.hs : %.y
 	${HAPPY} ${HAPPY_OPTS} $<
@@ -27,16 +27,16 @@ LambdaQ/Abs.hs LambdaQ/Lex.x LambdaQ/Par.y LambdaQ/Print.hs LambdaQ/Test.hs : La
 %.hs : %.x
 	${ALEX} ${ALEX_OPTS} $<
 
-LambdaQ/Test : LambdaQ/Abs.hs LambdaQ/Lex.hs LambdaQ/Par.hs LambdaQ/Print.hs LambdaQ/Test.hs
+Frontend/LambdaQ/Test : Frontend/LambdaQ/Abs.hs Frontend/LambdaQ/Lex.hs Frontend/LambdaQ/Par.hs Frontend/LambdaQ/Print.hs Frontend/LambdaQ/Test.hs
 	${GHC} ${GHC_OPTS} $@
 
 # Rules for cleaning generated files.
 
 clean :
-	-rm -f LambdaQ/*.hi LambdaQ/*.o LambdaQ/*.log LambdaQ/*.aux LambdaQ/*.dvi
+	-rm -f Frontend/LambdaQ/*.hi Frontend/LambdaQ/*.o Frontend/LambdaQ/*.log Frontend/LambdaQ/*.aux Frontend/LambdaQ/*.dvi
 
 distclean : clean
-	-rm -f LambdaQ/Abs.hs LambdaQ/Abs.hs.bak LambdaQ/ComposOp.hs LambdaQ/ComposOp.hs.bak LambdaQ/Doc.txt LambdaQ/Doc.txt.bak LambdaQ/ErrM.hs LambdaQ/ErrM.hs.bak LambdaQ/Layout.hs LambdaQ/Layout.hs.bak LambdaQ/Lex.x LambdaQ/Lex.x.bak LambdaQ/Par.y LambdaQ/Par.y.bak LambdaQ/Print.hs LambdaQ/Print.hs.bak LambdaQ/Skel.hs LambdaQ/Skel.hs.bak LambdaQ/Test.hs LambdaQ/Test.hs.bak LambdaQ/XML.hs LambdaQ/XML.hs.bak LambdaQ/AST.agda LambdaQ/AST.agda.bak LambdaQ/Parser.agda LambdaQ/Parser.agda.bak LambdaQ/IOLib.agda LambdaQ/IOLib.agda.bak LambdaQ/Main.agda LambdaQ/Main.agda.bak LambdaQ/LambdaQ.dtd LambdaQ/LambdaQ.dtd.bak LambdaQ/Test LambdaQ/Lex.hs LambdaQ/Par.hs LambdaQ/Par.info LambdaQ/ParData.hs Makefile
-	-rmdir -p LambdaQ/
+	-rm -f Frontend/LambdaQ/Abs.hs Frontend/LambdaQ/Abs.hs.bak Frontend/LambdaQ/ComposOp.hs Frontend/LambdaQ/ComposOp.hs.bak Frontend/LambdaQ/Doc.txt Frontend/LambdaQ/Doc.txt.bak Frontend/LambdaQ/ErrM.hs Frontend/LambdaQ/ErrM.hs.bak Frontend/LambdaQ/Layout.hs Frontend/LambdaQ/Layout.hs.bak Frontend/LambdaQ/Lex.x Frontend/LambdaQ/Lex.x.bak Frontend/LambdaQ/Par.y Frontend/LambdaQ/Par.y.bak Frontend/LambdaQ/Print.hs Frontend/LambdaQ/Print.hs.bak Frontend/LambdaQ/Skel.hs Frontend/LambdaQ/Skel.hs.bak Frontend/LambdaQ/Test.hs Frontend/LambdaQ/Test.hs.bak Frontend/LambdaQ/XML.hs Frontend/LambdaQ/XML.hs.bak Frontend/LambdaQ/AST.agda Frontend/LambdaQ/AST.agda.bak Frontend/LambdaQ/Parser.agda Frontend/LambdaQ/Parser.agda.bak Frontend/LambdaQ/IOLib.agda Frontend/LambdaQ/IOLib.agda.bak Frontend/LambdaQ/Main.agda Frontend/LambdaQ/Main.agda.bak Frontend/LambdaQ/LambdaQ.dtd Frontend/LambdaQ/LambdaQ.dtd.bak Frontend/LambdaQ/Test Frontend/LambdaQ/Lex.hs Frontend/LambdaQ/Par.hs Frontend/LambdaQ/Par.info Frontend/LambdaQ/ParData.hs Makefile
+	-rmdir -p Frontend/LambdaQ/
 
 # EOF

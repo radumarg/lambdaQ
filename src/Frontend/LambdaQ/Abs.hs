@@ -5,7 +5,7 @@
 
 -- | The abstract syntax of language LambdaQ.
 
-module LambdaQ.Abs where
+module Frontend.LambdaQ.Abs where
 
 import Prelude (Double, Integer, String)
 import qualified Prelude as C
