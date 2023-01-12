@@ -1,0 +1,3 @@
+bnfc --haskell -d -m -p Frontend -o tmp LambdaQ.cf
+
+echo "" | .src/Frontend/Frontend/LambdaQ/Test

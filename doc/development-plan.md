@@ -55,10 +55,14 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Controls can be specified in standard Z basis ('0', '1').
 - Support for mid-circuit measurements and mid-circuit resets. 
 - Classically controlled quantum gates (if statements) and more general classically conditioned quantum operations. Using assignments to a classical variable and resets or measurements inside a conditioned code is posssible only if the control variable is classical.
-- Support for tuples, lists, and recursion: map & fold.
 - A program is defined as a list of functions that includes a function named 'main'.
+- Support for tuples
+- Support for recursive functions
  
-
+#### Must Have Features but not Necessarily in the Initial Implementation
+- Support for declaring and importing modules.
+- Support for lists and recursion: map & fold.
+- Suppor for custom data types and inductive (recursive) data types.
 #### Nice to Have Features - Medium Timeframe Objectives
 
 - Quantum conditionals (quantum branching) [18, 21, 25, 28, 31]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 
@@ -80,7 +84,6 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 - Rather than being an external DSL, the language will be packed as a Haskell Language Extension [4].
 - Output code can be executed on real quantum devices (IBMQ, IONQ, Rigetti, AQT).
 - Besides Z basis, controls can be specified also in X basis ('+', '-') and Y basis ('+i', '-i').
-- Suppor for custom data types and inductive data types.
 - Libraries (e.g. QFT, amplitude amplification, phase estimation, quantum arithmetic).
 - Teleportation as a primitive.
 - Barrier statement.
