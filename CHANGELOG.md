@@ -7,6 +7,12 @@ and this project adheres to the
 [Haskell Package Versioning Policy](https://pvp.haskell.org/).
 
 ### [Unreleased]   
+
+<br/>
+
+### [0.1.0] - 2023-06-27  
+#### Added
+- Example source files.
      
 <br/>     
      
