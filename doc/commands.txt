@@ -7,5 +7,5 @@ bnfc --haskell -d -m -p Frontend -o tmp LambdaQ.cf
 
 echo "main = coinFlip" | ./Frontend/LambdaQ/Test
 
-./Frontend/LambdaQ/Test coinflip.lq
+./Frontend/LambdaQ/Test coinFlip.lq
 
