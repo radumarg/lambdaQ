@@ -62,7 +62,7 @@ Our intention is to make lambdaQ programs more expressive than circuit descript
 #### Must Have Features but not Necessarily in the Initial Implementation
 - Support for declaring and importing modules.
 - Support for lists and recursion: map & fold.
-- Suppor for custom data types and inductive (recursive) data types.
+- Support for custom data types and inductive (recursive) data types.
 #### Nice to Have Features - Medium Timeframe Objectives
 
 - Quantum conditionals (quantum branching) [18, 21, 25, 28, 31]. A very simple example of quantum branching is the CNOT gate but implementing quantum branching is nontrivial: 

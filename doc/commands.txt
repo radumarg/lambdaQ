@@ -1,3 +1,11 @@
+stack new my-project
+cd my-project
+stack build
+stack exec my-project-exe
+
 bnfc --haskell -d -m -p Frontend -o tmp LambdaQ.cf
 
-echo "" | .src/Frontend/Frontend/LambdaQ/Test
+echo "main = coinFlip" | ./Frontend/LambdaQ/Test
+
+./Frontend/LambdaQ/Test coinflip.lq
+
