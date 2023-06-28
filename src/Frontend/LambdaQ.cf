@@ -1,69 +1,71 @@
-
 -- Documentation of LBNF Gramar: https://bnfc.readthedocs.io/en/latest/lbnf.html# --
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
+-- A program is a list of functions --
+ProgDef .  Program ::= [FunDec] ;
+terminator FunDec "" ;
+
 -- Types --
-TypeBit    . Type1  ::= "Bit" ;
-TypeQbit   . Type1  ::= "Qbit" ;
-TypeUnit   . Type1  ::= "()" ;
-TypeExp    . Type1  ::= "!" Type1 ;
-TypeTensrs . Type1  ::= Type1 "^" Integer ;
-TypeTensr  . Type  ::= Type1 "><" Type ;    -- right-associative
-TypeFunc   . Type  ::= Type1 "->" Type ;    -- right-associative
-coercions Type 1 ;
+TypeBit    . Type2  ::= "Bit" ;
+TypeQbit   . Type2  ::= "Qbit" ;
+TypeUnit   . Type2  ::= "()" ;
+TypeExp    . Type2  ::= "!" Type2 ;
+TypeTensrs . Type2  ::= Type2 "^" Integer ;
+TypeTensr  . Type1  ::= Type2 "><" Type1 ;    -- right-associative
+TypeFunc   . Type1  ::= Type2 "->" Type1 ;    -- right-associative
+coercions Type 2 ;
 
 -- Angle is a fraction of 2π --
 AAngl . Angle ::= Double ;
 
 -- Control States --
-CStateZero   . ControlState ::= "0";
-CStateOne    . ControlState ::= "1";
-CStatePlus   . ControlState ::= "+";
-CStateMinus  . ControlState ::= "-";
-CStateIPlus  . ControlState ::= "+i";
-CStateIMinus . ControlState ::= "-i";
+CStateZero   . ControlState ::= "@0" ;
+CStateOne    . ControlState ::= "@1" ;
+CStatePlus   . ControlState ::= "@+" ;
+CStateMinus  . ControlState ::= "@-" ;
+CStatePlusI  . ControlState ::= "@+i" ;
+CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
-CCtrl . Control ::= "Ctrl" Integer ControlState;
-separator nonempty Control "," ;
-
--- Gates - Definition of gates can be found here: https://uranium.transilvania-quantum.org --
+CCtrl . Control ::= ControlState Integer ;
+terminator Control "" ;
+separator Control "," ;
 
 token GateIdent (upper (letter | digit)*) ;
 
 GH            . Gate ::= "H" [Control] ;                      -- Hadamard Gate
 GX            . Gate ::= "X" [Control] ;                      -- Pauli X Gate
-GY            . Gate ::= "Y" [Control] ;                      -- Pauli Y Gate 
+GY            . Gate ::= "Y" [Control] ;                      -- Pauli Y Gate
 GZ            . Gate ::= "Z" [Control] ;                      -- Pauli Z Gate
 GI            . Gate ::= "I" [Control] ;                      -- Identity Gate
 GXRt          . Gate ::= "RootX" Integer [Control] ;          -- Root of Pauli X gate (root is specified as k in 1/2^k)
-GXRtDag       . Gate ::= "RootXDagger" Integer [Control] ;    -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
+GXRtDag       . Gate ::= "RootXDag" Integer [Control] ;       -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
 GYRt          . Gate ::= "RootY" Integer [Control] ;          -- Root of Pauli Y gate (root is specified as k in 1/2^k)
-GYRtDag       . Gate ::= "RootYDagger" Integer [Control] ;    -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
+GYRtDag       . Gate ::= "RootYDag" Integer [Control] ;       -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
 GZRt          . Gate ::= "RootZ" Integer [Control] ;          -- Root of Pauli Z gate (root is specified as k in 1/2^k)
-GZRtDag       . Gate ::= "RootZDagger" Integer [Control] ;    -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
+GZRtDag       . Gate ::= "RootZDag" Integer [Control] ;       -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
 GS            . Gate ::= "S" [Control] ;                      -- S gate: sqrt of Z
-GSDag         . Gate ::= "SDagger" [Control] ;                -- Conjugate of S gate
+GSDag         . Gate ::= "SDag" [Control] ;                   -- Conjugate of S gate
 GT            . Gate ::= "T" [Control] ;                      -- T Gate: sqrt of S
-GTDag         . Gate ::= "TDagger" [Control] ;                -- Conjugate of T gate
+GTDag         . Gate ::= "TDag" [Control] ;                   -- Conjugate of T gate
 GSqrtX        . Gate ::= "SqrtX" [Control] ;                  -- V gate: sqrt of X
-GSqrtXDag     . Gate ::= "SqrtXDagger" [Control] ;            -- Conjugate of V gate
+GSqrtXDag     . Gate ::= "SqrtXDag" [Control] ;               -- Conjugate of V gate
 GSqrtY        . Gate ::= "SqrtY" [Control] ;                  -- h gate: sqrt of Y
-GSqrtYDag     . Gate ::= "SqrtYDagger" [Control] ;            -- Conjugate of h gate
-GRxTheta      . Gate ::= "RxTheta" Angle [Control] ;          -- Single parametric rotation around X axis on the Bloch sphere
-GRyTheta      . Gate ::= "RyTheta" Angle [Control] ;          -- Single parametric rotation around Y axis on the Bloch sphere
-GRzTheta      . Gate ::= "RzTheta" Angle [Control] ;          -- Single parametric rotation around Z axis on the Bloch sphere
+GSqrtYDag     . Gate ::= "SqrtYDag" [Control] ;               -- Conjugate of h gate
+GRxTheta      . Gate ::= "Rx" Angle [Control] ;               -- Single parametric rotation around X axis on the Bloch sphere
+GRyTheta      . Gate ::= "Ry" Angle [Control] ;               -- Single parametric rotation around Y axis on the Bloch sphere
+GRzTheta      . Gate ::= "Rz" Angle [Control] ;               -- Single parametric rotation around Z axis on the Bloch sphere
 GU1           . Gate ::= "U1" Angle [Control] ;               -- One parametric generic gate
 GU2           . Gate ::= "U2" Angle Angle [Control] ;         -- Two parametric generic gate
 GU3           . Gate ::= "U3" Angle Angle Angle [Control] ;   -- Thee parametric generic gate
 GSwp          . Gate ::= "Swap" [Control] ;                   -- Swap gate
-GSqrtSwp      . Gate ::= "SqrtSwap" [Control] ;               -- Root of Swap gate
-GSqrtSwpDag   . Gate ::= "SqrtSwapDagger" [Control] ;         -- Conjugate of root of Swap gate
+GSqrtSwp      . Gate ::= "SqrtSwap" [Control] ;               -- sqrt of Swap gate
+GSqrtSwpDag   . Gate ::= "SqrtSwapDag" [Control] ;            -- Conjugate of root of Swap gate
 GISwp         . Gate ::= "ISwap" [Control] ;                  -- ISwap gate
 GFSwp         . Gate ::= "FSwap" [Control] ;                  -- FSwap gate
 GSwpRt        . Gate ::= "RootSwap" Integer [Control] ;       -- Root of Swap gate (root is specified as k in 1/2^k)
-GSwpRtDag     . Gate ::= "RootSwapDagger" Integer [Control] ; -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
-GGate         . Gate ::= GateIdent ;                          -- Generic gate
+GSwpRtDag     . Gate ::= "RootSwapDag" Integer [Control] ;    -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
+GGate         . Gate ::= GateIdent ; 
 
 -- Names for Variables --
 position token Var (lower (letter | digit | '_' | '\'')*) ;
@@ -72,7 +74,7 @@ LVar . LetVariable ::= Var ;
 separator nonempty LetVariable "," ;
 
 -- Names for Functions --
-position token FunVariable (lower (letter | digit | '_' | '\'')* (' ')* ':') ;
+position token FunVar (lower (letter | digit | '_' | '\'')* (' ')* ':') ;
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
@@ -94,29 +96,20 @@ TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet   . Term1 ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term "in" Term ;
 TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ;
-TLmbd  . Term1 ::= Lambda FunVariable Type "." Term ;
+TLmbd  . Term1 ::= Lambda FunVar Type "." Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
 
 -- Function Arguments --
 FunArg . Arg ::= Var ;
 separator Arg " " ;
- 
+
 -- Function Definition --
 FunDef . Function ::= Var [Arg] "=" Term ;
 
 -- Function Declaration --
-FunDecl . FunDeclaration ::= FunVariable Type Function ;
-terminator FunDeclaration "" ;
-
--- Polymorphic lists --
-[].  [Term] ::= ;
-(:). [Term] ::= Term ";" [Term] ;
-
--- A program is a list of functions --
-ProgDef .  Program ::= [FunDeclaration] ;
+FunDecl . FunDec ::= FunVar Type Function ;
 
 -- Format for specifying comments --
 comment "--" ; 
 comment "{-" "-}" ;
-
