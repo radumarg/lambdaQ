@@ -27,44 +27,44 @@ CStatePlusI  . ControlState ::= "@+i" ;
 CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
-CCtrl . Control ::= ControlState Integer ;
+CCtrl . Control ::= ControlState Bit ;
 terminator Control "" ;
 separator Control "," ;
 
-token GateIdent (upper (letter | digit)*) ;
+token GateIdent (upper (letter | digit | '_')*) ;
 
-GH            . Gate ::= "H" [Control] ;                      -- Hadamard Gate
-GX            . Gate ::= "X" [Control] ;                      -- Pauli X Gate
-GY            . Gate ::= "Y" [Control] ;                      -- Pauli Y Gate
-GZ            . Gate ::= "Z" [Control] ;                      -- Pauli Z Gate
-GI            . Gate ::= "I" [Control] ;                      -- Identity Gate
-GXRt          . Gate ::= "RootX" Integer [Control] ;          -- Root of Pauli X gate (root is specified as k in 1/2^k)
-GXRtDag       . Gate ::= "RootXDag" Integer [Control] ;       -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
-GYRt          . Gate ::= "RootY" Integer [Control] ;          -- Root of Pauli Y gate (root is specified as k in 1/2^k)
-GYRtDag       . Gate ::= "RootYDag" Integer [Control] ;       -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
-GZRt          . Gate ::= "RootZ" Integer [Control] ;          -- Root of Pauli Z gate (root is specified as k in 1/2^k)
-GZRtDag       . Gate ::= "RootZDag" Integer [Control] ;       -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
-GS            . Gate ::= "S" [Control] ;                      -- S gate: sqrt of Z
-GSDag         . Gate ::= "SDag" [Control] ;                   -- Conjugate of S gate
-GT            . Gate ::= "T" [Control] ;                      -- T Gate: sqrt of S
-GTDag         . Gate ::= "TDag" [Control] ;                   -- Conjugate of T gate
-GSqrtX        . Gate ::= "SqrtX" [Control] ;                  -- V gate: sqrt of X
-GSqrtXDag     . Gate ::= "SqrtXDag" [Control] ;               -- Conjugate of V gate
-GSqrtY        . Gate ::= "SqrtY" [Control] ;                  -- h gate: sqrt of Y
-GSqrtYDag     . Gate ::= "SqrtYDag" [Control] ;               -- Conjugate of h gate
-GRxTheta      . Gate ::= "Rx" Angle [Control] ;               -- Single parametric rotation around X axis on the Bloch sphere
-GRyTheta      . Gate ::= "Ry" Angle [Control] ;               -- Single parametric rotation around Y axis on the Bloch sphere
-GRzTheta      . Gate ::= "Rz" Angle [Control] ;               -- Single parametric rotation around Z axis on the Bloch sphere
-GU1           . Gate ::= "U1" Angle [Control] ;               -- One parametric generic gate
-GU2           . Gate ::= "U2" Angle Angle [Control] ;         -- Two parametric generic gate
-GU3           . Gate ::= "U3" Angle Angle Angle [Control] ;   -- Thee parametric generic gate
-GSwp          . Gate ::= "Swap" [Control] ;                   -- Swap gate
-GSqrtSwp      . Gate ::= "SqrtSwap" [Control] ;               -- sqrt of Swap gate
-GSqrtSwpDag   . Gate ::= "SqrtSwapDag" [Control] ;            -- Conjugate of root of Swap gate
-GISwp         . Gate ::= "ISwap" [Control] ;                  -- ISwap gate
-GFSwp         . Gate ::= "FSwap" [Control] ;                  -- FSwap gate
-GSwpRt        . Gate ::= "RootSwap" Integer [Control] ;       -- Root of Swap gate (root is specified as k in 1/2^k)
-GSwpRtDag     . Gate ::= "RootSwapDag" Integer [Control] ;    -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
+GH            . Gate ::= "H" [Control] ;                        -- Hadamard Gate
+GX            . Gate ::= "X" [Control] ;                        -- Pauli X Gate
+GY            . Gate ::= "Y" [Control] ;                        -- Pauli Y Gate
+GZ            . Gate ::= "Z" [Control] ;                        -- Pauli Z Gate
+GI            . Gate ::= "ID" [Control] ;                       -- Identity Gate
+GXRt          . Gate ::= "ROOT_X" Integer [Control] ;           -- Root of Pauli X gate (root is specified as k in 1/2^k)
+GXRtDag       . Gate ::= "ROOT_X_DAG" Integer [Control] ;       -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
+GYRt          . Gate ::= "ROOT_Y" Integer [Control] ;           -- Root of Pauli Y gate (root is specified as k in 1/2^k)
+GYRtDag       . Gate ::= "ROOT_Y_DAG" Integer [Control] ;       -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
+GZRt          . Gate ::= "ROOT_Z" Integer [Control] ;           -- Root of Pauli Z gate (root is specified as k in 1/2^k)
+GZRtDag       . Gate ::= "ROOT_Z_DAG" Integer [Control] ;       -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
+GS            . Gate ::= "S" [Control] ;                        -- S gate: sqrt of Z
+GSDag         . Gate ::= "S_DAG" [Control] ;                    -- Conjugate of S gate
+GT            . Gate ::= "T" [Control] ;                        -- T Gate: sqrt of S
+GTDag         . Gate ::= "T_DAG" [Control] ;                    -- Conjugate of T gate
+GSqrtX        . Gate ::= "SQRT_X" [Control] ;                   -- V gate: sqrt of X
+GSqrtXDag     . Gate ::= "SQRT_X_DAG" [Control] ;               -- Conjugate of V gate
+GSqrtY        . Gate ::= "SQRT_Y" [Control] ;                   -- h gate: sqrt of Y
+GSqrtYDag     . Gate ::= "SQRT_Y_DAG" [Control] ;               -- Conjugate of h gate
+GRxTheta      . Gate ::= "RX" Angle [Control] ;                 -- Single parametric rotation around X axis on the Bloch sphere
+GRyTheta      . Gate ::= "RY" Angle [Control] ;                 -- Single parametric rotation around Y axis on the Bloch sphere
+GRzTheta      . Gate ::= "RZ" Angle [Control] ;                 -- Single parametric rotation around Z axis on the Bloch sphere
+GU1           . Gate ::= "U1" Angle [Control] ;                 -- One parametric generic gate
+GU2           . Gate ::= "U2" Angle Angle [Control] ;           -- Two parametric generic gate
+GU3           . Gate ::= "U3" Angle Angle Angle [Control] ;     -- Thee parametric generic gate
+GSwp          . Gate ::= "SWAP" [Control] ;                     -- Swap gate
+GSqrtSwp      . Gate ::= "SQRT_SWAP" [Control] ;                -- sqrt of Swap gate
+GSqrtSwpDag   . Gate ::= "SQRT_SWAP_DAG" [Control] ;            -- Conjugate of root of Swap gate
+GISwp         . Gate ::= "I_SWAP" [Control] ;                   -- ISwap gate
+GFSwp         . Gate ::= "F_SWAP" [Control] ;                   -- FSwap gate
+GSwpRt        . Gate ::= "ROOT_SWAP" Integer [Control] ;        -- Root of Swap gate (root is specified as k in 1/2^k)
+GSwpRtDag     . Gate ::= "ROOT_SWAP_DAG" Integer [Control] ;    -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
 GGate         . Gate ::= GateIdent ; 
 
 -- Names for Variables --
