@@ -1,0 +1,6 @@
+
+deutsch :: ((QBit * QBit) -> QBit) -> !Bit
+deutsch oracle = measure (H (oracle (H (new 0), H (new 1))))
+
+main :: !Bit
+main = deutsch balanced

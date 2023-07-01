@@ -1,6 +1,0 @@
-ghzState : !Bit
-ghzState = measure (X @1 (H (new 0)) (new 1))
-
-main : !Bit
-main = ghzState
-

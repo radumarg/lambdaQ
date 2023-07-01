@@ -1,6 +1,6 @@
-coinFlip : !Bit
+coinFlip :: !Bit
 coinFlip = measure (H (new 0))
 
-main : !Bit
+main :: !Bit
 main = coinFlip
 

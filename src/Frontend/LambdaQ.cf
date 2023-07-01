@@ -22,15 +22,15 @@ BBit . Bit ::= Integer ;
 AAngl . Angle ::= Double ;
 
 -- Control States --
-CStateZero   . ControlState ::= "0" ;
-CStateOne    . ControlState ::= "1" ;
-CStatePlus   . ControlState ::= "+" ;
-CStateMinus  . ControlState ::= "-" ;
-CStatePlusI  . ControlState ::= "+i" ;
-CStateMinusI . ControlState ::= "-i" ;
+CStateZero   . ControlState ::= "@0" ;
+CStateOne    . ControlState ::= "@1" ;
+CStatePlus   . ControlState ::= "@+" ;
+CStateMinus  . ControlState ::= "@-" ;
+CStatePlusI  . ControlState ::= "@+i" ;
+CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
-CCtrl . Control ::= ControlState "@" Term  ;
+CCtrl . Control ::=  Term ControlState  ;
 terminator Control "" ;
 separator Control "," ;
 
