@@ -16,7 +16,7 @@ TypeFunc   . Type1  ::= Type2 "->" Type1 ;     -- right-associative
 coercions Type 2 ;
 
 -- Bit --
-BBit. Bit ::= Integer ;
+BBit . Bit ::= Integer ;
 
 -- Angle is a fraction of 2π --
 AAngl . Angle ::= Double ;
