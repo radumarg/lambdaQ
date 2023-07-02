@@ -109,7 +109,7 @@ LVar . LetVariable ::= Var ;
 separator nonempty LetVariable "," ;
 
 -- Names for Functions --
-position token FunVar (lower (letter | digit | '_' | '\'')* (' ')* ':') ;
+position token FunVar (lower (letter | digit | '_' | '\'')* (' ')* ':'*) ;
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
