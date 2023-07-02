@@ -30,7 +30,7 @@ CStatePlusI  . ControlState ::= "@+i" ;
 CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
-CCtrl . Control ::=  Term ControlState  ;
+CCtrl . Control ::= ControlState Term ;
 terminator Control "" ;
 separator Control "," ;
 
