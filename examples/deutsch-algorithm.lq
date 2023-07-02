@@ -1,6 +1,6 @@
 balanced :: (Qbit * Qbit) -> Qbit
 balanced qubits = let (q1, q2) = qubits in
-                    let (q, _) = X {X q1 @ 1} q2
+                    let (q, _) = X {(X q1) @1} q2
                       in (X q)
 
 deutsch :: ((Qbit * Qbit) -> Qbit) -> !Bit
