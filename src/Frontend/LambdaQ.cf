@@ -3,7 +3,6 @@
 
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunDec] ;
-terminator FunDec "" ;
 
 -- Types --
 TypeBit    . Type2  ::= "Bit" ;
@@ -31,10 +30,10 @@ CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
 CCtrl . Control ::= ControlState Term ;
-terminator Control "" ;
-separator Control "," ;
+terminator nonempty Control "" ;
+separator nonempty Control "," ;
 
-token GateIdent (upper (letter | digit | '_')*) ;
+position token GateIdent (upper (letter | digit | '_')*) ;
 
 GH             . Gate ::= "H" ;                                       -- Hadamard Gate
 GHC            . Gate ::= "H" "{" [Control] "}" ;                     -- Hadamard Gate
@@ -100,16 +99,13 @@ GSwpRtC        . Gate ::= "ROOT_SWAP" Integer "{" [Control] "}" ;     -- Root of
 GSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer ;                   -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
 GSwpRtDagC     . Gate ::= "ROOT_SWAP_DAG" Integer "{" [Control] "}" ; -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
 GGate          . Gate ::= GateIdent ;                                 -- Generic gate
-GGateC         . Gate ::= GateIdent [Control] ;                       -- Generic gate
+GGateC         . Gate ::= GateIdent "{" [Control] "}" ;               -- Generic gate
 
 -- Names for Variables --
-position token Var (lower (letter | digit | '_' | '\'')*) ;
+position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 
 LVar . LetVariable ::= Var ;
 separator nonempty LetVariable "," ;
-
--- Names for Functions --
-position token FunVar (lower (letter | digit | '_' | '\'')* (' ')* );
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
@@ -128,19 +124,22 @@ TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet   . Term1 ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term "in" Term ;
 TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ;
-TLmbd  . Term1 ::= Lambda FunVar Type "." Term ;
+TLmbd  . Term1 ::= Lambda Var Type "." Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
 
 -- Function Arguments --
 FunArg . Arg ::= Var ;
 separator Arg " " ;
+terminator Arg "" ;
 
 -- Function Definition --
 FunDef . Function ::= Var [Arg] "=" Term ;
 
 -- Function Declaration --
-FunDecl . FunDec ::= FunVar Type Function ;
+FunDecl . FunDec ::= Var "::" Type Function ;
+separator FunDec "" ;
+terminator FunDec "" ;
 
 -- Format for specifying comments --
 comment "--" ; 
