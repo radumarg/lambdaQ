@@ -1,10 +1,10 @@
-balanced_oracle :: (Qbit * Qbit) -> Qbit
-balanced_oracle qubits = let (q1, q2) = qubits in
-                           let (q, _) = X {@1 (X q1)} q2
-                             in (X q)
+balancedOracle :: (Qbit * Qbit) -> Qbit
+balancedOracle qubits = let (q1, q2) = qubits in
+                          let (q, _) = X {@1 (X q1)} q2
+                            in (X q)
 
 deutsch :: ((Qbit * Qbit) -> Qbit) -> !Bit
 deutsch oracle = measure (H (oracle (H (new 0), H (new 1))))
 
 main :: !Bit
-main = deutsch balanced
+main = deutsch balancedOracle
