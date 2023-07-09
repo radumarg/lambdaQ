@@ -1,6 +1,9 @@
 -- Documentation of LBNF Gramar: https://bnfc.readthedocs.io/en/latest/lbnf.html# --
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
+layout toplevel ;
+entrypoints Program;
+
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunDec] ;
 
@@ -11,7 +14,7 @@ TypeUnit   . Type3  ::= "()" ;
 TypeExp    . Type2  ::= "!" Type3 ;
 TypeTensrs . Type1  ::= Type2 "**" Integer ;
 TypeTensr  . Type1  ::= Type1 "*" Type2 ;      -- right-associative
-TypeFunc   . Type   ::= Type "->" Type1 ;     -- right-associative
+TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
 -- Bit --
@@ -120,11 +123,11 @@ TGate  . Term3 ::= Gate ;
 TTup   . Term3 ::= Tuple ;
 TUnit  . Term3 ::= "()" ;
 TApp   . Term2 ::= Term2 Term3 ;
-TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
-TLet   . Term1 ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term "in" Term ;
-TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ;
-TLmbd  . Term1 ::= Lambda Var Type "." Term ;
-TDollr . Term1 ::= Term2 "$" Term1 ;
+TIfEl  . Term  ::= "if" Term1 "then" Term1 "else" Term1 ;
+TLet   . Term  ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term1 "in" Term1 ;
+TCase  . Term  ::= "case" Term1 "of" Term1 "->" Var Term1 "->" Var ;
+TLmbd  . Term  ::= Lambda Var Type "." Term1 ;
+TDollr . Term1 ::= Term1 "$" Term2 ;
 coercions Term 3 ;
 
 -- Function Arguments --
@@ -135,8 +138,8 @@ separator Arg " " ;
 FunDef . Function ::= Var [Arg] "=" Term ;
 
 -- Function Declaration --
-FunDecl . FunDec ::= Var "::" Type Function ;
-terminator FunDec "" ;
+FunDecl . FunDec ::= Var "::" Type ";" Function ";" ;
+separator FunDec "" ;
 
 -- Format for specifying comments --
 comment "--" ; 
