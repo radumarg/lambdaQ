@@ -2,6 +2,9 @@
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
 layout toplevel ;
+layout "let" ;
+layout stop "in" ;
+
 entrypoints Program;
 
 -- A program is a list of functions --
@@ -124,8 +127,9 @@ TTup   . Term3 ::= Tuple ;
 TUnit  . Term3 ::= "()" ;
 TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term  ::= "if" Term1 "then" Term1 "else" Term1 ;
-TLet   . Term  ::= "let" "(" LetVariable "," [LetVariable] ")" "=" Term1 "in" Term1 ;
-TCase  . Term  ::= "case" Term1 "of" Term1 "->" Var Term1 "->" Var ;
+TLet1  . Term  ::= "let" "{" LetVariable "=" Term1 "}" "in" Term1 ;
+TLet2  . Term  ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term1 "}" "in" Term1 ;
+TCase  . Term  ::= "case" Term1 "of" Term1 "->" Var Term1 "->" Var ; --TODO: extend
 TLmbd  . Term  ::= Lambda Var Type "." Term1 ;
 TDollr . Term1 ::= Term1 "$" Term2 ;
 coercions Term 3 ;
@@ -136,11 +140,18 @@ separator Arg " " ;
 
 -- Function Definition --
 FunDef . Function ::= Var [Arg] "=" Term ;
+_      . Function ::= Function ";" ;            -- Semantic dummies: parser accepts extra semicolons which do not end up in abstract syntax
+
+-- Type Definition --
+TypeDef . FunctionType  ::= Var "::" Type ;
+_       . FunctionType ::=  FunctionType ";" ;  -- Semantic dummies: parser accepts extra semicolons which do not end up in abstract syntax
 
 -- Function Declaration --
-FunDecl . FunDec ::= Var "::" Type ";" Function ";" ;
+FunDecl . FunDec ::= FunctionType ";" Function ";" ;
 separator FunDec "" ;
 
 -- Format for specifying comments --
 comment "--" ; 
 comment "{-" "-}" ;
+
+
