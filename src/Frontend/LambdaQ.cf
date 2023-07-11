@@ -16,7 +16,7 @@ TypeQbit   . Type3  ::= "Qbit" ;
 TypeUnit   . Type3  ::= "()" ;
 TypeExp    . Type2  ::= "!" Type3 ;
 TypeTensrs . Type1  ::= Type2 "**" Integer ;
-TypeTensr  . Type1  ::= Type1 "*" Type2 ;      -- right-associative
+TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
@@ -129,10 +129,13 @@ TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet1  . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLet2  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ; --TODO: extend
+TCase  . Term1 ::= "case" Term "of" Case [ Case ] ;
 TLmbd  . Term1 ::= Lambda Var Type "." Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
+
+CaseExp . Case ::= Term "->" Var ;
+separator nonempty Case " " ;
 
 -- Function Arguments --
 FunArg . Arg ::= Var ;
