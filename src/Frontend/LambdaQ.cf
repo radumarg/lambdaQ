@@ -134,6 +134,7 @@ TLmbd  . Term1 ::= Lambda Var Type "." Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
 
+-- Case Expressions --
 CaseExp . Case ::= Term "->" Var ;
 separator nonempty Case " " ;
 
