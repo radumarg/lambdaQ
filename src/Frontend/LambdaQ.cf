@@ -106,8 +106,11 @@ GGateC         . Gate ::= GateIdent "[" [Control] "]" ;               -- Generic
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 
-LVar . LetVariable ::= Var ;
+LetVar . LetVariable ::= Var ;
 separator nonempty LetVariable "," ;
+
+LambdaVar . LambdaVariable ::= Var ;
+separator LambdaVariable " " ;
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
@@ -130,7 +133,7 @@ TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet1  . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLet2  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase  . Term1 ::= "case" Term "of" Case [ Case ] ;
-TLmbd  . Term1 ::= Lambda Var Type "." Term ;
+TLmbd  . Term1 ::= Lambda LambdaVariable [LambdaVariable] "->" Term ;
 TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
 
