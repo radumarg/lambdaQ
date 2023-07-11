@@ -126,12 +126,12 @@ TGate  . Term3 ::= Gate ;
 TTup   . Term3 ::= Tuple ;
 TUnit  . Term3 ::= "()" ;
 TApp   . Term2 ::= Term2 Term3 ;
-TIfEl  . Term  ::= "if" Term1 "then" Term1 "else" Term1 ;
-TLet1  . Term  ::= "let" "{" LetVariable "=" Term1 "}" "in" Term1 ;
-TLet2  . Term  ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term1 "}" "in" Term1 ;
-TCase  . Term  ::= "case" Term1 "of" Term1 "->" Var Term1 "->" Var ; --TODO: extend
-TLmbd  . Term  ::= Lambda Var Type "." Term1 ;
-TDollr . Term1 ::= Term1 "$" Term2 ;
+TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
+TLet1  . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
+TLet2  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TCase  . Term1 ::= "case" Term "of" Term "->" Var Term "->" Var ; --TODO: extend
+TLmbd  . Term1 ::= Lambda Var Type "." Term ;
+TDollr . Term1 ::= Term2 "$" Term1 ;
 coercions Term 3 ;
 
 -- Function Arguments --
