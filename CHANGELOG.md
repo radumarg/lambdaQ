@@ -12,7 +12,7 @@ and this project adheres to the
 
 ### [0.1.0] - 2023-07-15 
 #### Added
-- Finalized LBNF grammar.
+- Finalized the LBNF grammar.
 #### Fixed
 - Example source files.
 - Make now builds frontend files using BNFC, than compiles parsing test executable.
