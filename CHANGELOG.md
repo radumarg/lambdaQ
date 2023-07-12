@@ -10,6 +10,15 @@ and this project adheres to the
 
 <br/>
 
+### [0.1.0] - 2023-07-15 
+#### Added
+- Finalized LBNF grammar.
+#### Fixed
+- Example source files.
+- Project structure: make builds frontend files generated with BNFC
+
+<br/>
+
 ### [0.1.0] - 2023-06-27  
 #### Added
 - Example source files.

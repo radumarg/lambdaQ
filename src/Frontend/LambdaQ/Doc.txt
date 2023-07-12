@@ -26,40 +26,41 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 GateIdent literals are recognized by the regular expression
-`````upper (digit | letter)*`````
+`````upper ('_' | digit | letter)*`````
 
 Var literals are recognized by the regular expression
-`````lower (["'_"] | digit | letter)*`````
-
-FunVariable literals are recognized by the regular expression
-`````lower (["'_"] | digit | letter)* ' '* ':'`````
+`````('_' | lower) (["'_"] | digit | letter)*`````
 
 Lambda literals are recognized by the regular expression
 `````'\'`````
+
+Bit literals are recognized by the regular expression
+`````["01"]`````
 
 
 ===Reserved words and symbols===
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in LambdaQ are the following:
-  | ``Bit`` | ``Ctrl`` | ``FSwap`` | ``H``
-  | ``I`` | ``ISwap`` | ``Qbit`` | ``RootSwap``
-  | ``RootSwapDagger`` | ``RootX`` | ``RootXDagger`` | ``RootY``
-  | ``RootYDagger`` | ``RootZ`` | ``RootZDagger`` | ``RxTheta``
-  | ``RyTheta`` | ``RzTheta`` | ``S`` | ``SDagger``
-  | ``SqrtSwap`` | ``SqrtSwapDagger`` | ``SqrtX`` | ``SqrtXDagger``
-  | ``SqrtY`` | ``SqrtYDagger`` | ``Swap`` | ``T``
-  | ``TDagger`` | ``U1`` | ``U2`` | ``U3``
-  | ``X`` | ``Y`` | ``Z`` | ``case``
-  | ``else`` | ``if`` | ``in`` | ``let``
-  | ``of`` | ``then`` |  |
+  | ``Bit`` | ``FSWAP`` | ``H`` | ``ID``
+  | ``ISWAP`` | ``Qbit`` | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG``
+  | ``ROOT_X`` | ``ROOT_X_DAG`` | ``ROOT_Y`` | ``ROOT_Y_DAG``
+  | ``ROOT_Z`` | ``ROOT_Z_DAG`` | ``RX`` | ``RY``
+  | ``RZ`` | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG``
+  | ``SQRT_X`` | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG``
+  | ``SWAP`` | ``S_DAG`` | ``T`` | ``T_DAG``
+  | ``U1`` | ``U2`` | ``U3`` | ``X``
+  | ``Y`` | ``Z`` | ``case`` | ``else``
+  | ``if`` | ``in`` | ``let`` | ``of``
+  | ``then`` |  |  |
 
 The symbols used in LambdaQ are the following:
-  | () | ! | ^ | ><
-  | -> | ( | ) | 0
-  | 1 | + | - | +i
-  | -i | , | = | .
-  | $ | ; |  |
+  | () | ! | ** | *
+  | -> | ( | ) | @0
+  | @1 | @+ | @- | @+i
+  | @-i | , | [ | ]
+  | { | = | } | $
+  | ; | :: |  |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -70,91 +71,132 @@ The symbols -> (production),  **|**  (union)
 and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
-  | //Type1// | -> | ``Bit``
+  | //Program// | -> | //[FunDec]//
+  | //Type3// | -> | ``Bit``
   |  |  **|**  | ``Qbit``
   |  |  **|**  | ``()``
-  |  |  **|**  | ``!`` //Type1//
-  |  |  **|**  | //Type1// ``^`` //Integer//
   |  |  **|**  | ``(`` //Type// ``)``
-  | //Type// | -> | //Type1// ``><`` //Type//
-  |  |  **|**  | //Type1// ``->`` //Type//
+  | //Type2// | -> | ``!`` //Type3//
+  |  |  **|**  | //Type3//
+  | //Type1// | -> | //Type2// ``**`` //Integer//
+  |  |  **|**  | //Type2// ``*`` //Type1//
+  |  |  **|**  | //Type2//
+  | //Type// | -> | //Type1// ``->`` //Type//
   |  |  **|**  | //Type1//
   | //Angle// | -> | //Double//
-  | //ControlState// | -> | ``0``
-  |  |  **|**  | ``1``
-  |  |  **|**  | ``+``
-  |  |  **|**  | ``-``
-  |  |  **|**  | ``+i``
-  |  |  **|**  | ``-i``
-  | //Control// | -> | ``Ctrl`` //Integer// //ControlState//
+  | //ControlState// | -> | ``@0``
+  |  |  **|**  | ``@1``
+  |  |  **|**  | ``@+``
+  |  |  **|**  | ``@-``
+  |  |  **|**  | ``@+i``
+  |  |  **|**  | ``@-i``
+  | //Control// | -> | //ControlState// //Term//
   | //[Control]// | -> | //Control//
   |  |  **|**  | //Control// ``,`` //[Control]//
-  | //Gate// | -> | ``H`` //[Control]//
-  |  |  **|**  | ``X`` //[Control]//
-  |  |  **|**  | ``Y`` //[Control]//
-  |  |  **|**  | ``Z`` //[Control]//
-  |  |  **|**  | ``I`` //[Control]//
-  |  |  **|**  | ``RootX`` //Integer// //[Control]//
-  |  |  **|**  | ``RootXDagger`` //Integer// //[Control]//
-  |  |  **|**  | ``RootY`` //Integer// //[Control]//
-  |  |  **|**  | ``RootYDagger`` //Integer// //[Control]//
-  |  |  **|**  | ``RootZ`` //Integer// //[Control]//
-  |  |  **|**  | ``RootZDagger`` //Integer// //[Control]//
-  |  |  **|**  | ``S`` //[Control]//
-  |  |  **|**  | ``SDagger`` //[Control]//
-  |  |  **|**  | ``T`` //[Control]//
-  |  |  **|**  | ``TDagger`` //[Control]//
-  |  |  **|**  | ``SqrtX`` //[Control]//
-  |  |  **|**  | ``SqrtXDagger`` //[Control]//
-  |  |  **|**  | ``SqrtY`` //[Control]//
-  |  |  **|**  | ``SqrtYDagger`` //[Control]//
-  |  |  **|**  | ``RxTheta`` //Angle// //[Control]//
-  |  |  **|**  | ``RyTheta`` //Angle// //[Control]//
-  |  |  **|**  | ``RzTheta`` //Angle// //[Control]//
-  |  |  **|**  | ``U1`` //Angle// //[Control]//
-  |  |  **|**  | ``U2`` //Angle// //Angle// //[Control]//
-  |  |  **|**  | ``U3`` //Angle// //Angle// //Angle// //[Control]//
-  |  |  **|**  | ``Swap`` //[Control]//
-  |  |  **|**  | ``SqrtSwap`` //[Control]//
-  |  |  **|**  | ``SqrtSwapDagger`` //[Control]//
-  |  |  **|**  | ``ISwap`` //[Control]//
-  |  |  **|**  | ``FSwap`` //[Control]//
-  |  |  **|**  | ``RootSwap`` //Integer// //[Control]//
-  |  |  **|**  | ``RootSwapDagger`` //Integer// //[Control]//
+  | //Gate// | -> | ``H``
+  |  |  **|**  | ``H`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``X``
+  |  |  **|**  | ``X`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``Y``
+  |  |  **|**  | ``Y`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``Z``
+  |  |  **|**  | ``Z`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ID``
+  |  |  **|**  | ``ROOT_X`` //Integer//
+  |  |  **|**  | ``ROOT_X`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_X_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_X_DAG`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_Y`` //Integer//
+  |  |  **|**  | ``ROOT_Y`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_Y_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_Y_DAG`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_Z`` //Integer//
+  |  |  **|**  | ``ROOT_Z`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_Z_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_Z_DAG`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``S``
+  |  |  **|**  | ``S`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``S_DAG``
+  |  |  **|**  | ``S_DAG`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``T``
+  |  |  **|**  | ``T`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``T_DAG``
+  |  |  **|**  | ``T_DAG`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_X``
+  |  |  **|**  | ``SQRT_X`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_X_DAG``
+  |  |  **|**  | ``SQRT_X_DAG`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_Y``
+  |  |  **|**  | ``SQRT_Y`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_Y_DAG``
+  |  |  **|**  | ``SQRT_Y_DAG`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``RX`` //Angle//
+  |  |  **|**  | ``RX`` //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``RY`` //Angle//
+  |  |  **|**  | ``RY`` //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``RZ`` //Angle//
+  |  |  **|**  | ``RZ`` //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``U1`` //Angle//
+  |  |  **|**  | ``U1`` //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``U2`` //Angle// //Angle//
+  |  |  **|**  | ``U2`` //Angle// //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``U3`` //Angle// //Angle// //Angle//
+  |  |  **|**  | ``U3`` //Angle// //Angle// //Angle// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SWAP``
+  |  |  **|**  | ``SWAP`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_SWAP``
+  |  |  **|**  | ``SQRT_SWAP`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SQRT_SWAP_DAG``
+  |  |  **|**  | ``SQRT_SWAP_DAG`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ISWAP``
+  |  |  **|**  | ``ISWAP`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``FSWAP``
+  |  |  **|**  | ``FSWAP`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_SWAP`` //Integer//
+  |  |  **|**  | ``ROOT_SWAP`` //Integer// ``[`` //[Control]// ``]``
+  |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer// ``[`` //[Control]// ``]``
   |  |  **|**  | //GateIdent//
+  |  |  **|**  | //GateIdent// ``[`` //[Control]// ``]``
   | //LetVariable// | -> | //Var//
   | //[LetVariable]// | -> | //LetVariable//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//
+  | //LambdaVariable// | -> | //Var//
+  | //[LambdaVariable]// | -> | **eps**
+  |  |  **|**  | //LambdaVariable// //[LambdaVariable]//
   | //Tuple// | -> | ``(`` //Term// ``,`` //[Term]// ``)``
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
-  |  |  **|**  | **eps**
-  |  |  **|**  | //Term// ``;`` //[Term]//
-  | //Bit// | -> | //Integer//
   | //Term3// | -> | //Var//
   |  |  **|**  | //Bit//
   |  |  **|**  | //Gate//
   |  |  **|**  | //Tuple//
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
-  | //Term2// | -> | //Term2// //Term3//
-  |  |  **|**  | //Term3//
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
-  |  |  **|**  | ``let`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``in`` //Term//
-  |  |  **|**  | ``case`` //Term// ``of`` //Term// ``->`` //Var// //Term// ``->`` //Var//
-  |  |  **|**  | //Lambda// //FunVariable// //Type// ``.`` //Term//
+  |  |  **|**  | ``let`` ``{`` //LetVariable// ``=`` //Term// ``}`` ``in`` //Term//
+  |  |  **|**  | ``let`` ``{`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
+  |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
+  |  |  **|**  | //Lambda// //LambdaVariable// //[LambdaVariable]// ``->`` //Term//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
+  | //Term2// | -> | //Term2// //Term3//
+  |  |  **|**  | //Term3//
   | //Term// | -> | //Term1//
+  | //CaseExpression// | -> | //Term// ``->`` //Var//
+  | //[CaseExpression]// | -> | //CaseExpression//
+  |  |  **|**  | //CaseExpression// //[CaseExpression]//
   | //Arg// | -> | //Var//
   | //[Arg]// | -> | **eps**
   |  |  **|**  | //Arg// //[Arg]//
   | //Function// | -> | //Var// //[Arg]// ``=`` //Term//
-  | //FunDeclaration// | -> | //FunVariable// //Type// //Function//
-  | //[FunDeclaration]// | -> | **eps**
-  |  |  **|**  | //FunDeclaration// //[FunDeclaration]//
-  | //Program// | -> | //[FunDeclaration]//
+  |  |  **|**  | //Function// ``;``
+  | //FunctionType// | -> | //Var// ``::`` //Type//
+  |  |  **|**  | //FunctionType// ``;``
+  | //FunDec// | -> | //FunctionType// ``;`` //Function// ``;``
+  | //[FunDec]// | -> | **eps**
+  |  |  **|**  | //FunDec// //[FunDec]//
 
 
 
-%% File generated by the BNF Converter (bnfc 2.9.4).
+%% File generated by the BNF Converter (bnfc 2.9.4.1).

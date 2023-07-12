@@ -15,7 +15,7 @@ TypeBit    . Type3  ::= "Bit" ;
 TypeQbit   . Type3  ::= "Qbit" ;
 TypeUnit   . Type3  ::= "()" ;
 TypeExp    . Type2  ::= "!" Type3 ;
-TypeTensrs . Type1  ::= Type2 "**" Integer ;
+TypeTensrs . Type1  ::= Type2 "**" Integer ;   
 TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
@@ -128,18 +128,18 @@ TBit   . Term3 ::= Bit ;
 TGate  . Term3 ::= Gate ;
 TTup   . Term3 ::= Tuple ;
 TUnit  . Term3 ::= "()" ;
-TApp   . Term2 ::= Term2 Term3 ;
 TIfEl  . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet1  . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLet2  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TCase  . Term1 ::= "case" Term "of" Case [ Case ] ;
+TCase  . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TLmbd  . Term1 ::= Lambda LambdaVariable [LambdaVariable] "->" Term ;
-TDollr . Term1 ::= Term2 "$" Term1 ;
+TApp   . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TDollr . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 coercions Term 3 ;
 
 -- Case Expressions --
-CaseExp . Case ::= Term "->" Var ;
-separator nonempty Case " " ;
+CaseExp . CaseExpression ::= Term "->" Var ;
+separator nonempty CaseExpression " " ;
 
 -- Function Arguments --
 FunArg . Arg ::= Var ;

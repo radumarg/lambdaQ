@@ -1,0 +1,75 @@
+
+More info on GHCI commands: https://typeclasses.com/ghci/commands
+
+####################################################################################################################################
+
+### Basics
+
+: – The colon by itself repeats the previous command.
+
+:! <cmd>
+
+:cd
+
+:edit <file> – Opens an editor to permit editing of a file, either the one passed to it as an argument or the currently loaded one.
+
+:load <file> – Loads the specified file into the GHCi session. Without an argument, it unloads whatever had previously been loaded.
+
+:reload – Does not take an argument. Reloads the current module, file, or project.
+
+:show language – Displays what language extensions are enabled.
+
+:set – This is used for many things; 
+:seti – Like :set, but only affects commands typed at the GHCi prompt, not those loaded from a file.
+:unset – Undoes :set.
+
+####################################################################################################################################
+
+### Information about types and functions:
+
+:doc <arg> – Show the documentation for a Haskell type, etc.
+
+:info – Queries information about a type, typeclass, value, function, or operator.
+
+:instances – Shows a list of all typeclass instances that are available for a type.
+
+:kind – Queries the kind of a type.
+
+:type – Queries the type of a value or function.
+
+####################################################################################################################################
+
+### Scope and availability:
+
+:add – Adds a module to the current target set and reloads.
+
+:all-types – Lists all types for expressions and local bindings that are currently loaded.
+
+:browse – Gives a list of the contents of a module (the module need not be imported).
+
+:module – Imports or de-imports modules. Can be used to expose an entire module, rather than only its exports.
+
+:issafe <module> – Tells you the Safe Haskell information for a module (the current one if none is specified).
+
+:show bindings – Lists the definitions that have been entered at the GHCi command prompt.
+
+:show imports – Lists the modules that are in scope.
+
+:show modules – Lists the modules that are currently loaded.
+
+:show packages – Lists packages that have been exposed via the -package flag.
+
+:show paths – Lists the files and directories in which GHCi will search for modules when you use :load.
+
+:show targets – Lists the modules in the target set
+
+####################################################################################################################################
+
+### Debugging and evaluation
+
+TODO: add when needed
+
+####################################################################################################################################
+
+main = putStrLn "Hello!"
+:main
