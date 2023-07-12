@@ -15,7 +15,7 @@ and this project adheres to the
 - Finalized LBNF grammar.
 #### Fixed
 - Example source files.
-- Project structure: make now builds frontend files using BNFC, than compiles parsing test executable.
+- Make now builds frontend files using BNFC, than compiles parsing test executable.
 
 <br/>
 
