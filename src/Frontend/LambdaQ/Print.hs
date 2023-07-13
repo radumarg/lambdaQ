@@ -175,7 +175,7 @@ instance Print Frontend.LambdaQ.Abs.ControlState where
 
 instance Print Frontend.LambdaQ.Abs.Control where
   prt i = \case
-    Frontend.LambdaQ.Abs.CCtrl controlstate term -> prPrec i 0 (concatD [prt 0 controlstate, prt 0 term])
+    Frontend.LambdaQ.Abs.CCtrl controlstate term -> prPrec i 0 (concatD [prt 0 controlstate, doc (showString "<-"), prt 0 term])
 
 instance Print [Frontend.LambdaQ.Abs.Control] where
   prt _ [] = concatD []

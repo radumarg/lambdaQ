@@ -58,9 +58,9 @@ The symbols used in LambdaQ are the following:
   | () | ! | ** | *
   | -> | ( | ) | @0
   | @1 | @+ | @- | @+i
-  | @-i | , | [ | ]
-  | { | = | } | $
-  | ; | :: |  |
+  | @-i | <- | , | [
+  | ] | { | = | }
+  | $ | ; | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -90,7 +90,7 @@ All other symbols are terminals.
   |  |  **|**  | ``@-``
   |  |  **|**  | ``@+i``
   |  |  **|**  | ``@-i``
-  | //Control// | -> | //ControlState// //Term//
+  | //Control// | -> | //ControlState// ``<-`` //Term//
   | //[Control]// | -> | //Control//
   |  |  **|**  | //Control// ``,`` //[Control]//
   | //Gate// | -> | ``H``

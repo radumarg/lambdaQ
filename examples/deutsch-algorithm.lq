@@ -1,6 +1,6 @@
 balancedOracle :: (Qbit * Qbit) -> Qbit  
 balancedOracle qubits = let (q1, q2) = qubits in
-                          let (q, _) = X [ @1 (X q1) ] q2
+                          let (q, _) = X [ @1 <- (X q1) ] q2
                             in (X q)
 
 deutsch :: ((Qbit * Qbit) -> Qbit) -> !Bit

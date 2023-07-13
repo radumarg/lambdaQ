@@ -32,7 +32,7 @@ Grammar
 	ControlState -> '@-'                               (23)
 	ControlState -> '@+i'                              (24)
 	ControlState -> '@-i'                              (25)
-	Control -> ControlState Term                       (26)
+	Control -> ControlState '<-' Term                  (26)
 	ListControl -> Control                             (27)
 	ListControl -> Control ',' ListControl             (28)
 	Gate -> 'H'                                        (29)
@@ -153,58 +153,59 @@ Terminals
 	'->'           { PT _ (TS _ 9) }
 	'::'           { PT _ (TS _ 10) }
 	';'            { PT _ (TS _ 11) }
-	'='            { PT _ (TS _ 12) }
-	'@+'           { PT _ (TS _ 13) }
-	'@+i'          { PT _ (TS _ 14) }
-	'@-'           { PT _ (TS _ 15) }
-	'@-i'          { PT _ (TS _ 16) }
-	'@0'           { PT _ (TS _ 17) }
-	'@1'           { PT _ (TS _ 18) }
-	'Bit'          { PT _ (TS _ 19) }
-	'FSWAP'        { PT _ (TS _ 20) }
-	'H'            { PT _ (TS _ 21) }
-	'ID'           { PT _ (TS _ 22) }
-	'ISWAP'        { PT _ (TS _ 23) }
-	'Qbit'         { PT _ (TS _ 24) }
-	'ROOT_SWAP'    { PT _ (TS _ 25) }
-	'ROOT_SWAP_DAG'{ PT _ (TS _ 26) }
-	'ROOT_X'       { PT _ (TS _ 27) }
-	'ROOT_X_DAG'   { PT _ (TS _ 28) }
-	'ROOT_Y'       { PT _ (TS _ 29) }
-	'ROOT_Y_DAG'   { PT _ (TS _ 30) }
-	'ROOT_Z'       { PT _ (TS _ 31) }
-	'ROOT_Z_DAG'   { PT _ (TS _ 32) }
-	'RX'           { PT _ (TS _ 33) }
-	'RY'           { PT _ (TS _ 34) }
-	'RZ'           { PT _ (TS _ 35) }
-	'S'            { PT _ (TS _ 36) }
-	'SQRT_SWAP'    { PT _ (TS _ 37) }
-	'SQRT_SWAP_DAG'{ PT _ (TS _ 38) }
-	'SQRT_X'       { PT _ (TS _ 39) }
-	'SQRT_X_DAG'   { PT _ (TS _ 40) }
-	'SQRT_Y'       { PT _ (TS _ 41) }
-	'SQRT_Y_DAG'   { PT _ (TS _ 42) }
-	'SWAP'         { PT _ (TS _ 43) }
-	'S_DAG'        { PT _ (TS _ 44) }
-	'T'            { PT _ (TS _ 45) }
-	'T_DAG'        { PT _ (TS _ 46) }
-	'U1'           { PT _ (TS _ 47) }
-	'U2'           { PT _ (TS _ 48) }
-	'U3'           { PT _ (TS _ 49) }
-	'X'            { PT _ (TS _ 50) }
-	'Y'            { PT _ (TS _ 51) }
-	'Z'            { PT _ (TS _ 52) }
-	'['            { PT _ (TS _ 53) }
-	']'            { PT _ (TS _ 54) }
-	'case'         { PT _ (TS _ 55) }
-	'else'         { PT _ (TS _ 56) }
-	'if'           { PT _ (TS _ 57) }
-	'in'           { PT _ (TS _ 58) }
-	'let'          { PT _ (TS _ 59) }
-	'of'           { PT _ (TS _ 60) }
-	'then'         { PT _ (TS _ 61) }
-	'{'            { PT _ (TS _ 62) }
-	'}'            { PT _ (TS _ 63) }
+	'<-'           { PT _ (TS _ 12) }
+	'='            { PT _ (TS _ 13) }
+	'@+'           { PT _ (TS _ 14) }
+	'@+i'          { PT _ (TS _ 15) }
+	'@-'           { PT _ (TS _ 16) }
+	'@-i'          { PT _ (TS _ 17) }
+	'@0'           { PT _ (TS _ 18) }
+	'@1'           { PT _ (TS _ 19) }
+	'Bit'          { PT _ (TS _ 20) }
+	'FSWAP'        { PT _ (TS _ 21) }
+	'H'            { PT _ (TS _ 22) }
+	'ID'           { PT _ (TS _ 23) }
+	'ISWAP'        { PT _ (TS _ 24) }
+	'Qbit'         { PT _ (TS _ 25) }
+	'ROOT_SWAP'    { PT _ (TS _ 26) }
+	'ROOT_SWAP_DAG'{ PT _ (TS _ 27) }
+	'ROOT_X'       { PT _ (TS _ 28) }
+	'ROOT_X_DAG'   { PT _ (TS _ 29) }
+	'ROOT_Y'       { PT _ (TS _ 30) }
+	'ROOT_Y_DAG'   { PT _ (TS _ 31) }
+	'ROOT_Z'       { PT _ (TS _ 32) }
+	'ROOT_Z_DAG'   { PT _ (TS _ 33) }
+	'RX'           { PT _ (TS _ 34) }
+	'RY'           { PT _ (TS _ 35) }
+	'RZ'           { PT _ (TS _ 36) }
+	'S'            { PT _ (TS _ 37) }
+	'SQRT_SWAP'    { PT _ (TS _ 38) }
+	'SQRT_SWAP_DAG'{ PT _ (TS _ 39) }
+	'SQRT_X'       { PT _ (TS _ 40) }
+	'SQRT_X_DAG'   { PT _ (TS _ 41) }
+	'SQRT_Y'       { PT _ (TS _ 42) }
+	'SQRT_Y_DAG'   { PT _ (TS _ 43) }
+	'SWAP'         { PT _ (TS _ 44) }
+	'S_DAG'        { PT _ (TS _ 45) }
+	'T'            { PT _ (TS _ 46) }
+	'T_DAG'        { PT _ (TS _ 47) }
+	'U1'           { PT _ (TS _ 48) }
+	'U2'           { PT _ (TS _ 49) }
+	'U3'           { PT _ (TS _ 50) }
+	'X'            { PT _ (TS _ 51) }
+	'Y'            { PT _ (TS _ 52) }
+	'Z'            { PT _ (TS _ 53) }
+	'['            { PT _ (TS _ 54) }
+	']'            { PT _ (TS _ 55) }
+	'case'         { PT _ (TS _ 56) }
+	'else'         { PT _ (TS _ 57) }
+	'if'           { PT _ (TS _ 58) }
+	'in'           { PT _ (TS _ 59) }
+	'let'          { PT _ (TS _ 60) }
+	'of'           { PT _ (TS _ 61) }
+	'then'         { PT _ (TS _ 62) }
+	'{'            { PT _ (TS _ 63) }
+	'}'            { PT _ (TS _ 64) }
 	L_doubl        { PT _ (TD $$) }
 	L_integ        { PT _ (TI $$) }
 	L_GateIdent    { PT _ (T_GateIdent _) }
@@ -3875,60 +3876,10 @@ State 129
 
 State 130
 
-	Control -> ControlState . Term                      (rule 26)
+	Control -> ControlState . '<-' Term                 (rule 26)
 
-	'('            shift, and enter state 49
-	'()'           shift, and enter state 50
-	'FSWAP'        shift, and enter state 51
-	'H'            shift, and enter state 52
-	'ID'           shift, and enter state 53
-	'ISWAP'        shift, and enter state 54
-	'ROOT_SWAP'    shift, and enter state 55
-	'ROOT_SWAP_DAG'shift, and enter state 56
-	'ROOT_X'       shift, and enter state 57
-	'ROOT_X_DAG'   shift, and enter state 58
-	'ROOT_Y'       shift, and enter state 59
-	'ROOT_Y_DAG'   shift, and enter state 60
-	'ROOT_Z'       shift, and enter state 61
-	'ROOT_Z_DAG'   shift, and enter state 62
-	'RX'           shift, and enter state 63
-	'RY'           shift, and enter state 64
-	'RZ'           shift, and enter state 65
-	'S'            shift, and enter state 66
-	'SQRT_SWAP'    shift, and enter state 67
-	'SQRT_SWAP_DAG'shift, and enter state 68
-	'SQRT_X'       shift, and enter state 69
-	'SQRT_X_DAG'   shift, and enter state 70
-	'SQRT_Y'       shift, and enter state 71
-	'SQRT_Y_DAG'   shift, and enter state 72
-	'SWAP'         shift, and enter state 73
-	'S_DAG'        shift, and enter state 74
-	'T'            shift, and enter state 75
-	'T_DAG'        shift, and enter state 76
-	'U1'           shift, and enter state 77
-	'U2'           shift, and enter state 78
-	'U3'           shift, and enter state 79
-	'X'            shift, and enter state 80
-	'Y'            shift, and enter state 81
-	'Z'            shift, and enter state 82
-	'case'         shift, and enter state 83
-	'if'           shift, and enter state 84
-	'let'          shift, and enter state 85
-	L_GateIdent    shift, and enter state 86
-	L_Var          shift, and enter state 8
-	L_Lambda       shift, and enter state 87
-	L_Bit          shift, and enter state 88
+	'<-'           shift, and enter state 222
 
-	GateIdent      goto state 39
-	Var            goto state 40
-	Lambda         goto state 41
-	Bit            goto state 42
-	Gate           goto state 43
-	Tuple          goto state 44
-	Term3          goto state 45
-	Term1          goto state 46
-	Term2          goto state 47
-	Term           goto state 222
 
 State 131
 
@@ -3950,282 +3901,42 @@ State 133
 
 	ControlState -> '@+' .                              (rule 22)
 
-	'('            reduce using rule 22
-	'()'           reduce using rule 22
-	'FSWAP'        reduce using rule 22
-	'H'            reduce using rule 22
-	'ID'           reduce using rule 22
-	'ISWAP'        reduce using rule 22
-	'ROOT_SWAP'    reduce using rule 22
-	'ROOT_SWAP_DAG'reduce using rule 22
-	'ROOT_X'       reduce using rule 22
-	'ROOT_X_DAG'   reduce using rule 22
-	'ROOT_Y'       reduce using rule 22
-	'ROOT_Y_DAG'   reduce using rule 22
-	'ROOT_Z'       reduce using rule 22
-	'ROOT_Z_DAG'   reduce using rule 22
-	'RX'           reduce using rule 22
-	'RY'           reduce using rule 22
-	'RZ'           reduce using rule 22
-	'S'            reduce using rule 22
-	'SQRT_SWAP'    reduce using rule 22
-	'SQRT_SWAP_DAG'reduce using rule 22
-	'SQRT_X'       reduce using rule 22
-	'SQRT_X_DAG'   reduce using rule 22
-	'SQRT_Y'       reduce using rule 22
-	'SQRT_Y_DAG'   reduce using rule 22
-	'SWAP'         reduce using rule 22
-	'S_DAG'        reduce using rule 22
-	'T'            reduce using rule 22
-	'T_DAG'        reduce using rule 22
-	'U1'           reduce using rule 22
-	'U2'           reduce using rule 22
-	'U3'           reduce using rule 22
-	'X'            reduce using rule 22
-	'Y'            reduce using rule 22
-	'Z'            reduce using rule 22
-	'case'         reduce using rule 22
-	'if'           reduce using rule 22
-	'let'          reduce using rule 22
-	L_GateIdent    reduce using rule 22
-	L_Var          reduce using rule 22
-	L_Lambda       reduce using rule 22
-	L_Bit          reduce using rule 22
+	'<-'           reduce using rule 22
 
 
 State 134
 
 	ControlState -> '@+i' .                             (rule 24)
 
-	'('            reduce using rule 24
-	'()'           reduce using rule 24
-	'FSWAP'        reduce using rule 24
-	'H'            reduce using rule 24
-	'ID'           reduce using rule 24
-	'ISWAP'        reduce using rule 24
-	'ROOT_SWAP'    reduce using rule 24
-	'ROOT_SWAP_DAG'reduce using rule 24
-	'ROOT_X'       reduce using rule 24
-	'ROOT_X_DAG'   reduce using rule 24
-	'ROOT_Y'       reduce using rule 24
-	'ROOT_Y_DAG'   reduce using rule 24
-	'ROOT_Z'       reduce using rule 24
-	'ROOT_Z_DAG'   reduce using rule 24
-	'RX'           reduce using rule 24
-	'RY'           reduce using rule 24
-	'RZ'           reduce using rule 24
-	'S'            reduce using rule 24
-	'SQRT_SWAP'    reduce using rule 24
-	'SQRT_SWAP_DAG'reduce using rule 24
-	'SQRT_X'       reduce using rule 24
-	'SQRT_X_DAG'   reduce using rule 24
-	'SQRT_Y'       reduce using rule 24
-	'SQRT_Y_DAG'   reduce using rule 24
-	'SWAP'         reduce using rule 24
-	'S_DAG'        reduce using rule 24
-	'T'            reduce using rule 24
-	'T_DAG'        reduce using rule 24
-	'U1'           reduce using rule 24
-	'U2'           reduce using rule 24
-	'U3'           reduce using rule 24
-	'X'            reduce using rule 24
-	'Y'            reduce using rule 24
-	'Z'            reduce using rule 24
-	'case'         reduce using rule 24
-	'if'           reduce using rule 24
-	'let'          reduce using rule 24
-	L_GateIdent    reduce using rule 24
-	L_Var          reduce using rule 24
-	L_Lambda       reduce using rule 24
-	L_Bit          reduce using rule 24
+	'<-'           reduce using rule 24
 
 
 State 135
 
 	ControlState -> '@-' .                              (rule 23)
 
-	'('            reduce using rule 23
-	'()'           reduce using rule 23
-	'FSWAP'        reduce using rule 23
-	'H'            reduce using rule 23
-	'ID'           reduce using rule 23
-	'ISWAP'        reduce using rule 23
-	'ROOT_SWAP'    reduce using rule 23
-	'ROOT_SWAP_DAG'reduce using rule 23
-	'ROOT_X'       reduce using rule 23
-	'ROOT_X_DAG'   reduce using rule 23
-	'ROOT_Y'       reduce using rule 23
-	'ROOT_Y_DAG'   reduce using rule 23
-	'ROOT_Z'       reduce using rule 23
-	'ROOT_Z_DAG'   reduce using rule 23
-	'RX'           reduce using rule 23
-	'RY'           reduce using rule 23
-	'RZ'           reduce using rule 23
-	'S'            reduce using rule 23
-	'SQRT_SWAP'    reduce using rule 23
-	'SQRT_SWAP_DAG'reduce using rule 23
-	'SQRT_X'       reduce using rule 23
-	'SQRT_X_DAG'   reduce using rule 23
-	'SQRT_Y'       reduce using rule 23
-	'SQRT_Y_DAG'   reduce using rule 23
-	'SWAP'         reduce using rule 23
-	'S_DAG'        reduce using rule 23
-	'T'            reduce using rule 23
-	'T_DAG'        reduce using rule 23
-	'U1'           reduce using rule 23
-	'U2'           reduce using rule 23
-	'U3'           reduce using rule 23
-	'X'            reduce using rule 23
-	'Y'            reduce using rule 23
-	'Z'            reduce using rule 23
-	'case'         reduce using rule 23
-	'if'           reduce using rule 23
-	'let'          reduce using rule 23
-	L_GateIdent    reduce using rule 23
-	L_Var          reduce using rule 23
-	L_Lambda       reduce using rule 23
-	L_Bit          reduce using rule 23
+	'<-'           reduce using rule 23
 
 
 State 136
 
 	ControlState -> '@-i' .                             (rule 25)
 
-	'('            reduce using rule 25
-	'()'           reduce using rule 25
-	'FSWAP'        reduce using rule 25
-	'H'            reduce using rule 25
-	'ID'           reduce using rule 25
-	'ISWAP'        reduce using rule 25
-	'ROOT_SWAP'    reduce using rule 25
-	'ROOT_SWAP_DAG'reduce using rule 25
-	'ROOT_X'       reduce using rule 25
-	'ROOT_X_DAG'   reduce using rule 25
-	'ROOT_Y'       reduce using rule 25
-	'ROOT_Y_DAG'   reduce using rule 25
-	'ROOT_Z'       reduce using rule 25
-	'ROOT_Z_DAG'   reduce using rule 25
-	'RX'           reduce using rule 25
-	'RY'           reduce using rule 25
-	'RZ'           reduce using rule 25
-	'S'            reduce using rule 25
-	'SQRT_SWAP'    reduce using rule 25
-	'SQRT_SWAP_DAG'reduce using rule 25
-	'SQRT_X'       reduce using rule 25
-	'SQRT_X_DAG'   reduce using rule 25
-	'SQRT_Y'       reduce using rule 25
-	'SQRT_Y_DAG'   reduce using rule 25
-	'SWAP'         reduce using rule 25
-	'S_DAG'        reduce using rule 25
-	'T'            reduce using rule 25
-	'T_DAG'        reduce using rule 25
-	'U1'           reduce using rule 25
-	'U2'           reduce using rule 25
-	'U3'           reduce using rule 25
-	'X'            reduce using rule 25
-	'Y'            reduce using rule 25
-	'Z'            reduce using rule 25
-	'case'         reduce using rule 25
-	'if'           reduce using rule 25
-	'let'          reduce using rule 25
-	L_GateIdent    reduce using rule 25
-	L_Var          reduce using rule 25
-	L_Lambda       reduce using rule 25
-	L_Bit          reduce using rule 25
+	'<-'           reduce using rule 25
 
 
 State 137
 
 	ControlState -> '@0' .                              (rule 20)
 
-	'('            reduce using rule 20
-	'()'           reduce using rule 20
-	'FSWAP'        reduce using rule 20
-	'H'            reduce using rule 20
-	'ID'           reduce using rule 20
-	'ISWAP'        reduce using rule 20
-	'ROOT_SWAP'    reduce using rule 20
-	'ROOT_SWAP_DAG'reduce using rule 20
-	'ROOT_X'       reduce using rule 20
-	'ROOT_X_DAG'   reduce using rule 20
-	'ROOT_Y'       reduce using rule 20
-	'ROOT_Y_DAG'   reduce using rule 20
-	'ROOT_Z'       reduce using rule 20
-	'ROOT_Z_DAG'   reduce using rule 20
-	'RX'           reduce using rule 20
-	'RY'           reduce using rule 20
-	'RZ'           reduce using rule 20
-	'S'            reduce using rule 20
-	'SQRT_SWAP'    reduce using rule 20
-	'SQRT_SWAP_DAG'reduce using rule 20
-	'SQRT_X'       reduce using rule 20
-	'SQRT_X_DAG'   reduce using rule 20
-	'SQRT_Y'       reduce using rule 20
-	'SQRT_Y_DAG'   reduce using rule 20
-	'SWAP'         reduce using rule 20
-	'S_DAG'        reduce using rule 20
-	'T'            reduce using rule 20
-	'T_DAG'        reduce using rule 20
-	'U1'           reduce using rule 20
-	'U2'           reduce using rule 20
-	'U3'           reduce using rule 20
-	'X'            reduce using rule 20
-	'Y'            reduce using rule 20
-	'Z'            reduce using rule 20
-	'case'         reduce using rule 20
-	'if'           reduce using rule 20
-	'let'          reduce using rule 20
-	L_GateIdent    reduce using rule 20
-	L_Var          reduce using rule 20
-	L_Lambda       reduce using rule 20
-	L_Bit          reduce using rule 20
+	'<-'           reduce using rule 20
 
 
 State 138
 
 	ControlState -> '@1' .                              (rule 21)
 
-	'('            reduce using rule 21
-	'()'           reduce using rule 21
-	'FSWAP'        reduce using rule 21
-	'H'            reduce using rule 21
-	'ID'           reduce using rule 21
-	'ISWAP'        reduce using rule 21
-	'ROOT_SWAP'    reduce using rule 21
-	'ROOT_SWAP_DAG'reduce using rule 21
-	'ROOT_X'       reduce using rule 21
-	'ROOT_X_DAG'   reduce using rule 21
-	'ROOT_Y'       reduce using rule 21
-	'ROOT_Y_DAG'   reduce using rule 21
-	'ROOT_Z'       reduce using rule 21
-	'ROOT_Z_DAG'   reduce using rule 21
-	'RX'           reduce using rule 21
-	'RY'           reduce using rule 21
-	'RZ'           reduce using rule 21
-	'S'            reduce using rule 21
-	'SQRT_SWAP'    reduce using rule 21
-	'SQRT_SWAP_DAG'reduce using rule 21
-	'SQRT_X'       reduce using rule 21
-	'SQRT_X_DAG'   reduce using rule 21
-	'SQRT_Y'       reduce using rule 21
-	'SQRT_Y_DAG'   reduce using rule 21
-	'SWAP'         reduce using rule 21
-	'S_DAG'        reduce using rule 21
-	'T'            reduce using rule 21
-	'T_DAG'        reduce using rule 21
-	'U1'           reduce using rule 21
-	'U2'           reduce using rule 21
-	'U3'           reduce using rule 21
-	'X'            reduce using rule 21
-	'Y'            reduce using rule 21
-	'Z'            reduce using rule 21
-	'case'         reduce using rule 21
-	'if'           reduce using rule 21
-	'let'          reduce using rule 21
-	L_GateIdent    reduce using rule 21
-	L_Var          reduce using rule 21
-	L_Lambda       reduce using rule 21
-	L_Bit          reduce using rule 21
+	'<-'           reduce using rule 21
 
 
 State 139
@@ -4880,7 +4591,7 @@ State 180
 
 	Term1 -> 'let' '{' '(' LetVariable . ',' ListLetVariable ')' '=' Term '}' 'in' Term    (rule 111)
 
-	','            shift, and enter state 246
+	','            shift, and enter state 247
 
 
 State 181
@@ -4938,20 +4649,20 @@ State 181
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 245
+	Term           goto state 246
 
 State 182
 
 	Term1 -> 'if' Term 'then' Term . 'else' Term        (rule 109)
 
-	'else'         shift, and enter state 244
+	'else'         shift, and enter state 245
 
 
 State 183
 
 	CaseExpression -> Term . '->' Var                   (rule 119)
 
-	'->'           shift, and enter state 243
+	'->'           shift, and enter state 244
 
 
 State 184
@@ -5010,8 +4721,8 @@ State 184
 	Term1          goto state 46
 	Term2          goto state 47
 	Term           goto state 183
-	CaseExpression goto state 241
-	ListCaseExpressiongoto state 242
+	CaseExpression goto state 242
+	ListCaseExpressiongoto state 243
 
 State 185
 
@@ -5216,7 +4927,7 @@ State 188
 	'X'            reduce using rule 76
 	'Y'            reduce using rule 76
 	'Z'            reduce using rule 76
-	'['            shift, and enter state 240
+	'['            shift, and enter state 241
 	']'            reduce using rule 76
 	'else'         reduce using rule 76
 	'of'           reduce using rule 76
@@ -5240,13 +4951,13 @@ State 189
 
 	ControlState   goto state 130
 	Control        goto state 131
-	ListControl    goto state 239
+	ListControl    goto state 240
 
 State 190
 
 	Gate -> 'U1' Angle '[' ListControl . ']'            (rule 73)
 
-	']'            shift, and enter state 238
+	']'            shift, and enter state 239
 
 
 State 191
@@ -5836,77 +5547,77 @@ State 202
 
 	Gate -> 'RZ' Angle '[' ListControl . ']'            (rule 71)
 
-	']'            shift, and enter state 237
+	']'            shift, and enter state 238
 
 
 State 203
 
 	Gate -> 'RY' Angle '[' ListControl . ']'            (rule 69)
 
-	']'            shift, and enter state 236
+	']'            shift, and enter state 237
 
 
 State 204
 
 	Gate -> 'RX' Angle '[' ListControl . ']'            (rule 67)
 
-	']'            shift, and enter state 235
+	']'            shift, and enter state 236
 
 
 State 205
 
 	Gate -> 'ROOT_Z_DAG' Integer '[' ListControl . ']'    (rule 49)
 
-	']'            shift, and enter state 234
+	']'            shift, and enter state 235
 
 
 State 206
 
 	Gate -> 'ROOT_Z' Integer '[' ListControl . ']'      (rule 47)
 
-	']'            shift, and enter state 233
+	']'            shift, and enter state 234
 
 
 State 207
 
 	Gate -> 'ROOT_Y_DAG' Integer '[' ListControl . ']'    (rule 45)
 
-	']'            shift, and enter state 232
+	']'            shift, and enter state 233
 
 
 State 208
 
 	Gate -> 'ROOT_Y' Integer '[' ListControl . ']'      (rule 43)
 
-	']'            shift, and enter state 231
+	']'            shift, and enter state 232
 
 
 State 209
 
 	Gate -> 'ROOT_X_DAG' Integer '[' ListControl . ']'    (rule 41)
 
-	']'            shift, and enter state 230
+	']'            shift, and enter state 231
 
 
 State 210
 
 	Gate -> 'ROOT_X' Integer '[' ListControl . ']'      (rule 39)
 
-	']'            shift, and enter state 229
+	']'            shift, and enter state 230
 
 
 State 211
 
 	Gate -> 'ROOT_SWAP_DAG' Integer '[' ListControl . ']'    (rule 91)
 
-	']'            shift, and enter state 228
+	']'            shift, and enter state 229
 
 
 State 212
 
 	Gate -> 'ROOT_SWAP' Integer '[' ListControl . ']'    (rule 89)
 
-	']'            shift, and enter state 227
+	']'            shift, and enter state 228
 
 
 State 213
@@ -6072,7 +5783,7 @@ State 216
 
 	Tuple -> '(' Term ',' ListTerm . ')'                (rule 100)
 
-	')'            shift, and enter state 226
+	')'            shift, and enter state 227
 
 
 State 217
@@ -6081,7 +5792,7 @@ State 217
 	ListTerm -> Term . ',' ListTerm                     (rule 102)
 
 	')'            reduce using rule 101
-	','            shift, and enter state 225
+	','            shift, and enter state 226
 
 
 State 218
@@ -6139,7 +5850,7 @@ State 218
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 224
+	Term           goto state 225
 
 State 219
 
@@ -6214,24 +5925,81 @@ State 221
 
 	ControlState   goto state 130
 	Control        goto state 131
-	ListControl    goto state 223
+	ListControl    goto state 224
 
 State 222
 
-	Control -> ControlState Term .                      (rule 26)
+	Control -> ControlState '<-' . Term                 (rule 26)
+
+	'('            shift, and enter state 49
+	'()'           shift, and enter state 50
+	'FSWAP'        shift, and enter state 51
+	'H'            shift, and enter state 52
+	'ID'           shift, and enter state 53
+	'ISWAP'        shift, and enter state 54
+	'ROOT_SWAP'    shift, and enter state 55
+	'ROOT_SWAP_DAG'shift, and enter state 56
+	'ROOT_X'       shift, and enter state 57
+	'ROOT_X_DAG'   shift, and enter state 58
+	'ROOT_Y'       shift, and enter state 59
+	'ROOT_Y_DAG'   shift, and enter state 60
+	'ROOT_Z'       shift, and enter state 61
+	'ROOT_Z_DAG'   shift, and enter state 62
+	'RX'           shift, and enter state 63
+	'RY'           shift, and enter state 64
+	'RZ'           shift, and enter state 65
+	'S'            shift, and enter state 66
+	'SQRT_SWAP'    shift, and enter state 67
+	'SQRT_SWAP_DAG'shift, and enter state 68
+	'SQRT_X'       shift, and enter state 69
+	'SQRT_X_DAG'   shift, and enter state 70
+	'SQRT_Y'       shift, and enter state 71
+	'SQRT_Y_DAG'   shift, and enter state 72
+	'SWAP'         shift, and enter state 73
+	'S_DAG'        shift, and enter state 74
+	'T'            shift, and enter state 75
+	'T_DAG'        shift, and enter state 76
+	'U1'           shift, and enter state 77
+	'U2'           shift, and enter state 78
+	'U3'           shift, and enter state 79
+	'X'            shift, and enter state 80
+	'Y'            shift, and enter state 81
+	'Z'            shift, and enter state 82
+	'case'         shift, and enter state 83
+	'if'           shift, and enter state 84
+	'let'          shift, and enter state 85
+	L_GateIdent    shift, and enter state 86
+	L_Var          shift, and enter state 8
+	L_Lambda       shift, and enter state 87
+	L_Bit          shift, and enter state 88
+
+	GateIdent      goto state 39
+	Var            goto state 40
+	Lambda         goto state 41
+	Bit            goto state 42
+	Gate           goto state 43
+	Tuple          goto state 44
+	Term3          goto state 45
+	Term1          goto state 46
+	Term2          goto state 47
+	Term           goto state 223
+
+State 223
+
+	Control -> ControlState '<-' Term .                 (rule 26)
 
 	','            reduce using rule 26
 	']'            reduce using rule 26
 
 
-State 223
+State 224
 
 	ListControl -> Control ',' ListControl .            (rule 28)
 
 	']'            reduce using rule 28
 
 
-State 224
+State 225
 
 	Term1 -> Lambda LambdaVariable ListLambdaVariable '->' Term .    (rule 113)
 
@@ -6246,7 +6014,7 @@ State 224
 	'}'            reduce using rule 113
 
 
-State 225
+State 226
 
 	ListTerm -> Term ',' . ListTerm                     (rule 102)
 
@@ -6298,13 +6066,13 @@ State 225
 	Bit            goto state 42
 	Gate           goto state 43
 	Tuple          goto state 44
-	ListTerm       goto state 255
+	ListTerm       goto state 256
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
 	Term           goto state 217
 
-State 226
+State 227
 
 	Tuple -> '(' Term ',' ListTerm ')' .                (rule 100)
 
@@ -6357,7 +6125,7 @@ State 226
 	L_Bit          reduce using rule 100
 
 
-State 227
+State 228
 
 	Gate -> 'ROOT_SWAP' Integer '[' ListControl ']' .    (rule 89)
 
@@ -6410,7 +6178,7 @@ State 227
 	L_Bit          reduce using rule 89
 
 
-State 228
+State 229
 
 	Gate -> 'ROOT_SWAP_DAG' Integer '[' ListControl ']' .    (rule 91)
 
@@ -6463,7 +6231,7 @@ State 228
 	L_Bit          reduce using rule 91
 
 
-State 229
+State 230
 
 	Gate -> 'ROOT_X' Integer '[' ListControl ']' .      (rule 39)
 
@@ -6516,7 +6284,7 @@ State 229
 	L_Bit          reduce using rule 39
 
 
-State 230
+State 231
 
 	Gate -> 'ROOT_X_DAG' Integer '[' ListControl ']' .    (rule 41)
 
@@ -6569,7 +6337,7 @@ State 230
 	L_Bit          reduce using rule 41
 
 
-State 231
+State 232
 
 	Gate -> 'ROOT_Y' Integer '[' ListControl ']' .      (rule 43)
 
@@ -6622,7 +6390,7 @@ State 231
 	L_Bit          reduce using rule 43
 
 
-State 232
+State 233
 
 	Gate -> 'ROOT_Y_DAG' Integer '[' ListControl ']' .    (rule 45)
 
@@ -6675,7 +6443,7 @@ State 232
 	L_Bit          reduce using rule 45
 
 
-State 233
+State 234
 
 	Gate -> 'ROOT_Z' Integer '[' ListControl ']' .      (rule 47)
 
@@ -6728,7 +6496,7 @@ State 233
 	L_Bit          reduce using rule 47
 
 
-State 234
+State 235
 
 	Gate -> 'ROOT_Z_DAG' Integer '[' ListControl ']' .    (rule 49)
 
@@ -6781,7 +6549,7 @@ State 234
 	L_Bit          reduce using rule 49
 
 
-State 235
+State 236
 
 	Gate -> 'RX' Angle '[' ListControl ']' .            (rule 67)
 
@@ -6834,7 +6602,7 @@ State 235
 	L_Bit          reduce using rule 67
 
 
-State 236
+State 237
 
 	Gate -> 'RY' Angle '[' ListControl ']' .            (rule 69)
 
@@ -6887,7 +6655,7 @@ State 236
 	L_Bit          reduce using rule 69
 
 
-State 237
+State 238
 
 	Gate -> 'RZ' Angle '[' ListControl ']' .            (rule 71)
 
@@ -6940,7 +6708,7 @@ State 237
 	L_Bit          reduce using rule 71
 
 
-State 238
+State 239
 
 	Gate -> 'U1' Angle '[' ListControl ']' .            (rule 73)
 
@@ -6993,14 +6761,14 @@ State 238
 	L_Bit          reduce using rule 73
 
 
-State 239
+State 240
 
 	Gate -> 'U2' Angle Angle '[' ListControl . ']'      (rule 75)
 
-	']'            shift, and enter state 254
+	']'            shift, and enter state 255
 
 
-State 240
+State 241
 
 	Gate -> 'U3' Angle Angle Angle '[' . ListControl ']'    (rule 77)
 
@@ -7013,9 +6781,9 @@ State 240
 
 	ControlState   goto state 130
 	Control        goto state 131
-	ListControl    goto state 253
+	ListControl    goto state 254
 
-State 241
+State 242
 
 	ListCaseExpression -> CaseExpression .              (rule 120)
 	ListCaseExpression -> CaseExpression . ListCaseExpression    (rule 121)
@@ -7081,10 +6849,10 @@ State 241
 	Term1          goto state 46
 	Term2          goto state 47
 	Term           goto state 183
-	CaseExpression goto state 241
-	ListCaseExpressiongoto state 252
+	CaseExpression goto state 242
+	ListCaseExpressiongoto state 253
 
-State 242
+State 243
 
 	Term1 -> 'case' Term 'of' CaseExpression ListCaseExpression .    (rule 112)
 
@@ -7099,15 +6867,15 @@ State 242
 	'}'            reduce using rule 112
 
 
-State 243
+State 244
 
 	CaseExpression -> Term '->' . Var                   (rule 119)
 
 	L_Var          shift, and enter state 8
 
-	Var            goto state 251
+	Var            goto state 252
 
-State 244
+State 245
 
 	Term1 -> 'if' Term 'then' Term 'else' . Term        (rule 109)
 
@@ -7162,49 +6930,49 @@ State 244
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 250
+	Term           goto state 251
 
-State 245
+State 246
 
 	Term1 -> 'let' '{' LetVariable '=' Term . '}' 'in' Term    (rule 110)
 
-	'}'            shift, and enter state 249
+	'}'            shift, and enter state 250
 
 
-State 246
+State 247
 
 	Term1 -> 'let' '{' '(' LetVariable ',' . ListLetVariable ')' '=' Term '}' 'in' Term    (rule 111)
 
 	L_Var          shift, and enter state 8
 
 	Var            goto state 177
-	LetVariable    goto state 247
-	ListLetVariablegoto state 248
+	LetVariable    goto state 248
+	ListLetVariablegoto state 249
 
-State 247
+State 248
 
 	ListLetVariable -> LetVariable .                    (rule 95)
 	ListLetVariable -> LetVariable . ',' ListLetVariable    (rule 96)
 
 	')'            reduce using rule 95
-	','            shift, and enter state 259
-
-
-State 248
-
-	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable . ')' '=' Term '}' 'in' Term    (rule 111)
-
-	')'            shift, and enter state 258
+	','            shift, and enter state 260
 
 
 State 249
 
-	Term1 -> 'let' '{' LetVariable '=' Term '}' . 'in' Term    (rule 110)
+	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable . ')' '=' Term '}' 'in' Term    (rule 111)
 
-	'in'           shift, and enter state 257
+	')'            shift, and enter state 259
 
 
 State 250
+
+	Term1 -> 'let' '{' LetVariable '=' Term '}' . 'in' Term    (rule 110)
+
+	'in'           shift, and enter state 258
+
+
+State 251
 
 	Term1 -> 'if' Term 'then' Term 'else' Term .        (rule 109)
 
@@ -7219,7 +6987,7 @@ State 250
 	'}'            reduce using rule 109
 
 
-State 251
+State 252
 
 	CaseExpression -> Term '->' Var .                   (rule 119)
 
@@ -7275,7 +7043,7 @@ State 251
 	L_Bit          reduce using rule 119
 
 
-State 252
+State 253
 
 	ListCaseExpression -> CaseExpression ListCaseExpression .    (rule 121)
 
@@ -7290,14 +7058,14 @@ State 252
 	'}'            reduce using rule 121
 
 
-State 253
+State 254
 
 	Gate -> 'U3' Angle Angle Angle '[' ListControl . ']'    (rule 77)
 
-	']'            shift, and enter state 256
+	']'            shift, and enter state 257
 
 
-State 254
+State 255
 
 	Gate -> 'U2' Angle Angle '[' ListControl ']' .      (rule 75)
 
@@ -7350,14 +7118,14 @@ State 254
 	L_Bit          reduce using rule 75
 
 
-State 255
+State 256
 
 	ListTerm -> Term ',' ListTerm .                     (rule 102)
 
 	')'            reduce using rule 102
 
 
-State 256
+State 257
 
 	Gate -> 'U3' Angle Angle Angle '[' ListControl ']' .    (rule 77)
 
@@ -7410,7 +7178,7 @@ State 256
 	L_Bit          reduce using rule 77
 
 
-State 257
+State 258
 
 	Term1 -> 'let' '{' LetVariable '=' Term '}' 'in' . Term    (rule 110)
 
@@ -7465,33 +7233,33 @@ State 257
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 262
+	Term           goto state 263
 
-State 258
+State 259
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' . '=' Term '}' 'in' Term    (rule 111)
 
-	'='            shift, and enter state 261
+	'='            shift, and enter state 262
 
 
-State 259
+State 260
 
 	ListLetVariable -> LetVariable ',' . ListLetVariable    (rule 96)
 
 	L_Var          shift, and enter state 8
 
 	Var            goto state 177
-	LetVariable    goto state 247
-	ListLetVariablegoto state 260
+	LetVariable    goto state 248
+	ListLetVariablegoto state 261
 
-State 260
+State 261
 
 	ListLetVariable -> LetVariable ',' ListLetVariable .    (rule 96)
 
 	')'            reduce using rule 96
 
 
-State 261
+State 262
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' . Term '}' 'in' Term    (rule 111)
 
@@ -7546,9 +7314,9 @@ State 261
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 263
+	Term           goto state 264
 
-State 262
+State 263
 
 	Term1 -> 'let' '{' LetVariable '=' Term '}' 'in' Term .    (rule 110)
 
@@ -7563,21 +7331,21 @@ State 262
 	'}'            reduce using rule 110
 
 
-State 263
+State 264
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term . '}' 'in' Term    (rule 111)
 
-	'}'            shift, and enter state 264
-
-
-State 264
-
-	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' . 'in' Term    (rule 111)
-
-	'in'           shift, and enter state 265
+	'}'            shift, and enter state 265
 
 
 State 265
+
+	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' . 'in' Term    (rule 111)
+
+	'in'           shift, and enter state 266
+
+
+State 266
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' . Term    (rule 111)
 
@@ -7632,9 +7400,9 @@ State 265
 	Term3          goto state 45
 	Term1          goto state 46
 	Term2          goto state 47
-	Term           goto state 266
+	Term           goto state 267
 
-State 266
+State 267
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term .    (rule 111)
 
@@ -7653,6 +7421,6 @@ State 266
 Grammar Totals
 -----------------------------------------------------------------------------
 Number of rules: 132
-Number of terminals: 69
+Number of terminals: 70
 Number of non-terminals: 35
-Number of states: 267
+Number of states: 268
