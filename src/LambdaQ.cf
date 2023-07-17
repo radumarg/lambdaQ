@@ -32,7 +32,7 @@ CStatePlusI  . ControlState ::= "@+i" ;
 CStateMinusI . ControlState ::= "@-i" ;
 
 -- Controls --
-CCtrl . Control ::= ControlState "<-" Term ;
+CCtrl . Control ::= ControlState "->" Term ;
 separator nonempty Control "," ;
 
 position token GateIdent (upper (letter | digit | '_')*) ;
