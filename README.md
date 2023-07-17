@@ -1,5 +1,5 @@
 
-###  lambdaQ
+###  lambdaQ - functional quantum programming language
   
 A functional quantum programming language whose starting point is the quantum lambda calculus created by Peter Selinger and Benoit Valiron: [A lambda calculus for quantum computation with classical control](https://arxiv.org/abs/cs/0404056).
 
