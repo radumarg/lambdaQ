@@ -19,8 +19,8 @@ data Type
     = TypeBit
     | TypeQbit
     | TypeUnit
-    | TypeExp Type
-    | TypeTensrs Type Integer
+    | TypeNonLin Type
+    | TypeExp Type Integer
     | TypeTensr Type Type
     | TypeFunc Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)

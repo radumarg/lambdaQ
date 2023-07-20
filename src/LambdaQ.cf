@@ -14,8 +14,8 @@ ProgDef .  Program ::= [FunDec] ;
 TypeBit    . Type3  ::= "Bit" ;
 TypeQbit   . Type3  ::= "Qbit" ;
 TypeUnit   . Type3  ::= "()" ;
-TypeExp    . Type2  ::= "!" Type3 ;
-TypeTensrs . Type1  ::= Type2 "**" Integer ;   
+TypeNonLin . Type2  ::= "!" Type3 ;
+TypeExp    . Type1  ::= Type2 "**" Integer ;
 TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;

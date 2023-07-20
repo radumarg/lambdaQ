@@ -528,7 +528,7 @@ happyReduction_12 happy_x_2
 	happy_x_1
 	 =  case happyOut11 happy_x_2 of { (HappyWrap11 happy_var_2) -> 
 	happyIn12
-		 (Frontend.LambdaQ.Abs.TypeExp happy_var_2
+		 (Frontend.LambdaQ.Abs.TypeNonLin happy_var_2
 	)}
 
 happyReduce_13 = happySpecReduce_1  8# happyReduction_13
@@ -545,7 +545,7 @@ happyReduction_14 happy_x_3
 	 =  case happyOut12 happy_x_1 of { (HappyWrap12 happy_var_1) -> 
 	case happyOut5 happy_x_3 of { (HappyWrap5 happy_var_3) -> 
 	happyIn13
-		 (Frontend.LambdaQ.Abs.TypeTensrs happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.TypeExp happy_var_1 happy_var_3
 	)}}
 
 happyReduce_15 = happySpecReduce_3  9# happyReduction_15

@@ -155,8 +155,8 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 3 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 3 (concatD [doc (showString "Qbit")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 3 (concatD [doc (showString "()")])
-    Frontend.LambdaQ.Abs.TypeExp type_ -> prPrec i 2 (concatD [doc (showString "!"), prt 3 type_])
-    Frontend.LambdaQ.Abs.TypeTensrs type_ n -> prPrec i 1 (concatD [prt 2 type_, doc (showString "**"), prt 0 n])
+    Frontend.LambdaQ.Abs.TypeNonLin type_ -> prPrec i 2 (concatD [doc (showString "!"), prt 3 type_])
+    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 1 (concatD [prt 2 type_, doc (showString "**"), prt 0 n])
     Frontend.LambdaQ.Abs.TypeTensr type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "*"), prt 1 type_2])
     Frontend.LambdaQ.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
 

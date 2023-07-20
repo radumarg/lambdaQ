@@ -125,11 +125,11 @@ Type3
 
 Type2 :: { Frontend.LambdaQ.Abs.Type }
 Type2
-  : '!' Type3 { Frontend.LambdaQ.Abs.TypeExp $2 } | Type3 { $1 }
+  : '!' Type3 { Frontend.LambdaQ.Abs.TypeNonLin $2 } | Type3 { $1 }
 
 Type1 :: { Frontend.LambdaQ.Abs.Type }
 Type1
-  : Type2 '**' Integer { Frontend.LambdaQ.Abs.TypeTensrs $1 $3 }
+  : Type2 '**' Integer { Frontend.LambdaQ.Abs.TypeExp $1 $3 }
   | Type2 '*' Type1 { Frontend.LambdaQ.Abs.TypeTensr $1 $3 }
   | Type2 { $1 }
 
