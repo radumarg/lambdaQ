@@ -121,7 +121,7 @@ data Term =
     Let Term Term                   |
     Lamb Type Term                  |
     New                             |
-    Meas                            |
+    Measure                         |
     Unit
       deriving (Eq, Ord, Show, Read)
 
