@@ -5,9 +5,8 @@
 --   *  functions to be be converted to lambda abstractions
 --   *  BNFC generated AST terms to be converted into an intermediate abstract syntax tree terms 
 --   *  introduce De Bruijn indices for bound variables
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Use newtype instead of data" #-}
+{-# LANGUAGE GADTs #-}
 
 module Backend.IAST where
 
@@ -41,7 +40,11 @@ data ControlState =
 data Control = CCtrl ControlState Term
   deriving (Eq, Ord, Show, Read)
 
-data Angle = AAngl Double
+data Angle where
+  AAngl :: Double -> Angle
+  deriving (Eq, Ord, Show, Read)
+
+newtype GateIdent = GateIdent String
   deriving (Eq, Ord, Show, Read)
 
 data Gate =
@@ -108,8 +111,9 @@ data Gate =
     GateSwpRt Integer                   |
     GateSwpRtC Integer [Control]        |
     GateSwpRtDag Integer                |
-    GateSwpRtDagC Integer [Control] 
-    -- TODO add generic gate
+    GateSwpRtDagC Integer [Control]     |
+    GateGeneric GateIdent               |
+    GateGenericC GateIdent [Control]
   deriving (Eq, Ord, Show, Read)
 
 data Term =
@@ -244,7 +248,8 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateSwpRtC rt ctrls -> GateSwpRtC rt (map mapControl ctrls)
     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
     GeneratedAbstractSyntax.GateSwpRtDagC rt ctrls -> GateSwpRtDagC rt (map mapControl ctrls)
-    -- TODO add generic gate and generic controlled gate
+    GeneratedAbstractSyntax.GateGeneric name -> undefined             -- TODO: map generic gates -
+    GeneratedAbstractSyntax.GateGenericC name ctrls -> undefined      -- TODO: map generic gates -
 
 reverseMapGate :: Gate -> GeneratedAbstractSyntax.Gate
 reverseMapGate g = case g of 
@@ -312,7 +317,8 @@ reverseMapGate g = case g of
     GateSwpRtC rt ctrls -> GeneratedAbstractSyntax.GateSwpRtC rt (map reverseMapControl ctrls)
     GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
     GateSwpRtDagC rt ctrls -> GeneratedAbstractSyntax.GateSwpRtDagC rt (map reverseMapControl ctrls)
-    -- TODO add generic gate and generic controlled gate
+    GateGeneric name -> undefined             -- TODO: map generic gates -
+    GateGenericC name ctrls -> undefined      -- TODO: map generic gates -
 
 type Env = String
 mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
