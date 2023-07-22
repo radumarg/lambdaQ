@@ -220,7 +220,7 @@ Gate
   | 'ISWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateISwpC $3 }
   | 'FSWAP' { Frontend.LambdaQ.Abs.GateFSwp }
   | 'FSWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateFSwpC $3 }
-  | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwapTheta $2 }
+  | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwpTheta $2 }
   | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
   | 'ROOT_SWAP' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtC $2 $4 }
   | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }

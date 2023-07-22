@@ -100,7 +100,7 @@ data Gate
     | GateISwpC [Control]
     | GateFSwp
     | GateFSwpC [Control]
-    | GateSwapTheta Angle
+    | GateSwpTheta Angle
     | GateSwpRt Integer
     | GateSwpRtC Integer [Control]
     | GateSwpRtDag Integer

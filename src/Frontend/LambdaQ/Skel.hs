@@ -123,7 +123,7 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateISwpC controls -> failure x
   Frontend.LambdaQ.Abs.GateFSwp -> failure x
   Frontend.LambdaQ.Abs.GateFSwpC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSwapTheta angle -> failure x
+  Frontend.LambdaQ.Abs.GateSwpTheta angle -> failure x
   Frontend.LambdaQ.Abs.GateSwpRt integer -> failure x
   Frontend.LambdaQ.Abs.GateSwpRtC integer controls -> failure x
   Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x

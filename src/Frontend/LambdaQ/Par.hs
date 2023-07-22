@@ -1218,7 +1218,7 @@ happyReduction_88 happy_x_2
 	happy_x_1
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GateSwapTheta happy_var_2
+		 (Frontend.LambdaQ.Abs.GateSwpTheta happy_var_2
 	)}
 
 happyReduce_89 = happySpecReduce_2  15# happyReduction_89
