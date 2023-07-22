@@ -160,71 +160,71 @@ ListControl
 
 Gate :: { Frontend.LambdaQ.Abs.Gate }
 Gate
-  : 'H' { Frontend.LambdaQ.Abs.GH }
-  | 'H' '[' ListControl ']' { Frontend.LambdaQ.Abs.GHC $3 }
-  | 'X' { Frontend.LambdaQ.Abs.GX }
-  | 'X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GXC $3 }
-  | 'Y' { Frontend.LambdaQ.Abs.GY }
-  | 'Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GYC $3 }
-  | 'Z' { Frontend.LambdaQ.Abs.GZ }
-  | 'Z' '[' ListControl ']' { Frontend.LambdaQ.Abs.GZC $3 }
-  | 'ID' { Frontend.LambdaQ.Abs.GI }
-  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GXRt $2 }
-  | 'ROOT_X' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GXRtC $2 $4 }
-  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GXRtDag $2 }
-  | 'ROOT_X_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GXRtDagC $2 $4 }
-  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GYRt $2 }
-  | 'ROOT_Y' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GYRtC $2 $4 }
-  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GYRtDag $2 }
-  | 'ROOT_Y_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GYRtDagC $2 $4 }
-  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GZRt $2 }
-  | 'ROOT_Z' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GZRtC $2 $4 }
-  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GZRtDag $2 }
-  | 'ROOT_Z_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GZRtDagC $2 $4 }
-  | 'S' { Frontend.LambdaQ.Abs.GS }
-  | 'S' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSC $3 }
-  | 'S_DAG' { Frontend.LambdaQ.Abs.GSDag }
-  | 'S_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSDagC $3 }
-  | 'T' { Frontend.LambdaQ.Abs.GT }
-  | 'T' '[' ListControl ']' { Frontend.LambdaQ.Abs.GTC $3 }
-  | 'T_DAG' { Frontend.LambdaQ.Abs.GTDag }
-  | 'T_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GTDagC $3 }
-  | 'SQRT_X' { Frontend.LambdaQ.Abs.GSqrtX }
-  | 'SQRT_X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtXC $3 }
-  | 'SQRT_X_DAG' { Frontend.LambdaQ.Abs.GSqrtXDag }
-  | 'SQRT_X_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtXDagC $3 }
-  | 'SQRT_Y' { Frontend.LambdaQ.Abs.GSqrtY }
-  | 'SQRT_Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtYC $3 }
-  | 'SQRT_Y_DAG' { Frontend.LambdaQ.Abs.GSqrtYDag }
-  | 'SQRT_Y_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtYDagC $3 }
-  | 'RX' Angle { Frontend.LambdaQ.Abs.GRxTheta $2 }
-  | 'RX' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GRxThetaC $2 $4 }
-  | 'RY' Angle { Frontend.LambdaQ.Abs.GRyTheta $2 }
-  | 'RY' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GRyThetaC $2 $4 }
-  | 'RZ' Angle { Frontend.LambdaQ.Abs.GRzTheta $2 }
-  | 'RZ' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GRzThetaC $2 $4 }
-  | 'U1' Angle { Frontend.LambdaQ.Abs.GU1 $2 }
-  | 'U1' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GU1C $2 $4 }
-  | 'U2' Angle Angle { Frontend.LambdaQ.Abs.GU2 $2 $3 }
-  | 'U2' Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GU2C $2 $3 $5 }
-  | 'U3' Angle Angle Angle { Frontend.LambdaQ.Abs.GU3 $2 $3 $4 }
-  | 'U3' Angle Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GU3C $2 $3 $4 $6 }
-  | 'SWAP' { Frontend.LambdaQ.Abs.GSwp }
-  | 'SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSwpC $3 }
-  | 'SQRT_SWAP' { Frontend.LambdaQ.Abs.GSqrtSwp }
-  | 'SQRT_SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtSwpC $3 }
-  | 'SQRT_SWAP_DAG' { Frontend.LambdaQ.Abs.GSqrtSwpDag }
-  | 'SQRT_SWAP_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GSqrtSwpDagC $3 }
-  | 'ISWAP' { Frontend.LambdaQ.Abs.GISwp }
-  | 'ISWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GISwpC $3 }
-  | 'FSWAP' { Frontend.LambdaQ.Abs.GFSwp }
-  | 'FSWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GFSwpC $3 }
-  | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GSwpRt $2 }
-  | 'ROOT_SWAP' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GSwpRtC $2 $4 }
-  | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GSwpRtDag $2 }
-  | 'ROOT_SWAP_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GSwpRtDagC $2 $4 }
-  | GateIdent { Frontend.LambdaQ.Abs.GGate $1 }
-  | GateIdent '[' ListControl ']' { Frontend.LambdaQ.Abs.GGateC $1 $3 }
+  : 'H' { Frontend.LambdaQ.Abs.GateH }
+  | 'H' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateHC $3 }
+  | 'X' { Frontend.LambdaQ.Abs.GateX }
+  | 'X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXC $3 }
+  | 'Y' { Frontend.LambdaQ.Abs.GateY }
+  | 'Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYC $3 }
+  | 'Z' { Frontend.LambdaQ.Abs.GateZ }
+  | 'Z' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZC $3 }
+  | 'ID' { Frontend.LambdaQ.Abs.GateI }
+  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRt $2 }
+  | 'ROOT_X' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtC $2 $4 }
+  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRtDag $2 }
+  | 'ROOT_X_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtDagC $2 $4 }
+  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRt $2 }
+  | 'ROOT_Y' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtC $2 $4 }
+  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GateYRtDag $2 }
+  | 'ROOT_Y_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtDagC $2 $4 }
+  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GateZRt $2 }
+  | 'ROOT_Z' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtC $2 $4 }
+  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GateZRtDag $2 }
+  | 'ROOT_Z_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtDagC $2 $4 }
+  | 'S' { Frontend.LambdaQ.Abs.GateS }
+  | 'S' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSC $3 }
+  | 'S_DAG' { Frontend.LambdaQ.Abs.GateSDag }
+  | 'S_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSDagC $3 }
+  | 'T' { Frontend.LambdaQ.Abs.GateT }
+  | 'T' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTC $3 }
+  | 'T_DAG' { Frontend.LambdaQ.Abs.GateTDag }
+  | 'T_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTDagC $3 }
+  | 'SQRT_X' { Frontend.LambdaQ.Abs.GateSqrtX }
+  | 'SQRT_X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXC $3 }
+  | 'SQRT_X_DAG' { Frontend.LambdaQ.Abs.GateSqrtXDag }
+  | 'SQRT_X_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXDagC $3 }
+  | 'SQRT_Y' { Frontend.LambdaQ.Abs.GateSqrtY }
+  | 'SQRT_Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYC $3 }
+  | 'SQRT_Y_DAG' { Frontend.LambdaQ.Abs.GateSqrtYDag }
+  | 'SQRT_Y_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYDagC $3 }
+  | 'RX' Angle { Frontend.LambdaQ.Abs.GateRxTheta $2 }
+  | 'RX' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRxThetaC $2 $4 }
+  | 'RY' Angle { Frontend.LambdaQ.Abs.GateRyTheta $2 }
+  | 'RY' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRyThetaC $2 $4 }
+  | 'RZ' Angle { Frontend.LambdaQ.Abs.GateRzTheta $2 }
+  | 'RZ' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRzThetaC $2 $4 }
+  | 'U1' Angle { Frontend.LambdaQ.Abs.GateU1 $2 }
+  | 'U1' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU1C $2 $4 }
+  | 'U2' Angle Angle { Frontend.LambdaQ.Abs.GateU2 $2 $3 }
+  | 'U2' Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU2C $2 $3 $5 }
+  | 'U3' Angle Angle Angle { Frontend.LambdaQ.Abs.GateU3 $2 $3 $4 }
+  | 'U3' Angle Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU3C $2 $3 $4 $6 }
+  | 'SWAP' { Frontend.LambdaQ.Abs.GateSwp }
+  | 'SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpC $3 }
+  | 'SQRT_SWAP' { Frontend.LambdaQ.Abs.GateSqrtSwp }
+  | 'SQRT_SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpC $3 }
+  | 'SQRT_SWAP_DAG' { Frontend.LambdaQ.Abs.GateSqrtSwpDag }
+  | 'SQRT_SWAP_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpDagC $3 }
+  | 'ISWAP' { Frontend.LambdaQ.Abs.GateISwp }
+  | 'ISWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateISwpC $3 }
+  | 'FSWAP' { Frontend.LambdaQ.Abs.GateFSwp }
+  | 'FSWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateFSwpC $3 }
+  | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
+  | 'ROOT_SWAP' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtC $2 $4 }
+  | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }
+  | 'ROOT_SWAP_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtDagC $2 $4 }
+  | GateIdent { Frontend.LambdaQ.Abs.GateGeneric $1 }
+  | GateIdent '[' ListControl ']' { Frontend.LambdaQ.Abs.GateGenericC $1 $3 }
 
 LetVariable :: { Frontend.LambdaQ.Abs.LetVariable }
 LetVariable : Var { Frontend.LambdaQ.Abs.LetVar $1 }

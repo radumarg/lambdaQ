@@ -655,7 +655,7 @@ happyReduction_28 happy_x_3
 happyReduce_29 = happySpecReduce_1  15# happyReduction_29
 happyReduction_29 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GH
+		 (Frontend.LambdaQ.Abs.GateH
 	)
 
 happyReduce_30 = happyReduce 4# 15# happyReduction_30
@@ -666,13 +666,13 @@ happyReduction_30 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GHC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateHC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_31 = happySpecReduce_1  15# happyReduction_31
 happyReduction_31 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GX
+		 (Frontend.LambdaQ.Abs.GateX
 	)
 
 happyReduce_32 = happyReduce 4# 15# happyReduction_32
@@ -683,13 +683,13 @@ happyReduction_32 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GXC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateXC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_33 = happySpecReduce_1  15# happyReduction_33
 happyReduction_33 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GY
+		 (Frontend.LambdaQ.Abs.GateY
 	)
 
 happyReduce_34 = happyReduce 4# 15# happyReduction_34
@@ -700,13 +700,13 @@ happyReduction_34 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GYC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateYC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_35 = happySpecReduce_1  15# happyReduction_35
 happyReduction_35 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GZ
+		 (Frontend.LambdaQ.Abs.GateZ
 	)
 
 happyReduce_36 = happyReduce 4# 15# happyReduction_36
@@ -717,13 +717,13 @@ happyReduction_36 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GZC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateZC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_37 = happySpecReduce_1  15# happyReduction_37
 happyReduction_37 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GI
+		 (Frontend.LambdaQ.Abs.GateI
 	)
 
 happyReduce_38 = happySpecReduce_2  15# happyReduction_38
@@ -731,7 +731,7 @@ happyReduction_38 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GXRt happy_var_2
+		 (Frontend.LambdaQ.Abs.GateXRt happy_var_2
 	)}
 
 happyReduce_39 = happyReduce 5# 15# happyReduction_39
@@ -744,7 +744,7 @@ happyReduction_39 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GXRtC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateXRtC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_40 = happySpecReduce_2  15# happyReduction_40
@@ -752,7 +752,7 @@ happyReduction_40 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GXRtDag happy_var_2
+		 (Frontend.LambdaQ.Abs.GateXRtDag happy_var_2
 	)}
 
 happyReduce_41 = happyReduce 5# 15# happyReduction_41
@@ -765,7 +765,7 @@ happyReduction_41 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GXRtDagC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateXRtDagC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_42 = happySpecReduce_2  15# happyReduction_42
@@ -773,7 +773,7 @@ happyReduction_42 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GYRt happy_var_2
+		 (Frontend.LambdaQ.Abs.GateYRt happy_var_2
 	)}
 
 happyReduce_43 = happyReduce 5# 15# happyReduction_43
@@ -786,7 +786,7 @@ happyReduction_43 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GYRtC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateYRtC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_44 = happySpecReduce_2  15# happyReduction_44
@@ -794,7 +794,7 @@ happyReduction_44 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GYRtDag happy_var_2
+		 (Frontend.LambdaQ.Abs.GateYRtDag happy_var_2
 	)}
 
 happyReduce_45 = happyReduce 5# 15# happyReduction_45
@@ -807,7 +807,7 @@ happyReduction_45 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GYRtDagC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateYRtDagC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_46 = happySpecReduce_2  15# happyReduction_46
@@ -815,7 +815,7 @@ happyReduction_46 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GZRt happy_var_2
+		 (Frontend.LambdaQ.Abs.GateZRt happy_var_2
 	)}
 
 happyReduce_47 = happyReduce 5# 15# happyReduction_47
@@ -828,7 +828,7 @@ happyReduction_47 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GZRtC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateZRtC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_48 = happySpecReduce_2  15# happyReduction_48
@@ -836,7 +836,7 @@ happyReduction_48 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GZRtDag happy_var_2
+		 (Frontend.LambdaQ.Abs.GateZRtDag happy_var_2
 	)}
 
 happyReduce_49 = happyReduce 5# 15# happyReduction_49
@@ -849,13 +849,13 @@ happyReduction_49 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GZRtDagC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateZRtDagC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_50 = happySpecReduce_1  15# happyReduction_50
 happyReduction_50 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GS
+		 (Frontend.LambdaQ.Abs.GateS
 	)
 
 happyReduce_51 = happyReduce 4# 15# happyReduction_51
@@ -866,13 +866,13 @@ happyReduction_51 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_52 = happySpecReduce_1  15# happyReduction_52
 happyReduction_52 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSDag
+		 (Frontend.LambdaQ.Abs.GateSDag
 	)
 
 happyReduce_53 = happyReduce 4# 15# happyReduction_53
@@ -883,13 +883,13 @@ happyReduction_53 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSDagC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSDagC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_54 = happySpecReduce_1  15# happyReduction_54
 happyReduction_54 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GT
+		 (Frontend.LambdaQ.Abs.GateT
 	)
 
 happyReduce_55 = happyReduce 4# 15# happyReduction_55
@@ -900,13 +900,13 @@ happyReduction_55 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GTC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateTC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_56 = happySpecReduce_1  15# happyReduction_56
 happyReduction_56 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GTDag
+		 (Frontend.LambdaQ.Abs.GateTDag
 	)
 
 happyReduce_57 = happyReduce 4# 15# happyReduction_57
@@ -917,13 +917,13 @@ happyReduction_57 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GTDagC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateTDagC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_58 = happySpecReduce_1  15# happyReduction_58
 happyReduction_58 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtX
+		 (Frontend.LambdaQ.Abs.GateSqrtX
 	)
 
 happyReduce_59 = happyReduce 4# 15# happyReduction_59
@@ -934,13 +934,13 @@ happyReduction_59 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtXC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtXC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_60 = happySpecReduce_1  15# happyReduction_60
 happyReduction_60 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtXDag
+		 (Frontend.LambdaQ.Abs.GateSqrtXDag
 	)
 
 happyReduce_61 = happyReduce 4# 15# happyReduction_61
@@ -951,13 +951,13 @@ happyReduction_61 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtXDagC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtXDagC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_62 = happySpecReduce_1  15# happyReduction_62
 happyReduction_62 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtY
+		 (Frontend.LambdaQ.Abs.GateSqrtY
 	)
 
 happyReduce_63 = happyReduce 4# 15# happyReduction_63
@@ -968,13 +968,13 @@ happyReduction_63 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtYC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtYC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_64 = happySpecReduce_1  15# happyReduction_64
 happyReduction_64 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtYDag
+		 (Frontend.LambdaQ.Abs.GateSqrtYDag
 	)
 
 happyReduce_65 = happyReduce 4# 15# happyReduction_65
@@ -985,7 +985,7 @@ happyReduction_65 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtYDagC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtYDagC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_66 = happySpecReduce_2  15# happyReduction_66
@@ -993,7 +993,7 @@ happyReduction_66 happy_x_2
 	happy_x_1
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRxTheta happy_var_2
+		 (Frontend.LambdaQ.Abs.GateRxTheta happy_var_2
 	)}
 
 happyReduce_67 = happyReduce 5# 15# happyReduction_67
@@ -1006,7 +1006,7 @@ happyReduction_67 (happy_x_5 `HappyStk`
 	 = case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRxThetaC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateRxThetaC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_68 = happySpecReduce_2  15# happyReduction_68
@@ -1014,7 +1014,7 @@ happyReduction_68 happy_x_2
 	happy_x_1
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRyTheta happy_var_2
+		 (Frontend.LambdaQ.Abs.GateRyTheta happy_var_2
 	)}
 
 happyReduce_69 = happyReduce 5# 15# happyReduction_69
@@ -1027,7 +1027,7 @@ happyReduction_69 (happy_x_5 `HappyStk`
 	 = case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRyThetaC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateRyThetaC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_70 = happySpecReduce_2  15# happyReduction_70
@@ -1035,7 +1035,7 @@ happyReduction_70 happy_x_2
 	happy_x_1
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRzTheta happy_var_2
+		 (Frontend.LambdaQ.Abs.GateRzTheta happy_var_2
 	)}
 
 happyReduce_71 = happyReduce 5# 15# happyReduction_71
@@ -1048,7 +1048,7 @@ happyReduction_71 (happy_x_5 `HappyStk`
 	 = case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GRzThetaC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateRzThetaC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_72 = happySpecReduce_2  15# happyReduction_72
@@ -1056,7 +1056,7 @@ happyReduction_72 happy_x_2
 	happy_x_1
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU1 happy_var_2
+		 (Frontend.LambdaQ.Abs.GateU1 happy_var_2
 	)}
 
 happyReduce_73 = happyReduce 5# 15# happyReduction_73
@@ -1069,7 +1069,7 @@ happyReduction_73 (happy_x_5 `HappyStk`
 	 = case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU1C happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateU1C happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_74 = happySpecReduce_3  15# happyReduction_74
@@ -1079,7 +1079,7 @@ happyReduction_74 happy_x_3
 	 =  case happyOut15 happy_x_2 of { (HappyWrap15 happy_var_2) -> 
 	case happyOut15 happy_x_3 of { (HappyWrap15 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU2 happy_var_2 happy_var_3
+		 (Frontend.LambdaQ.Abs.GateU2 happy_var_2 happy_var_3
 	)}}
 
 happyReduce_75 = happyReduce 6# 15# happyReduction_75
@@ -1094,7 +1094,7 @@ happyReduction_75 (happy_x_6 `HappyStk`
 	case happyOut15 happy_x_3 of { (HappyWrap15 happy_var_3) -> 
 	case happyOut18 happy_x_5 of { (HappyWrap18 happy_var_5) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU2C happy_var_2 happy_var_3 happy_var_5
+		 (Frontend.LambdaQ.Abs.GateU2C happy_var_2 happy_var_3 happy_var_5
 	) `HappyStk` happyRest}}}
 
 happyReduce_76 = happyReduce 4# 15# happyReduction_76
@@ -1107,7 +1107,7 @@ happyReduction_76 (happy_x_4 `HappyStk`
 	case happyOut15 happy_x_3 of { (HappyWrap15 happy_var_3) -> 
 	case happyOut15 happy_x_4 of { (HappyWrap15 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU3 happy_var_2 happy_var_3 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateU3 happy_var_2 happy_var_3 happy_var_4
 	) `HappyStk` happyRest}}}
 
 happyReduce_77 = happyReduce 7# 15# happyReduction_77
@@ -1124,13 +1124,13 @@ happyReduction_77 (happy_x_7 `HappyStk`
 	case happyOut15 happy_x_4 of { (HappyWrap15 happy_var_4) -> 
 	case happyOut18 happy_x_6 of { (HappyWrap18 happy_var_6) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GU3C happy_var_2 happy_var_3 happy_var_4 happy_var_6
+		 (Frontend.LambdaQ.Abs.GateU3C happy_var_2 happy_var_3 happy_var_4 happy_var_6
 	) `HappyStk` happyRest}}}}
 
 happyReduce_78 = happySpecReduce_1  15# happyReduction_78
 happyReduction_78 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSwp
+		 (Frontend.LambdaQ.Abs.GateSwp
 	)
 
 happyReduce_79 = happyReduce 4# 15# happyReduction_79
@@ -1141,13 +1141,13 @@ happyReduction_79 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSwpC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSwpC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_80 = happySpecReduce_1  15# happyReduction_80
 happyReduction_80 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtSwp
+		 (Frontend.LambdaQ.Abs.GateSqrtSwp
 	)
 
 happyReduce_81 = happyReduce 4# 15# happyReduction_81
@@ -1158,13 +1158,13 @@ happyReduction_81 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtSwpC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtSwpC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_82 = happySpecReduce_1  15# happyReduction_82
 happyReduction_82 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtSwpDag
+		 (Frontend.LambdaQ.Abs.GateSqrtSwpDag
 	)
 
 happyReduce_83 = happyReduce 4# 15# happyReduction_83
@@ -1175,13 +1175,13 @@ happyReduction_83 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSqrtSwpDagC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateSqrtSwpDagC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_84 = happySpecReduce_1  15# happyReduction_84
 happyReduction_84 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GISwp
+		 (Frontend.LambdaQ.Abs.GateISwp
 	)
 
 happyReduce_85 = happyReduce 4# 15# happyReduction_85
@@ -1192,13 +1192,13 @@ happyReduction_85 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GISwpC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateISwpC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_86 = happySpecReduce_1  15# happyReduction_86
 happyReduction_86 happy_x_1
 	 =  happyIn19
-		 (Frontend.LambdaQ.Abs.GFSwp
+		 (Frontend.LambdaQ.Abs.GateFSwp
 	)
 
 happyReduce_87 = happyReduce 4# 15# happyReduction_87
@@ -1209,7 +1209,7 @@ happyReduction_87 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GFSwpC happy_var_3
+		 (Frontend.LambdaQ.Abs.GateFSwpC happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_88 = happySpecReduce_2  15# happyReduction_88
@@ -1217,7 +1217,7 @@ happyReduction_88 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSwpRt happy_var_2
+		 (Frontend.LambdaQ.Abs.GateSwpRt happy_var_2
 	)}
 
 happyReduce_89 = happyReduce 5# 15# happyReduction_89
@@ -1230,7 +1230,7 @@ happyReduction_89 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSwpRtC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateSwpRtC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_90 = happySpecReduce_2  15# happyReduction_90
@@ -1238,7 +1238,7 @@ happyReduction_90 happy_x_2
 	happy_x_1
 	 =  case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSwpRtDag happy_var_2
+		 (Frontend.LambdaQ.Abs.GateSwpRtDag happy_var_2
 	)}
 
 happyReduce_91 = happyReduce 5# 15# happyReduction_91
@@ -1251,14 +1251,14 @@ happyReduction_91 (happy_x_5 `HappyStk`
 	 = case happyOut5 happy_x_2 of { (HappyWrap5 happy_var_2) -> 
 	case happyOut18 happy_x_4 of { (HappyWrap18 happy_var_4) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GSwpRtDagC happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.GateSwpRtDagC happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_92 = happySpecReduce_1  15# happyReduction_92
 happyReduction_92 happy_x_1
 	 =  case happyOut6 happy_x_1 of { (HappyWrap6 happy_var_1) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GGate happy_var_1
+		 (Frontend.LambdaQ.Abs.GateGeneric happy_var_1
 	)}
 
 happyReduce_93 = happyReduce 4# 15# happyReduction_93
@@ -1270,7 +1270,7 @@ happyReduction_93 (happy_x_4 `HappyStk`
 	 = case happyOut6 happy_x_1 of { (HappyWrap6 happy_var_1) -> 
 	case happyOut18 happy_x_3 of { (HappyWrap18 happy_var_3) -> 
 	happyIn19
-		 (Frontend.LambdaQ.Abs.GGateC happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.GateGenericC happy_var_1 happy_var_3
 	) `HappyStk` happyRest}}
 
 happyReduce_94 = happySpecReduce_1  16# happyReduction_94

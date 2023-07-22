@@ -41,71 +41,71 @@ data Control = CCtrl ControlState Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
-    = GH
-    | GHC [Control]
-    | GX
-    | GXC [Control]
-    | GY
-    | GYC [Control]
-    | GZ
-    | GZC [Control]
-    | GI
-    | GXRt Integer
-    | GXRtC Integer [Control]
-    | GXRtDag Integer
-    | GXRtDagC Integer [Control]
-    | GYRt Integer
-    | GYRtC Integer [Control]
-    | GYRtDag Integer
-    | GYRtDagC Integer [Control]
-    | GZRt Integer
-    | GZRtC Integer [Control]
-    | GZRtDag Integer
-    | GZRtDagC Integer [Control]
-    | GS
-    | GSC [Control]
-    | GSDag
-    | GSDagC [Control]
-    | GT
-    | GTC [Control]
-    | GTDag
-    | GTDagC [Control]
-    | GSqrtX
-    | GSqrtXC [Control]
-    | GSqrtXDag
-    | GSqrtXDagC [Control]
-    | GSqrtY
-    | GSqrtYC [Control]
-    | GSqrtYDag
-    | GSqrtYDagC [Control]
-    | GRxTheta Angle
-    | GRxThetaC Angle [Control]
-    | GRyTheta Angle
-    | GRyThetaC Angle [Control]
-    | GRzTheta Angle
-    | GRzThetaC Angle [Control]
-    | GU1 Angle
-    | GU1C Angle [Control]
-    | GU2 Angle Angle
-    | GU2C Angle Angle [Control]
-    | GU3 Angle Angle Angle
-    | GU3C Angle Angle Angle [Control]
-    | GSwp
-    | GSwpC [Control]
-    | GSqrtSwp
-    | GSqrtSwpC [Control]
-    | GSqrtSwpDag
-    | GSqrtSwpDagC [Control]
-    | GISwp
-    | GISwpC [Control]
-    | GFSwp
-    | GFSwpC [Control]
-    | GSwpRt Integer
-    | GSwpRtC Integer [Control]
-    | GSwpRtDag Integer
-    | GSwpRtDagC Integer [Control]
-    | GGate GateIdent
-    | GGateC GateIdent [Control]
+    = GateH
+    | GateHC [Control]
+    | GateX
+    | GateXC [Control]
+    | GateY
+    | GateYC [Control]
+    | GateZ
+    | GateZC [Control]
+    | GateI
+    | GateXRt Integer
+    | GateXRtC Integer [Control]
+    | GateXRtDag Integer
+    | GateXRtDagC Integer [Control]
+    | GateYRt Integer
+    | GateYRtC Integer [Control]
+    | GateYRtDag Integer
+    | GateYRtDagC Integer [Control]
+    | GateZRt Integer
+    | GateZRtC Integer [Control]
+    | GateZRtDag Integer
+    | GateZRtDagC Integer [Control]
+    | GateS
+    | GateSC [Control]
+    | GateSDag
+    | GateSDagC [Control]
+    | GateT
+    | GateTC [Control]
+    | GateTDag
+    | GateTDagC [Control]
+    | GateSqrtX
+    | GateSqrtXC [Control]
+    | GateSqrtXDag
+    | GateSqrtXDagC [Control]
+    | GateSqrtY
+    | GateSqrtYC [Control]
+    | GateSqrtYDag
+    | GateSqrtYDagC [Control]
+    | GateRxTheta Angle
+    | GateRxThetaC Angle [Control]
+    | GateRyTheta Angle
+    | GateRyThetaC Angle [Control]
+    | GateRzTheta Angle
+    | GateRzThetaC Angle [Control]
+    | GateU1 Angle
+    | GateU1C Angle [Control]
+    | GateU2 Angle Angle
+    | GateU2C Angle Angle [Control]
+    | GateU3 Angle Angle Angle
+    | GateU3C Angle Angle Angle [Control]
+    | GateSwp
+    | GateSwpC [Control]
+    | GateSqrtSwp
+    | GateSqrtSwpC [Control]
+    | GateSqrtSwpDag
+    | GateSqrtSwpDagC [Control]
+    | GateISwp
+    | GateISwpC [Control]
+    | GateFSwp
+    | GateFSwpC [Control]
+    | GateSwpRt Integer
+    | GateSwpRtC Integer [Control]
+    | GateSwpRtDag Integer
+    | GateSwpRtDagC Integer [Control]
+    | GateGeneric GateIdent
+    | GateGenericC GateIdent [Control]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LetVariable = LetVar Var
