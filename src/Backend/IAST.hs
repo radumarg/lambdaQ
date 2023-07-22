@@ -44,8 +44,6 @@ data Control = CCtrl ControlState Term
 data Angle = AAngl Double
   deriving (Eq, Ord, Show, Read)
 
-type GateIdent = String
-
 data Gate =
     GateH                               |
     GateHC [Control]                    |
@@ -110,9 +108,8 @@ data Gate =
     GateSwpRt Integer                   |
     GateSwpRtC Integer [Control]        |
     GateSwpRtDag Integer                |
-    GateSwpRtDagC Integer [Control]     |
-    GateGate GateIdent                  |
-    GateGateC GateIdent [Control]
+    GateSwpRtDagC Integer [Control] 
+    -- TODO add generic gate
   deriving (Eq, Ord, Show, Read)
 
 data Term =
@@ -247,6 +244,7 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateSwpRtC rt ctrls -> GateSwpRtC rt (map mapControl ctrls)
     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
     GeneratedAbstractSyntax.GateSwpRtDagC rt ctrls -> GateSwpRtDagC rt (map mapControl ctrls)
+    -- TODO add generic gate and generic controlled gate
 
 reverseMapGate :: Gate -> GeneratedAbstractSyntax.Gate
 reverseMapGate g = case g of 
@@ -314,6 +312,7 @@ reverseMapGate g = case g of
     GateSwpRtC rt ctrls -> GeneratedAbstractSyntax.GateSwpRtC rt (map reverseMapControl ctrls)
     GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
     GateSwpRtDagC rt ctrls -> GeneratedAbstractSyntax.GateSwpRtDagC rt (map reverseMapControl ctrls)
+    -- TODO add generic gate and generic controlled gate
 
 type Env = String
 mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
