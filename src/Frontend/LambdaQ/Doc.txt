@@ -48,11 +48,11 @@ The reserved words used in LambdaQ are the following:
   | ``ROOT_Z`` | ``ROOT_Z_DAG`` | ``RX`` | ``RY``
   | ``RZ`` | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG``
   | ``SQRT_X`` | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG``
-  | ``SWAP`` | ``S_DAG`` | ``T`` | ``T_DAG``
-  | ``U1`` | ``U2`` | ``U3`` | ``X``
-  | ``Y`` | ``Z`` | ``case`` | ``else``
-  | ``if`` | ``in`` | ``let`` | ``of``
-  | ``then`` |  |  |
+  | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG`` | ``T``
+  | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
+  | ``X`` | ``Y`` | ``Z`` | ``case``
+  | ``else`` | ``if`` | ``in`` | ``let``
+  | ``of`` | ``then`` |  |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
@@ -152,6 +152,7 @@ All other symbols are terminals.
   |  |  **|**  | ``ISWAP`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``FSWAP``
   |  |  **|**  | ``FSWAP`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``SWAP_THETA`` //Angle//
   |  |  **|**  | ``ROOT_SWAP`` //Integer//
   |  |  **|**  | ``ROOT_SWAP`` //Integer// ``[`` //[Control]// ``]``
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//

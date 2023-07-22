@@ -243,6 +243,7 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateISwpC controls -> prPrec i 0 (concatD [doc (showString "ISWAP"), doc (showString "["), prt 0 controls, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateFSwp -> prPrec i 0 (concatD [doc (showString "FSWAP")])
     Frontend.LambdaQ.Abs.GateFSwpC controls -> prPrec i 0 (concatD [doc (showString "FSWAP"), doc (showString "["), prt 0 controls, doc (showString "]")])
+    Frontend.LambdaQ.Abs.GateSwapTheta angle -> prPrec i 0 (concatD [doc (showString "SWAP_THETA"), prt 0 angle])
     Frontend.LambdaQ.Abs.GateSwpRt n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP"), prt 0 n])
     Frontend.LambdaQ.Abs.GateSwpRtC n controls -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP"), prt 0 n, doc (showString "["), prt 0 controls, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateSwpRtDag n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP_DAG"), prt 0 n])

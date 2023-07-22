@@ -66,26 +66,27 @@ import Frontend.LambdaQ.Lex
   'SQRT_Y'        { PT _ (TS _ 41)       }
   'SQRT_Y_DAG'    { PT _ (TS _ 42)       }
   'SWAP'          { PT _ (TS _ 43)       }
-  'S_DAG'         { PT _ (TS _ 44)       }
-  'T'             { PT _ (TS _ 45)       }
-  'T_DAG'         { PT _ (TS _ 46)       }
-  'U1'            { PT _ (TS _ 47)       }
-  'U2'            { PT _ (TS _ 48)       }
-  'U3'            { PT _ (TS _ 49)       }
-  'X'             { PT _ (TS _ 50)       }
-  'Y'             { PT _ (TS _ 51)       }
-  'Z'             { PT _ (TS _ 52)       }
-  '['             { PT _ (TS _ 53)       }
-  ']'             { PT _ (TS _ 54)       }
-  'case'          { PT _ (TS _ 55)       }
-  'else'          { PT _ (TS _ 56)       }
-  'if'            { PT _ (TS _ 57)       }
-  'in'            { PT _ (TS _ 58)       }
-  'let'           { PT _ (TS _ 59)       }
-  'of'            { PT _ (TS _ 60)       }
-  'then'          { PT _ (TS _ 61)       }
-  '{'             { PT _ (TS _ 62)       }
-  '}'             { PT _ (TS _ 63)       }
+  'SWAP_THETA'    { PT _ (TS _ 44)       }
+  'S_DAG'         { PT _ (TS _ 45)       }
+  'T'             { PT _ (TS _ 46)       }
+  'T_DAG'         { PT _ (TS _ 47)       }
+  'U1'            { PT _ (TS _ 48)       }
+  'U2'            { PT _ (TS _ 49)       }
+  'U3'            { PT _ (TS _ 50)       }
+  'X'             { PT _ (TS _ 51)       }
+  'Y'             { PT _ (TS _ 52)       }
+  'Z'             { PT _ (TS _ 53)       }
+  '['             { PT _ (TS _ 54)       }
+  ']'             { PT _ (TS _ 55)       }
+  'case'          { PT _ (TS _ 56)       }
+  'else'          { PT _ (TS _ 57)       }
+  'if'            { PT _ (TS _ 58)       }
+  'in'            { PT _ (TS _ 59)       }
+  'let'           { PT _ (TS _ 60)       }
+  'of'            { PT _ (TS _ 61)       }
+  'then'          { PT _ (TS _ 62)       }
+  '{'             { PT _ (TS _ 63)       }
+  '}'             { PT _ (TS _ 64)       }
   L_doubl         { PT _ (TD $$)         }
   L_integ         { PT _ (TI $$)         }
   L_GateIdent     { PT _ (T_GateIdent _) }
@@ -219,6 +220,7 @@ Gate
   | 'ISWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateISwpC $3 }
   | 'FSWAP' { Frontend.LambdaQ.Abs.GateFSwp }
   | 'FSWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateFSwpC $3 }
+  | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwapTheta $2 }
   | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
   | 'ROOT_SWAP' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtC $2 $4 }
   | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }

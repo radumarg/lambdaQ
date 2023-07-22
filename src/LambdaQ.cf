@@ -96,6 +96,7 @@ GateISwp          . Gate ::= "ISWAP" ;                                   -- ISwa
 GateISwpC         . Gate ::= "ISWAP" "[" [Control] "]" ;                 -- ISwap gate
 GateFSwp          . Gate ::= "FSWAP" ;                                   -- FSwap gate
 GateFSwpC         . Gate ::= "FSWAP" "[" [Control] "]" ;                 -- FSwap gate
+GateSwapTheta     . Gate ::= "SWAP_THETA" Angle ;                        -- Swap theta gate
 GateSwpRt         . Gate ::= "ROOT_SWAP" Integer ;                       -- Root of Swap gate (root is specified as k in 1/2^k)
 GateSwpRtC        . Gate ::= "ROOT_SWAP" Integer "[" [Control] "]" ;     -- Root of Swap gate (root is specified as k in 1/2^k)
 GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer ;                   -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
