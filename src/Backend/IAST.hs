@@ -44,7 +44,9 @@ data Angle where
   AAngl :: Double -> Angle
   deriving (Eq, Ord, Show, Read)
 
-newtype GateIdent = GateIdent String
+-- Integer arguments correspond to line and column occurence in
+-- the source code, used for providing more relevant error messages.
+newtype GateIdent = GateIdent ((Int, Int), String)
   deriving (Eq, Ord, Show, Read)
 
 data Gate =
