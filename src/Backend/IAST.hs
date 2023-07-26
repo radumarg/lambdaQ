@@ -12,7 +12,7 @@ module Backend.IAST where
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
---- Types will be declared below ---
+--- Types will be declared first below ---
 
 data Type = 
     TypeBit           |
