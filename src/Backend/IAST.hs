@@ -11,6 +11,7 @@
 module Backend.IAST where
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
+import qualified Data.Map as Map
 
 --- Types will be declared first below ---
 
@@ -335,7 +336,7 @@ reverseMapGate g = case g of
     GateGeneric name -> undefined             -- TODO: map generic gates -
     GateGenericC name ctrls -> undefined      -- TODO: map generic gates -
 
-type Env = String
+type Env = Map.Map String Integer
 
 mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
 mapTerm = undefined
