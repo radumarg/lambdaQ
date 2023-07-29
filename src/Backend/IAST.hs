@@ -44,6 +44,12 @@ data Angle where
   AAngl :: Double -> Angle
   deriving (Eq, Ord, Show, Read)
 
+data BitValue = BitZero | BitOne
+  deriving (Eq, Ord, Show, Read)
+
+newtype Bit = Bit ((Int, Int), BitValue)
+  deriving (Eq, Ord, Show, Read)
+
 -- Integer arguments correspond to line and column occurence in
 -- the source code, used for providing more relevant error messages.
 newtype GateIdent = GateIdent ((Int, Int), String)
@@ -119,17 +125,17 @@ data Gate =
   deriving (Eq, Ord, Show, Read)
 
 data Term =
-    Fun String                      |
-    Bit GeneratedAbstractSyntax.Bit |
-    Gate Gate                       |
-    Tup Term Term                   |
-    App  Term Term                  |
-    IfEl Term Term Term             |
-    Let Term Term                   |
-    Lamb Type Term                  |
-    New                             |
-    Measure                         |
-    Unit
+    TermFunction String                 |
+    TermBit Bit                         |
+    TermGate Gate                       |
+    TermTuple Term Term                 |
+    TermApp Term Term                   |
+    TermIfEl Term Term Term             |
+    TermLet Term Term                   |
+    TermLambda Type Term                |
+    TermNew                             |
+    TermMeasure                         |
+    TermUnit
   deriving (Eq, Ord, Show, Read)
 
 data Function = Func String Type Term
@@ -178,11 +184,18 @@ mapControl (GeneratedAbstractSyntax.CCtrl ctrlState term) = CCtrl (mapControlSta
 reverseMapControl :: Control -> GeneratedAbstractSyntax.Control
 reverseMapControl (CCtrl ctrlState term) = GeneratedAbstractSyntax.CCtrl (reverseMapControlState ctrlState) (reverseMapTerm "" term)
 
-mapAngle:: GeneratedAbstractSyntax.Angle -> Angle
+mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.AAngl angle) = AAngl angle
 
-reverseMapAngle:: Angle -> GeneratedAbstractSyntax.Angle
+reverseMapAngle :: Angle -> GeneratedAbstractSyntax.Angle
 reverseMapAngle (AAngl angle) = GeneratedAbstractSyntax.AAngl angle
+
+--mapBit :: GeneratedAbstractSyntax.Bit -> Bit
+--mapBit (GeneratedAbstractSyntax.Bit ((l, c) 0)) = undefined
+--mapBit (GeneratedAbstractSyntax.Bit ((l, c) 1)) = undefined
+
+--reverseMapBit :: Bit -> GeneratedAbstractSyntax.Bit
+--reverseMapBit (_) = undefined
 
 mapGate :: GeneratedAbstractSyntax.Gate -> Gate
 mapGate g = case g of 
@@ -323,8 +336,10 @@ reverseMapGate g = case g of
     GateGenericC name ctrls -> undefined      -- TODO: map generic gates -
 
 type Env = String
+
 mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
 mapTerm = undefined
 
 reverseMapTerm :: Env -> Term -> GeneratedAbstractSyntax.Term
 reverseMapTerm = undefined
+

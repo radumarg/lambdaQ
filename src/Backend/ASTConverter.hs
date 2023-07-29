@@ -8,24 +8,32 @@
 
 module Backend.ASTConverter where
 
+import Backend.IAST (Function, Program)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Frontend.LambdaQ.Print ( printTree )
-
+import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
+import GHC.Err (errorWithoutStackTrace)
 
 parse :: String -> Program
 parse str = case pProgram (myLexer str) of
-    Left str -> undefined
-    Right str -> undefined
+    Left str -> errorWithoutStackTrace str
+    Right p -> mapProgram p
 
-astToIast :: GeneratedAbstractSyntax.Program -> Program
-astToIast = undefined
+mapFunction :: GeneratedAbstractSyntax.Function -> Function
+mapFunction (GeneratedAbstractSyntax.FunDecl _ typ fun)  = undefined   
 
-iastToAst ::  Program -> GeneratedAbstractSyntax.Program
-iastToAst = undefined
+reverseMapFunction :: Function -> GeneratedAbstractSyntax.Function
+reverseMapFunction (FunDecl name typ term) = undefined
 
-parseAndPrintTreeFromString :: String -> String
-parseAndPrintTreeFromString = printTree . iastToAst . parse
+--mapProgram :: GeneratedAbstractSyntax.Program -> Program
+--mapProgram (GeneratedAbstractSyntax.ProgDef fs)  = map mapFunction fs 
 
-parseAndPrintTreeFromFile :: FilePath -> IO String
-parseAndPrintTreeFromFile path = parseAndPrintTreeFromString <$> readFile path
+--reverseMapProgram ::  Program -> GeneratedAbstractSyntax.Program
+--reverseMapProgram = GeneratedAbstractSyntax.ProgDef . map reverseMapFunction
+
+--parseAndPrintTreeFromString :: String -> String
+--parseAndPrintTreeFromString = printTree . reverseMapProgram . parse
+
+--parseAndPrintTreeFromFile :: FilePath -> IO String
+--parseAndPrintTreeFromFile path = parseAndPrintTreeFromString <$> readFile path
 
