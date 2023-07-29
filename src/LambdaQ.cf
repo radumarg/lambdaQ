@@ -8,7 +8,7 @@ layout stop "in" ;
 entrypoints Program;
 
 -- A program is a list of functions --
-ProgDef .  Program ::= [FunDec] ;
+ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
 TypeBit    . Type3  ::= "Bit" ;
