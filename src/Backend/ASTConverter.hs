@@ -8,25 +8,39 @@
 
 module Backend.ASTConverter where
 
-import Backend.IAST (Function, Program)
+import Backend.IAST ( Function( Func ), Program, mapTerm, mapType )
+import qualified Data.Map as Map
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Frontend.LambdaQ.Print ( printTree )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import GHC.Err (errorWithoutStackTrace)
+import GHC.Err ( errorWithoutStackTrace )
 
 parse :: String -> Program
 parse str = case pProgram (myLexer str) of
     Left str -> errorWithoutStackTrace str
     Right p -> mapProgram p
 
-mapFunction :: GeneratedAbstractSyntax.Function -> Function
-mapFunction (GeneratedAbstractSyntax.FunDecl _ typ fun)  = undefined   
+mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
+mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Func fname (mapType ftype) term
+    where
+        (GeneratedAbstractSyntax.FunType _ ftype) = funType
+        (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+        ((fline, fcol), fname) = fvar
+        term = mapTerm Map.empty $ toLambda (debang ftype) fargs fbody
 
-reverseMapFunction :: Function -> GeneratedAbstractSyntax.Function
-reverseMapFunction (FunDecl name typ term) = undefined
+toLambda :: GeneratedAbstractSyntax.FunctionType -> [GeneratedAbstractSyntax.Var] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
+toLambda = undefined
 
---mapProgram :: GeneratedAbstractSyntax.Program -> Program
---mapProgram (GeneratedAbstractSyntax.ProgDef fs)  = map mapFunction fs 
+-- the linear type flag: '!' will be removed if present
+debang :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
+debang (GeneratedAbstractSyntax.TypeNonLin t) = debang t
+debang t = t
+
+--reverseMapFunction :: Function -> GeneratedAbstractSyntax.Function
+--reverseMapFunction (FunDecl name typ term) = undefined
+
+mapProgram :: GeneratedAbstractSyntax.Program -> Program
+mapProgram (GeneratedAbstractSyntax.ProgDef fs)  = map mapFunction fs
 
 --reverseMapProgram ::  Program -> GeneratedAbstractSyntax.Program
 --reverseMapProgram = GeneratedAbstractSyntax.ProgDef . map reverseMapFunction
