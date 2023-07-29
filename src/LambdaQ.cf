@@ -147,16 +147,16 @@ FunArg . Arg ::= Var ;
 separator Arg " " ;
 
 -- Function Definition --
-FunDef . Function ::= Var [Arg] "=" Term ;
-_      . Function ::= Function ";" ;             -- Semantic dummies: parser accepts extra semicolons
+FunDef . FunctionDefinition ::= Var [Arg] "=" Term ;
+_      . FunctionDefinition ::= FunctionDefinition ";" ;   -- Semantic dummies: parser accepts extra semicolons
 
 -- Type Definition --
-TypeDef . FunctionType  ::= Var "::" Type ;
-_       . FunctionType  ::=  FunctionType ";" ;  -- Semantic dummies: parser accepts extra semicolons
+FunType . FunctionType  ::= Var "::" Type ;
+_       . FunctionType  ::=  FunctionType ";" ;            -- Semantic dummies: parser accepts extra semicolons
 
 -- Function Declaration --
-FunDecl . FunDec ::= FunctionType ";" Function ";" ;
-separator FunDec "" ;
+FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;
+separator FunctionDeclaration "" ;
 
 -- Format for specifying comments --
 comment "--" ; 

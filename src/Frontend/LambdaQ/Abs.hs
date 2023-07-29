@@ -12,7 +12,7 @@ import qualified Prelude as C
   , Int, Maybe(..)
   )
 
-data Program = ProgDef [FunDec]
+data Program = ProgDef [FunctionDeclaration]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Type
@@ -139,13 +139,13 @@ data CaseExpression = CaseExp Term Var
 data Arg = FunArg Var
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Function = FunDef Var [Arg] Term
+data FunctionDefinition = FunDef Var [Arg] Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data FunctionType = TypeDef Var Type
+data FunctionType = FunType Var Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data FunDec = FunDecl FunctionType Function
+data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype GateIdent = GateIdent ((C.Int, C.Int), String)

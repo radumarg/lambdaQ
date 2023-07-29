@@ -115,7 +115,8 @@ Bit :: { Frontend.LambdaQ.Abs.Bit }
 Bit  : L_Bit { Frontend.LambdaQ.Abs.Bit (mkPosToken $1) }
 
 Program :: { Frontend.LambdaQ.Abs.Program }
-Program : ListFunDec { Frontend.LambdaQ.Abs.ProgDef $1 }
+Program
+  : ListFunctionDeclaration { Frontend.LambdaQ.Abs.ProgDef $1 }
 
 Type3 :: { Frontend.LambdaQ.Abs.Type }
 Type3
@@ -292,22 +293,24 @@ Arg : Var { Frontend.LambdaQ.Abs.FunArg $1 }
 ListArg :: { [Frontend.LambdaQ.Abs.Arg] }
 ListArg : {- empty -} { [] } | Arg ListArg { (:) $1 $2 }
 
-Function :: { Frontend.LambdaQ.Abs.Function }
-Function
+FunctionDefinition :: { Frontend.LambdaQ.Abs.FunctionDefinition }
+FunctionDefinition
   : Var ListArg '=' Term { Frontend.LambdaQ.Abs.FunDef $1 $2 $4 }
-  | Function ';' { $1 }
+  | FunctionDefinition ';' { $1 }
 
 FunctionType :: { Frontend.LambdaQ.Abs.FunctionType }
 FunctionType
-  : Var '::' Type { Frontend.LambdaQ.Abs.TypeDef $1 $3 }
+  : Var '::' Type { Frontend.LambdaQ.Abs.FunType $1 $3 }
   | FunctionType ';' { $1 }
 
-FunDec :: { Frontend.LambdaQ.Abs.FunDec }
-FunDec
-  : FunctionType ';' Function ';' { Frontend.LambdaQ.Abs.FunDecl $1 $3 }
+FunctionDeclaration :: { Frontend.LambdaQ.Abs.FunctionDeclaration }
+FunctionDeclaration
+  : FunctionType ';' FunctionDefinition ';' { Frontend.LambdaQ.Abs.FunDecl $1 $3 }
 
-ListFunDec :: { [Frontend.LambdaQ.Abs.FunDec] }
-ListFunDec : {- empty -} { [] } | FunDec ListFunDec { (:) $1 $2 }
+ListFunctionDeclaration :: { [Frontend.LambdaQ.Abs.FunctionDeclaration] }
+ListFunctionDeclaration
+  : {- empty -} { [] }
+  | FunctionDeclaration ListFunctionDeclaration { (:) $1 $2 }
 
 {
 

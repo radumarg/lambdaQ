@@ -240,8 +240,8 @@ happyIn33 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap33 x)
 happyOut33 :: (HappyAbsSyn ) -> HappyWrap33
 happyOut33 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut33 #-}
-newtype HappyWrap34 = HappyWrap34 (Frontend.LambdaQ.Abs.Function)
-happyIn34 :: (Frontend.LambdaQ.Abs.Function) -> (HappyAbsSyn )
+newtype HappyWrap34 = HappyWrap34 (Frontend.LambdaQ.Abs.FunctionDefinition)
+happyIn34 :: (Frontend.LambdaQ.Abs.FunctionDefinition) -> (HappyAbsSyn )
 happyIn34 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap34 x)
 {-# INLINE happyIn34 #-}
 happyOut34 :: (HappyAbsSyn ) -> HappyWrap34
@@ -254,15 +254,15 @@ happyIn35 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap35 x)
 happyOut35 :: (HappyAbsSyn ) -> HappyWrap35
 happyOut35 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut35 #-}
-newtype HappyWrap36 = HappyWrap36 (Frontend.LambdaQ.Abs.FunDec)
-happyIn36 :: (Frontend.LambdaQ.Abs.FunDec) -> (HappyAbsSyn )
+newtype HappyWrap36 = HappyWrap36 (Frontend.LambdaQ.Abs.FunctionDeclaration)
+happyIn36 :: (Frontend.LambdaQ.Abs.FunctionDeclaration) -> (HappyAbsSyn )
 happyIn36 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap36 x)
 {-# INLINE happyIn36 #-}
 happyOut36 :: (HappyAbsSyn ) -> HappyWrap36
 happyOut36 x = Happy_GHC_Exts.unsafeCoerce# x
 {-# INLINE happyOut36 #-}
-newtype HappyWrap37 = HappyWrap37 ([Frontend.LambdaQ.Abs.FunDec])
-happyIn37 :: ([Frontend.LambdaQ.Abs.FunDec]) -> (HappyAbsSyn )
+newtype HappyWrap37 = HappyWrap37 ([Frontend.LambdaQ.Abs.FunctionDeclaration])
+happyIn37 :: ([Frontend.LambdaQ.Abs.FunctionDeclaration]) -> (HappyAbsSyn )
 happyIn37 x = Happy_GHC_Exts.unsafeCoerce# (HappyWrap37 x)
 {-# INLINE happyIn37 #-}
 happyOut37 :: (HappyAbsSyn ) -> HappyWrap37
@@ -282,7 +282,7 @@ happyExpList = HappyA# "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01
 {-# NOINLINE happyExpListPerState #-}
 happyExpListPerState st =
     token_strs_expected
-  where token_strs = ["error","%dummy","%start_pProgram","Double","Integer","GateIdent","Var","Lambda","Bit","Program","Type3","Type2","Type1","Type","Angle","ControlState","Control","ListControl","Gate","LetVariable","ListLetVariable","LambdaVariable","ListLambdaVariable","Tuple","ListTerm","Term3","Term1","Term2","Term","CaseExpression","ListCaseExpression","Arg","ListArg","Function","FunctionType","FunDec","ListFunDec","'!'","'$'","'('","'()'","')'","'*'","'**'","','","'->'","'::'","';'","'='","'@+'","'@+i'","'@-'","'@-i'","'@0'","'@1'","'Bit'","'FSWAP'","'H'","'ID'","'ISWAP'","'Qbit'","'ROOT_SWAP'","'ROOT_SWAP_DAG'","'ROOT_X'","'ROOT_X_DAG'","'ROOT_Y'","'ROOT_Y_DAG'","'ROOT_Z'","'ROOT_Z_DAG'","'RX'","'RY'","'RZ'","'S'","'SQRT_SWAP'","'SQRT_SWAP_DAG'","'SQRT_X'","'SQRT_X_DAG'","'SQRT_Y'","'SQRT_Y_DAG'","'SWAP'","'SWAP_THETA'","'S_DAG'","'T'","'T_DAG'","'U1'","'U2'","'U3'","'X'","'Y'","'Z'","'['","']'","'case'","'else'","'if'","'in'","'let'","'of'","'then'","'{'","'}'","L_doubl","L_integ","L_GateIdent","L_Var","L_Lambda","L_Bit","%eof"]
+  where token_strs = ["error","%dummy","%start_pProgram","Double","Integer","GateIdent","Var","Lambda","Bit","Program","Type3","Type2","Type1","Type","Angle","ControlState","Control","ListControl","Gate","LetVariable","ListLetVariable","LambdaVariable","ListLambdaVariable","Tuple","ListTerm","Term3","Term1","Term2","Term","CaseExpression","ListCaseExpression","Arg","ListArg","FunctionDefinition","FunctionType","FunctionDeclaration","ListFunctionDeclaration","'!'","'$'","'('","'()'","')'","'*'","'**'","','","'->'","'::'","';'","'='","'@+'","'@+i'","'@-'","'@-i'","'@0'","'@1'","'Bit'","'FSWAP'","'H'","'ID'","'ISWAP'","'Qbit'","'ROOT_SWAP'","'ROOT_SWAP_DAG'","'ROOT_X'","'ROOT_X_DAG'","'ROOT_Y'","'ROOT_Y_DAG'","'ROOT_Z'","'ROOT_Z_DAG'","'RX'","'RY'","'RZ'","'S'","'SQRT_SWAP'","'SQRT_SWAP_DAG'","'SQRT_X'","'SQRT_X_DAG'","'SQRT_Y'","'SQRT_Y_DAG'","'SWAP'","'SWAP_THETA'","'S_DAG'","'T'","'T_DAG'","'U1'","'U2'","'U3'","'X'","'Y'","'Z'","'['","']'","'case'","'else'","'if'","'in'","'let'","'of'","'then'","'{'","'}'","L_doubl","L_integ","L_GateIdent","L_Var","L_Lambda","L_Bit","%eof"]
         bit_start = st Prelude.* 108
         bit_end = (st Prelude.+ 1) Prelude.* 108
         read_bit = readArrayBit happyExpList
@@ -1598,7 +1598,7 @@ happyReduction_128 happy_x_3
 	 =  case happyOut7 happy_x_1 of { (HappyWrap7 happy_var_1) -> 
 	case happyOut14 happy_x_3 of { (HappyWrap14 happy_var_3) -> 
 	happyIn35
-		 (Frontend.LambdaQ.Abs.TypeDef happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.FunType happy_var_1 happy_var_3
 	)}}
 
 happyReduce_129 = happySpecReduce_2  31# happyReduction_129

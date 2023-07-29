@@ -13,7 +13,7 @@ Grammar
 	Var -> L_Var                                       (4)
 	Lambda -> L_Lambda                                 (5)
 	Bit -> L_Bit                                       (6)
-	Program -> ListFunDec                              (7)
+	Program -> ListFunctionDeclaration                 (7)
 	Type3 -> 'Bit'                                     (8)
 	Type3 -> 'Qbit'                                    (9)
 	Type3 -> '()'                                      (10)
@@ -132,13 +132,13 @@ Grammar
 	Arg -> Var                                         (123)
 	ListArg ->                                         (124)
 	ListArg -> Arg ListArg                             (125)
-	Function -> Var ListArg '=' Term                   (126)
-	Function -> Function ';'                           (127)
+	FunctionDefinition -> Var ListArg '=' Term         (126)
+	FunctionDefinition -> FunctionDefinition ';'       (127)
 	FunctionType -> Var '::' Type                      (128)
 	FunctionType -> FunctionType ';'                   (129)
-	FunDec -> FunctionType ';' Function ';'            (130)
-	ListFunDec ->                                      (131)
-	ListFunDec -> FunDec ListFunDec                    (132)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';'   (130)
+	ListFunctionDeclaration ->                         (131)
+	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration   (132)
 
 -----------------------------------------------------------------------------
 Terminals
@@ -248,10 +248,10 @@ Non-terminals
 	ListCaseExpression rules 121, 122
 	Arg             rule  123
 	ListArg         rules 124, 125
-	Function        rules 126, 127
+	FunctionDefinition rules 126, 127
 	FunctionType    rules 128, 129
-	FunDec          rule  130
-	ListFunDec      rules 131, 132
+	FunctionDeclaration rule  130
+	ListFunctionDeclaration rules 131, 132
 
 -----------------------------------------------------------------------------
 States
@@ -266,8 +266,8 @@ State 0
 	Var            goto state 3
 	Program        goto state 4
 	FunctionType   goto state 5
-	FunDec         goto state 6
-	ListFunDec     goto state 7
+	FunctionDeclarationgoto state 6
+	ListFunctionDeclarationgoto state 7
 
 State 1
 
@@ -349,26 +349,26 @@ State 4
 State 5
 
 	FunctionType -> FunctionType . ';'                  (rule 129)
-	FunDec -> FunctionType . ';' Function ';'           (rule 130)
+	FunctionDeclaration -> FunctionType . ';' FunctionDefinition ';'    (rule 130)
 
 	';'            shift, and enter state 10
 
 
 State 6
 
-	ListFunDec -> FunDec . ListFunDec                   (rule 132)
+	ListFunctionDeclaration -> FunctionDeclaration . ListFunctionDeclaration    (rule 132)
 
 	L_Var          shift, and enter state 8
 	%eof           reduce using rule 131
 
 	Var            goto state 3
 	FunctionType   goto state 5
-	FunDec         goto state 6
-	ListFunDec     goto state 9
+	FunctionDeclarationgoto state 6
+	ListFunctionDeclarationgoto state 9
 
 State 7
 
-	Program -> ListFunDec .                             (rule 7)
+	Program -> ListFunctionDeclaration .                (rule 7)
 
 	%eof           reduce using rule 7
 
@@ -435,7 +435,7 @@ State 8
 
 State 9
 
-	ListFunDec -> FunDec ListFunDec .                   (rule 132)
+	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration .    (rule 132)
 
 	%eof           reduce using rule 132
 
@@ -443,13 +443,13 @@ State 9
 State 10
 
 	FunctionType -> FunctionType ';' .                  (rule 129)
-	FunDec -> FunctionType ';' . Function ';'           (rule 130)
+	FunctionDeclaration -> FunctionType ';' . FunctionDefinition ';'    (rule 130)
 
 	';'            reduce using rule 129
 	L_Var          shift, and enter state 8
 
 	Var            goto state 21
-	Function       goto state 22
+	FunctionDefinitiongoto state 22
 
 State 11
 
@@ -568,7 +568,7 @@ State 20
 
 State 21
 
-	Function -> Var . ListArg '=' Term                  (rule 126)
+	FunctionDefinition -> Var . ListArg '=' Term        (rule 126)
 
 	'='            reduce using rule 124
 	L_Var          shift, and enter state 8
@@ -579,16 +579,16 @@ State 21
 
 State 22
 
-	Function -> Function . ';'                          (rule 127)
-	FunDec -> FunctionType ';' Function . ';'           (rule 130)
+	FunctionDefinition -> FunctionDefinition . ';'      (rule 127)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition . ';'    (rule 130)
 
 	';'            shift, and enter state 23
 
 
 State 23
 
-	Function -> Function ';' .                          (rule 127)
-	FunDec -> FunctionType ';' Function ';' .           (rule 130)
+	FunctionDefinition -> FunctionDefinition ';' .      (rule 127)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';' .    (rule 130)
 
 	';'            reduce using rule 127
 	L_Var          reduce using rule 130
@@ -616,7 +616,7 @@ State 25
 
 State 26
 
-	Function -> Var ListArg . '=' Term                  (rule 126)
+	FunctionDefinition -> Var ListArg . '=' Term        (rule 126)
 
 	'='            shift, and enter state 37
 
@@ -770,7 +770,7 @@ State 36
 
 State 37
 
-	Function -> Var ListArg '=' . Term                  (rule 126)
+	FunctionDefinition -> Var ListArg '=' . Term        (rule 126)
 
 	'('            shift, and enter state 49
 	'()'           shift, and enter state 50
@@ -1247,7 +1247,7 @@ State 47
 
 State 48
 
-	Function -> Var ListArg '=' Term .                  (rule 126)
+	FunctionDefinition -> Var ListArg '=' Term .        (rule 126)
 
 	';'            reduce using rule 126
 

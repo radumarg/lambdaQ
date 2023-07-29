@@ -148,7 +148,7 @@ instance Print Frontend.LambdaQ.Abs.Bit where
   prt _ (Frontend.LambdaQ.Abs.Bit (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Program where
   prt i = \case
-    Frontend.LambdaQ.Abs.ProgDef fundecs -> prPrec i 0 (concatD [prt 0 fundecs])
+    Frontend.LambdaQ.Abs.ProgDef functiondeclarations -> prPrec i 0 (concatD [prt 0 functiondeclarations])
 
 instance Print Frontend.LambdaQ.Abs.Type where
   prt i = \case
@@ -309,18 +309,18 @@ instance Print [Frontend.LambdaQ.Abs.Arg] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, doc (showString " "), prt 0 xs]
 
-instance Print Frontend.LambdaQ.Abs.Function where
+instance Print Frontend.LambdaQ.Abs.FunctionDefinition where
   prt i = \case
     Frontend.LambdaQ.Abs.FunDef var args term -> prPrec i 0 (concatD [prt 0 var, prt 0 args, doc (showString "="), prt 0 term])
 
 instance Print Frontend.LambdaQ.Abs.FunctionType where
   prt i = \case
-    Frontend.LambdaQ.Abs.TypeDef var type_ -> prPrec i 0 (concatD [prt 0 var, doc (showString "::"), prt 0 type_])
+    Frontend.LambdaQ.Abs.FunType var type_ -> prPrec i 0 (concatD [prt 0 var, doc (showString "::"), prt 0 type_])
 
-instance Print Frontend.LambdaQ.Abs.FunDec where
+instance Print Frontend.LambdaQ.Abs.FunctionDeclaration where
   prt i = \case
-    Frontend.LambdaQ.Abs.FunDecl functiontype function -> prPrec i 0 (concatD [prt 0 functiontype, doc (showString ";"), prt 0 function, doc (showString ";")])
+    Frontend.LambdaQ.Abs.FunDecl functiontype functiondefinition -> prPrec i 0 (concatD [prt 0 functiontype, doc (showString ";"), prt 0 functiondefinition, doc (showString ";")])
 
-instance Print [Frontend.LambdaQ.Abs.FunDec] where
+instance Print [Frontend.LambdaQ.Abs.FunctionDeclaration] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]

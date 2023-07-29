@@ -33,7 +33,7 @@ transBit x = case x of
 
 transProgram :: Frontend.LambdaQ.Abs.Program -> Result
 transProgram x = case x of
-  Frontend.LambdaQ.Abs.ProgDef fundecs -> failure x
+  Frontend.LambdaQ.Abs.ProgDef functiondeclarations -> failure x
 
 transType :: Frontend.LambdaQ.Abs.Type -> Result
 transType x = case x of
@@ -166,14 +166,14 @@ transArg :: Frontend.LambdaQ.Abs.Arg -> Result
 transArg x = case x of
   Frontend.LambdaQ.Abs.FunArg var -> failure x
 
-transFunction :: Frontend.LambdaQ.Abs.Function -> Result
-transFunction x = case x of
+transFunctionDefinition :: Frontend.LambdaQ.Abs.FunctionDefinition -> Result
+transFunctionDefinition x = case x of
   Frontend.LambdaQ.Abs.FunDef var args term -> failure x
 
 transFunctionType :: Frontend.LambdaQ.Abs.FunctionType -> Result
 transFunctionType x = case x of
-  Frontend.LambdaQ.Abs.TypeDef var type_ -> failure x
+  Frontend.LambdaQ.Abs.FunType var type_ -> failure x
 
-transFunDec :: Frontend.LambdaQ.Abs.FunDec -> Result
-transFunDec x = case x of
-  Frontend.LambdaQ.Abs.FunDecl functiontype function -> failure x
+transFunctionDeclaration :: Frontend.LambdaQ.Abs.FunctionDeclaration -> Result
+transFunctionDeclaration x = case x of
+  Frontend.LambdaQ.Abs.FunDecl functiontype functiondefinition -> failure x
