@@ -143,7 +143,7 @@ instance Print Frontend.LambdaQ.Abs.GateIdent where
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
-  prt _ (Frontend.LambdaQ.Abs.Lambda (_,i)) = doc $ showString i
+  prt _ (Frontend.LambdaQ.Abs.Lambda i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Bit where
   prt _ (Frontend.LambdaQ.Abs.Bit (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Program where

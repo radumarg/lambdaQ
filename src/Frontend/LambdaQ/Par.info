@@ -211,7 +211,7 @@ Terminals
 	L_integ        { PT _ (TI $$) }
 	L_GateIdent    { PT _ (T_GateIdent _) }
 	L_Var          { PT _ (T_Var _) }
-	L_Lambda       { PT _ (T_Lambda _) }
+	L_Lambda       { PT _ (T_Lambda $$) }
 	L_Bit          { PT _ (T_Bit _) }
 
 -----------------------------------------------------------------------------

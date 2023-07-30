@@ -91,7 +91,7 @@ import Frontend.LambdaQ.Lex
   L_integ         { PT _ (TI $$)         }
   L_GateIdent     { PT _ (T_GateIdent _) }
   L_Var           { PT _ (T_Var _)       }
-  L_Lambda        { PT _ (T_Lambda _)    }
+  L_Lambda        { PT _ (T_Lambda $$)   }
   L_Bit           { PT _ (T_Bit _)       }
 
 %%
@@ -109,7 +109,7 @@ Var :: { Frontend.LambdaQ.Abs.Var }
 Var  : L_Var { Frontend.LambdaQ.Abs.Var (mkPosToken $1) }
 
 Lambda :: { Frontend.LambdaQ.Abs.Lambda }
-Lambda  : L_Lambda { Frontend.LambdaQ.Abs.Lambda (mkPosToken $1) }
+Lambda  : L_Lambda { Frontend.LambdaQ.Abs.Lambda $1 }
 
 Bit :: { Frontend.LambdaQ.Abs.Bit }
 Bit  : L_Bit { Frontend.LambdaQ.Abs.Bit (mkPosToken $1) }

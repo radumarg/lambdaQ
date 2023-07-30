@@ -478,9 +478,9 @@ happyReduction_4 happy_x_1
 
 happyReduce_5 = happySpecReduce_1  4# happyReduction_5
 happyReduction_5 happy_x_1
-	 =  case happyOutTok happy_x_1 of { happy_var_1 -> 
+	 =  case happyOutTok happy_x_1 of { (PT _ (T_Lambda happy_var_1)) -> 
 	happyIn8
-		 (Frontend.LambdaQ.Abs.Lambda (mkPosToken happy_var_1)
+		 (Frontend.LambdaQ.Abs.Lambda happy_var_1
 	)}
 
 happyReduce_6 = happySpecReduce_1  5# happyReduction_6
@@ -1709,7 +1709,7 @@ happyNewToken action sts stk (tk:tks) =
 	PT _ (TI happy_dollar_dollar) -> cont 66#;
 	PT _ (T_GateIdent _) -> cont 67#;
 	PT _ (T_Var _) -> cont 68#;
-	PT _ (T_Lambda _) -> cont 69#;
+	PT _ (T_Lambda happy_dollar_dollar) -> cont 69#;
 	PT _ (T_Bit _) -> cont 70#;
 	_ -> happyError' ((tk:tks), [])
 	}

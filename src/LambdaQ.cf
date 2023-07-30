@@ -118,7 +118,7 @@ Tup . Tuple ::= "(" Term "," [Term] ")" ;
 separator nonempty Term "," ;
 
 -- Lambda token --
-position token Lambda '\\' ;
+token Lambda '\\' ;
 
 -- Bit --
 position token Bit ('0' | '1') ;
