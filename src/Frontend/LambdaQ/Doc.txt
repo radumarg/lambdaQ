@@ -52,13 +52,13 @@ The reserved words used in LambdaQ are the following:
   | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
   | ``X`` | ``Y`` | ``Z`` | ``case``
   | ``else`` | ``gate`` | ``if`` | ``in``
-  | ``let`` | ``of`` | ``then`` | ``with``
+  | ``let`` | ``of`` | ``then`` |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
   | -> | ( | ) | @0
   | @1 | @+ | @- | @+i
-  | @-i | , | ctrl-gate | [
+  | @-i | , | with-ctrl | [
   | ] | { | = | }
   | $ | ; | :: |
 
@@ -94,72 +94,72 @@ All other symbols are terminals.
   | //[Control]// | -> | //Control//
   |  |  **|**  | //Control// ``,`` //[Control]//
   | //Gate// | -> | ``gate`` ``H`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``H`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``H`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``X`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``X`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``X`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``Y`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``Y`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``Y`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``Z`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``Z`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``Z`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ID`` //Term//
   |  |  **|**  | ``gate`` ``ROOT_X`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_X`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_X`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_X_DAG`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_X_DAG`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_X_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_Y`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_Y`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_Y`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_Y_DAG`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_Y_DAG`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_Y_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_Z`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_Z`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_Z`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_Z_DAG`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_Z_DAG`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_Z_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``S`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``S`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``S`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``S_DAG`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``S_DAG`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``S_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``T`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``T`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``T`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``T_DAG`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``T_DAG`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``T_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_X`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_X`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_X`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_X_DAG`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_X_DAG`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_X_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_Y`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_Y`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_Y`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_Y_DAG`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_Y_DAG`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_Y_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``RX`` //Angle// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``RX`` //Angle// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``RX`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``RY`` //Angle// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``RY`` //Angle// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``RY`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``RZ`` //Angle// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``RZ`` //Angle// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``RZ`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``U1`` //Angle// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``U1`` //Angle// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``U1`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``U2`` ``(`` //Angle// ``,`` //Angle// ``)`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``U2`` ``(`` //Angle// ``,`` //Angle// ``)`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``U2`` ``(`` //Angle// ``,`` //Angle// ``)`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SWAP`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SWAP`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_SWAP`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_SWAP`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_SWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SQRT_SWAP_DAG`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``SQRT_SWAP_DAG`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SQRT_SWAP_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ISWAP`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ISWAP`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ISWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``FSWAP`` //Term//
-  |  |  **|**  | ``ctrl-gate`` ``FSWAP`` //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``FSWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``SWAP_THETA`` //Term// //Angle//
-  |  |  **|**  | ``ctrl-gate`` ``SWAP_THETA`` //Angle// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``SWAP_THETA`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_SWAP`` //Term// //Integer//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_SWAP`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_SWAP`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` ``ROOT_SWAP_DAG`` //Integer// //Term//
-  |  |  **|**  | ``ctrl-gate`` ``ROOT_SWAP_DAG`` //Integer// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` ``ROOT_SWAP_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | ``gate`` //GateIdent// //Term//
-  |  |  **|**  | ``ctrl-gate`` //GateIdent// //Term// ``with`` ``[`` //[Control]// ``]``
+  |  |  **|**  | ``gate`` //GateIdent// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   | //LetVariable// | -> | //Var//
   | //[LetVariable]// | -> | //LetVariable//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//

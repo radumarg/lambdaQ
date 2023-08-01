@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \( \) | \! | \* \* | \* | \- \> | \( | \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | "ctrl" \- "gate" | \[ | \] | \{ | \= | \} | \$ | \; | \: \:
+@rsyms = \( \) | \! | \* \* | \* | \- \> | \( | \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | "with" \- "ctrl" | \[ | \] | \{ | \= | \} | \$ | \; | \: \:
 
 :-
 
@@ -207,13 +207,13 @@ resWords =
           (b "T_DAG" 47
              (b "S_DAG" 45 (b "SWAP_THETA" 44 N N) (b "T" 46 N N))
              (b "U2" 49 (b "U1" 48 N N) (b "U3" 50 N N))))
-       (b "if" 60
-          (b "case" 56
-             (b "[" 54 (b "Z" 53 (b "Y" 52 N N) N) (b "]" 55 N N))
-             (b "else" 58 (b "ctrl-gate" 57 N N) (b "gate" 59 N N)))
-          (b "then" 64
-             (b "let" 62 (b "in" 61 N N) (b "of" 63 N N))
-             (b "{" 66 (b "with" 65 N N) (b "}" 67 N N)))))
+       (b "if" 59
+          (b "]" 55
+             (b "Z" 53 (b "Y" 52 N N) (b "[" 54 N N))
+             (b "else" 57 (b "case" 56 N N) (b "gate" 58 N N)))
+          (b "then" 63
+             (b "let" 61 (b "in" 60 N N) (b "of" 62 N N))
+             (b "{" 65 (b "with-ctrl" 64 N N) (b "}" 66 N N)))))
   where
   b s n = B bs (TS bs n)
     where
