@@ -1,5 +1,14 @@
+-- syntax used in the formulation of balancedOracle below is just syntactic sugar for let expressions --
 balancedOracle :: (Qbit * Qbit) -> Qbit  
-balancedOracle qubits = let (q1, q2) = qubits in
+balancedOracle qubits = 
+  (q1, q2) <- qubits 
+  q1 <- gate X q1
+  (q1, q2) <- gate X q1 with-ctrl [ q1 @1 ]
+  q1 <- gate X q1
+  out q1
+
+balancedOracle' :: (Qbit * Qbit) -> Qbit  
+balancedOracle' qubits = let (q1, q2) = qubits in
                           let q1 = gate X q1 in
                             let (q1, q2) = gate X q2 with-ctrl [ q1 @1 ] in
                               gate X q1
