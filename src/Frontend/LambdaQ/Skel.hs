@@ -60,76 +60,77 @@ transControlState x = case x of
 
 transControl :: Frontend.LambdaQ.Abs.Control -> Result
 transControl x = case x of
-  Frontend.LambdaQ.Abs.CCtrl controlstate term -> failure x
+  Frontend.LambdaQ.Abs.CCtrl term controlstate -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
-  Frontend.LambdaQ.Abs.GateH -> failure x
-  Frontend.LambdaQ.Abs.GateHC controls -> failure x
-  Frontend.LambdaQ.Abs.GateX -> failure x
-  Frontend.LambdaQ.Abs.GateXC controls -> failure x
-  Frontend.LambdaQ.Abs.GateY -> failure x
-  Frontend.LambdaQ.Abs.GateYC controls -> failure x
-  Frontend.LambdaQ.Abs.GateZ -> failure x
-  Frontend.LambdaQ.Abs.GateZC controls -> failure x
-  Frontend.LambdaQ.Abs.GateI -> failure x
-  Frontend.LambdaQ.Abs.GateXRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateXRtC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateXRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateXRtDagC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateYRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRtC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateYRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRtDagC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateZRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRtC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateZRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRtDagC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateS -> failure x
-  Frontend.LambdaQ.Abs.GateSC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSDag -> failure x
-  Frontend.LambdaQ.Abs.GateSDagC controls -> failure x
-  Frontend.LambdaQ.Abs.GateT -> failure x
-  Frontend.LambdaQ.Abs.GateTC controls -> failure x
-  Frontend.LambdaQ.Abs.GateTDag -> failure x
-  Frontend.LambdaQ.Abs.GateTDagC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtX -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtXC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtXDag -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtXDagC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtY -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtYC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtYDag -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtYDagC controls -> failure x
-  Frontend.LambdaQ.Abs.GateRxTheta angle -> failure x
-  Frontend.LambdaQ.Abs.GateRxThetaC angle controls -> failure x
-  Frontend.LambdaQ.Abs.GateRyTheta angle -> failure x
-  Frontend.LambdaQ.Abs.GateRyThetaC angle controls -> failure x
-  Frontend.LambdaQ.Abs.GateRzTheta angle -> failure x
-  Frontend.LambdaQ.Abs.GateRzThetaC angle controls -> failure x
-  Frontend.LambdaQ.Abs.GateU1 angle -> failure x
-  Frontend.LambdaQ.Abs.GateU1C angle controls -> failure x
-  Frontend.LambdaQ.Abs.GateU2 angle1 angle2 -> failure x
-  Frontend.LambdaQ.Abs.GateU2C angle1 angle2 controls -> failure x
-  Frontend.LambdaQ.Abs.GateU3 angle1 angle2 angle3 -> failure x
-  Frontend.LambdaQ.Abs.GateU3C angle1 angle2 angle3 controls -> failure x
-  Frontend.LambdaQ.Abs.GateSwp -> failure x
-  Frontend.LambdaQ.Abs.GateSwpC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtSwp -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtSwpC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtSwpDag -> failure x
-  Frontend.LambdaQ.Abs.GateSqrtSwpDagC controls -> failure x
-  Frontend.LambdaQ.Abs.GateISwp -> failure x
-  Frontend.LambdaQ.Abs.GateISwpC controls -> failure x
-  Frontend.LambdaQ.Abs.GateFSwp -> failure x
-  Frontend.LambdaQ.Abs.GateFSwpC controls -> failure x
-  Frontend.LambdaQ.Abs.GateSwpTheta angle -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRtC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRtDagC integer controls -> failure x
-  Frontend.LambdaQ.Abs.GateGeneric gateident -> failure x
-  Frontend.LambdaQ.Abs.GateGenericC gateident controls -> failure x
+  Frontend.LambdaQ.Abs.GateH term -> failure x
+  Frontend.LambdaQ.Abs.GateHC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateX term -> failure x
+  Frontend.LambdaQ.Abs.GateXC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateY term -> failure x
+  Frontend.LambdaQ.Abs.GateYC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateZ term -> failure x
+  Frontend.LambdaQ.Abs.GateZC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateI term -> failure x
+  Frontend.LambdaQ.Abs.GateXRt integer term -> failure x
+  Frontend.LambdaQ.Abs.GateXRtC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateXRtDag integer term -> failure x
+  Frontend.LambdaQ.Abs.GateXRtDagC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateYRt integer term -> failure x
+  Frontend.LambdaQ.Abs.GateYRtC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateYRtDag integer term -> failure x
+  Frontend.LambdaQ.Abs.GateYRtDagC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateZRt integer term -> failure x
+  Frontend.LambdaQ.Abs.GateZRtC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateZRtDag integer term -> failure x
+  Frontend.LambdaQ.Abs.GateZRtDagC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateS term -> failure x
+  Frontend.LambdaQ.Abs.GateSC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSDag term -> failure x
+  Frontend.LambdaQ.Abs.GateSDagC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateT term -> failure x
+  Frontend.LambdaQ.Abs.GateTC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateTDag term -> failure x
+  Frontend.LambdaQ.Abs.GateTDagC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtX term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtXC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtXDag term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtXDagC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtY term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtYC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtYDag term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtYDagC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateRxTheta angle term -> failure x
+  Frontend.LambdaQ.Abs.GateRxThetaC angle term controls -> failure x
+  Frontend.LambdaQ.Abs.GateRyTheta angle term -> failure x
+  Frontend.LambdaQ.Abs.GateRyThetaC angle term controls -> failure x
+  Frontend.LambdaQ.Abs.GateRzTheta angle term -> failure x
+  Frontend.LambdaQ.Abs.GateRzThetaC angle term controls -> failure x
+  Frontend.LambdaQ.Abs.GateU1 angle term -> failure x
+  Frontend.LambdaQ.Abs.GateU1C angle term controls -> failure x
+  Frontend.LambdaQ.Abs.GateU2 angle1 angle2 term -> failure x
+  Frontend.LambdaQ.Abs.GateU2C angle1 angle2 term controls -> failure x
+  Frontend.LambdaQ.Abs.GateU3 angle1 angle2 angle3 term -> failure x
+  Frontend.LambdaQ.Abs.GateU3C angle1 angle2 angle3 term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSwp term -> failure x
+  Frontend.LambdaQ.Abs.GateSwpC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtSwp term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtSwpC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtSwpDag term -> failure x
+  Frontend.LambdaQ.Abs.GateSqrtSwpDagC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateISwp term -> failure x
+  Frontend.LambdaQ.Abs.GateISwpC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateFSwp term -> failure x
+  Frontend.LambdaQ.Abs.GateFSwpC term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSwpTheta term angle -> failure x
+  Frontend.LambdaQ.Abs.GateSwpThetaC angle term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRt term integer -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtDag integer term -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtDagC integer term controls -> failure x
+  Frontend.LambdaQ.Abs.GateGeneric gateident term -> failure x
+  Frontend.LambdaQ.Abs.GateGenericC gateident term controls -> failure x
 
 transLetVariable :: Frontend.LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of

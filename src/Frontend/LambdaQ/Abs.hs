@@ -39,76 +39,77 @@ data ControlState
     | CStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Control = CCtrl ControlState Term
+data Control = CCtrl Term ControlState
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
-    = GateH
-    | GateHC [Control]
-    | GateX
-    | GateXC [Control]
-    | GateY
-    | GateYC [Control]
-    | GateZ
-    | GateZC [Control]
-    | GateI
-    | GateXRt Integer
-    | GateXRtC Integer [Control]
-    | GateXRtDag Integer
-    | GateXRtDagC Integer [Control]
-    | GateYRt Integer
-    | GateYRtC Integer [Control]
-    | GateYRtDag Integer
-    | GateYRtDagC Integer [Control]
-    | GateZRt Integer
-    | GateZRtC Integer [Control]
-    | GateZRtDag Integer
-    | GateZRtDagC Integer [Control]
-    | GateS
-    | GateSC [Control]
-    | GateSDag
-    | GateSDagC [Control]
-    | GateT
-    | GateTC [Control]
-    | GateTDag
-    | GateTDagC [Control]
-    | GateSqrtX
-    | GateSqrtXC [Control]
-    | GateSqrtXDag
-    | GateSqrtXDagC [Control]
-    | GateSqrtY
-    | GateSqrtYC [Control]
-    | GateSqrtYDag
-    | GateSqrtYDagC [Control]
-    | GateRxTheta Angle
-    | GateRxThetaC Angle [Control]
-    | GateRyTheta Angle
-    | GateRyThetaC Angle [Control]
-    | GateRzTheta Angle
-    | GateRzThetaC Angle [Control]
-    | GateU1 Angle
-    | GateU1C Angle [Control]
-    | GateU2 Angle Angle
-    | GateU2C Angle Angle [Control]
-    | GateU3 Angle Angle Angle
-    | GateU3C Angle Angle Angle [Control]
-    | GateSwp
-    | GateSwpC [Control]
-    | GateSqrtSwp
-    | GateSqrtSwpC [Control]
-    | GateSqrtSwpDag
-    | GateSqrtSwpDagC [Control]
-    | GateISwp
-    | GateISwpC [Control]
-    | GateFSwp
-    | GateFSwpC [Control]
-    | GateSwpTheta Angle
-    | GateSwpRt Integer
-    | GateSwpRtC Integer [Control]
-    | GateSwpRtDag Integer
-    | GateSwpRtDagC Integer [Control]
-    | GateGeneric GateIdent
-    | GateGenericC GateIdent [Control]
+    = GateH Term
+    | GateHC Term [Control]
+    | GateX Term
+    | GateXC Term [Control]
+    | GateY Term
+    | GateYC Term [Control]
+    | GateZ Term
+    | GateZC Term [Control]
+    | GateI Term
+    | GateXRt Integer Term
+    | GateXRtC Integer Term [Control]
+    | GateXRtDag Integer Term
+    | GateXRtDagC Integer Term [Control]
+    | GateYRt Integer Term
+    | GateYRtC Integer Term [Control]
+    | GateYRtDag Integer Term
+    | GateYRtDagC Integer Term [Control]
+    | GateZRt Integer Term
+    | GateZRtC Integer Term [Control]
+    | GateZRtDag Integer Term
+    | GateZRtDagC Integer Term [Control]
+    | GateS Term
+    | GateSC Term [Control]
+    | GateSDag Term
+    | GateSDagC Term [Control]
+    | GateT Term
+    | GateTC Term [Control]
+    | GateTDag Term
+    | GateTDagC Term [Control]
+    | GateSqrtX Term
+    | GateSqrtXC Term [Control]
+    | GateSqrtXDag Term
+    | GateSqrtXDagC Term [Control]
+    | GateSqrtY Term
+    | GateSqrtYC Term [Control]
+    | GateSqrtYDag Term
+    | GateSqrtYDagC Term [Control]
+    | GateRxTheta Angle Term
+    | GateRxThetaC Angle Term [Control]
+    | GateRyTheta Angle Term
+    | GateRyThetaC Angle Term [Control]
+    | GateRzTheta Angle Term
+    | GateRzThetaC Angle Term [Control]
+    | GateU1 Angle Term
+    | GateU1C Angle Term [Control]
+    | GateU2 Angle Angle Term
+    | GateU2C Angle Angle Term [Control]
+    | GateU3 Angle Angle Angle Term
+    | GateU3C Angle Angle Angle Term [Control]
+    | GateSwp Term
+    | GateSwpC Term [Control]
+    | GateSqrtSwp Term
+    | GateSqrtSwpC Term [Control]
+    | GateSqrtSwpDag Term
+    | GateSqrtSwpDagC Term [Control]
+    | GateISwp Term
+    | GateISwpC Term [Control]
+    | GateFSwp Term
+    | GateFSwpC Term [Control]
+    | GateSwpTheta Term Angle
+    | GateSwpThetaC Angle Term [Control]
+    | GateSwpRt Term Integer
+    | GateSwpRtC Integer Term [Control]
+    | GateSwpRtDag Integer Term
+    | GateSwpRtDagC Integer Term [Control]
+    | GateGeneric GateIdent Term
+    | GateGenericC GateIdent Term [Control]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LetVariable = LetVar Var

@@ -79,14 +79,17 @@ import Frontend.LambdaQ.Lex
   '['             { PT _ (TS _ 54)       }
   ']'             { PT _ (TS _ 55)       }
   'case'          { PT _ (TS _ 56)       }
-  'else'          { PT _ (TS _ 57)       }
-  'if'            { PT _ (TS _ 58)       }
-  'in'            { PT _ (TS _ 59)       }
-  'let'           { PT _ (TS _ 60)       }
-  'of'            { PT _ (TS _ 61)       }
-  'then'          { PT _ (TS _ 62)       }
-  '{'             { PT _ (TS _ 63)       }
-  '}'             { PT _ (TS _ 64)       }
+  'ctrl-gate'     { PT _ (TS _ 57)       }
+  'else'          { PT _ (TS _ 58)       }
+  'gate'          { PT _ (TS _ 59)       }
+  'if'            { PT _ (TS _ 60)       }
+  'in'            { PT _ (TS _ 61)       }
+  'let'           { PT _ (TS _ 62)       }
+  'of'            { PT _ (TS _ 63)       }
+  'then'          { PT _ (TS _ 64)       }
+  'with'          { PT _ (TS _ 65)       }
+  '{'             { PT _ (TS _ 66)       }
+  '}'             { PT _ (TS _ 67)       }
   L_doubl         { PT _ (TD $$)         }
   L_integ         { PT _ (TI $$)         }
   L_GateIdent     { PT _ (T_GateIdent _) }
@@ -153,8 +156,7 @@ ControlState
   | '@-i' { Frontend.LambdaQ.Abs.CStateMinusI }
 
 Control :: { Frontend.LambdaQ.Abs.Control }
-Control
-  : ControlState '->' Term { Frontend.LambdaQ.Abs.CCtrl $1 $3 }
+Control : Term ControlState { Frontend.LambdaQ.Abs.CCtrl $1 $2 }
 
 ListControl :: { [Frontend.LambdaQ.Abs.Control] }
 ListControl
@@ -162,72 +164,73 @@ ListControl
 
 Gate :: { Frontend.LambdaQ.Abs.Gate }
 Gate
-  : 'H' { Frontend.LambdaQ.Abs.GateH }
-  | 'H' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateHC $3 }
-  | 'X' { Frontend.LambdaQ.Abs.GateX }
-  | 'X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXC $3 }
-  | 'Y' { Frontend.LambdaQ.Abs.GateY }
-  | 'Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYC $3 }
-  | 'Z' { Frontend.LambdaQ.Abs.GateZ }
-  | 'Z' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZC $3 }
-  | 'ID' { Frontend.LambdaQ.Abs.GateI }
-  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRt $2 }
-  | 'ROOT_X' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtC $2 $4 }
-  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRtDag $2 }
-  | 'ROOT_X_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtDagC $2 $4 }
-  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRt $2 }
-  | 'ROOT_Y' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtC $2 $4 }
-  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GateYRtDag $2 }
-  | 'ROOT_Y_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtDagC $2 $4 }
-  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GateZRt $2 }
-  | 'ROOT_Z' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtC $2 $4 }
-  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GateZRtDag $2 }
-  | 'ROOT_Z_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtDagC $2 $4 }
-  | 'S' { Frontend.LambdaQ.Abs.GateS }
-  | 'S' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSC $3 }
-  | 'S_DAG' { Frontend.LambdaQ.Abs.GateSDag }
-  | 'S_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSDagC $3 }
-  | 'T' { Frontend.LambdaQ.Abs.GateT }
-  | 'T' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTC $3 }
-  | 'T_DAG' { Frontend.LambdaQ.Abs.GateTDag }
-  | 'T_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTDagC $3 }
-  | 'SQRT_X' { Frontend.LambdaQ.Abs.GateSqrtX }
-  | 'SQRT_X' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXC $3 }
-  | 'SQRT_X_DAG' { Frontend.LambdaQ.Abs.GateSqrtXDag }
-  | 'SQRT_X_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXDagC $3 }
-  | 'SQRT_Y' { Frontend.LambdaQ.Abs.GateSqrtY }
-  | 'SQRT_Y' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYC $3 }
-  | 'SQRT_Y_DAG' { Frontend.LambdaQ.Abs.GateSqrtYDag }
-  | 'SQRT_Y_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYDagC $3 }
-  | 'RX' Angle { Frontend.LambdaQ.Abs.GateRxTheta $2 }
-  | 'RX' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRxThetaC $2 $4 }
-  | 'RY' Angle { Frontend.LambdaQ.Abs.GateRyTheta $2 }
-  | 'RY' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRyThetaC $2 $4 }
-  | 'RZ' Angle { Frontend.LambdaQ.Abs.GateRzTheta $2 }
-  | 'RZ' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRzThetaC $2 $4 }
-  | 'U1' Angle { Frontend.LambdaQ.Abs.GateU1 $2 }
-  | 'U1' Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU1C $2 $4 }
-  | 'U2' Angle Angle { Frontend.LambdaQ.Abs.GateU2 $2 $3 }
-  | 'U2' Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU2C $2 $3 $5 }
-  | 'U3' Angle Angle Angle { Frontend.LambdaQ.Abs.GateU3 $2 $3 $4 }
-  | 'U3' Angle Angle Angle '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU3C $2 $3 $4 $6 }
-  | 'SWAP' { Frontend.LambdaQ.Abs.GateSwp }
-  | 'SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpC $3 }
-  | 'SQRT_SWAP' { Frontend.LambdaQ.Abs.GateSqrtSwp }
-  | 'SQRT_SWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpC $3 }
-  | 'SQRT_SWAP_DAG' { Frontend.LambdaQ.Abs.GateSqrtSwpDag }
-  | 'SQRT_SWAP_DAG' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpDagC $3 }
-  | 'ISWAP' { Frontend.LambdaQ.Abs.GateISwp }
-  | 'ISWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateISwpC $3 }
-  | 'FSWAP' { Frontend.LambdaQ.Abs.GateFSwp }
-  | 'FSWAP' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateFSwpC $3 }
-  | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwpTheta $2 }
-  | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
-  | 'ROOT_SWAP' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtC $2 $4 }
-  | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }
-  | 'ROOT_SWAP_DAG' Integer '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtDagC $2 $4 }
-  | GateIdent { Frontend.LambdaQ.Abs.GateGeneric $1 }
-  | GateIdent '[' ListControl ']' { Frontend.LambdaQ.Abs.GateGenericC $1 $3 }
+  : 'gate' 'H' Term { Frontend.LambdaQ.Abs.GateH $3 }
+  | 'ctrl-gate' 'H' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateHC $3 $6 }
+  | 'gate' 'X' Term { Frontend.LambdaQ.Abs.GateX $3 }
+  | 'ctrl-gate' 'X' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXC $3 $6 }
+  | 'gate' 'Y' Term { Frontend.LambdaQ.Abs.GateY $3 }
+  | 'ctrl-gate' 'Y' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYC $3 $6 }
+  | 'gate' 'Z' Term { Frontend.LambdaQ.Abs.GateZ $3 }
+  | 'ctrl-gate' 'Z' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZC $3 $6 }
+  | 'gate' 'ID' Term { Frontend.LambdaQ.Abs.GateI $3 }
+  | 'gate' 'ROOT_X' Integer Term { Frontend.LambdaQ.Abs.GateXRt $3 $4 }
+  | 'ctrl-gate' 'ROOT_X' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtC $3 $4 $7 }
+  | 'gate' 'ROOT_X_DAG' Integer Term { Frontend.LambdaQ.Abs.GateXRtDag $3 $4 }
+  | 'ctrl-gate' 'ROOT_X_DAG' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateXRtDagC $3 $4 $7 }
+  | 'gate' 'ROOT_Y' Integer Term { Frontend.LambdaQ.Abs.GateYRt $3 $4 }
+  | 'ctrl-gate' 'ROOT_Y' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtC $3 $4 $7 }
+  | 'gate' 'ROOT_Y_DAG' Integer Term { Frontend.LambdaQ.Abs.GateYRtDag $3 $4 }
+  | 'ctrl-gate' 'ROOT_Y_DAG' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateYRtDagC $3 $4 $7 }
+  | 'gate' 'ROOT_Z' Integer Term { Frontend.LambdaQ.Abs.GateZRt $3 $4 }
+  | 'ctrl-gate' 'ROOT_Z' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtC $3 $4 $7 }
+  | 'gate' 'ROOT_Z_DAG' Integer Term { Frontend.LambdaQ.Abs.GateZRtDag $3 $4 }
+  | 'ctrl-gate' 'ROOT_Z_DAG' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateZRtDagC $3 $4 $7 }
+  | 'gate' 'S' Term { Frontend.LambdaQ.Abs.GateS $3 }
+  | 'ctrl-gate' 'S' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSC $3 $6 }
+  | 'gate' 'S_DAG' Term { Frontend.LambdaQ.Abs.GateSDag $3 }
+  | 'ctrl-gate' 'S_DAG' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSDagC $3 $6 }
+  | 'gate' 'T' Term { Frontend.LambdaQ.Abs.GateT $3 }
+  | 'ctrl-gate' 'T' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTC $3 $6 }
+  | 'gate' 'T_DAG' Term { Frontend.LambdaQ.Abs.GateTDag $3 }
+  | 'ctrl-gate' 'T_DAG' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateTDagC $3 $6 }
+  | 'gate' 'SQRT_X' Term { Frontend.LambdaQ.Abs.GateSqrtX $3 }
+  | 'ctrl-gate' 'SQRT_X' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXC $3 $6 }
+  | 'gate' 'SQRT_X_DAG' Term { Frontend.LambdaQ.Abs.GateSqrtXDag $3 }
+  | 'ctrl-gate' 'SQRT_X_DAG' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtXDagC $3 $6 }
+  | 'gate' 'SQRT_Y' Term { Frontend.LambdaQ.Abs.GateSqrtY $3 }
+  | 'ctrl-gate' 'SQRT_Y' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYC $3 $6 }
+  | 'gate' 'SQRT_Y_DAG' Term { Frontend.LambdaQ.Abs.GateSqrtYDag $3 }
+  | 'ctrl-gate' 'SQRT_Y_DAG' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtYDagC $3 $6 }
+  | 'gate' 'RX' Angle Term { Frontend.LambdaQ.Abs.GateRxTheta $3 $4 }
+  | 'ctrl-gate' 'RX' Angle Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRxThetaC $3 $4 $7 }
+  | 'gate' 'RY' Angle Term { Frontend.LambdaQ.Abs.GateRyTheta $3 $4 }
+  | 'ctrl-gate' 'RY' Angle Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRyThetaC $3 $4 $7 }
+  | 'gate' 'RZ' Angle Term { Frontend.LambdaQ.Abs.GateRzTheta $3 $4 }
+  | 'ctrl-gate' 'RZ' Angle Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateRzThetaC $3 $4 $7 }
+  | 'gate' 'U1' Angle Term { Frontend.LambdaQ.Abs.GateU1 $3 $4 }
+  | 'ctrl-gate' 'U1' Angle Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU1C $3 $4 $7 }
+  | 'gate' 'U2' '(' Angle ',' Angle ')' Term { Frontend.LambdaQ.Abs.GateU2 $4 $6 $8 }
+  | 'ctrl-gate' 'U2' '(' Angle ',' Angle ')' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU2C $4 $6 $8 $11 }
+  | 'gate' 'U3' '(' Angle ',' Angle ',' Angle ')' Term { Frontend.LambdaQ.Abs.GateU3 $4 $6 $8 $10 }
+  | 'ctrl-gate' 'U3' '(' Angle ',' Angle ',' Angle ')' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateU3C $4 $6 $8 $10 $13 }
+  | 'gate' 'SWAP' Term { Frontend.LambdaQ.Abs.GateSwp $3 }
+  | 'ctrl-gate' 'SWAP' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpC $3 $6 }
+  | 'gate' 'SQRT_SWAP' Term { Frontend.LambdaQ.Abs.GateSqrtSwp $3 }
+  | 'ctrl-gate' 'SQRT_SWAP' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpC $3 $6 }
+  | 'gate' 'SQRT_SWAP_DAG' Term { Frontend.LambdaQ.Abs.GateSqrtSwpDag $3 }
+  | 'ctrl-gate' 'SQRT_SWAP_DAG' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSqrtSwpDagC $3 $6 }
+  | 'gate' 'ISWAP' Term { Frontend.LambdaQ.Abs.GateISwp $3 }
+  | 'ctrl-gate' 'ISWAP' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateISwpC $3 $6 }
+  | 'gate' 'FSWAP' Term { Frontend.LambdaQ.Abs.GateFSwp $3 }
+  | 'ctrl-gate' 'FSWAP' Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateFSwpC $3 $6 }
+  | 'gate' 'SWAP_THETA' Term Angle { Frontend.LambdaQ.Abs.GateSwpTheta $3 $4 }
+  | 'ctrl-gate' 'SWAP_THETA' Angle Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpThetaC $3 $4 $7 }
+  | 'gate' 'ROOT_SWAP' Term Integer { Frontend.LambdaQ.Abs.GateSwpRt $3 $4 }
+  | 'ctrl-gate' 'ROOT_SWAP' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtC $3 $4 $7 }
+  | 'gate' 'ROOT_SWAP_DAG' Integer Term { Frontend.LambdaQ.Abs.GateSwpRtDag $3 $4 }
+  | 'ctrl-gate' 'ROOT_SWAP_DAG' Integer Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateSwpRtDagC $3 $4 $7 }
+  | 'gate' GateIdent Term { Frontend.LambdaQ.Abs.GateGeneric $2 $3 }
+  | 'ctrl-gate' GateIdent Term 'with' '[' ListControl ']' { Frontend.LambdaQ.Abs.GateGenericC $2 $3 $6 }
 
 LetVariable :: { Frontend.LambdaQ.Abs.LetVariable }
 LetVariable : Var { Frontend.LambdaQ.Abs.LetVar $1 }
