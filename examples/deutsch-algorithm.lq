@@ -4,8 +4,7 @@ balancedOracle qubits =
   (q1, q2) <- qubits 
   q1 <- gate X q1
   (q1, q2) <- gate X q1 with-ctrl [ q1 @1 ]
-  q1 <- gate X q1
-  q1
+  gate X q1
 
 balancedOracle' :: (Qbit * Qbit) -> Qbit  
 balancedOracle' qubits = let (q1, q2) = qubits in
