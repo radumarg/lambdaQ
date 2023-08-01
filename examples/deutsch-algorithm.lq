@@ -1,7 +1,8 @@
 balancedOracle :: (Qbit * Qbit) -> Qbit  
 balancedOracle qubits = let (q1, q2) = qubits in
-                          let (q, _) = ctrl-gate X q2 with [(gate X q1) @1 ]
-                            in gate X q
+                          let q1 = gate X q1 in
+                            let (q1, q2) = ctrl-gate X q2 with [ q1 @1 ] in
+                              gate X q1
 
 deutsch :: ((Qbit * Qbit) -> Qbit) -> !Bit
 deutsch oracle = measure (gate H (oracle (gate H (new 0), gate H (new 1))))
