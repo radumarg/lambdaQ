@@ -1,5 +1,5 @@
 coinFlip :: !Bit
-coinFlip = measure (H (new 0))
+coinFlip = measure (gate H (new 0))
 
 main :: !Bit
 main = coinFlip
