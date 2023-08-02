@@ -58,9 +58,9 @@ The symbols used in LambdaQ are the following:
   | () | ! | ** | *
   | -> | ( | ) | @0
   | @1 | @+ | @- | @+i
-  | @-i | , | with-ctrl | [
-  | ] | { | = | }
-  | $ | ; | :: |
+  | @-i | , | { | =
+  | } | $ | with-ctrl | [
+  | ] | ; | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -93,73 +93,40 @@ All other symbols are terminals.
   | //Control// | -> | //Term// //ControlState//
   | //[Control]// | -> | //Control//
   |  |  **|**  | //Control// ``,`` //[Control]//
-  | //Gate// | -> | ``gate`` ``H`` //Term//
-  |  |  **|**  | ``gate`` ``H`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``X`` //Term//
-  |  |  **|**  | ``gate`` ``X`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``Y`` //Term//
-  |  |  **|**  | ``gate`` ``Y`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``Z`` //Term//
-  |  |  **|**  | ``gate`` ``Z`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ID`` //Term//
-  |  |  **|**  | ``gate`` ``ROOT_X`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_X`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_X_DAG`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_X_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_Y`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_Y`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_Y_DAG`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_Y_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_Z`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_Z`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_Z_DAG`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_Z_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``S`` //Term//
-  |  |  **|**  | ``gate`` ``S`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``S_DAG`` //Term//
-  |  |  **|**  | ``gate`` ``S_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``T`` //Term//
-  |  |  **|**  | ``gate`` ``T`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``T_DAG`` //Term//
-  |  |  **|**  | ``gate`` ``T_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_X`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_X`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_X_DAG`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_X_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_Y`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_Y`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_Y_DAG`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_Y_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``RX`` //Angle// //Term//
-  |  |  **|**  | ``gate`` ``RX`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``RY`` //Angle// //Term//
-  |  |  **|**  | ``gate`` ``RY`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``RZ`` //Angle// //Term//
-  |  |  **|**  | ``gate`` ``RZ`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``U1`` //Angle// //Term//
-  |  |  **|**  | ``gate`` ``U1`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``U2`` ``(`` //Angle// ``,`` //Angle// ``)`` //Term//
-  |  |  **|**  | ``gate`` ``U2`` ``(`` //Angle// ``,`` //Angle// ``)`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)`` //Term//
-  |  |  **|**  | ``gate`` ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SWAP`` //Term//
-  |  |  **|**  | ``gate`` ``SWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_SWAP`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_SWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SQRT_SWAP_DAG`` //Term//
-  |  |  **|**  | ``gate`` ``SQRT_SWAP_DAG`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ISWAP`` //Term//
-  |  |  **|**  | ``gate`` ``ISWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``FSWAP`` //Term//
-  |  |  **|**  | ``gate`` ``FSWAP`` //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``SWAP_THETA`` //Term// //Angle//
-  |  |  **|**  | ``gate`` ``SWAP_THETA`` //Angle// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_SWAP`` //Term// //Integer//
-  |  |  **|**  | ``gate`` ``ROOT_SWAP`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` ``ROOT_SWAP_DAG`` //Integer// //Term//
-  |  |  **|**  | ``gate`` ``ROOT_SWAP_DAG`` //Integer// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
-  |  |  **|**  | ``gate`` //GateIdent// //Term//
-  |  |  **|**  | ``gate`` //GateIdent// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
+  | //Gate// | -> | ``H``
+  |  |  **|**  | ``X``
+  |  |  **|**  | ``Y``
+  |  |  **|**  | ``Z``
+  |  |  **|**  | ``ID``
+  |  |  **|**  | ``ROOT_X`` //Integer//
+  |  |  **|**  | ``ROOT_X_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_Y`` //Integer//
+  |  |  **|**  | ``ROOT_Y_DAG`` //Integer//
+  |  |  **|**  | ``ROOT_Z`` //Integer//
+  |  |  **|**  | ``ROOT_Z_DAG`` //Integer//
+  |  |  **|**  | ``S``
+  |  |  **|**  | ``S_DAG``
+  |  |  **|**  | ``T``
+  |  |  **|**  | ``T_DAG``
+  |  |  **|**  | ``SQRT_X``
+  |  |  **|**  | ``SQRT_X_DAG``
+  |  |  **|**  | ``SQRT_Y``
+  |  |  **|**  | ``SQRT_Y_DAG``
+  |  |  **|**  | ``RX`` //Angle//
+  |  |  **|**  | ``RY`` //Angle//
+  |  |  **|**  | ``RZ`` //Angle//
+  |  |  **|**  | ``U1`` //Angle//
+  |  |  **|**  | ``U2`` ``(`` //Angle// ``,`` //Angle// ``)``
+  |  |  **|**  | ``U3`` ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)``
+  |  |  **|**  | ``SWAP``
+  |  |  **|**  | ``SQRT_SWAP``
+  |  |  **|**  | ``SQRT_SWAP_DAG``
+  |  |  **|**  | ``ISWAP``
+  |  |  **|**  | ``FSWAP``
+  |  |  **|**  | ``SWAP_THETA`` //Angle//
+  |  |  **|**  | ``ROOT_SWAP`` //Integer//
+  |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
+  |  |  **|**  | //GateIdent//
   | //LetVariable// | -> | //Var//
   | //[LetVariable]// | -> | //LetVariable//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//
@@ -171,7 +138,6 @@ All other symbols are terminals.
   |  |  **|**  | //Term// ``,`` //[Term]//
   | //Term3// | -> | //Var//
   |  |  **|**  | //Bit//
-  |  |  **|**  | //Gate//
   |  |  **|**  | //Tuple//
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
@@ -181,6 +147,8 @@ All other symbols are terminals.
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //LambdaVariable// //[LambdaVariable]// ``->`` //Term//
   |  |  **|**  | //Term2// ``$`` //Term1//
+  |  |  **|**  | ``gate`` //Gate// //Term//
+  |  |  **|**  | ``gate`` //Gate// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
   |  |  **|**  | //Term2//
   | //Term2// | -> | //Term2// //Term3//
   |  |  **|**  | //Term3//
