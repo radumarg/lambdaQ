@@ -1,4 +1,4 @@
--- syntax used here is just syntactic sugar for let expressions --
+-- the '<-' syntax is just syntactic sugar for let expressions --
 balancedOracle :: (Qbit * Qbit) -> Qbit  
 balancedOracle qubits = 
   (q1, q2) <- qubits 
