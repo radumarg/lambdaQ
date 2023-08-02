@@ -122,10 +122,10 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TLetMany letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TLambd lambda lambdavariable lambdavariables term -> failure x
+  Frontend.LambdaQ.Abs.TGate gate term -> failure x
+  Frontend.LambdaQ.Abs.TCtrl term controls -> failure x
   Frontend.LambdaQ.Abs.TApp term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TDollr term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TGate gate term -> failure x
-  Frontend.LambdaQ.Abs.TCtrlGate gate term controls -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

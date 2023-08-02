@@ -256,10 +256,10 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TLetMany letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TLambd lambda lambdavariable lambdavariables term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 lambdavariable, prt 0 lambdavariables, doc (showString "->"), prt 0 term])
+    Frontend.LambdaQ.Abs.TGate gate term -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate, prt 0 term])
+    Frontend.LambdaQ.Abs.TCtrl term controls -> prPrec i 1 (concatD [prt 0 term, doc (showString "with-ctrl"), doc (showString "["), prt 0 controls, doc (showString "]")])
     Frontend.LambdaQ.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     Frontend.LambdaQ.Abs.TDollr term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
-    Frontend.LambdaQ.Abs.TGate gate term -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate, prt 0 term])
-    Frontend.LambdaQ.Abs.TCtrlGate gate term controls -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate, prt 0 term, doc (showString "with-ctrl"), doc (showString "["), prt 0 controls, doc (showString "]")])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

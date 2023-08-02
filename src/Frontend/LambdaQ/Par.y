@@ -236,9 +236,9 @@ Term1
   | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TLetMany $4 $6 $9 $12 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TCase $2 $4 $5 }
   | Lambda LambdaVariable ListLambdaVariable '->' Term { Frontend.LambdaQ.Abs.TLambd $1 $2 $3 $5 }
-  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollr $1 $3 }
   | 'gate' Gate Term { Frontend.LambdaQ.Abs.TGate $2 $3 }
-  | 'gate' Gate Term 'with-ctrl' '[' ListControl ']' { Frontend.LambdaQ.Abs.TCtrlGate $2 $3 $6 }
+  | Term 'with-ctrl' '[' ListControl ']' { Frontend.LambdaQ.Abs.TCtrl $1 $4 }
+  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollr $1 $3 }
   | Term2 { $1 }
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }

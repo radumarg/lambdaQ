@@ -98,10 +98,10 @@ data Term
     | TLetMany LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
     | TLambd Lambda LambdaVariable [LambdaVariable] Term
+    | TGate Gate Term
+    | TCtrl Term [Control]
     | TApp Term Term
     | TDollr Term Term
-    | TGate Gate Term
-    | TCtrlGate Gate Term [Control]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExp Term Var

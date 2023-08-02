@@ -101,10 +101,10 @@ TLetOne   . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLetMany  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TLambd    . Term1 ::= Lambda LambdaVariable [LambdaVariable] "->" Term ;
+TGate     . Term1 ::= "gate" Gate Term ;
+TCtrl     . Term1 ::= Term "with-ctrl" "[" [Control] "]" ;
 TApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TDollr    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
-TGate     . Term1 ::= "gate" Gate Term ;
-TCtrlGate . Term1 ::= "gate" Gate Term "with-ctrl" "[" [Control] "]" ;
 coercions Term 3 ;
 
 -- Case Expressions --

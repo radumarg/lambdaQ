@@ -59,8 +59,8 @@ The symbols used in LambdaQ are the following:
   | -> | ( | ) | @0
   | @1 | @+ | @- | @+i
   | @-i | , | { | =
-  | } | $ | with-ctrl | [
-  | ] | ; | :: |
+  | } | with-ctrl | [ | ]
+  | $ | ; | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -146,9 +146,9 @@ All other symbols are terminals.
   |  |  **|**  | ``let`` ``{`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //LambdaVariable// //[LambdaVariable]// ``->`` //Term//
-  |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | ``gate`` //Gate// //Term//
-  |  |  **|**  | ``gate`` //Gate// //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
+  |  |  **|**  | //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
+  |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
   | //Term2// | -> | //Term2// //Term3//
   |  |  **|**  | //Term3//
