@@ -81,11 +81,11 @@ separator LambdaVariable " " ;
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
 -- Declaring Controls --
-TCtrls . Controls ::= "[" Term "," [Term] "]" ;
+Ctrls . Controls ::= "[" Term "," [Term] "]" ;
 separator nonempty Term "," ;
 
 -- Declaring Control states --
-TCtrlStates . ControlStates ::= "[" ControlState "," [ControlState] "]" ;
+CtrlStates . ControlStates ::= "[" ControlState "," [ControlState] "]" ;
 separator nonempty ControlState "," ;
 
 -- Lambda token --
