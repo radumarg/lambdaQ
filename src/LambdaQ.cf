@@ -20,6 +20,9 @@ TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
+-- Bit --
+position token Bit ('0' | '1') ;
+
 -- Angle is a fraction of 2π --
 AAngl . Angle ::= Double ;
 
@@ -90,9 +93,6 @@ separator nonempty ControlState "," ;
 
 -- Lambda token --
 token Lambda '\\' ;
-
--- Bit --
-position token Bit ('0' | '1') ;
 
 -- Terms --
 TVar      . Term3 ::= Var ;
