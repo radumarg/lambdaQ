@@ -76,10 +76,7 @@ GateGeneric       . Gate ::= GateIdent  ;                               -- Gener
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 
 LetVar . LetVariable ::= Var ;
-separator nonempty LetVariable "," ;
-
-LambdaVar . LambdaVariable ::= Var ;
-separator LambdaVariable " " ;
+separator LetVariable "," ;
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
@@ -100,8 +97,7 @@ TBit      . Term3 ::= Bit ;
 TTupl     . Term3 ::= Tuple ;
 TUnit     . Term3 ::= "()" ;
 TIfEls    . Term1 ::= "if" Term "then" Term "else" Term ;
-TLetOne   . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
-TLetMany  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TLet      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TLambd    . Term1 ::= Lambda FunctionType "." Term ;
 TGate     . Term1 ::= "gate" Gate ;
