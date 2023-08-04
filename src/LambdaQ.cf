@@ -31,9 +31,6 @@ CStateMinus  . ControlState ::= "@-" ;
 CStatePlusI  . ControlState ::= "@+i" ;
 CStateMinusI . ControlState ::= "@-i" ;
 
--- Controls --
-CCtrl . Control ::= Term ControlState;
-separator nonempty Control "," ;
 
 position token GateIdent (upper (letter | digit | '_')*) ;
 
@@ -83,7 +80,13 @@ separator LambdaVariable " " ;
 
 -- Declaring Tuples --
 Tup . Tuple ::= "(" Term "," [Term] ")" ;
+-- Declaring Controls --
+TCtrls . Controls ::= "[" Term "," [Term] "]" ;
 separator nonempty Term "," ;
+
+-- Declaring Control states --
+TCtrlStates . ControlStates ::= "[" ControlState "," [ControlState] "]" ;
+separator nonempty ControlState "," ;
 
 -- Lambda token --
 token Lambda '\\' ;
@@ -101,8 +104,8 @@ TLetOne   . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLetMany  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TLambd    . Term1 ::= Lambda LambdaVariable [LambdaVariable] "->" Term ;
-TGate     . Term1 ::= "gate" Gate Term ;
-TCtrl     . Term1 ::= Term "with-ctrl" "[" [Control] "]" ;
+TGate     . Term1 ::= "gate" Gate ;
+TCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
 TApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TDollr    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 coercions Term 3 ;
