@@ -103,7 +103,7 @@ TIfEls    . Term1 ::= "if" Term "then" Term "else" Term ;
 TLetOne   . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TLetMany  . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
-TLambd    . Term1 ::= Lambda LambdaVariable [LambdaVariable] "->" Term ;
+TLambd    . Term1 ::= Lambda FunctionType "." Term ;
 TGate     . Term1 ::= "gate" Gate ;
 TCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
 TApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
