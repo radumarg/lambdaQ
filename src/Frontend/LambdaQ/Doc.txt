@@ -25,6 +25,9 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
+Bit literals are recognized by the regular expression
+`````["01"]`````
+
 GateIdent literals are recognized by the regular expression
 `````upper ('_' | digit | letter)*`````
 
@@ -33,9 +36,6 @@ Var literals are recognized by the regular expression
 
 Lambda literals are recognized by the regular expression
 `````'\'`````
-
-Bit literals are recognized by the regular expression
-`````["01"]`````
 
 
 ===Reserved words and symbols===
@@ -51,15 +51,16 @@ The reserved words used in LambdaQ are the following:
   | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG`` | ``T``
   | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
   | ``X`` | ``Y`` | ``Z`` | ``case``
-  | ``else`` | ``gate`` | ``if`` | ``in``
-  | ``let`` | ``of`` | ``then`` |
+  | ``ctrl`` | ``else`` | ``gate`` | ``if``
+  | ``in`` | ``let`` | ``of`` | ``then``
+  | ``with`` |  |  |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
   | -> | ( | ) | @0
   | @1 | @+ | @- | @+i
-  | @-i | , | { | =
-  | } | with-ctrl | [ | ]
+  | @-i | , | [ | ]
+  | { | = | } | .
   | $ | ; | :: |
 
 ===Comments===
@@ -90,9 +91,6 @@ All other symbols are terminals.
   |  |  **|**  | ``@-``
   |  |  **|**  | ``@+i``
   |  |  **|**  | ``@-i``
-  | //Control// | -> | //Term// //ControlState//
-  | //[Control]// | -> | //Control//
-  |  |  **|**  | //Control// ``,`` //[Control]//
   | //Gate// | -> | ``H``
   |  |  **|**  | ``X``
   |  |  **|**  | ``Y``
@@ -128,26 +126,27 @@ All other symbols are terminals.
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
   |  |  **|**  | //GateIdent//
   | //LetVariable// | -> | //Var//
-  | //[LetVariable]// | -> | //LetVariable//
+  | //[LetVariable]// | -> | **eps**
+  |  |  **|**  | //LetVariable//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//
-  | //LambdaVariable// | -> | //Var//
-  | //[LambdaVariable]// | -> | **eps**
-  |  |  **|**  | //LambdaVariable// //[LambdaVariable]//
   | //Tuple// | -> | ``(`` //Term// ``,`` //[Term]// ``)``
+  | //Controls// | -> | ``[`` //Term// ``,`` //[Term]// ``]``
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
+  | //ControlStates// | -> | ``[`` //ControlState// ``,`` //[ControlState]// ``]``
+  | //[ControlState]// | -> | //ControlState//
+  |  |  **|**  | //ControlState// ``,`` //[ControlState]//
   | //Term3// | -> | //Var//
   |  |  **|**  | //Bit//
   |  |  **|**  | //Tuple//
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
-  |  |  **|**  | ``let`` ``{`` //LetVariable// ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``let`` ``{`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
-  |  |  **|**  | //Lambda// //LambdaVariable// //[LambdaVariable]// ``->`` //Term//
-  |  |  **|**  | ``gate`` //Gate// //Term//
-  |  |  **|**  | //Term// ``with-ctrl`` ``[`` //[Control]// ``]``
+  |  |  **|**  | //Lambda// //FunctionType// ``.`` //Term//
+  |  |  **|**  | ``gate`` //Gate//
+  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlStates//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
   | //Term2// | -> | //Term2// //Term3//

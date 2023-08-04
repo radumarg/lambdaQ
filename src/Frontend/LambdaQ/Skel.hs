@@ -15,6 +15,10 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
+transBit :: Frontend.LambdaQ.Abs.Bit -> Result
+transBit x = case x of
+  Frontend.LambdaQ.Abs.Bit string -> failure x
+
 transGateIdent :: Frontend.LambdaQ.Abs.GateIdent -> Result
 transGateIdent x = case x of
   Frontend.LambdaQ.Abs.GateIdent string -> failure x
@@ -26,10 +30,6 @@ transVar x = case x of
 transLambda :: Frontend.LambdaQ.Abs.Lambda -> Result
 transLambda x = case x of
   Frontend.LambdaQ.Abs.Lambda string -> failure x
-
-transBit :: Frontend.LambdaQ.Abs.Bit -> Result
-transBit x = case x of
-  Frontend.LambdaQ.Abs.Bit string -> failure x
 
 transProgram :: Frontend.LambdaQ.Abs.Program -> Result
 transProgram x = case x of
@@ -57,10 +57,6 @@ transControlState x = case x of
   Frontend.LambdaQ.Abs.CStateMinus -> failure x
   Frontend.LambdaQ.Abs.CStatePlusI -> failure x
   Frontend.LambdaQ.Abs.CStateMinusI -> failure x
-
-transControl :: Frontend.LambdaQ.Abs.Control -> Result
-transControl x = case x of
-  Frontend.LambdaQ.Abs.CCtrl term controlstate -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
@@ -103,13 +99,17 @@ transLetVariable :: Frontend.LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of
   Frontend.LambdaQ.Abs.LetVar var -> failure x
 
-transLambdaVariable :: Frontend.LambdaQ.Abs.LambdaVariable -> Result
-transLambdaVariable x = case x of
-  Frontend.LambdaQ.Abs.LambdaVar var -> failure x
-
 transTuple :: Frontend.LambdaQ.Abs.Tuple -> Result
 transTuple x = case x of
   Frontend.LambdaQ.Abs.Tup term terms -> failure x
+
+transControls :: Frontend.LambdaQ.Abs.Controls -> Result
+transControls x = case x of
+  Frontend.LambdaQ.Abs.Ctrls term terms -> failure x
+
+transControlStates :: Frontend.LambdaQ.Abs.ControlStates -> Result
+transControlStates x = case x of
+  Frontend.LambdaQ.Abs.CtrlStates controlstate controlstates -> failure x
 
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
@@ -118,12 +118,11 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TTupl tuple -> failure x
   Frontend.LambdaQ.Abs.TUnit -> failure x
   Frontend.LambdaQ.Abs.TIfEls term1 term2 term3 -> failure x
-  Frontend.LambdaQ.Abs.TLetOne letvariable term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TLetMany letvariable letvariables term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> failure x
-  Frontend.LambdaQ.Abs.TLambd lambda lambdavariable lambdavariables term -> failure x
-  Frontend.LambdaQ.Abs.TGate gate term -> failure x
-  Frontend.LambdaQ.Abs.TCtrl term controls -> failure x
+  Frontend.LambdaQ.Abs.TLambd lambda functiontype term -> failure x
+  Frontend.LambdaQ.Abs.TGate gate -> failure x
+  Frontend.LambdaQ.Abs.TCtrl controls controlstates -> failure x
   Frontend.LambdaQ.Abs.TApp term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TDollr term1 term2 -> failure x
 

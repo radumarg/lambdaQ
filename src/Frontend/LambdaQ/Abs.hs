@@ -39,9 +39,6 @@ data ControlState
     | CStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Control = CCtrl Term ControlState
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
 data Gate
     = GateH
     | GateX
@@ -82,10 +79,13 @@ data Gate
 data LetVariable = LetVar Var
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data LambdaVariable = LambdaVar Var
+data Tuple = Tup Term [Term]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Tuple = Tup Term [Term]
+data Controls = Ctrls Term [Term]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data ControlStates = CtrlStates ControlState [ControlState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Term
@@ -94,12 +94,11 @@ data Term
     | TTupl Tuple
     | TUnit
     | TIfEls Term Term Term
-    | TLetOne LetVariable Term Term
-    | TLetMany LetVariable [LetVariable] Term Term
+    | TLet LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
-    | TLambd Lambda LambdaVariable [LambdaVariable] Term
-    | TGate Gate Term
-    | TCtrl Term [Control]
+    | TLambd Lambda FunctionType Term
+    | TGate Gate
+    | TCtrl Controls ControlStates
     | TApp Term Term
     | TDollr Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
@@ -119,6 +118,9 @@ data FunctionType = FunType Var Type
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+newtype Bit = Bit ((C.Int, C.Int), String)
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 newtype GateIdent = GateIdent ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
@@ -127,9 +129,6 @@ newtype Var = Var ((C.Int, C.Int), String)
 
 newtype Lambda = Lambda String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
-
-newtype Bit = Bit ((C.Int, C.Int), String)
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 -- | Start position (line, column) of something.
 
@@ -146,12 +145,12 @@ pattern BNFC'Position line col = C.Just (line, col)
 class HasPosition a where
   hasPosition :: a -> BNFC'Position
 
+instance HasPosition Bit where
+  hasPosition (Bit (p, _)) = C.Just p
+
 instance HasPosition GateIdent where
   hasPosition (GateIdent (p, _)) = C.Just p
 
 instance HasPosition Var where
   hasPosition (Var (p, _)) = C.Just p
-
-instance HasPosition Bit where
-  hasPosition (Bit (p, _)) = C.Just p
 
