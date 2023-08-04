@@ -96,7 +96,7 @@ data Term
     | TIfEls Term Term Term
     | TLet LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
-    | TLambd Lambda FunctionType Term
+    | TLambda Lambda FunctionType Term
     | TGate Gate
     | TCtrl Controls ControlStates
     | TApp Term Term

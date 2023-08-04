@@ -235,7 +235,7 @@ Term1
   : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TIfEls $2 $4 $6 }
   | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TLet $4 $6 $9 $12 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TCase $2 $4 $5 }
-  | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TLambd $1 $2 $4 }
+  | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TLambda $1 $2 $4 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TGate $2 }
   | 'with' Controls 'ctrl' ControlStates { Frontend.LambdaQ.Abs.TCtrl $2 $4 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollr $1 $3 }
