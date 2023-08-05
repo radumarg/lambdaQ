@@ -94,18 +94,18 @@ data Term =
     TermGate Gate                     |
     TermTuple Term Term               |
     TermApp Term Term                 |
-    TermIfEl Term Term Term           |
+    TermDollar Term Term              |
+    TermIfElse Term Term Term         |
     TermLet Term Term                 |
     TermLambda Type Term              |
     TermControl [Term] [ControlState] |
-    TermNew                           |
-    TermMeasure                       |
+    TermNew  (Int, Int)               |
+    TermMeasure (Int, Int)            |
     TermUnit
   deriving (Eq, Ord, Show, Read)
 
 data Function = Func String Type Term
 type Program = [Function]
-
 
 mapType :: GenAbSyntax.Type -> Type
 mapType GenAbSyntax.TypeBit   = TypeBit
@@ -141,12 +141,6 @@ reverseMapControlState CStateMinus = GenAbSyntax.CStateMinus
 reverseMapControlState CStatePlusI = GenAbSyntax.CStatePlusI
 reverseMapControlState CStateMinusI = GenAbSyntax.CStateMinusI
 
--- -- mapControl :: GenAbSyntax.Control -> Control
--- -- mapControl (GenAbSyntax.CCtrl ctrlState term) = CCtrl (mapControlState ctrlState) (mapTerm Map.empty term)
-
--- -- reverseMapControl :: Control -> GenAbSyntax.Control
--- -- reverseMapControl (CCtrl ctrlState term) = GenAbSyntax.CCtrl (reverseMapControlState ctrlState) (reverseMapTerm Map.empty term)
-
 mapAngle :: GenAbSyntax.Angle -> Angle
 mapAngle (GenAbSyntax.AAngl angle) = Angle angle
 
@@ -156,7 +150,7 @@ reverseMapAngle (Angle angle) = GenAbSyntax.AAngl angle
 mapBit :: GenAbSyntax.Bit -> Bit
 mapBit (GenAbSyntax.Bit ((l, c), "0")) = Bit ((l, c), BitZero) 
 mapBit (GenAbSyntax.Bit ((l, c), "1")) = Bit ((l, c), BitOne) 
-mapBit (GenAbSyntax.Bit ((l, c), s)) = errorWithoutStackTrace $ "Unsupported bit value " ++ s ++ " at line: " ++ show l ++ " and col: " ++ show c
+mapBit (GenAbSyntax.Bit ((l, c), s)) = errorWithoutStackTrace $ "Unsupported bit value " ++ s ++ " at line: " ++ show l ++ " and column: " ++ show c
 
 reverseMapBit :: Bit -> GenAbSyntax.Bit
 reverseMapBit (Bit ((l, c), BitZero)) = GenAbSyntax.Bit ((l, c), "0")
@@ -263,8 +257,19 @@ reverseMapFunction (Func name typ term) = undefined
 type Env = Map.Map String Integer
 
 mapTerm :: Env -> GenAbSyntax.Term -> Term
-mapTerm = undefined
+mapTerm env (GenAbSyntax.TApp l r) = TermApp (mapTerm env l) (mapTerm env r) 
+mapTerm _ (GenAbSyntax.TVar (GenAbSyntax.Var ((l, c), "new"))) = TermNew (l, c)
+mapTerm _ (GenAbSyntax.TVar (GenAbSyntax.Var ((l, c), "measure"))) = TermMeasure (l, c)
+mapTerm env (GenAbSyntax.TDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
+mapTerm env (GenAbSyntax.TIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
 
 reverseMapTerm :: Env -> Term -> GenAbSyntax.Term
-reverseMapTerm = undefined
+reverseMapTerm env (TermApp l r) = GenAbSyntax.TApp (reverseMapTerm env l) (reverseMapTerm env r)
+reverseMapTerm _ (TermNew (l, c)) = GenAbSyntax.TVar (GenAbSyntax.Var ((l, c), "new")) 
+reverseMapTerm _ (TermMeasure (l, c)) = GenAbSyntax.TVar (GenAbSyntax.Var ((l, c), "measure"))
+reverseMapTerm env (TermDollar l r) = GenAbSyntax.TDollar (reverseMapTerm env l) (reverseMapTerm env r)
+reverseMapTerm env (TermIfElse cond t f) = GenAbSyntax.TIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
+
+
+
 
