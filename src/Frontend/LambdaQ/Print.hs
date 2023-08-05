@@ -254,7 +254,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TGate gate -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TCtrl controls controlstates -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlstates])
     Frontend.LambdaQ.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
-    Frontend.LambdaQ.Abs.TDollr term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
+    Frontend.LambdaQ.Abs.TDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

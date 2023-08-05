@@ -100,7 +100,7 @@ data Term
     | TGate Gate
     | TCtrl Controls ControlStates
     | TApp Term Term
-    | TDollr Term Term
+    | TDollar Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExp Term Var

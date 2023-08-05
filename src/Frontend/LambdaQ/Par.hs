@@ -1065,7 +1065,7 @@ happyReduction_82 happy_x_3
 	 =  case happyOut27 happy_x_1 of { (HappyWrap27 happy_var_1) -> 
 	case happyOut26 happy_x_3 of { (HappyWrap26 happy_var_3) -> 
 	happyIn26
-		 (Frontend.LambdaQ.Abs.TDollr happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.TDollar happy_var_1 happy_var_3
 	)}}
 
 happyReduce_83 = happySpecReduce_1  22# happyReduction_83

@@ -238,7 +238,7 @@ Term1
   | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TLambda $1 $2 $4 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TGate $2 }
   | 'with' Controls 'ctrl' ControlStates { Frontend.LambdaQ.Abs.TCtrl $2 $4 }
-  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollr $1 $3 }
+  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollar $1 $3 }
   | Term2 { $1 }
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }

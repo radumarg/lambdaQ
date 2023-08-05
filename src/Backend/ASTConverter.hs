@@ -8,7 +8,7 @@
 
 module Backend.ASTConverter where
 
-import Backend.IAST ( Function( Func ), Program, mapTerm, mapType )
+import Backend.IAST ( Function( Func ), Program, mapFunction, reverseMapFunction )
 import qualified Data.Map as Map
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Frontend.LambdaQ.Print ( printTree )
@@ -20,29 +20,11 @@ parse str = case pProgram (myLexer str) of
    Left str -> errorWithoutStackTrace str
    Right p -> mapProgram p
 
-mapFunction :: GenAbSyntax.FunctionDeclaration -> Function
-mapFunction (GenAbSyntax.FunDecl funType funDef) = Func fname (mapType ftype) term
-   where
-      (GenAbSyntax.FunType _ ftype) = funType
-      (GenAbSyntax.FunDef (GenAbSyntax.Var fvar) fargs fbody) = funDef
-      ((fline, fcol), fname) = fvar
-      term = mapTerm Map.empty $ toLambda (trimExclMark ftype) fargs fbody
-
--- convert function to a lambda abstraction 
-toLambda :: GenAbSyntax.Type -> [GenAbSyntax.Arg] ->  GenAbSyntax.Term -> GenAbSyntax.Term
-toLambda ftype [] fbody = fbody
-toLambda (GenAbSyntax.TypeFunc ltype rtype) (GenAbSyntax.FunArg (GenAbSyntax.Var var) : vars ) body = 
-   GenAbSyntax.TLambda (GenAbSyntax.Lambda "\\") (GenAbSyntax.FunType (GenAbSyntax.Var var) ltype) (toLambda rtype vars body)
-toLambda (GenAbSyntax.TypeNonLin (GenAbSyntax.TypeFunc ltype rtype)) (GenAbSyntax.FunArg (GenAbSyntax.Var var) : vars ) body =
-   GenAbSyntax.TLambda (GenAbSyntax.Lambda "\\") (GenAbSyntax.FunType (GenAbSyntax.Var var) ltype) (toLambda rtype vars body)
-
--- the outer non-linear type flag(s) '!' will be removed if present
-trimExclMark :: GenAbSyntax.Type -> GenAbSyntax.Type
-trimExclMark (GenAbSyntax.TypeNonLin t) = trimExclMark t
-trimExclMark t = t
-
 mapProgram :: GenAbSyntax.Program -> Program
 mapProgram (GenAbSyntax.ProgDef fs)  = map mapFunction fs
+
+reverseMapProgram ::  Program -> GenAbSyntax.Program
+reverseMapProgram = GenAbSyntax.ProgDef . map reverseMapFunction
 
 parseAndPrintTreeFromString :: String -> String
 parseAndPrintTreeFromString str = 

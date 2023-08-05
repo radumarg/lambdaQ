@@ -13,8 +13,6 @@ module Backend.IAST where
 import qualified Frontend.LambdaQ.Abs as GenAbSyntax
 import qualified Data.Map as Map
 
---- Types will be declared first below ---
-
 data Type = 
     TypeBit           |
     TypeQbit          |
@@ -38,112 +36,76 @@ data ControlState =
     CStateMinusI
   deriving (Eq, Ord, Show, Read)
 
-data Control = CCtrl ControlState Term
-  deriving (Eq, Ord, Show, Read)
-
-data Angle where
-  AAngl :: Double -> Angle
+newtype Angle = Angle Double
   deriving (Eq, Ord, Show, Read)
 
 data BitValue = BitZero | BitOne
   deriving (Eq, Ord, Show, Read)
 
+-- Integer arguments correspond to line and column position in code
 newtype Bit = Bit ((Int, Int), BitValue)
   deriving (Eq, Ord, Show, Read)
 
--- Integer arguments correspond to line and column occurence in
--- the source code, used for providing more relevant error messages.
+-- Integer arguments correspond to line and column position in code
 newtype GateIdent = GateIdent ((Int, Int), String)
   deriving (Eq, Ord, Show, Read)
 
 data Gate =
-    GateH                               |
-    GateHC [Control]                    |
-    GateX                               |
-    GateXC [Control]                    |
-    GateY                               |
-    GateYC [Control]                    |
-    GateZ                               |
-    GateZC [Control]                    |
-    GateI                               |
-    GateXRt Integer                     |
-    GateXRtC Integer [Control]          |
-    GateXRtDag Integer                  |
-    GateXRtDagC Integer [Control]       |
-    GateYRt Integer                     |
-    GateYRtC Integer [Control]          |
-    GateYRtDag Integer                  |
-    GateYRtDagC Integer [Control]       |
-    GateZRt Integer                     |
-    GateZRtC Integer [Control]          |
-    GateZRtDag Integer                  |
-    GateZRtDagC Integer [Control]       |
-    GateS                               |
-    GateSC [Control]                    |
-    GateSDag                            |
-    GateSDagC [Control]                 |
-    GateT                               |
-    GateTC [Control]                    |
-    GateTDag                            |
-    GateTDagC [Control]                 |
-    GateSqrtX                           |
-    GateSqrtXC [Control]                |
-    GateSqrtXDag                        |
-    GateSqrtXDagC [Control]             |
-    GateSqrtY                           |
-    GateSqrtYC [Control]                |
-    GateSqrtYDag                        |
-    GateSqrtYDagC [Control]             |
-    GateRxTheta Angle                   |
-    GateRxThetaC Angle [Control]        |
-    GateRyTheta Angle                   |
-    GateRyThetaC Angle [Control]        |
-    GateRzTheta Angle                   |
-    GateRzThetaC Angle [Control]        |
-    GateU1 Angle                        |
-    GateU1C Angle [Control]             |
-    GateU2 Angle Angle                  |
-    GateU2C Angle Angle [Control]       |
-    GateU3 Angle Angle Angle            |
-    GateU3C Angle Angle Angle [Control] |
-    GateSwp                             |
-    GateSwpC [Control]                  |
-    GateSqrtSwp                         |
-    GateSqrtSwpC [Control]              |
-    GateSqrtSwpDag                      |
-    GateSqrtSwpDagC [Control]           |
-    GateISwp                            |
-    GateISwpC [Control]                 |
-    GateFSwp                            |
-    GateSwpTheta Angle                  |
-    GateFSwpC [Control]                 |
-    GateSwpRt Integer                   |
-    GateSwpRtC Integer [Control]        |
-    GateSwpRtDag Integer                |
-    GateSwpRtDagC Integer [Control]     |
-    GateGeneric GateIdent               |
-    GateGenericC GateIdent [Control]
+    GateH                      |
+    GateX                      |
+    GateY                      |
+    GateZ                      |
+    GateI                      |
+    GateXRt Integer            |
+    GateXRtDag Integer         |
+    GateYRt Integer            |
+    GateYRtDag Integer         |
+    GateZRt Integer            |
+    GateZRtDag Integer         |
+    GateS                      |
+    GateSDag                   |
+    GateT                      |
+    GateTDag                   |
+    GateSqrtX                  |
+    GateSqrtXDag               |
+    GateSqrtY                  |
+    GateSqrtYDag               |
+    GateRxTheta Angle          |
+    GateRyTheta Angle          |
+    GateRzTheta Angle          |
+    GateU1 Angle               |
+    GateU2 Angle Angle         |
+    GateU3 Angle Angle Angle   |
+    GateSwp                    |
+    GateSqrtSwp                |
+    GateSqrtSwpDag             |
+    GateISwp                   |
+    GateISwpC                  |
+    GateFSwp                   |
+    GateSwpTheta Angle         |
+    GateSwpRt Integer          |
+    GateSwpRtDag Integer       |
+    GateGeneric GateIdent 
   deriving (Eq, Ord, Show, Read)
 
 data Term =
-    TermFunction String                 |
-    TermBit Bit                         |
-    TermGate Gate                       |
-    TermTuple Term Term                 |
-    TermApp Term Term                   |
-    TermIfEl Term Term Term             |
-    TermLet Term Term                   |
-    TermLambda Type Term                |
-    TermNew                             |
-    TermMeasure                         |
+    TermFunction String               |
+    TermBit Bit                       |
+    TermGate Gate                     |
+    TermTuple Term Term               |
+    TermApp Term Term                 |
+    TermIfEl Term Term Term           |
+    TermLet Term Term                 |
+    TermLambda Type Term              |
+    TermControl [Term] [ControlState] |
+    TermNew                           |
+    TermMeasure                       |
     TermUnit
   deriving (Eq, Ord, Show, Read)
 
 data Function = Func String Type Term
 type Program = [Function]
 
-
---- Functions will be declared below ---
 
 mapType :: GenAbSyntax.Type -> Type
 mapType GenAbSyntax.TypeBit   = TypeBit
@@ -154,6 +116,15 @@ mapType (GenAbSyntax.TypeTensr l r) = mapType l :*: mapType r
 mapType (GenAbSyntax.TypeExp t i) = mapType t :**: i
 mapType (GenAbSyntax.TypeFunc l r) = mapType l :->: mapType r
 
+reverseMapType :: Type -> GenAbSyntax.Type
+reverseMapType TypeBit  = GenAbSyntax.TypeBit
+reverseMapType TypeQbit = GenAbSyntax.TypeQbit
+reverseMapType TypeUnit = GenAbSyntax.TypeUnit
+reverseMapType (TypeNonLin t) = GenAbSyntax.TypeNonLin (reverseMapType t)
+reverseMapType (l :*: r) = GenAbSyntax.TypeTensr (reverseMapType l) (reverseMapType r)
+reverseMapType (t :**: i) = GenAbSyntax.TypeExp (reverseMapType t) i
+reverseMapType (l :->: r) = GenAbSyntax.TypeFunc (reverseMapType l) (reverseMapType r)
+
 mapControlState :: GenAbSyntax.ControlState -> ControlState
 mapControlState GenAbSyntax.CStateZero = CStateZero
 mapControlState GenAbSyntax.CStateOne = CStateOne
@@ -162,91 +133,138 @@ mapControlState GenAbSyntax.CStateMinus = CStateMinus
 mapControlState GenAbSyntax.CStatePlusI = CStatePlusI
 mapControlState GenAbSyntax.CStateMinusI = CStateMinusI
 
--- mapControl :: GenAbSyntax.Control -> Control
--- mapControl (GenAbSyntax.CCtrl ctrlState term) = CCtrl (mapControlState ctrlState) (mapTerm Map.empty term)
+reverseMapControlState :: ControlState -> GenAbSyntax.ControlState
+reverseMapControlState CStateZero = GenAbSyntax.CStateZero
+reverseMapControlState CStateOne = GenAbSyntax.CStateOne
+reverseMapControlState CStatePlus = GenAbSyntax.CStatePlus
+reverseMapControlState CStateMinus = GenAbSyntax.CStateMinus
+reverseMapControlState CStatePlusI = GenAbSyntax.CStatePlusI
+reverseMapControlState CStateMinusI = GenAbSyntax.CStateMinusI
+
+-- -- mapControl :: GenAbSyntax.Control -> Control
+-- -- mapControl (GenAbSyntax.CCtrl ctrlState term) = CCtrl (mapControlState ctrlState) (mapTerm Map.empty term)
+
+-- -- reverseMapControl :: Control -> GenAbSyntax.Control
+-- -- reverseMapControl (CCtrl ctrlState term) = GenAbSyntax.CCtrl (reverseMapControlState ctrlState) (reverseMapTerm Map.empty term)
 
 mapAngle :: GenAbSyntax.Angle -> Angle
-mapAngle (GenAbSyntax.AAngl angle) = AAngl angle
+mapAngle (GenAbSyntax.AAngl angle) = Angle angle
 
 reverseMapAngle :: Angle -> GenAbSyntax.Angle
-reverseMapAngle (AAngl angle) = GenAbSyntax.AAngl angle
+reverseMapAngle (Angle angle) = GenAbSyntax.AAngl angle
 
---mapBit :: GenAbSyntax.Bit -> Bit
---mapBit (GenAbSyntax.Bit ((l, c) 0)) = undefined
---mapBit (GenAbSyntax.Bit ((l, c) 1)) = undefined
+mapBit :: GenAbSyntax.Bit -> Bit
+mapBit (GenAbSyntax.Bit ((l, c), "0")) = Bit ((l, c), BitZero) 
+mapBit (GenAbSyntax.Bit ((l, c), "1")) = Bit ((l, c), BitOne) 
+mapBit (GenAbSyntax.Bit ((l, c), s)) = errorWithoutStackTrace $ "Unsupported bit value " ++ s ++ " at line: " ++ show l ++ " and col: " ++ show c
+
+reverseMapBit :: Bit -> GenAbSyntax.Bit
+reverseMapBit (Bit ((l, c), BitZero)) = GenAbSyntax.Bit ((l, c), "0")
+reverseMapBit (Bit ((l, c), BitOne)) = GenAbSyntax.Bit ((l, c), "1")
 
 mapGate :: GenAbSyntax.Gate -> Gate
-mapGate g = undefined
--- mapGate g = case g of 
---     GenAbSyntax.GateH ->  GateH
---     GenAbSyntax.GateHC ctrls -> GateHC (map mapControl ctrls)
---     GenAbSyntax.GateX -> GateX
---     GenAbSyntax.GateXC ctrls -> GateXC (map mapControl ctrls)
---     GenAbSyntax.GateY -> GateY
---     GenAbSyntax.GateYC ctrls -> GateYC (map mapControl ctrls)
---     GenAbSyntax.GateZ -> GateZ
---     GenAbSyntax.GateZC ctrls -> GateZC (map mapControl ctrls)
---     GenAbSyntax.GateI -> GateI
---     GenAbSyntax.GateXRt rt -> GateXRt rt
---     GenAbSyntax.GateXRtC rt ctrls -> GateXRtC rt (map mapControl ctrls)
---     GenAbSyntax.GateXRtDag rt -> GateXRtDag rt
---     GenAbSyntax.GateXRtDagC rt ctrls -> GateXRtDagC rt (map mapControl ctrls)
---     GenAbSyntax.GateYRt rt -> GateYRt rt
---     GenAbSyntax.GateYRtC rt ctrls -> GateYRtC rt (map mapControl ctrls)
---     GenAbSyntax.GateYRtDag rt -> GateYRtDag rt
---     GenAbSyntax.GateYRtDagC rt ctrls -> GateYRtDagC rt (map mapControl ctrls)
---     GenAbSyntax.GateZRt rt -> GateZRt rt
---     GenAbSyntax.GateZRtC rt ctrls -> GateZRtC rt (map mapControl ctrls)
---     GenAbSyntax.GateZRtDag rt -> GateZRtDag rt
---     GenAbSyntax.GateZRtDagC rt ctrls -> GateZRtDagC rt (map mapControl ctrls)
---     GenAbSyntax.GateS -> GateS
---     GenAbSyntax.GateSC ctrls -> GateSC (map mapControl ctrls)
---     GenAbSyntax.GateSDag -> GateSDag
---     GenAbSyntax.GateSDagC ctrls -> GateSDagC (map mapControl ctrls)
---     GenAbSyntax.GateT -> GateT
---     GenAbSyntax.GateTC ctrls -> GateTC (map mapControl ctrls)
---     GenAbSyntax.GateTDag -> GateTDag
---     GenAbSyntax.GateTDagC ctrls -> GateTDagC (map mapControl ctrls)
---     GenAbSyntax.GateSqrtX -> GateSqrtX
---     GenAbSyntax.GateSqrtXC ctrls -> GateSqrtXC (map mapControl ctrls)
---     GenAbSyntax.GateSqrtXDag -> GateSqrtXDag
---     GenAbSyntax.GateSqrtXDagC ctrls -> GateSqrtXDagC (map mapControl ctrls)
---     GenAbSyntax.GateSqrtY -> GateSqrtY
---     GenAbSyntax.GateSqrtYC ctrls -> GateSqrtYC (map mapControl ctrls)
---     GenAbSyntax.GateSqrtYDag -> GateSqrtYDag 
---     GenAbSyntax.GateSqrtYDagC ctrls -> GateSqrtYDagC (map mapControl ctrls)
---     GenAbSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
---     GenAbSyntax.GateRxThetaC angle ctrls -> GateRxThetaC (mapAngle angle) (map mapControl ctrls)
---     GenAbSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
---     GenAbSyntax.GateRyThetaC angle ctrls -> GateRyThetaC (mapAngle angle) (map mapControl ctrls)
---     GenAbSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
---     GenAbSyntax.GateRzThetaC angle ctrls -> GateRzThetaC (mapAngle angle) (map mapControl ctrls)
---     GenAbSyntax.GateU1 angle -> GateU1 (mapAngle angle)
---     GenAbSyntax.GateU1C angle ctrls -> GateU1C (mapAngle angle) (map mapControl ctrls)
---     GenAbSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
---     GenAbSyntax.GateU2C angle1 angle2 ctrls -> GateU2C (mapAngle angle1) (mapAngle angle2) (map mapControl ctrls)
---     GenAbSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
---     GenAbSyntax.GateU3C angle1 angle2 angle3 ctrls -> GateU3C (mapAngle angle1) (mapAngle angle2) (mapAngle angle3) (map mapControl ctrls) 
---     GenAbSyntax.GateSwp -> GateSwp 
---     GenAbSyntax.GateSwpC ctrls -> GateSwpC (map mapControl ctrls) 
---     GenAbSyntax.GateSqrtSwp -> GateSqrtSwp
---     GenAbSyntax.GateSqrtSwpC ctrls -> GateSqrtSwpC (map mapControl ctrls)
---     GenAbSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
---     GenAbSyntax.GateSqrtSwpDagC ctrls -> GateSqrtSwpDagC (map mapControl ctrls) 
---     GenAbSyntax.GateISwp -> GateISwp
---     GenAbSyntax.GateISwpC ctrls -> GateISwpC (map mapControl ctrls)
---     GenAbSyntax.GateFSwp -> GateFSwp 
---     GenAbSyntax.GateFSwpC ctrls -> GateFSwpC (map mapControl ctrls)
---     GenAbSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
---     GenAbSyntax.GateSwpRt rt -> GateSwpRt rt 
---     GenAbSyntax.GateSwpRtC rt ctrls -> GateSwpRtC rt (map mapControl ctrls)
---     GenAbSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
---     GenAbSyntax.GateSwpRtDagC rt ctrls -> GateSwpRtDagC rt (map mapControl ctrls)
---     GenAbSyntax.GateGeneric name -> undefined             -- TODO: map generic gates -
---     GenAbSyntax.GateGenericC name ctrls -> undefined      -- TODO: map generic gates -
+mapGate g = case g of 
+    GenAbSyntax.GateH ->  GateH
+    GenAbSyntax.GateX -> GateX
+    GenAbSyntax.GateY -> GateY
+    GenAbSyntax.GateZ -> GateZ
+    GenAbSyntax.GateI -> GateI
+    GenAbSyntax.GateXRt rt -> GateXRt rt
+    GenAbSyntax.GateXRtDag rt -> GateXRtDag rt
+    GenAbSyntax.GateYRt rt -> GateYRt rt
+    GenAbSyntax.GateYRtDag rt -> GateYRtDag rt
+    GenAbSyntax.GateZRt rt -> GateZRt rt
+    GenAbSyntax.GateZRtDag rt -> GateZRtDag rt
+    GenAbSyntax.GateS -> GateS
+    GenAbSyntax.GateSDag -> GateSDag
+    GenAbSyntax.GateT -> GateT
+    GenAbSyntax.GateTDag -> GateTDag
+    GenAbSyntax.GateSqrtX -> GateSqrtX
+    GenAbSyntax.GateSqrtXDag -> GateSqrtXDag
+    GenAbSyntax.GateSqrtY -> GateSqrtY
+    GenAbSyntax.GateSqrtYDag -> GateSqrtYDag 
+    GenAbSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
+    GenAbSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
+    GenAbSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
+    GenAbSyntax.GateU1 angle -> GateU1 (mapAngle angle)
+    GenAbSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
+    GenAbSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
+    GenAbSyntax.GateSwp -> GateSwp 
+    GenAbSyntax.GateSqrtSwp -> GateSqrtSwp
+    GenAbSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
+    GenAbSyntax.GateISwp -> GateISwp
+    GenAbSyntax.GateFSwp -> GateFSwp 
+    GenAbSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
+    GenAbSyntax.GateSwpRt rt -> GateSwpRt rt 
+    GenAbSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
+    GenAbSyntax.GateGeneric (GenAbSyntax.GateIdent ((l,c ), name)) -> GateGeneric (GateIdent ((l,c ), name))
+
+reverseMapGate :: Gate -> GenAbSyntax.Gate
+reverseMapGate g = case g of 
+    GateH ->  GenAbSyntax.GateH
+    GateX -> GenAbSyntax.GateX
+    GateY -> GenAbSyntax.GateY
+    GateZ -> GenAbSyntax.GateZ
+    GateI -> GenAbSyntax.GateI
+    GateXRt rt -> GenAbSyntax.GateXRt rt
+    GateXRtDag rt -> GenAbSyntax.GateXRtDag rt
+    GateYRt rt -> GenAbSyntax.GateYRt rt
+    GateYRtDag rt -> GenAbSyntax.GateYRtDag rt
+    GateZRt rt -> GenAbSyntax.GateZRt rt
+    GateZRtDag rt -> GenAbSyntax.GateZRtDag rt
+    GateS -> GenAbSyntax.GateS
+    GateSDag -> GenAbSyntax.GateSDag
+    GateT -> GenAbSyntax.GateT
+    GateTDag -> GenAbSyntax.GateTDag
+    GateSqrtX -> GenAbSyntax.GateSqrtX
+    GateSqrtXDag -> GenAbSyntax.GateSqrtXDag
+    GateSqrtY -> GenAbSyntax.GateSqrtY
+    GateSqrtYDag -> GenAbSyntax.GateSqrtYDag
+    GateRxTheta angle -> GenAbSyntax.GateRxTheta (reverseMapAngle angle)
+    GateRyTheta angle -> GenAbSyntax.GateRyTheta (reverseMapAngle angle)
+    GateRzTheta angle -> GenAbSyntax.GateRzTheta (reverseMapAngle angle)
+    GateU1 angle -> GenAbSyntax.GateU1 (reverseMapAngle angle)
+    GateU2 angle1 angle2 -> GenAbSyntax.GateU2 (reverseMapAngle angle1) (reverseMapAngle angle2)
+    GateU3 angle1 angle2 angle3 -> GenAbSyntax.GateU3 (reverseMapAngle angle1) (reverseMapAngle angle2) (reverseMapAngle angle3)
+    GateSwp -> GenAbSyntax.GateSwp
+    GateSqrtSwp -> GenAbSyntax.GateSqrtSwp
+    GateSqrtSwpDag -> GenAbSyntax.GateSqrtSwpDag
+    GateISwp -> GenAbSyntax.GateISwp
+    GateFSwp -> GenAbSyntax.GateFSwp
+    GateSwpTheta angle -> GenAbSyntax.GateSwpTheta (reverseMapAngle angle)
+    GateSwpRt rt -> GenAbSyntax.GateSwpRt rt
+    GateSwpRtDag rt -> GenAbSyntax.GateSwpRtDag rt
+    GateGeneric (GateIdent ((l,c ), name)) -> GenAbSyntax.GateGeneric (GenAbSyntax.GateIdent ((l,c ), name))
+
+mapFunction :: GenAbSyntax.FunctionDeclaration -> Function
+mapFunction (GenAbSyntax.FunDecl funType funDef) = Func fname (mapType ftype) term
+   where
+      (GenAbSyntax.FunType _ ftype) = funType
+      (GenAbSyntax.FunDef (GenAbSyntax.Var fvar) fargs fbody) = funDef
+      ((fline, fcol), fname) = fvar
+      term = mapTerm Map.empty $ toLambda (trimNonLinType ftype) fargs fbody
+
+-- convert function to a lambda abstraction 
+toLambda :: GenAbSyntax.Type -> [GenAbSyntax.Arg] ->  GenAbSyntax.Term -> GenAbSyntax.Term
+toLambda ftype [] fbody = fbody
+toLambda (GenAbSyntax.TypeFunc ltype rtype) (GenAbSyntax.FunArg (GenAbSyntax.Var var) : vars ) fbody =
+   GenAbSyntax.TLambda (GenAbSyntax.Lambda "\\") (GenAbSyntax.FunType (GenAbSyntax.Var var) ltype) (toLambda rtype vars fbody)
+toLambda (GenAbSyntax.TypeNonLin (GenAbSyntax.TypeFunc ltype rtype)) (GenAbSyntax.FunArg (GenAbSyntax.Var var) : vars ) fbody =
+   GenAbSyntax.TLambda (GenAbSyntax.Lambda "\\") (GenAbSyntax.FunType (GenAbSyntax.Var var) ltype) (toLambda rtype vars fbody)
+
+-- the outer non-linear type flag(s) '!' will be removed if present
+trimNonLinType :: GenAbSyntax.Type -> GenAbSyntax.Type
+trimNonLinType (GenAbSyntax.TypeNonLin t) = trimNonLinType t
+trimNonLinType t = t
+
+reverseMapFunction :: Function -> GenAbSyntax.FunctionDeclaration
+reverseMapFunction (Func name typ term) = undefined
 
 type Env = Map.Map String Integer
 
 mapTerm :: Env -> GenAbSyntax.Term -> Term
 mapTerm = undefined
+
+reverseMapTerm :: Env -> Term -> GenAbSyntax.Term
+reverseMapTerm = undefined
 

@@ -103,7 +103,7 @@ TLambda   . Term1 ::= Lambda FunctionType "." Term ;
 TGate     . Term1 ::= "gate" Gate ;
 TCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
 TApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TDollr    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TDollar   . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 coercions Term 3 ;
 
 -- Case Expressions --

@@ -124,7 +124,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TGate gate -> failure x
   Frontend.LambdaQ.Abs.TCtrl controls controlstates -> failure x
   Frontend.LambdaQ.Abs.TApp term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TDollr term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TDollar term1 term2 -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of
