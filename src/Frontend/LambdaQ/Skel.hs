@@ -117,7 +117,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TBit bit -> failure x
   Frontend.LambdaQ.Abs.TTupl tuple -> failure x
   Frontend.LambdaQ.Abs.TUnit -> failure x
-  Frontend.LambdaQ.Abs.TIfEls term1 term2 term3 -> failure x
+  Frontend.LambdaQ.Abs.TIfElse term1 term2 term3 -> failure x
   Frontend.LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TLambda lambda functiontype term -> failure x

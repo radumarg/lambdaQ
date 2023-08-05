@@ -247,7 +247,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TTupl tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TUnit -> prPrec i 3 (concatD [doc (showString "()")])
-    Frontend.LambdaQ.Abs.TIfEls term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
+    Frontend.LambdaQ.Abs.TIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
     Frontend.LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TLambda lambda functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 functiontype, doc (showString "."), prt 0 term])

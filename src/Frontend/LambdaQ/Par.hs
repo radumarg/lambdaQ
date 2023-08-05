@@ -986,7 +986,7 @@ happyReduction_76 (happy_x_6 `HappyStk`
 	case happyOut28 happy_x_4 of { (HappyWrap28 happy_var_4) -> 
 	case happyOut28 happy_x_6 of { (HappyWrap28 happy_var_6) -> 
 	happyIn26
-		 (Frontend.LambdaQ.Abs.TIfEls happy_var_2 happy_var_4 happy_var_6
+		 (Frontend.LambdaQ.Abs.TIfElse happy_var_2 happy_var_4 happy_var_6
 	) `HappyStk` happyRest}}}
 
 happyReduce_77 = happyReduce 12# 22# happyReduction_77

@@ -93,7 +93,7 @@ data Term
     | TBit Bit
     | TTupl Tuple
     | TUnit
-    | TIfEls Term Term Term
+    | TIfElse Term Term Term
     | TLet LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
     | TLambda Lambda FunctionType Term

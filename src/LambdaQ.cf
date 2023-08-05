@@ -96,7 +96,7 @@ TVar      . Term3 ::= Var ;
 TBit      . Term3 ::= Bit ;
 TTupl     . Term3 ::= Tuple ;
 TUnit     . Term3 ::= "()" ;
-TIfEls    . Term1 ::= "if" Term "then" Term "else" Term ;
+TIfElse   . Term1 ::= "if" Term "then" Term "else" Term ;
 TLet      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TLambda   . Term1 ::= Lambda FunctionType "." Term ;
