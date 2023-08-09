@@ -7,39 +7,18 @@ if exists("b:current_syntax")
   finish
 endif
 
-syn match codeGate " H " 
-syn match codeGate " X " 
-syn match codeGate " Y " 
-syn match codeGate " Z " 
-syn match codeGate " ID " 
-syn match codeGate " ROOT_X " 
-syn match codeGate " ROOT_X_DAG " 
-syn match codeGate " ROOT_Y " 
-syn match codeGate " ROOT_Y_DAG " 
-syn match codeGate " ROOT_Z " 
-syn match codeGate " ROOT_Z_DAG " 
-syn match codeGate "  S " 
-syn match codeGate " S_DAG " 
-syn match codeGate " T " 
-syn match codeGate " T_DAG " 
-syn match codeGate " SQRT_X " 
-syn match codeGate " SQRT_X_DAG " 
-syn match codeGate " SQRT_Y " 
-syn match codeGate " SQRT_Y_DAG " 
-syn match codeGate " RX " 
-syn match codeGate " RY " 
-syn match codeGate " RZ " 
-syn match codeGate " U1 " 
-syn match codeGate " U2 " 
-syn match codeGate " U3 " 
-syn match codeGate " SWAP " 
-syn match codeGate " SQRT_SWAP " 
-syn match codeGate " SQRT_SWAP_DAG " 
-syn match codeGate " ISWAP " 
-syn match codeGate " FSWAP " 
-syn match codeGate " SWAP_THETA " 
-syn match codeGate " ROOT_SWAP " 
-syn match codeGate " ROOT_SWAP_DAG "
+syn match codeGate '\s[A-Z0-9]\+\s'
+syn match codeGate '\s[A-Z0-9]\+\n'
+syn match codeGate '\s[A-Z0-9]\+\t'
+syn match codeGate '\n[A-Z0-9]\+\s'
+syn match codeGate '\n[A-Z0-9]\+\n'
+syn match codeGate '\n[A-Z0-9]\+\t'
+syn match codeGate '\t[A-Z0-9]\+\s'
+syn match codeGate '\t[A-Z0-9]\+\n'
+syn match codeGate '\t[A-Z0-9]\+\t'
+syn match codeGate '^[A-Z0-9]\+\s'
+syn match codeGate '^[A-Z0-9]\+\n'
+syn match codeGate '^[A-Z0-9]\+\t'
 
 syn keyword codeTodo contained TODO FIXME
 syn match codeComment "--.*$" contains=codeTodo
