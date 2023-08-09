@@ -41,7 +41,7 @@ GateH             . Gate ::= "H" ;                                      -- Hadam
 GateX             . Gate ::= "X"  ;                                     -- Pauli X Gate
 GateY             . Gate ::= "Y"  ;                                     -- Pauli Y Gate
 GateZ             . Gate ::= "Z"  ;                                     -- Pauli Z Gate
-GateI             . Gate ::= "ID"  ;                                    -- Identity Gate
+GateID            . Gate ::= "ID"  ;                                    -- Identity Gate
 GateXRt           . Gate ::= "ROOT_X" Integer  ;                        -- Root of Pauli X gate (root is specified as k in 1/2^k)
 GateXRtDag        . Gate ::= "ROOT_X_DAG" Integer  ;                    -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
 GateYRt           . Gate ::= "ROOT_Y" Integer  ;                        -- Root of Pauli Y gate (root is specified as k in 1/2^k)
@@ -92,18 +92,19 @@ separator nonempty ControlState "," ;
 token Lambda '\\' ;
 
 -- Terms --
-TVar      . Term3 ::= Var ;
-TBit      . Term3 ::= Bit ;
-TTupl     . Term3 ::= Tuple ;
-TUnit     . Term3 ::= "()" ;
-TIfElse   . Term1 ::= "if" Term "then" Term "else" Term ;
-TLet      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TCase     . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
-TLambda   . Term1 ::= Lambda FunctionType "." Term ;
-TGate     . Term1 ::= "gate" Gate ;
-TCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
-TApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TDollar   . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TermVar      . Term3 ::= Var ;
+TermBit      . Term3 ::= Bit ;
+TermTupl     . Term3 ::= Tuple ;
+TermUnit     . Term3 ::= "()" ;
+TermIfElse   . Term1 ::= "if" Term "then" Term "else" Term ;
+TermLet      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TCase        . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
+TermLambda   . Term1 ::= Lambda FunctionType "." Term ;
+TermGate     . Term1 ::= "gate" Gate ;
+TermCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
+TermApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermDollar   . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TermCompose  . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 coercions Term 3 ;
 
 -- Case Expressions --

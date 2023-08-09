@@ -44,7 +44,7 @@ data Gate
     | GateX
     | GateY
     | GateZ
-    | GateI
+    | GateID
     | GateXRt Integer
     | GateXRtDag Integer
     | GateYRt Integer
@@ -89,18 +89,19 @@ data ControlStates = CtrlStates ControlState [ControlState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Term
-    = TVar Var
-    | TBit Bit
-    | TTupl Tuple
-    | TUnit
-    | TIfElse Term Term Term
-    | TLet LetVariable [LetVariable] Term Term
+    = TermVar Var
+    | TermBit Bit
+    | TermTupl Tuple
+    | TermUnit
+    | TermIfElse Term Term Term
+    | TermLet LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
-    | TLambda Lambda FunctionType Term
-    | TGate Gate
-    | TCtrl Controls ControlStates
-    | TApp Term Term
-    | TDollar Term Term
+    | TermLambda Lambda FunctionType Term
+    | TermGate Gate
+    | TermCtrl Controls ControlStates
+    | TermApp Term Term
+    | TermDollar Term Term
+    | TermCompose Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExp Term Var

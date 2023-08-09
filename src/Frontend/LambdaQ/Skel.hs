@@ -64,7 +64,7 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateX -> failure x
   Frontend.LambdaQ.Abs.GateY -> failure x
   Frontend.LambdaQ.Abs.GateZ -> failure x
-  Frontend.LambdaQ.Abs.GateI -> failure x
+  Frontend.LambdaQ.Abs.GateID -> failure x
   Frontend.LambdaQ.Abs.GateXRt integer -> failure x
   Frontend.LambdaQ.Abs.GateXRtDag integer -> failure x
   Frontend.LambdaQ.Abs.GateYRt integer -> failure x
@@ -113,18 +113,19 @@ transControlStates x = case x of
 
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
-  Frontend.LambdaQ.Abs.TVar var -> failure x
-  Frontend.LambdaQ.Abs.TBit bit -> failure x
-  Frontend.LambdaQ.Abs.TTupl tuple -> failure x
-  Frontend.LambdaQ.Abs.TUnit -> failure x
-  Frontend.LambdaQ.Abs.TIfElse term1 term2 term3 -> failure x
-  Frontend.LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermVar var -> failure x
+  Frontend.LambdaQ.Abs.TermBit bit -> failure x
+  Frontend.LambdaQ.Abs.TermTupl tuple -> failure x
+  Frontend.LambdaQ.Abs.TermUnit -> failure x
+  Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
+  Frontend.LambdaQ.Abs.TermLet letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> failure x
-  Frontend.LambdaQ.Abs.TLambda lambda functiontype term -> failure x
-  Frontend.LambdaQ.Abs.TGate gate -> failure x
-  Frontend.LambdaQ.Abs.TCtrl controls controlstates -> failure x
-  Frontend.LambdaQ.Abs.TApp term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TDollar term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> failure x
+  Frontend.LambdaQ.Abs.TermGate gate -> failure x
+  Frontend.LambdaQ.Abs.TermCtrl controls controlstates -> failure x
+  Frontend.LambdaQ.Abs.TermApp term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

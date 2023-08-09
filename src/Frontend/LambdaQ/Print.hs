@@ -179,7 +179,7 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateX -> prPrec i 0 (concatD [doc (showString "X")])
     Frontend.LambdaQ.Abs.GateY -> prPrec i 0 (concatD [doc (showString "Y")])
     Frontend.LambdaQ.Abs.GateZ -> prPrec i 0 (concatD [doc (showString "Z")])
-    Frontend.LambdaQ.Abs.GateI -> prPrec i 0 (concatD [doc (showString "ID")])
+    Frontend.LambdaQ.Abs.GateID -> prPrec i 0 (concatD [doc (showString "ID")])
     Frontend.LambdaQ.Abs.GateXRt n -> prPrec i 0 (concatD [doc (showString "ROOT_X"), prt 0 n])
     Frontend.LambdaQ.Abs.GateXRtDag n -> prPrec i 0 (concatD [doc (showString "ROOT_X_DAG"), prt 0 n])
     Frontend.LambdaQ.Abs.GateYRt n -> prPrec i 0 (concatD [doc (showString "ROOT_Y"), prt 0 n])
@@ -243,18 +243,19 @@ instance Print [Frontend.LambdaQ.Abs.ControlState] where
 
 instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
-    Frontend.LambdaQ.Abs.TVar var -> prPrec i 3 (concatD [prt 0 var])
-    Frontend.LambdaQ.Abs.TBit bit -> prPrec i 3 (concatD [prt 0 bit])
-    Frontend.LambdaQ.Abs.TTupl tuple -> prPrec i 3 (concatD [prt 0 tuple])
-    Frontend.LambdaQ.Abs.TUnit -> prPrec i 3 (concatD [doc (showString "()")])
-    Frontend.LambdaQ.Abs.TIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
-    Frontend.LambdaQ.Abs.TLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
+    Frontend.LambdaQ.Abs.TermVar var -> prPrec i 3 (concatD [prt 0 var])
+    Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
+    Frontend.LambdaQ.Abs.TermTupl tuple -> prPrec i 3 (concatD [prt 0 tuple])
+    Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
+    Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
+    Frontend.LambdaQ.Abs.TermLet letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
-    Frontend.LambdaQ.Abs.TLambda lambda functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 functiontype, doc (showString "."), prt 0 term])
-    Frontend.LambdaQ.Abs.TGate gate -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate])
-    Frontend.LambdaQ.Abs.TCtrl controls controlstates -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlstates])
-    Frontend.LambdaQ.Abs.TApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
-    Frontend.LambdaQ.Abs.TDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
+    Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 functiontype, doc (showString "."), prt 0 term])
+    Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate])
+    Frontend.LambdaQ.Abs.TermCtrl controls controlstates -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlstates])
+    Frontend.LambdaQ.Abs.TermApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
+    Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
+    Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

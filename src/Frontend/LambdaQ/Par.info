@@ -91,21 +91,22 @@ Grammar
 	Term1 -> Term2 '$' Term1                           (82)
 	Term1 -> Term2                                     (83)
 	Term2 -> Term2 Term3                               (84)
-	Term2 -> Term3                                     (85)
-	Term -> Term1                                      (86)
-	CaseExpression -> Term '->' Var                    (87)
-	ListCaseExpression -> CaseExpression               (88)
-	ListCaseExpression -> CaseExpression ListCaseExpression   (89)
-	Arg -> Var                                         (90)
-	ListArg ->                                         (91)
-	ListArg -> Arg ListArg                             (92)
-	FunctionDefinition -> Var ListArg '=' Term         (93)
-	FunctionDefinition -> FunctionDefinition ';'       (94)
-	FunctionType -> Var '::' Type                      (95)
-	FunctionType -> FunctionType ';'                   (96)
-	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';'   (97)
-	ListFunctionDeclaration ->                         (98)
-	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration   (99)
+	Term2 -> Term2 '.' Term3                           (85)
+	Term2 -> Term3                                     (86)
+	Term -> Term1                                      (87)
+	CaseExpression -> Term '->' Var                    (88)
+	ListCaseExpression -> CaseExpression               (89)
+	ListCaseExpression -> CaseExpression ListCaseExpression   (90)
+	Arg -> Var                                         (91)
+	ListArg ->                                         (92)
+	ListArg -> Arg ListArg                             (93)
+	FunctionDefinition -> Var ListArg '=' Term         (94)
+	FunctionDefinition -> FunctionDefinition ';'       (95)
+	FunctionType -> Var '::' Type                      (96)
+	FunctionType -> FunctionType ';'                   (97)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';'   (98)
+	ListFunctionDeclaration ->                         (99)
+	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration   (100)
 
 -----------------------------------------------------------------------------
 Terminals
@@ -212,16 +213,16 @@ Non-terminals
 	ListControlState rules 69, 70
 	Term3           rules 71, 72, 73, 74, 75
 	Term1           rules 76, 77, 78, 79, 80, 81, 82, 83
-	Term2           rules 84, 85
-	Term            rule  86
-	CaseExpression  rule  87
-	ListCaseExpression rules 88, 89
-	Arg             rule  90
-	ListArg         rules 91, 92
-	FunctionDefinition rules 93, 94
-	FunctionType    rules 95, 96
-	FunctionDeclaration rule  97
-	ListFunctionDeclaration rules 98, 99
+	Term2           rules 84, 85, 86
+	Term            rule  87
+	CaseExpression  rule  88
+	ListCaseExpression rules 89, 90
+	Arg             rule  91
+	ListArg         rules 92, 93
+	FunctionDefinition rules 94, 95
+	FunctionType    rules 96, 97
+	FunctionDeclaration rule  98
+	ListFunctionDeclaration rules 99, 100
 
 -----------------------------------------------------------------------------
 States
@@ -231,7 +232,7 @@ State 0
 	%start_pProgram -> . Program                        (rule 0)
 
 	L_Var          shift, and enter state 8
-	%eof           reduce using rule 98
+	%eof           reduce using rule 99
 
 	Var            goto state 3
 	Program        goto state 4
@@ -263,7 +264,7 @@ State 2
 
 State 3
 
-	FunctionType -> Var . '::' Type                     (rule 95)
+	FunctionType -> Var . '::' Type                     (rule 96)
 
 	'::'           shift, and enter state 11
 
@@ -277,18 +278,18 @@ State 4
 
 State 5
 
-	FunctionType -> FunctionType . ';'                  (rule 96)
-	FunctionDeclaration -> FunctionType . ';' FunctionDefinition ';'    (rule 97)
+	FunctionType -> FunctionType . ';'                  (rule 97)
+	FunctionDeclaration -> FunctionType . ';' FunctionDefinition ';'    (rule 98)
 
 	';'            shift, and enter state 10
 
 
 State 6
 
-	ListFunctionDeclaration -> FunctionDeclaration . ListFunctionDeclaration    (rule 99)
+	ListFunctionDeclaration -> FunctionDeclaration . ListFunctionDeclaration    (rule 100)
 
 	L_Var          shift, and enter state 8
-	%eof           reduce using rule 98
+	%eof           reduce using rule 99
 
 	Var            goto state 3
 	FunctionType   goto state 5
@@ -312,6 +313,7 @@ State 8
 	')'            reduce using rule 5
 	','            reduce using rule 5
 	'->'           reduce using rule 5
+	'.'            reduce using rule 5
 	'::'           reduce using rule 5
 	';'            reduce using rule 5
 	'='            reduce using rule 5
@@ -332,17 +334,17 @@ State 8
 
 State 9
 
-	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration .    (rule 99)
+	ListFunctionDeclaration -> FunctionDeclaration ListFunctionDeclaration .    (rule 100)
 
-	%eof           reduce using rule 99
+	%eof           reduce using rule 100
 
 
 State 10
 
-	FunctionType -> FunctionType ';' .                  (rule 96)
-	FunctionDeclaration -> FunctionType ';' . FunctionDefinition ';'    (rule 97)
+	FunctionType -> FunctionType ';' .                  (rule 97)
+	FunctionDeclaration -> FunctionType ';' . FunctionDefinition ';'    (rule 98)
 
-	';'            reduce using rule 96
+	';'            reduce using rule 97
 	L_Var          shift, and enter state 8
 
 	Var            goto state 21
@@ -350,7 +352,7 @@ State 10
 
 State 11
 
-	FunctionType -> Var '::' . Type                     (rule 95)
+	FunctionType -> Var '::' . Type                     (rule 96)
 
 	'!'            shift, and enter state 16
 	'('            shift, and enter state 17
@@ -402,10 +404,10 @@ State 14
 
 State 15
 
-	FunctionType -> Var '::' Type .                     (rule 95)
+	FunctionType -> Var '::' Type .                     (rule 96)
 
-	'.'            reduce using rule 95
-	';'            reduce using rule 95
+	'.'            reduce using rule 96
+	';'            reduce using rule 96
 
 
 State 16
@@ -472,9 +474,9 @@ State 20
 
 State 21
 
-	FunctionDefinition -> Var . ListArg '=' Term        (rule 93)
+	FunctionDefinition -> Var . ListArg '=' Term        (rule 94)
 
-	'='            reduce using rule 91
+	'='            reduce using rule 92
 	L_Var          shift, and enter state 8
 
 	Var            goto state 24
@@ -483,35 +485,35 @@ State 21
 
 State 22
 
-	FunctionDefinition -> FunctionDefinition . ';'      (rule 94)
-	FunctionDeclaration -> FunctionType ';' FunctionDefinition . ';'    (rule 97)
+	FunctionDefinition -> FunctionDefinition . ';'      (rule 95)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition . ';'    (rule 98)
 
 	';'            shift, and enter state 23
 
 
 State 23
 
-	FunctionDefinition -> FunctionDefinition ';' .      (rule 94)
-	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';' .    (rule 97)
+	FunctionDefinition -> FunctionDefinition ';' .      (rule 95)
+	FunctionDeclaration -> FunctionType ';' FunctionDefinition ';' .    (rule 98)
 
-	';'            reduce using rule 94
-	L_Var          reduce using rule 97
-	%eof           reduce using rule 97
+	';'            reduce using rule 95
+	L_Var          reduce using rule 98
+	%eof           reduce using rule 98
 
 
 State 24
 
-	Arg -> Var .                                        (rule 90)
+	Arg -> Var .                                        (rule 91)
 
-	'='            reduce using rule 90
-	L_Var          reduce using rule 90
+	'='            reduce using rule 91
+	L_Var          reduce using rule 91
 
 
 State 25
 
-	ListArg -> Arg . ListArg                            (rule 92)
+	ListArg -> Arg . ListArg                            (rule 93)
 
-	'='            reduce using rule 91
+	'='            reduce using rule 92
 	L_Var          shift, and enter state 8
 
 	Var            goto state 24
@@ -520,7 +522,7 @@ State 25
 
 State 26
 
-	FunctionDefinition -> Var ListArg . '=' Term        (rule 93)
+	FunctionDefinition -> Var ListArg . '=' Term        (rule 94)
 
 	'='            shift, and enter state 37
 
@@ -640,7 +642,7 @@ State 36
 
 State 37
 
-	FunctionDefinition -> Var ListArg '=' . Term        (rule 93)
+	FunctionDefinition -> Var ListArg '=' . Term        (rule 94)
 
 	'('            shift, and enter state 47
 	'()'           shift, and enter state 48
@@ -664,9 +666,9 @@ State 37
 
 State 38
 
-	ListArg -> Arg ListArg .                            (rule 92)
+	ListArg -> Arg ListArg .                            (rule 93)
 
-	'='            reduce using rule 92
+	'='            reduce using rule 93
 
 
 State 39
@@ -679,6 +681,7 @@ State 39
 	')'            reduce using rule 72
 	','            reduce using rule 72
 	'->'           reduce using rule 72
+	'.'            reduce using rule 72
 	';'            reduce using rule 72
 	']'            reduce using rule 72
 	'else'         reduce using rule 72
@@ -699,6 +702,7 @@ State 40
 	')'            reduce using rule 71
 	','            reduce using rule 71
 	'->'           reduce using rule 71
+	'.'            reduce using rule 71
 	';'            reduce using rule 71
 	']'            reduce using rule 71
 	'else'         reduce using rule 71
@@ -716,7 +720,7 @@ State 41
 	L_Var          shift, and enter state 8
 
 	Var            goto state 3
-	FunctionType   goto state 100
+	FunctionType   goto state 101
 
 State 42
 
@@ -728,6 +732,7 @@ State 42
 	')'            reduce using rule 73
 	','            reduce using rule 73
 	'->'           reduce using rule 73
+	'.'            reduce using rule 73
 	';'            reduce using rule 73
 	']'            reduce using rule 73
 	'else'         reduce using rule 73
@@ -740,37 +745,38 @@ State 42
 
 State 43
 
-	Term2 -> Term3 .                                    (rule 85)
+	Term2 -> Term3 .                                    (rule 86)
 
-	'$'            reduce using rule 85
-	'('            reduce using rule 85
-	'()'           reduce using rule 85
-	')'            reduce using rule 85
-	','            reduce using rule 85
-	'->'           reduce using rule 85
-	';'            reduce using rule 85
-	']'            reduce using rule 85
-	'else'         reduce using rule 85
-	'of'           reduce using rule 85
-	'then'         reduce using rule 85
-	'}'            reduce using rule 85
-	L_Bit          reduce using rule 85
-	L_Var          reduce using rule 85
-
-
-State 44
-
-	Term -> Term1 .                                     (rule 86)
-
+	'$'            reduce using rule 86
+	'('            reduce using rule 86
+	'()'           reduce using rule 86
 	')'            reduce using rule 86
 	','            reduce using rule 86
 	'->'           reduce using rule 86
+	'.'            reduce using rule 86
 	';'            reduce using rule 86
 	']'            reduce using rule 86
 	'else'         reduce using rule 86
 	'of'           reduce using rule 86
 	'then'         reduce using rule 86
 	'}'            reduce using rule 86
+	L_Bit          reduce using rule 86
+	L_Var          reduce using rule 86
+
+
+State 44
+
+	Term -> Term1 .                                     (rule 87)
+
+	')'            reduce using rule 87
+	','            reduce using rule 87
+	'->'           reduce using rule 87
+	';'            reduce using rule 87
+	']'            reduce using rule 87
+	'else'         reduce using rule 87
+	'of'           reduce using rule 87
+	'then'         reduce using rule 87
+	'}'            reduce using rule 87
 
 
 State 45
@@ -778,6 +784,7 @@ State 45
 	Term1 -> Term2 . '$' Term1                          (rule 82)
 	Term1 -> Term2 .                                    (rule 83)
 	Term2 -> Term2 . Term3                              (rule 84)
+	Term2 -> Term2 . '.' Term3                          (rule 85)
 
 	'$'            shift, and enter state 99
 	'('            shift, and enter state 47
@@ -785,6 +792,7 @@ State 45
 	')'            reduce using rule 83
 	','            reduce using rule 83
 	'->'           reduce using rule 83
+	'.'            shift, and enter state 100
 	';'            reduce using rule 83
 	']'            reduce using rule 83
 	'else'         reduce using rule 83
@@ -801,9 +809,9 @@ State 45
 
 State 46
 
-	FunctionDefinition -> Var ListArg '=' Term .        (rule 93)
+	FunctionDefinition -> Var ListArg '=' Term .        (rule 94)
 
-	';'            reduce using rule 93
+	';'            reduce using rule 94
 
 
 State 47
@@ -841,6 +849,7 @@ State 48
 	')'            reduce using rule 74
 	','            reduce using rule 74
 	'->'           reduce using rule 74
+	'.'            reduce using rule 74
 	';'            reduce using rule 74
 	']'            reduce using rule 74
 	'else'         reduce using rule 74
@@ -966,6 +975,7 @@ State 54
 	')'            reduce using rule 3
 	','            reduce using rule 3
 	'->'           reduce using rule 3
+	'.'            reduce using rule 3
 	';'            reduce using rule 3
 	']'            reduce using rule 3
 	'else'         reduce using rule 3
@@ -987,7 +997,7 @@ State 56
 
 	Term1 -> 'with' Controls . 'ctrl' ControlStates     (rule 81)
 
-	'ctrl'         shift, and enter state 126
+	'ctrl'         shift, and enter state 128
 
 
 State 57
@@ -1012,20 +1022,20 @@ State 57
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 125
+	Term           goto state 127
 
 State 58
 
 	Term1 -> 'let' '{' . '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term    (rule 77)
 
-	'('            shift, and enter state 124
+	'('            shift, and enter state 126
 
 
 State 59
 
 	Term1 -> 'if' Term . 'then' Term 'else' Term        (rule 76)
 
-	'then'         shift, and enter state 123
+	'then'         shift, and enter state 125
 
 
 State 60
@@ -1124,7 +1134,7 @@ State 66
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 122
+	Integer        goto state 124
 
 State 67
 
@@ -1132,7 +1142,7 @@ State 67
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 121
+	Integer        goto state 123
 
 State 68
 
@@ -1140,7 +1150,7 @@ State 68
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 120
+	Integer        goto state 122
 
 State 69
 
@@ -1148,7 +1158,7 @@ State 69
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 119
+	Integer        goto state 121
 
 State 70
 
@@ -1156,7 +1166,7 @@ State 70
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 118
+	Integer        goto state 120
 
 State 71
 
@@ -1164,7 +1174,7 @@ State 71
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 117
+	Integer        goto state 119
 
 State 72
 
@@ -1172,7 +1182,7 @@ State 72
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 116
+	Integer        goto state 118
 
 State 73
 
@@ -1180,7 +1190,7 @@ State 73
 
 	L_integ        shift, and enter state 33
 
-	Integer        goto state 115
+	Integer        goto state 117
 
 State 74
 
@@ -1188,8 +1198,8 @@ State 74
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 114
+	Double         goto state 111
+	Angle          goto state 116
 
 State 75
 
@@ -1197,8 +1207,8 @@ State 75
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 113
+	Double         goto state 111
+	Angle          goto state 115
 
 State 76
 
@@ -1206,8 +1216,8 @@ State 76
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 112
+	Double         goto state 111
+	Angle          goto state 114
 
 State 77
 
@@ -1335,8 +1345,8 @@ State 85
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 111
+	Double         goto state 111
+	Angle          goto state 113
 
 State 86
 
@@ -1389,21 +1399,21 @@ State 89
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 110
+	Double         goto state 111
+	Angle          goto state 112
 
 State 90
 
 	Gate -> 'U2' . '(' Angle ',' Angle ')'              (rule 49)
 
-	'('            shift, and enter state 108
+	'('            shift, and enter state 110
 
 
 State 91
 
 	Gate -> 'U3' . '(' Angle ',' Angle ',' Angle ')'    (rule 50)
 
-	'('            shift, and enter state 107
+	'('            shift, and enter state 109
 
 
 State 92
@@ -1470,7 +1480,7 @@ State 96
 
 	Term1 -> 'case' Term . 'of' CaseExpression ListCaseExpression    (rule 78)
 
-	'of'           shift, and enter state 106
+	'of'           shift, and enter state 108
 
 
 State 97
@@ -1478,8 +1488,8 @@ State 97
 	Tuple -> '(' Term . ',' ListTerm ')'                (rule 64)
 	Term3 -> '(' Term . ')'                             (rule 75)
 
-	')'            shift, and enter state 104
-	','            shift, and enter state 105
+	')'            shift, and enter state 106
+	','            shift, and enter state 107
 
 
 State 98
@@ -1492,6 +1502,7 @@ State 98
 	')'            reduce using rule 84
 	','            reduce using rule 84
 	'->'           reduce using rule 84
+	'.'            reduce using rule 84
 	';'            reduce using rule 84
 	']'            reduce using rule 84
 	'else'         reduce using rule 84
@@ -1522,19 +1533,33 @@ State 99
 	Lambda         goto state 41
 	Tuple          goto state 42
 	Term3          goto state 43
-	Term1          goto state 103
+	Term1          goto state 105
 	Term2          goto state 45
 
 State 100
 
-	Term1 -> Lambda FunctionType . '.' Term             (rule 79)
-	FunctionType -> FunctionType . ';'                  (rule 96)
+	Term2 -> Term2 '.' . Term3                          (rule 85)
 
-	'.'            shift, and enter state 101
-	';'            shift, and enter state 102
+	'('            shift, and enter state 47
+	'()'           shift, and enter state 48
+	L_Bit          shift, and enter state 54
+	L_Var          shift, and enter state 8
 
+	Bit            goto state 39
+	Var            goto state 40
+	Tuple          goto state 42
+	Term3          goto state 104
 
 State 101
+
+	Term1 -> Lambda FunctionType . '.' Term             (rule 79)
+	FunctionType -> FunctionType . ';'                  (rule 97)
+
+	'.'            shift, and enter state 102
+	';'            shift, and enter state 103
+
+
+State 102
 
 	Term1 -> Lambda FunctionType '.' . Term             (rule 79)
 
@@ -1556,17 +1581,38 @@ State 101
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 139
-
-State 102
-
-	FunctionType -> FunctionType ';' .                  (rule 96)
-
-	'.'            reduce using rule 96
-	';'            reduce using rule 96
-
+	Term           goto state 141
 
 State 103
+
+	FunctionType -> FunctionType ';' .                  (rule 97)
+
+	'.'            reduce using rule 97
+	';'            reduce using rule 97
+
+
+State 104
+
+	Term2 -> Term2 '.' Term3 .                          (rule 85)
+
+	'$'            reduce using rule 85
+	'('            reduce using rule 85
+	'()'           reduce using rule 85
+	')'            reduce using rule 85
+	','            reduce using rule 85
+	'->'           reduce using rule 85
+	'.'            reduce using rule 85
+	';'            reduce using rule 85
+	']'            reduce using rule 85
+	'else'         reduce using rule 85
+	'of'           reduce using rule 85
+	'then'         reduce using rule 85
+	'}'            reduce using rule 85
+	L_Bit          reduce using rule 85
+	L_Var          reduce using rule 85
+
+
+State 105
 
 	Term1 -> Term2 '$' Term1 .                          (rule 82)
 
@@ -1581,7 +1627,7 @@ State 103
 	'}'            reduce using rule 82
 
 
-State 104
+State 106
 
 	Term3 -> '(' Term ')' .                             (rule 75)
 
@@ -1591,6 +1637,7 @@ State 104
 	')'            reduce using rule 75
 	','            reduce using rule 75
 	'->'           reduce using rule 75
+	'.'            reduce using rule 75
 	';'            reduce using rule 75
 	']'            reduce using rule 75
 	'else'         reduce using rule 75
@@ -1601,7 +1648,7 @@ State 104
 	L_Var          reduce using rule 75
 
 
-State 105
+State 107
 
 	Tuple -> '(' Term ',' . ListTerm ')'                (rule 64)
 
@@ -1620,13 +1667,13 @@ State 105
 	Var            goto state 40
 	Lambda         goto state 41
 	Tuple          goto state 42
-	ListTerm       goto state 137
+	ListTerm       goto state 139
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 138
+	Term           goto state 140
 
-State 106
+State 108
 
 	Term1 -> 'case' Term 'of' . CaseExpression ListCaseExpression    (rule 78)
 
@@ -1648,28 +1695,28 @@ State 106
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 135
-	CaseExpression goto state 136
+	Term           goto state 137
+	CaseExpression goto state 138
 
-State 107
+State 109
 
 	Gate -> 'U3' '(' . Angle ',' Angle ',' Angle ')'    (rule 50)
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 134
+	Double         goto state 111
+	Angle          goto state 136
 
-State 108
+State 110
 
 	Gate -> 'U2' '(' . Angle ',' Angle ')'              (rule 49)
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 133
+	Double         goto state 111
+	Angle          goto state 135
 
-State 109
+State 111
 
 	Angle -> Double .                                   (rule 19)
 
@@ -1684,7 +1731,7 @@ State 109
 	'}'            reduce using rule 19
 
 
-State 110
+State 112
 
 	Gate -> 'U1' Angle .                                (rule 48)
 
@@ -1699,7 +1746,7 @@ State 110
 	'}'            reduce using rule 48
 
 
-State 111
+State 113
 
 	Gate -> 'SWAP_THETA' Angle .                        (rule 56)
 
@@ -1714,7 +1761,7 @@ State 111
 	'}'            reduce using rule 56
 
 
-State 112
+State 114
 
 	Gate -> 'RZ' Angle .                                (rule 47)
 
@@ -1729,7 +1776,7 @@ State 112
 	'}'            reduce using rule 47
 
 
-State 113
+State 115
 
 	Gate -> 'RY' Angle .                                (rule 46)
 
@@ -1744,7 +1791,7 @@ State 113
 	'}'            reduce using rule 46
 
 
-State 114
+State 116
 
 	Gate -> 'RX' Angle .                                (rule 45)
 
@@ -1759,7 +1806,7 @@ State 114
 	'}'            reduce using rule 45
 
 
-State 115
+State 117
 
 	Gate -> 'ROOT_Z_DAG' Integer .                      (rule 36)
 
@@ -1774,7 +1821,7 @@ State 115
 	'}'            reduce using rule 36
 
 
-State 116
+State 118
 
 	Gate -> 'ROOT_Z' Integer .                          (rule 35)
 
@@ -1789,7 +1836,7 @@ State 116
 	'}'            reduce using rule 35
 
 
-State 117
+State 119
 
 	Gate -> 'ROOT_Y_DAG' Integer .                      (rule 34)
 
@@ -1804,7 +1851,7 @@ State 117
 	'}'            reduce using rule 34
 
 
-State 118
+State 120
 
 	Gate -> 'ROOT_Y' Integer .                          (rule 33)
 
@@ -1819,7 +1866,7 @@ State 118
 	'}'            reduce using rule 33
 
 
-State 119
+State 121
 
 	Gate -> 'ROOT_X_DAG' Integer .                      (rule 32)
 
@@ -1834,7 +1881,7 @@ State 119
 	'}'            reduce using rule 32
 
 
-State 120
+State 122
 
 	Gate -> 'ROOT_X' Integer .                          (rule 31)
 
@@ -1849,7 +1896,7 @@ State 120
 	'}'            reduce using rule 31
 
 
-State 121
+State 123
 
 	Gate -> 'ROOT_SWAP_DAG' Integer .                   (rule 58)
 
@@ -1864,7 +1911,7 @@ State 121
 	'}'            reduce using rule 58
 
 
-State 122
+State 124
 
 	Gate -> 'ROOT_SWAP' Integer .                       (rule 57)
 
@@ -1879,7 +1926,7 @@ State 122
 	'}'            reduce using rule 57
 
 
-State 123
+State 125
 
 	Term1 -> 'if' Term 'then' . Term 'else' Term        (rule 76)
 
@@ -1901,33 +1948,33 @@ State 123
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 132
+	Term           goto state 134
 
-State 124
+State 126
 
 	Term1 -> 'let' '{' '(' . LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term    (rule 77)
 
 	L_Var          shift, and enter state 8
 
-	Var            goto state 130
-	LetVariable    goto state 131
+	Var            goto state 132
+	LetVariable    goto state 133
 
-State 125
+State 127
 
 	Controls -> '[' Term . ',' ListTerm ']'             (rule 65)
 
-	','            shift, and enter state 129
+	','            shift, and enter state 131
 
 
-State 126
+State 128
 
 	Term1 -> 'with' Controls 'ctrl' . ControlStates     (rule 81)
 
-	'['            shift, and enter state 128
+	'['            shift, and enter state 130
 
-	ControlStates  goto state 127
+	ControlStates  goto state 129
 
-State 127
+State 129
 
 	Term1 -> 'with' Controls 'ctrl' ControlStates .     (rule 81)
 
@@ -1942,20 +1989,20 @@ State 127
 	'}'            reduce using rule 81
 
 
-State 128
+State 130
 
 	ControlStates -> '[' . ControlState ',' ListControlState ']'    (rule 68)
 
-	'@+'           shift, and enter state 151
-	'@+i'          shift, and enter state 152
-	'@-'           shift, and enter state 153
-	'@-i'          shift, and enter state 154
-	'@0'           shift, and enter state 155
-	'@1'           shift, and enter state 156
+	'@+'           shift, and enter state 153
+	'@+i'          shift, and enter state 154
+	'@-'           shift, and enter state 155
+	'@-i'          shift, and enter state 156
+	'@0'           shift, and enter state 157
+	'@1'           shift, and enter state 158
 
-	ControlState   goto state 150
+	ControlState   goto state 152
 
-State 129
+State 131
 
 	Controls -> '[' Term ',' . ListTerm ']'             (rule 65)
 
@@ -1974,13 +2021,13 @@ State 129
 	Var            goto state 40
 	Lambda         goto state 41
 	Tuple          goto state 42
-	ListTerm       goto state 149
+	ListTerm       goto state 151
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 138
+	Term           goto state 140
 
-State 130
+State 132
 
 	LetVariable -> Var .                                (rule 60)
 
@@ -1988,42 +2035,42 @@ State 130
 	','            reduce using rule 60
 
 
-State 131
+State 133
 
 	Term1 -> 'let' '{' '(' LetVariable . ',' ListLetVariable ')' '=' Term '}' 'in' Term    (rule 77)
 
-	','            shift, and enter state 148
-
-
-State 132
-
-	Term1 -> 'if' Term 'then' Term . 'else' Term        (rule 76)
-
-	'else'         shift, and enter state 147
-
-
-State 133
-
-	Gate -> 'U2' '(' Angle . ',' Angle ')'              (rule 49)
-
-	','            shift, and enter state 146
+	','            shift, and enter state 150
 
 
 State 134
 
-	Gate -> 'U3' '(' Angle . ',' Angle ',' Angle ')'    (rule 50)
+	Term1 -> 'if' Term 'then' Term . 'else' Term        (rule 76)
 
-	','            shift, and enter state 145
+	'else'         shift, and enter state 149
 
 
 State 135
 
-	CaseExpression -> Term . '->' Var                   (rule 87)
+	Gate -> 'U2' '(' Angle . ',' Angle ')'              (rule 49)
 
-	'->'           shift, and enter state 144
+	','            shift, and enter state 148
 
 
 State 136
+
+	Gate -> 'U3' '(' Angle . ',' Angle ',' Angle ')'    (rule 50)
+
+	','            shift, and enter state 147
+
+
+State 137
+
+	CaseExpression -> Term . '->' Var                   (rule 88)
+
+	'->'           shift, and enter state 146
+
+
+State 138
 
 	Term1 -> 'case' Term 'of' CaseExpression . ListCaseExpression    (rule 78)
 
@@ -2045,28 +2092,28 @@ State 136
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 135
-	CaseExpression goto state 142
-	ListCaseExpressiongoto state 143
+	Term           goto state 137
+	CaseExpression goto state 144
+	ListCaseExpressiongoto state 145
 
-State 137
+State 139
 
 	Tuple -> '(' Term ',' ListTerm . ')'                (rule 64)
 
-	')'            shift, and enter state 141
+	')'            shift, and enter state 143
 
 
-State 138
+State 140
 
 	ListTerm -> Term .                                  (rule 66)
 	ListTerm -> Term . ',' ListTerm                     (rule 67)
 
 	')'            reduce using rule 66
-	','            shift, and enter state 140
+	','            shift, and enter state 142
 	']'            reduce using rule 66
 
 
-State 139
+State 141
 
 	Term1 -> Lambda FunctionType '.' Term .             (rule 79)
 
@@ -2081,7 +2128,7 @@ State 139
 	'}'            reduce using rule 79
 
 
-State 140
+State 142
 
 	ListTerm -> Term ',' . ListTerm                     (rule 67)
 
@@ -2100,13 +2147,13 @@ State 140
 	Var            goto state 40
 	Lambda         goto state 41
 	Tuple          goto state 42
-	ListTerm       goto state 166
+	ListTerm       goto state 168
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 138
+	Term           goto state 140
 
-State 141
+State 143
 
 	Tuple -> '(' Term ',' ListTerm ')' .                (rule 64)
 
@@ -2116,6 +2163,7 @@ State 141
 	')'            reduce using rule 64
 	','            reduce using rule 64
 	'->'           reduce using rule 64
+	'.'            reduce using rule 64
 	';'            reduce using rule 64
 	']'            reduce using rule 64
 	'else'         reduce using rule 64
@@ -2126,27 +2174,27 @@ State 141
 	L_Var          reduce using rule 64
 
 
-State 142
+State 144
 
-	ListCaseExpression -> CaseExpression .              (rule 88)
-	ListCaseExpression -> CaseExpression . ListCaseExpression    (rule 89)
+	ListCaseExpression -> CaseExpression .              (rule 89)
+	ListCaseExpression -> CaseExpression . ListCaseExpression    (rule 90)
 
 	'('            shift, and enter state 47
 	'()'           shift, and enter state 48
-	')'            reduce using rule 88
-	','            reduce using rule 88
-	'->'           reduce using rule 88
-	';'            reduce using rule 88
-	']'            reduce using rule 88
+	')'            reduce using rule 89
+	','            reduce using rule 89
+	'->'           reduce using rule 89
+	';'            reduce using rule 89
+	']'            reduce using rule 89
 	'case'         shift, and enter state 49
-	'else'         reduce using rule 88
+	'else'         reduce using rule 89
 	'gate'         shift, and enter state 50
 	'if'           shift, and enter state 51
 	'let'          shift, and enter state 52
-	'of'           reduce using rule 88
-	'then'         reduce using rule 88
+	'of'           reduce using rule 89
+	'then'         reduce using rule 89
 	'with'         shift, and enter state 53
-	'}'            reduce using rule 88
+	'}'            reduce using rule 89
 	L_Bit          shift, and enter state 54
 	L_Var          shift, and enter state 8
 	L_Lambda       shift, and enter state 55
@@ -2158,11 +2206,11 @@ State 142
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 135
-	CaseExpression goto state 142
-	ListCaseExpressiongoto state 165
+	Term           goto state 137
+	CaseExpression goto state 144
+	ListCaseExpressiongoto state 167
 
-State 143
+State 145
 
 	Term1 -> 'case' Term 'of' CaseExpression ListCaseExpression .    (rule 78)
 
@@ -2177,33 +2225,33 @@ State 143
 	'}'            reduce using rule 78
 
 
-State 144
+State 146
 
-	CaseExpression -> Term '->' . Var                   (rule 87)
+	CaseExpression -> Term '->' . Var                   (rule 88)
 
 	L_Var          shift, and enter state 8
 
-	Var            goto state 164
+	Var            goto state 166
 
-State 145
+State 147
 
 	Gate -> 'U3' '(' Angle ',' . Angle ',' Angle ')'    (rule 50)
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 163
+	Double         goto state 111
+	Angle          goto state 165
 
-State 146
+State 148
 
 	Gate -> 'U2' '(' Angle ',' . Angle ')'              (rule 49)
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 162
+	Double         goto state 111
+	Angle          goto state 164
 
-State 147
+State 149
 
 	Term1 -> 'if' Term 'then' Term 'else' . Term        (rule 76)
 
@@ -2225,34 +2273,34 @@ State 147
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 161
+	Term           goto state 163
 
-State 148
+State 150
 
 	Term1 -> 'let' '{' '(' LetVariable ',' . ListLetVariable ')' '=' Term '}' 'in' Term    (rule 77)
 
 	')'            reduce using rule 61
 	L_Var          shift, and enter state 8
 
-	Var            goto state 130
-	LetVariable    goto state 159
-	ListLetVariablegoto state 160
+	Var            goto state 132
+	LetVariable    goto state 161
+	ListLetVariablegoto state 162
 
-State 149
+State 151
 
 	Controls -> '[' Term ',' ListTerm . ']'             (rule 65)
 
-	']'            shift, and enter state 158
+	']'            shift, and enter state 160
 
 
-State 150
+State 152
 
 	ControlStates -> '[' ControlState . ',' ListControlState ']'    (rule 68)
 
-	','            shift, and enter state 157
+	','            shift, and enter state 159
 
 
-State 151
+State 153
 
 	ControlState -> '@+' .                              (rule 22)
 
@@ -2260,7 +2308,7 @@ State 151
 	']'            reduce using rule 22
 
 
-State 152
+State 154
 
 	ControlState -> '@+i' .                             (rule 24)
 
@@ -2268,7 +2316,7 @@ State 152
 	']'            reduce using rule 24
 
 
-State 153
+State 155
 
 	ControlState -> '@-' .                              (rule 23)
 
@@ -2276,7 +2324,7 @@ State 153
 	']'            reduce using rule 23
 
 
-State 154
+State 156
 
 	ControlState -> '@-i' .                             (rule 25)
 
@@ -2284,7 +2332,7 @@ State 154
 	']'            reduce using rule 25
 
 
-State 155
+State 157
 
 	ControlState -> '@0' .                              (rule 20)
 
@@ -2292,7 +2340,7 @@ State 155
 	']'            reduce using rule 20
 
 
-State 156
+State 158
 
 	ControlState -> '@1' .                              (rule 21)
 
@@ -2300,44 +2348,44 @@ State 156
 	']'            reduce using rule 21
 
 
-State 157
+State 159
 
 	ControlStates -> '[' ControlState ',' . ListControlState ']'    (rule 68)
 
-	'@+'           shift, and enter state 151
-	'@+i'          shift, and enter state 152
-	'@-'           shift, and enter state 153
-	'@-i'          shift, and enter state 154
-	'@0'           shift, and enter state 155
-	'@1'           shift, and enter state 156
+	'@+'           shift, and enter state 153
+	'@+i'          shift, and enter state 154
+	'@-'           shift, and enter state 155
+	'@-i'          shift, and enter state 156
+	'@0'           shift, and enter state 157
+	'@1'           shift, and enter state 158
 
-	ControlState   goto state 171
-	ListControlStategoto state 172
+	ControlState   goto state 173
+	ListControlStategoto state 174
 
-State 158
+State 160
 
 	Controls -> '[' Term ',' ListTerm ']' .             (rule 65)
 
 	'ctrl'         reduce using rule 65
 
 
-State 159
+State 161
 
 	ListLetVariable -> LetVariable .                    (rule 62)
 	ListLetVariable -> LetVariable . ',' ListLetVariable    (rule 63)
 
 	')'            reduce using rule 62
-	','            shift, and enter state 170
+	','            shift, and enter state 172
 
 
-State 160
+State 162
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable . ')' '=' Term '}' 'in' Term    (rule 77)
 
-	')'            shift, and enter state 169
+	')'            shift, and enter state 171
 
 
-State 161
+State 163
 
 	Term1 -> 'if' Term 'then' Term 'else' Term .        (rule 76)
 
@@ -2352,61 +2400,61 @@ State 161
 	'}'            reduce using rule 76
 
 
-State 162
+State 164
 
 	Gate -> 'U2' '(' Angle ',' Angle . ')'              (rule 49)
 
-	')'            shift, and enter state 168
-
-
-State 163
-
-	Gate -> 'U3' '(' Angle ',' Angle . ',' Angle ')'    (rule 50)
-
-	','            shift, and enter state 167
-
-
-State 164
-
-	CaseExpression -> Term '->' Var .                   (rule 87)
-
-	'('            reduce using rule 87
-	'()'           reduce using rule 87
-	')'            reduce using rule 87
-	','            reduce using rule 87
-	'->'           reduce using rule 87
-	';'            reduce using rule 87
-	']'            reduce using rule 87
-	'case'         reduce using rule 87
-	'else'         reduce using rule 87
-	'gate'         reduce using rule 87
-	'if'           reduce using rule 87
-	'let'          reduce using rule 87
-	'of'           reduce using rule 87
-	'then'         reduce using rule 87
-	'with'         reduce using rule 87
-	'}'            reduce using rule 87
-	L_Bit          reduce using rule 87
-	L_Var          reduce using rule 87
-	L_Lambda       reduce using rule 87
+	')'            shift, and enter state 170
 
 
 State 165
 
-	ListCaseExpression -> CaseExpression ListCaseExpression .    (rule 89)
+	Gate -> 'U3' '(' Angle ',' Angle . ',' Angle ')'    (rule 50)
 
-	')'            reduce using rule 89
-	','            reduce using rule 89
-	'->'           reduce using rule 89
-	';'            reduce using rule 89
-	']'            reduce using rule 89
-	'else'         reduce using rule 89
-	'of'           reduce using rule 89
-	'then'         reduce using rule 89
-	'}'            reduce using rule 89
+	','            shift, and enter state 169
 
 
 State 166
+
+	CaseExpression -> Term '->' Var .                   (rule 88)
+
+	'('            reduce using rule 88
+	'()'           reduce using rule 88
+	')'            reduce using rule 88
+	','            reduce using rule 88
+	'->'           reduce using rule 88
+	';'            reduce using rule 88
+	']'            reduce using rule 88
+	'case'         reduce using rule 88
+	'else'         reduce using rule 88
+	'gate'         reduce using rule 88
+	'if'           reduce using rule 88
+	'let'          reduce using rule 88
+	'of'           reduce using rule 88
+	'then'         reduce using rule 88
+	'with'         reduce using rule 88
+	'}'            reduce using rule 88
+	L_Bit          reduce using rule 88
+	L_Var          reduce using rule 88
+	L_Lambda       reduce using rule 88
+
+
+State 167
+
+	ListCaseExpression -> CaseExpression ListCaseExpression .    (rule 90)
+
+	')'            reduce using rule 90
+	','            reduce using rule 90
+	'->'           reduce using rule 90
+	';'            reduce using rule 90
+	']'            reduce using rule 90
+	'else'         reduce using rule 90
+	'of'           reduce using rule 90
+	'then'         reduce using rule 90
+	'}'            reduce using rule 90
+
+
+State 168
 
 	ListTerm -> Term ',' ListTerm .                     (rule 67)
 
@@ -2414,16 +2462,16 @@ State 166
 	']'            reduce using rule 67
 
 
-State 167
+State 169
 
 	Gate -> 'U3' '(' Angle ',' Angle ',' . Angle ')'    (rule 50)
 
 	L_doubl        shift, and enter state 2
 
-	Double         goto state 109
-	Angle          goto state 177
+	Double         goto state 111
+	Angle          goto state 179
 
-State 168
+State 170
 
 	Gate -> 'U2' '(' Angle ',' Angle ')' .              (rule 49)
 
@@ -2438,41 +2486,41 @@ State 168
 	'}'            reduce using rule 49
 
 
-State 169
+State 171
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' . '=' Term '}' 'in' Term    (rule 77)
 
-	'='            shift, and enter state 176
+	'='            shift, and enter state 178
 
 
-State 170
+State 172
 
 	ListLetVariable -> LetVariable ',' . ListLetVariable    (rule 63)
 
 	')'            reduce using rule 61
 	L_Var          shift, and enter state 8
 
-	Var            goto state 130
-	LetVariable    goto state 159
-	ListLetVariablegoto state 175
+	Var            goto state 132
+	LetVariable    goto state 161
+	ListLetVariablegoto state 177
 
-State 171
+State 173
 
 	ListControlState -> ControlState .                  (rule 69)
 	ListControlState -> ControlState . ',' ListControlState    (rule 70)
 
-	','            shift, and enter state 174
+	','            shift, and enter state 176
 	']'            reduce using rule 69
 
 
-State 172
+State 174
 
 	ControlStates -> '[' ControlState ',' ListControlState . ']'    (rule 68)
 
-	']'            shift, and enter state 173
+	']'            shift, and enter state 175
 
 
-State 173
+State 175
 
 	ControlStates -> '[' ControlState ',' ListControlState ']' .    (rule 68)
 
@@ -2487,28 +2535,28 @@ State 173
 	'}'            reduce using rule 68
 
 
-State 174
+State 176
 
 	ListControlState -> ControlState ',' . ListControlState    (rule 70)
 
-	'@+'           shift, and enter state 151
-	'@+i'          shift, and enter state 152
-	'@-'           shift, and enter state 153
-	'@-i'          shift, and enter state 154
-	'@0'           shift, and enter state 155
-	'@1'           shift, and enter state 156
+	'@+'           shift, and enter state 153
+	'@+i'          shift, and enter state 154
+	'@-'           shift, and enter state 155
+	'@-i'          shift, and enter state 156
+	'@0'           shift, and enter state 157
+	'@1'           shift, and enter state 158
 
-	ControlState   goto state 171
-	ListControlStategoto state 180
+	ControlState   goto state 173
+	ListControlStategoto state 182
 
-State 175
+State 177
 
 	ListLetVariable -> LetVariable ',' ListLetVariable .    (rule 63)
 
 	')'            reduce using rule 63
 
 
-State 176
+State 178
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' . Term '}' 'in' Term    (rule 77)
 
@@ -2530,16 +2578,16 @@ State 176
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 179
+	Term           goto state 181
 
-State 177
+State 179
 
 	Gate -> 'U3' '(' Angle ',' Angle ',' Angle . ')'    (rule 50)
 
-	')'            shift, and enter state 178
+	')'            shift, and enter state 180
 
 
-State 178
+State 180
 
 	Gate -> 'U3' '(' Angle ',' Angle ',' Angle ')' .    (rule 50)
 
@@ -2554,28 +2602,28 @@ State 178
 	'}'            reduce using rule 50
 
 
-State 179
+State 181
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term . '}' 'in' Term    (rule 77)
 
-	'}'            shift, and enter state 181
+	'}'            shift, and enter state 183
 
 
-State 180
+State 182
 
 	ListControlState -> ControlState ',' ListControlState .    (rule 70)
 
 	']'            reduce using rule 70
 
 
-State 181
+State 183
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' . 'in' Term    (rule 77)
 
-	'in'           shift, and enter state 182
+	'in'           shift, and enter state 184
 
 
-State 182
+State 184
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' . Term    (rule 77)
 
@@ -2597,9 +2645,9 @@ State 182
 	Term3          goto state 43
 	Term1          goto state 44
 	Term2          goto state 45
-	Term           goto state 183
+	Term           goto state 185
 
-State 183
+State 185
 
 	Term1 -> 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term .    (rule 77)
 
@@ -2617,7 +2665,7 @@ State 183
 -----------------------------------------------------------------------------
 Grammar Totals
 -----------------------------------------------------------------------------
-Number of rules: 100
+Number of rules: 101
 Number of terminals: 74
 Number of non-terminals: 34
-Number of states: 184
+Number of states: 186

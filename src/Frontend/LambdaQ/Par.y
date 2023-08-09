@@ -162,7 +162,7 @@ Gate
   | 'X' { Frontend.LambdaQ.Abs.GateX }
   | 'Y' { Frontend.LambdaQ.Abs.GateY }
   | 'Z' { Frontend.LambdaQ.Abs.GateZ }
-  | 'ID' { Frontend.LambdaQ.Abs.GateI }
+  | 'ID' { Frontend.LambdaQ.Abs.GateID }
   | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRt $2 }
   | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRtDag $2 }
   | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRt $2 }
@@ -224,26 +224,28 @@ ListControlState
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
 Term3
-  : Var { Frontend.LambdaQ.Abs.TVar $1 }
-  | Bit { Frontend.LambdaQ.Abs.TBit $1 }
-  | Tuple { Frontend.LambdaQ.Abs.TTupl $1 }
-  | '()' { Frontend.LambdaQ.Abs.TUnit }
+  : Var { Frontend.LambdaQ.Abs.TermVar $1 }
+  | Bit { Frontend.LambdaQ.Abs.TermBit $1 }
+  | Tuple { Frontend.LambdaQ.Abs.TermTupl $1 }
+  | '()' { Frontend.LambdaQ.Abs.TermUnit }
   | '(' Term ')' { $2 }
 
 Term1 :: { Frontend.LambdaQ.Abs.Term }
 Term1
-  : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TIfElse $2 $4 $6 }
-  | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TLet $4 $6 $9 $12 }
+  : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TermIfElse $2 $4 $6 }
+  | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLet $4 $6 $9 $12 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TCase $2 $4 $5 }
-  | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TLambda $1 $2 $4 }
-  | 'gate' Gate { Frontend.LambdaQ.Abs.TGate $2 }
-  | 'with' Controls 'ctrl' ControlStates { Frontend.LambdaQ.Abs.TCtrl $2 $4 }
-  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TDollar $1 $3 }
+  | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $4 }
+  | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
+  | 'with' Controls 'ctrl' ControlStates { Frontend.LambdaQ.Abs.TermCtrl $2 $4 }
+  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }
 Term2
-  : Term2 Term3 { Frontend.LambdaQ.Abs.TApp $1 $2 } | Term3 { $1 }
+  : Term2 Term3 { Frontend.LambdaQ.Abs.TermApp $1 $2 }
+  | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
+  | Term3 { $1 }
 
 Term :: { Frontend.LambdaQ.Abs.Term }
 Term : Term1 { $1 }
