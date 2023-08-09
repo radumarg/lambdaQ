@@ -1,0 +1,32 @@
+someState :: Qbit
+someState = gate U1 (0.1, 0.2, 0.3) (new 0)
+
+bellState :: Qbit * Qbit -> Qbit * Qbit
+bellState qAlice qBob = 
+  qAlice <- gate H qAlice
+  qAlice, qBob <- with [ qAlice ] ctrl [ @1 ] gate X qBob
+  qAlice, qBob
+
+prepare :: Qbit * Qbit * Qbit -> Qbit * Qbit * Qbit 
+prepare qubits =
+  qAncilla, qAlice, qBob <- qubits
+  qAlice, qBob <- bellState (qAlice, qBob)
+  qAncilla, qAlice <- with [ qAncilla ] ctrl [ @1 ] gate X qAlice
+  qAncilla <- gate H qAncilla
+  qAncilla, qAlice, qBob
+
+execute :: Qbit * Qbit * Qbit -> Qbit
+execute qubits =
+  let (qAncilla, qAlice, qBob) = qubits in
+  let (bitAncilla, bitAlice) = (measr qAncilla, measr qAlice) in
+  if bitAncilla then
+      (if bitAlice then gate Z (gate X qBob) else gate Z qBob)
+  else
+      (if bitAlice then gate X qBob else gate ID qBob)
+
+teleport :: Qbit -> Qbit
+teleport q = execute . prepare ((new 0), q, (new 0))
+
+-- testing the teleport result --
+main :: !Bit
+main = measr . teleport . someState
