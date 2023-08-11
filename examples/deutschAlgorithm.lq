@@ -1,19 +1,19 @@
 -- the '<-' syntax is just syntactic sugar for let expressions --
-balancedOracle :: (Qbit * Qbit) -> Qbit  
+balancedOracle :: Qbit * Qbit -> Qbit  
 balancedOracle qubits = 
   q1, q2 <- qubits 
   q1 <- gate X q1
   q1, q2 <- with [ q1 ] ctrl [ @1 ] gate X q2
   gate X q1
 
-balancedOracle' :: (Qbit * Qbit) -> Qbit  
+balancedOracle' :: Qbit * Qbit -> Qbit  
 balancedOracle' qubits = 
   let (q1, q2) = qubits in
   let q1 = gate X q1 in
   let (q1, q2) = with [ q1 ] ctrl [ @1 ] gate X q2 in
   gate X q1
 
-deutsch :: ((Qbit * Qbit) -> Qbit) -> !Bit
+deutsch :: Qbit * Qbit -> Qbit -> !Bit
 deutsch oracle = measr (gate H (oracle (gate H (new 0), gate H (new 1))))
 
 main :: !Bit
