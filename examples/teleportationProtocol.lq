@@ -8,7 +8,8 @@ bellState qAlice qBob = qAlice <- gate H qAlice
                         qAlice, qBob
 
 -- the '<-' syntax is just syntactic sugar for let expressions --
-prepare :: Qbit * Qbit * Qbit -> Qbit * Qbit * Qbit 
+-- the Qbit * Qbit * Qbit type declaration is the same with Qbit ** 3
+prepare :: Qbit ** 3 -> Qbit ** 3 
 prepare qubits = qAncilla, qAlice, qBob <- qubits
                  qAlice, qBob <- bellState (qAlice, qBob)
                  qAncilla, qAlice <- with [ qAncilla ] ctrl [ @1 ] gate X qAlice
