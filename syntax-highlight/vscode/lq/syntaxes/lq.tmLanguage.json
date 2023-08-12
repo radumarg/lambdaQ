@@ -2,18 +2,60 @@
 	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
 	"name": "lambdaQ Quantum Programming Language",
 	"patterns": [
-		{
-			"include": "#keywords"
+    {
+			"include": "#comments"
+		},
+    {
+			"include": "#gates"
+		},
+    {
+			"include": "#operators"
+		},
+    {
+			"include": "#controls"
+		},
+    {
+			"include": "#types"
 		},
 		{
 			"include": "#strings"
+		},
+    {
+			"include": "#numbers"
+		},
+    {
+			"include": "#keywords"
 		}
 	],
 	"repository": {
-		"keywords": {
+    // "comments": {
+		// 	"patterns": [{
+		// 		"name": "comment.control.lq",
+		// 		"match": "\\b(if|while|for|return)\\b"
+		// 	}]
+		// },
+    "gates": {
 			"patterns": [{
-				"name": "keyword.control.lq",
-				"match": "\\b(if|while|for|return)\\b"
+				"name": "gate.control.lq",
+				"match": "\\s[A-Z][A-Z0-9]*\\s"
+			}]
+		},
+    "operators": {
+			"patterns": [{
+				"name": "operator.control.lq",
+				"match": "\\b(*|->|[|]|=|<-|.|$|!)\\b"
+			}]
+		},
+    "controls": {
+			"patterns": [{
+				"name": "control.control.lq",
+				"match": "\\b(@0|@1|@+|@-|@+i|@-i)\\b"
+			}]
+		},
+    "types": {
+			"patterns": [{
+				"name": "type.control.lq",
+				"match": "\\b(Bit|Qbit|())\\b"
 			}]
 		},
 		"strings": {
@@ -26,6 +68,24 @@
 					"match": "\\\\."
 				}
 			]
+		},
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.lq",
+          "match": "\\b(\\d+)\\b"
+        },
+        {
+          "name": "constant.numeric.decimal.lq",
+          "match": "\\b(\\d+\\.\\d+)\\b"
+        }
+      ]
+    },
+    "keywords": {
+			"patterns": [{
+				"name": "keyword.control.lq",
+				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
+			}]
 		}
 	},
 	"scopeName": "source.lq"
