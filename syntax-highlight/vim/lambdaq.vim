@@ -1,31 +1,46 @@
 " Vim syntax file
 " Language: lambdaq
 " Maintainer: radu.marginean@transilvania-quantum.com
-" Latest Revision: 9 August 2023
+" Latest Revision: 12 August 2023
 
 if exists("b:current_syntax")
   finish
 endif
 
-syn match codeGate '\s[A-Z0-9]\+\s'
-syn match codeGate '\s[A-Z0-9]\+\n'
-syn match codeGate '\s[A-Z0-9]\+\t'
-syn match codeGate '\n[A-Z0-9]\+\s'
-syn match codeGate '\n[A-Z0-9]\+\n'
-syn match codeGate '\n[A-Z0-9]\+\t'
-syn match codeGate '\t[A-Z0-9]\+\s'
-syn match codeGate '\t[A-Z0-9]\+\n'
-syn match codeGate '\t[A-Z0-9]\+\t'
-syn match codeGate '^[A-Z0-9]\+\s'
-syn match codeGate '^[A-Z0-9]\+\n'
-syn match codeGate '^[A-Z0-9]\+\t'
+syn match codeGate '\s[A-Z][A-Z0-9]*\s'
+syn match codeGate '\s[A-Z][A-Z0-9]*\n'
+syn match codeGate '\s[A-Z][A-Z0-9]*\t'
+syn match codeGate '\n[A-Z][A-Z0-9]*\s'
+syn match codeGate '\n[A-Z][A-Z0-9]*\n'
+syn match codeGate '\n[A-Z][A-Z0-9]*\t'
+syn match codeGate '\t[A-Z][A-Z0-9]*\s'
+syn match codeGate '\t[A-Z][A-Z0-9]*\n'
+syn match codeGate '\t[A-Z][A-Z0-9]*\t'
+syn match codeGate '^[A-Z][A-Z0-9]*\s'
+syn match codeGate '^[A-Z][A-Z0-9]*\n'
+syn match codeGate '^[A-Z][A-Z0-9]*\t'
 
 syn keyword codeTodo contained TODO FIXME
 syn match codeComment "--.*$" contains=codeTodo
-syn match codeComment "/\*\{-}\_.\{-}\*/" contains=codeTodo
+syn match codeComment "{-\{-}\_.\{-}-}" contains=codeTodo
 
 " Integers
-syn match codeInt '\d\+'
+syn match codeInt '\s\d\+\s'
+syn match codeInt '\s\d\+\n'
+syn match codeInt '\s\d\+\t'
+syn match codeInt '\n\d\+\s'
+syn match codeInt '\n\d\+\n'
+syn match codeInt '\n\d\+\t'
+syn match codeInt '\t\d\+\s'
+syn match codeInt '\t\d\+\n'
+syn match codeInt '\t\d\+\t'
+syn match codeInt '^\d\+\s'
+syn match codeInt '^\d\+\n'
+syn match codeInt '^\d\+\t'
+"matching chars past \ze and before \zs are not highlighted
+syn match codeInt '\d\+\ze)'
+syn match codeInt '(\zs\d\+'
+syn match codeInt '(\zs\d\+\ze)'
 
 " Floating point number with decimal no E or e (+,-)
 syn match codeFloat '\d\+\.\d*'

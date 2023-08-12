@@ -1,0 +1,1 @@
+To enable the syntax, copy the lq directory containing the syntax in: ~/.vscode/extensions/ on Unix based systems or $HOME/.vscode/extensions/ on Windows systems (or wherever the Visual Studio Code is installed).
