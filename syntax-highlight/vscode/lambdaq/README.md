@@ -1,6 +1,6 @@
-# lq README
+# lambdaq README
 
-This is the README for your extension "lq". After writing up a brief description, we recommend including the following sections.
+This is the README for your extension "lambdaq". After writing up a brief description, we recommend including the following sections.
 
 ## Features
 

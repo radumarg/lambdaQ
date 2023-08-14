@@ -30,41 +30,41 @@
 	"repository": {
     // "comments": {
 		// 	"patterns": [{
-		// 		"name": "comment.control.lq",
+		// 		"name": "comment.control.lambdaq",
 		// 		"match": "\\b(if|while|for|return)\\b"
 		// 	}]
 		// },
     "gates": {
 			"patterns": [{
-				"name": "gate.control.lq",
+				"name": "gate.control.lambdaq",
 				"match": "\\s[A-Z][A-Z0-9]*\\s"
 			}]
 		},
     "operators": {
 			"patterns": [{
-				"name": "operator.control.lq",
+				"name": "operator.control.lambdaq",
 				"match": "\\b(*|->|[|]|=|<-|.|$|!)\\b"
 			}]
 		},
     "controls": {
 			"patterns": [{
-				"name": "control.control.lq",
+				"name": "control.control.lambdaq",
 				"match": "\\b(@0|@1|@+|@-|@+i|@-i)\\b"
 			}]
 		},
     "types": {
 			"patterns": [{
-				"name": "type.control.lq",
+				"name": "type.control.lambdaq",
 				"match": "\\b(Bit|Qbit|())\\b"
 			}]
 		},
 		"strings": {
-			"name": "string.quoted.double.lq",
+			"name": "string.quoted.double.lambdaq",
 			"begin": "\"",
 			"end": "\"",
 			"patterns": [
 				{
-					"name": "constant.character.escape.lq",
+					"name": "constant.character.escape.lambdaq",
 					"match": "\\\\."
 				}
 			]
@@ -72,21 +72,21 @@
     "numbers": {
       "patterns": [
         {
-          "name": "constant.numeric.integer.lq",
+          "name": "constant.numeric.integer.lambdaq",
           "match": "\\b(\\d+)\\b"
         },
         {
-          "name": "constant.numeric.decimal.lq",
+          "name": "constant.numeric.decimal.lambdaq",
           "match": "\\b(\\d+\\.\\d+)\\b"
         }
       ]
     },
     "keywords": {
 			"patterns": [{
-				"name": "keyword.control.lq",
+				"name": "keyword.control.lambdaq",
 				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
 			}]
 		}
 	},
-	"scopeName": "source.lq"
+	"scopeName": "source.lambdaq"
 }

@@ -1,0 +1,25 @@
+{
+  "name": "lambdaq",
+  "displayName": "lambdaQ",
+  "description": "lambdaQ Quantum Programming Language",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.81.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "lambdaq",
+      "aliases": ["lambdaQ Quantum Programming Lanuage", "lambdaq"],
+      "extensions": [".lq"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "lambdaq",
+      "scopeName": "source.lambdaq",
+      "path": "./syntaxes/lambdaq.tmLanguage.json"
+    }]
+  }
+}
