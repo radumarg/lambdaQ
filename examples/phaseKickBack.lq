@@ -1,3 +1,4 @@
+-- checkout the circuit here: https://uranium.transilvania-quantum.org/circuit-editor/?projectid=95&public=true
 main :: Bit
 main = q0, q1 <- with [ q0 ] ctrl [@1] (gate H (new 0), gate X (new 0))
        q0 <- gate H q0
