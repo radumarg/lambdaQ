@@ -25,22 +25,11 @@ syn match codeComment "--.*$" contains=codeTodo
 syn match codeComment "{-\{-}\_.\{-}-}" contains=codeTodo
 
 " Integers
-syn match codeInt '\s\d\+\s'
-syn match codeInt '\s\d\+\n'
-syn match codeInt '\s\d\+\t'
-syn match codeInt '\n\d\+\s'
-syn match codeInt '\n\d\+\n'
-syn match codeInt '\n\d\+\t'
-syn match codeInt '\t\d\+\s'
-syn match codeInt '\t\d\+\n'
-syn match codeInt '\t\d\+\t'
-syn match codeInt '^\d\+\s'
-syn match codeInt '^\d\+\n'
-syn match codeInt '^\d\+\t'
-"matching chars past \ze and before \zs are not highlighted
-syn match codeInt '\d\+\ze)'
-syn match codeInt '(\zs\d\+'
-syn match codeInt '(\zs\d\+\ze)'
+syn match codeInt '\W\zs\d\+\ze\W'
+syn match codeInt '\W\zs\d\+$'
+syn match codeInt '^\d\+\ze\W'
+syn match codeInt '^\d\+$'
+
 
 " Floating point number with decimal no E or e (+,-)
 syn match codeFloat '\d\+\.\d*'
