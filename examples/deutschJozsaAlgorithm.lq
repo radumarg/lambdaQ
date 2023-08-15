@@ -16,6 +16,7 @@ balancedOracle' qubits = q0, q1, q2, q3, q4, q5 <- qubits;
                          q4 <- gate X q4;
                          (q0, q1, q2, q3, q4, q5)
 
+-- the '<-' syntax is just syntactic sugar for let expressions
 deutsch :: Qbit ** 6 -> Qbit ** 6 -> !(Bit ** 6)
 deutsch oracle = q0, q1, q2, q3, q4, q5 <- (new 0, new 0, new 0, new 0, new 0, new 0)
                  q5 <- gate X q5;
