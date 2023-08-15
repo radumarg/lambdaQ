@@ -25,6 +25,5 @@ deutsch oracle = q0, q1, q2, q3, q4, q5 <- (new 0, new 0, new 0, new 0, new 0, n
                  q0, q1, q2, q3, q4 <- (gate H q0, gate H q1, gate H q2, gate H q3, gate H q4)
                  (measr q0, measr q1, measr q2, measr q3, measr q4)
 
-
 main :: !(Bit ** 6)
 main = deutsch balancedOracle
