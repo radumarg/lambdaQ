@@ -1,4 +1,4 @@
--- checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/95/
+-- For more context, checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/95/
 
 -- the '<-' syntax is just syntactic sugar for let expressions
 main :: Bit
