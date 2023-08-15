@@ -35,62 +35,63 @@ import Frontend.LambdaQ.Lex
   '.'             { PT _ (TS _ 10)       }
   '::'            { PT _ (TS _ 11)       }
   ';'             { PT _ (TS _ 12)       }
-  '='             { PT _ (TS _ 13)       }
-  '@+'            { PT _ (TS _ 14)       }
-  '@+i'           { PT _ (TS _ 15)       }
-  '@-'            { PT _ (TS _ 16)       }
-  '@-i'           { PT _ (TS _ 17)       }
-  '@0'            { PT _ (TS _ 18)       }
-  '@1'            { PT _ (TS _ 19)       }
-  'Bit'           { PT _ (TS _ 20)       }
-  'FSWAP'         { PT _ (TS _ 21)       }
-  'H'             { PT _ (TS _ 22)       }
-  'ID'            { PT _ (TS _ 23)       }
-  'ISWAP'         { PT _ (TS _ 24)       }
-  'Qbit'          { PT _ (TS _ 25)       }
-  'ROOT_SWAP'     { PT _ (TS _ 26)       }
-  'ROOT_SWAP_DAG' { PT _ (TS _ 27)       }
-  'ROOT_X'        { PT _ (TS _ 28)       }
-  'ROOT_X_DAG'    { PT _ (TS _ 29)       }
-  'ROOT_Y'        { PT _ (TS _ 30)       }
-  'ROOT_Y_DAG'    { PT _ (TS _ 31)       }
-  'ROOT_Z'        { PT _ (TS _ 32)       }
-  'ROOT_Z_DAG'    { PT _ (TS _ 33)       }
-  'RX'            { PT _ (TS _ 34)       }
-  'RY'            { PT _ (TS _ 35)       }
-  'RZ'            { PT _ (TS _ 36)       }
-  'S'             { PT _ (TS _ 37)       }
-  'SQRT_SWAP'     { PT _ (TS _ 38)       }
-  'SQRT_SWAP_DAG' { PT _ (TS _ 39)       }
-  'SQRT_X'        { PT _ (TS _ 40)       }
-  'SQRT_X_DAG'    { PT _ (TS _ 41)       }
-  'SQRT_Y'        { PT _ (TS _ 42)       }
-  'SQRT_Y_DAG'    { PT _ (TS _ 43)       }
-  'SWAP'          { PT _ (TS _ 44)       }
-  'SWAP_THETA'    { PT _ (TS _ 45)       }
-  'S_DAG'         { PT _ (TS _ 46)       }
-  'T'             { PT _ (TS _ 47)       }
-  'T_DAG'         { PT _ (TS _ 48)       }
-  'U1'            { PT _ (TS _ 49)       }
-  'U2'            { PT _ (TS _ 50)       }
-  'U3'            { PT _ (TS _ 51)       }
-  'X'             { PT _ (TS _ 52)       }
-  'Y'             { PT _ (TS _ 53)       }
-  'Z'             { PT _ (TS _ 54)       }
-  '['             { PT _ (TS _ 55)       }
-  ']'             { PT _ (TS _ 56)       }
-  'case'          { PT _ (TS _ 57)       }
-  'ctrl'          { PT _ (TS _ 58)       }
-  'else'          { PT _ (TS _ 59)       }
-  'gate'          { PT _ (TS _ 60)       }
-  'if'            { PT _ (TS _ 61)       }
-  'in'            { PT _ (TS _ 62)       }
-  'let'           { PT _ (TS _ 63)       }
-  'of'            { PT _ (TS _ 64)       }
-  'then'          { PT _ (TS _ 65)       }
-  'with'          { PT _ (TS _ 66)       }
-  '{'             { PT _ (TS _ 67)       }
-  '}'             { PT _ (TS _ 68)       }
+  '<-'            { PT _ (TS _ 13)       }
+  '='             { PT _ (TS _ 14)       }
+  '@+'            { PT _ (TS _ 15)       }
+  '@+i'           { PT _ (TS _ 16)       }
+  '@-'            { PT _ (TS _ 17)       }
+  '@-i'           { PT _ (TS _ 18)       }
+  '@0'            { PT _ (TS _ 19)       }
+  '@1'            { PT _ (TS _ 20)       }
+  'Bit'           { PT _ (TS _ 21)       }
+  'FSWAP'         { PT _ (TS _ 22)       }
+  'H'             { PT _ (TS _ 23)       }
+  'ID'            { PT _ (TS _ 24)       }
+  'ISWAP'         { PT _ (TS _ 25)       }
+  'Qbit'          { PT _ (TS _ 26)       }
+  'ROOT_SWAP'     { PT _ (TS _ 27)       }
+  'ROOT_SWAP_DAG' { PT _ (TS _ 28)       }
+  'ROOT_X'        { PT _ (TS _ 29)       }
+  'ROOT_X_DAG'    { PT _ (TS _ 30)       }
+  'ROOT_Y'        { PT _ (TS _ 31)       }
+  'ROOT_Y_DAG'    { PT _ (TS _ 32)       }
+  'ROOT_Z'        { PT _ (TS _ 33)       }
+  'ROOT_Z_DAG'    { PT _ (TS _ 34)       }
+  'RX'            { PT _ (TS _ 35)       }
+  'RY'            { PT _ (TS _ 36)       }
+  'RZ'            { PT _ (TS _ 37)       }
+  'S'             { PT _ (TS _ 38)       }
+  'SQRT_SWAP'     { PT _ (TS _ 39)       }
+  'SQRT_SWAP_DAG' { PT _ (TS _ 40)       }
+  'SQRT_X'        { PT _ (TS _ 41)       }
+  'SQRT_X_DAG'    { PT _ (TS _ 42)       }
+  'SQRT_Y'        { PT _ (TS _ 43)       }
+  'SQRT_Y_DAG'    { PT _ (TS _ 44)       }
+  'SWAP'          { PT _ (TS _ 45)       }
+  'SWAP_THETA'    { PT _ (TS _ 46)       }
+  'S_DAG'         { PT _ (TS _ 47)       }
+  'T'             { PT _ (TS _ 48)       }
+  'T_DAG'         { PT _ (TS _ 49)       }
+  'U1'            { PT _ (TS _ 50)       }
+  'U2'            { PT _ (TS _ 51)       }
+  'U3'            { PT _ (TS _ 52)       }
+  'X'             { PT _ (TS _ 53)       }
+  'Y'             { PT _ (TS _ 54)       }
+  'Z'             { PT _ (TS _ 55)       }
+  '['             { PT _ (TS _ 56)       }
+  ']'             { PT _ (TS _ 57)       }
+  'case'          { PT _ (TS _ 58)       }
+  'ctrl'          { PT _ (TS _ 59)       }
+  'else'          { PT _ (TS _ 60)       }
+  'gate'          { PT _ (TS _ 61)       }
+  'if'            { PT _ (TS _ 62)       }
+  'in'            { PT _ (TS _ 63)       }
+  'let'           { PT _ (TS _ 64)       }
+  'of'            { PT _ (TS _ 65)       }
+  'then'          { PT _ (TS _ 66)       }
+  'with'          { PT _ (TS _ 67)       }
+  '{'             { PT _ (TS _ 68)       }
+  '}'             { PT _ (TS _ 69)       }
   L_doubl         { PT _ (TD $$)         }
   L_integ         { PT _ (TI $$)         }
   L_Bit           { PT _ (T_Bit _)       }
@@ -234,10 +235,11 @@ Term1 :: { Frontend.LambdaQ.Abs.Term }
 Term1
   : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TermIfElse $2 $4 $6 }
   | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLet $4 $6 $9 $12 }
+  | LetVariable ',' ListLetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugar $1 $3 $5 $7 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TCase $2 $4 $5 }
   | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $4 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
-  | 'with' Controls 'ctrl' ControlStates { Frontend.LambdaQ.Abs.TermCtrl $2 $4 }
+  | 'with' Controls 'ctrl' ControlStates 'gate' Gate { Frontend.LambdaQ.Abs.TermCtrlGate $2 $4 $6 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
 

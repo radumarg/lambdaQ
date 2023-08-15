@@ -95,10 +95,11 @@ data Term
     | TermUnit
     | TermIfElse Term Term Term
     | TermLet LetVariable [LetVariable] Term Term
+    | TermLetSugar LetVariable [LetVariable] Term Term
     | TCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda FunctionType Term
     | TermGate Gate
-    | TermCtrl Controls ControlStates
+    | TermCtrlGate Controls ControlStates Gate
     | TermApp Term Term
     | TermDollar Term Term
     | TermCompose Term Term

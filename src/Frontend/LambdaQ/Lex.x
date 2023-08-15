@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \( \) | \! | \* \* | \* | \- \> | \( | \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \[ | \] | \{ | \= | \} | \. | \$ | \; | \: \:
+@rsyms = \( \) | \! | \* \* | \* | \- \> | \( | \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \[ | \] | \{ | \= | \} | \< \- | \; | \. | \$ | \: \:
 
 :-
 
@@ -182,38 +182,38 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "RY" 35
-    (b "@0" 18
+  b "RX" 35
+    (b "@-i" 18
        (b "->" 9
           (b ")" 5
              (b "(" 3 (b "$" 2 (b "!" 1 N N) N) (b "()" 4 N N))
              (b "**" 7 (b "*" 6 N N) (b "," 8 N N)))
-          (b "@+" 14
-             (b ";" 12 (b "::" 11 (b "." 10 N N) N) (b "=" 13 N N))
-             (b "@-" 16 (b "@+i" 15 N N) (b "@-i" 17 N N))))
-       (b "ROOT_SWAP_DAG" 27
-          (b "ID" 23
-             (b "FSWAP" 21 (b "Bit" 20 (b "@1" 19 N N) N) (b "H" 22 N N))
-             (b "Qbit" 25 (b "ISWAP" 24 N N) (b "ROOT_SWAP" 26 N N)))
-          (b "ROOT_Y_DAG" 31
-             (b "ROOT_X_DAG" 29 (b "ROOT_X" 28 N N) (b "ROOT_Y" 30 N N))
-             (b "ROOT_Z_DAG" 33 (b "ROOT_Z" 32 N N) (b "RX" 34 N N)))))
-    (b "X" 52
-       (b "SWAP" 44
-          (b "SQRT_X" 40
-             (b "SQRT_SWAP" 38
-                (b "S" 37 (b "RZ" 36 N N) N) (b "SQRT_SWAP_DAG" 39 N N))
-             (b "SQRT_Y" 42 (b "SQRT_X_DAG" 41 N N) (b "SQRT_Y_DAG" 43 N N)))
-          (b "T_DAG" 48
-             (b "S_DAG" 46 (b "SWAP_THETA" 45 N N) (b "T" 47 N N))
-             (b "U2" 50 (b "U1" 49 N N) (b "U3" 51 N N))))
-       (b "if" 61
-          (b "case" 57
-             (b "[" 55 (b "Z" 54 (b "Y" 53 N N) N) (b "]" 56 N N))
-             (b "else" 59 (b "ctrl" 58 N N) (b "gate" 60 N N)))
-          (b "then" 65
-             (b "let" 63 (b "in" 62 N N) (b "of" 64 N N))
-             (b "{" 67 (b "with" 66 N N) (b "}" 68 N N)))))
+          (b "=" 14
+             (b ";" 12 (b "::" 11 (b "." 10 N N) N) (b "<-" 13 N N))
+             (b "@+i" 16 (b "@+" 15 N N) (b "@-" 17 N N))))
+       (b "ROOT_SWAP" 27
+          (b "H" 23
+             (b "Bit" 21 (b "@1" 20 (b "@0" 19 N N) N) (b "FSWAP" 22 N N))
+             (b "ISWAP" 25 (b "ID" 24 N N) (b "Qbit" 26 N N)))
+          (b "ROOT_Y" 31
+             (b "ROOT_X" 29 (b "ROOT_SWAP_DAG" 28 N N) (b "ROOT_X_DAG" 30 N N))
+             (b "ROOT_Z" 33 (b "ROOT_Y_DAG" 32 N N) (b "ROOT_Z_DAG" 34 N N)))))
+    (b "X" 53
+       (b "SQRT_Y_DAG" 44
+          (b "SQRT_SWAP_DAG" 40
+             (b "S" 38 (b "RZ" 37 (b "RY" 36 N N) N) (b "SQRT_SWAP" 39 N N))
+             (b "SQRT_X_DAG" 42 (b "SQRT_X" 41 N N) (b "SQRT_Y" 43 N N)))
+          (b "T_DAG" 49
+             (b "S_DAG" 47
+                (b "SWAP_THETA" 46 (b "SWAP" 45 N N) N) (b "T" 48 N N))
+             (b "U2" 51 (b "U1" 50 N N) (b "U3" 52 N N))))
+       (b "if" 62
+          (b "case" 58
+             (b "[" 56 (b "Z" 55 (b "Y" 54 N N) N) (b "]" 57 N N))
+             (b "else" 60 (b "ctrl" 59 N N) (b "gate" 61 N N)))
+          (b "then" 66
+             (b "let" 64 (b "in" 63 N N) (b "of" 65 N N))
+             (b "{" 68 (b "with" 67 N N) (b "}" 69 N N)))))
   where
   b s n = B bs (TS bs n)
     where

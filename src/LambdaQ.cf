@@ -92,19 +92,20 @@ separator nonempty ControlState "," ;
 token Lambda '\\' ;
 
 -- Terms --
-TermVar      . Term3 ::= Var ;
-TermBit      . Term3 ::= Bit ;
-TermTupl     . Term3 ::= Tuple ;
-TermUnit     . Term3 ::= "()" ;
-TermIfElse   . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLet      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TCase        . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
-TermLambda   . Term1 ::= Lambda FunctionType "." Term ;
-TermGate     . Term1 ::= "gate" Gate ;
-TermCtrl     . Term1 ::= "with" Controls "ctrl" ControlStates ;
-TermApp      . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TermDollar   . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
-TermCompose  . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermVar       . Term3 ::= Var ;
+TermBit       . Term3 ::= Bit ;
+TermTupl      . Term3 ::= Tuple ;
+TermUnit      . Term3 ::= "()" ;
+TermIfElse    . Term1 ::= "if" Term "then" Term "else" Term ;
+TermLet       . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TermLetSugar  . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
+TCase         . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
+TermLambda    . Term1 ::= Lambda FunctionType "." Term ;
+TermGate      . Term1 ::= "gate" Gate ;
+TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlStates "gate" Gate ;
+TermApp       . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermDollar    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TermCompose   . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 coercions Term 3 ;
 
 -- Case Expressions --
