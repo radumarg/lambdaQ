@@ -1,4 +1,4 @@
--- For some contex, checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/66/
+-- For some context, checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/66/
 
 -- the '<-' syntax is just syntactic sugar for let expressions
 oracle :: Qbit ** 6 -> Qbit ** 6
