@@ -24,3 +24,5 @@ cabal.project.local~
 .HTF/
 .ghc.environment.*
 src/Frontend/LambdaQ/Test
+.vscode
+.vscodeignore
