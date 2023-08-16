@@ -3,26 +3,65 @@
 	"name": "lambdaQ Quantum Programming Language",
 	"patterns": [
     {
+			"include": "#operators"
+		},
+    {
 			"include": "#typewords"
 		},
 		{
 			"include": "#keywords"
 		},
+    {
+			"include": "#atcontrols"
+		},
+    {
+			"include": "#gates"
+		},
+    {
+			"include": "#numbers"
+		},
 		{
 			"include": "#strings"
+		},
+    {
+			"include": "#comments"
 		}
 	],
 	"repository": {
-    "typewords": {
+    "operators": {
 			"patterns": [{
-				"name": "keyword.control.lambdaq",
-				"match": "\\b(Qbit|Bit)\\b"
+				"name": "keyword.type.operator.lambdaq",
+				"match": "\\*\\*|\\*|->|<-|\\.|\\$|\\!|=|\\[|\\]|;"
 			}]
 		},
-		"keywords": {
+    "typewords": {
+			"patterns": [{
+				"name": "keyword.type.typeword.lambdaq",
+				"match": "\\b(Qbit|Bit|\\(\\))\\b"
+			}]
+		},
+    "numbers": {
+			"patterns": [{
+				"name": "constant.numeric.lambdaq",
+				"match": "\\b-?(?:\\d+\\.\\d*|\\.\\d+|\\d+)(?:[eE][-+]?\\d+)?\\b"
+			}]
+		},
+    "keywords": {
 			"patterns": [{
 				"name": "keyword.control.lambdaq",
 				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
+			}]
+		},
+		"atcontrols": {
+			"patterns": [{
+				"name": "string.atcontrol.lambdaq",
+				"match": "@1|@0|@\\+i|@-i|@\\+|@-"
+			}]
+		},
+    "gates": {
+			"patterns": [{
+				"name": "string.gate.lambdaq",
+				"match": "\\b[A-Z][A-Z0-9]*\\b"
 			}]
 		},
 		"strings": {
@@ -35,7 +74,15 @@
 					"match": "\\\\."
 				}
 			]
-		}
+		},
+    "comments": {
+      "patterns": [
+          {
+              "name": "comment",
+              "match": "--.*"
+          }
+      ]
+    }
 	},
 	"scopeName": "source.lambdaq"
 }
