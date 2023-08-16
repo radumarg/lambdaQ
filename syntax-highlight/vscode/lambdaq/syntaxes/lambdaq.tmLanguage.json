@@ -3,59 +3,26 @@
 	"name": "lambdaQ Quantum Programming Language",
 	"patterns": [
     {
-			"include": "#comments"
+			"include": "#typewords"
 		},
-    {
-			"include": "#gates"
-		},
-    {
-			"include": "#operators"
-		},
-    {
-			"include": "#controls"
-		},
-    {
-			"include": "#types"
+		{
+			"include": "#keywords"
 		},
 		{
 			"include": "#strings"
-		},
-    {
-			"include": "#numbers"
-		},
-    {
-			"include": "#keywords"
 		}
 	],
 	"repository": {
-    // "comments": {
-		// 	"patterns": [{
-		// 		"name": "comment.control.lambdaq",
-		// 		"match": "\\b(if|while|for|return)\\b"
-		// 	}]
-		// },
-    "gates": {
+    "typewords": {
 			"patterns": [{
-				"name": "gate.control.lambdaq",
-				"match": "\\s[A-Z][A-Z0-9]*\\s"
+				"name": "keyword.control.lambdaq",
+				"match": "\\b(Qbit|Bit)\\b"
 			}]
 		},
-    "operators": {
+		"keywords": {
 			"patterns": [{
-				"name": "operator.control.lambdaq",
-				"match": "\\b(*|->|[|]|=|<-|.|$|!)\\b"
-			}]
-		},
-    "controls": {
-			"patterns": [{
-				"name": "control.control.lambdaq",
-				"match": "\\b(@0|@1|@+|@-|@+i|@-i)\\b"
-			}]
-		},
-    "types": {
-			"patterns": [{
-				"name": "type.control.lambdaq",
-				"match": "\\b(Bit|Qbit|())\\b"
+				"name": "keyword.control.lambdaq",
+				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
 			}]
 		},
 		"strings": {
@@ -68,24 +35,6 @@
 					"match": "\\\\."
 				}
 			]
-		},
-    "numbers": {
-      "patterns": [
-        {
-          "name": "constant.numeric.integer.lambdaq",
-          "match": "\\b(\\d+)\\b"
-        },
-        {
-          "name": "constant.numeric.decimal.lambdaq",
-          "match": "\\b(\\d+\\.\\d+)\\b"
-        }
-      ]
-    },
-    "keywords": {
-			"patterns": [{
-				"name": "keyword.control.lambdaq",
-				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
-			}]
 		}
 	},
 	"scopeName": "source.lambdaq"
