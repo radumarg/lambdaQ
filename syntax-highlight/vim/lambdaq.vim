@@ -47,8 +47,6 @@ syn region codeString start='"' end='"'
 
 syn keyword codeBuiltin if then else let in with ctrl gate
 
-syn keyword codeSpecialFunction new measr
-
 syn keyword codeType Bit Qbit 
 
 syn match codeOperator "*"
@@ -81,4 +79,3 @@ hi def link codeType Type
 hi def link codeOperator Operator
 hi def link codeControl Constant
 hi def link codeBuiltin Define
-hi def link codeSpecialFunction Special
