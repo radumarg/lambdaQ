@@ -51,7 +51,7 @@
 		},
     "numbers": {
 			"patterns": [{
-				"name": "string.number.lambdaq",
+				"name": "invalid.number.lambdaq",
 				"match": "\\b-?(?:\\d+\\.\\d*|\\.\\d+|\\d+)(?:[eE][-+]?\\d+)?\\b"
 			}]
 		},
@@ -63,7 +63,7 @@
 		},
 		"atcontrols": {
 			"patterns": [{
-				"name": "entity.name.tag.lambdaq",
+				"name": "invalid.atcontrol.lambdaq",
 				"match": "@1|@0|@\\+i|@-i|@\\+|@-"
 			}]
 		},
@@ -87,12 +87,18 @@
     "comments": {
       "patterns": [
         {
-            "name": "comment",
+            "name": "comment.lambdaq",
             "match": "--.*"
         },
         {
-          "name": "comment",
-          "match": "{-(.|\n)*-}"
+          "name": "comment.lambdaq",
+          "begin": "{-",
+					"captures": {
+						"0": {
+							"name": "comment.lambdaq"
+						}
+					},
+					"end": "-}"
         }
       ]
     }
