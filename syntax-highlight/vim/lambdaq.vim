@@ -61,6 +61,7 @@ syn match codeOperator "<-"
 syn match codeOperator "\."
 syn match codeOperator "\$"
 syn match codeOperator ";"
+syn match codeOperator "::"
 
 syn match codeControl "@0"
 syn match codeControl "@1"
