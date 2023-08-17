@@ -101,7 +101,7 @@ TermLet       . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Te
 TermLetSugar  . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
 TCase         . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TermLambda    . Term1 ::= Lambda FunctionType "." Term ;
-TermGate      . Term1 ::= "gate" Gate ;
+TermGate      . Term1 ::= "gate" Gate ; -- TODO: make this right associative
 TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlStates "gate" Gate ;
 TermApp       . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermDollar    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
