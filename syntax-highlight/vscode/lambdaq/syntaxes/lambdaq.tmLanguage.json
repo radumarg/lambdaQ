@@ -8,6 +8,9 @@
     {
 			"include": "#typewords"
 		},
+    {
+      "include": "#typeoperators"
+    },
 		{
 			"include": "#keywords"
 		},
@@ -31,36 +34,42 @@
     "operators": {
 			"patterns": [{
 				"name": "keyword.type.operator.lambdaq",
-				"match": "\\*\\*|\\*|->|<-|\\.|\\$|\\!|=|\\[|\\]|;"
+				"match": "<-|\\.|\\$|=|\\[|\\]|;"
+			}]
+		},
+    "typeoperators": {
+			"patterns": [{
+				"name": "keyword.control.lambdaq",
+				"match": "->|!"
 			}]
 		},
     "typewords": {
 			"patterns": [{
-				"name": "keyword.type.typeword.lambdaq",
-				"match": "\\b(Qbit|Bit|\\(\\))\\b"
+				"name": "keyword.control.lambdaq",
+				"match": "\\b(Qbit\\s+\\*\\s+|Bit\\s+\\*\\s+|Qbit\\s+\\*\\*\\s+\\d+|Bit\\s+\\*\\*\\s+\\d+|Qbit|Bit|\\(\\))\\b"
 			}]
 		},
     "numbers": {
 			"patterns": [{
-				"name": "constant.numeric.lambdaq",
+				"name": "string.number.lambdaq",
 				"match": "\\b-?(?:\\d+\\.\\d*|\\.\\d+|\\d+)(?:[eE][-+]?\\d+)?\\b"
 			}]
 		},
     "keywords": {
 			"patterns": [{
-				"name": "keyword.control.lambdaq",
+				"name": "constant.numeric.lambdaq",
 				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
 			}]
 		},
 		"atcontrols": {
 			"patterns": [{
-				"name": "string.atcontrol.lambdaq",
+				"name": "entity.name.tag.lambdaq",
 				"match": "@1|@0|@\\+i|@-i|@\\+|@-"
 			}]
 		},
     "gates": {
 			"patterns": [{
-				"name": "string.gate.lambdaq",
+				"name": "keyword.gate.lambdaq",
 				"match": "\\b[A-Z][A-Z0-9]*\\b"
 			}]
 		},
@@ -77,10 +86,14 @@
 		},
     "comments": {
       "patterns": [
-          {
-              "name": "comment",
-              "match": "--.*"
-          }
+        {
+            "name": "comment",
+            "match": "--.*"
+        },
+        {
+          "name": "comment",
+          "match": "{-(.|\n)*-}"
+        }
       ]
     }
 	},
