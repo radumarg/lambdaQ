@@ -8,6 +8,14 @@ and this project adheres to the
 
 ### [Unreleased]   
 
+### [0.1.0] - 2023-08-17
+#### Added
+- Added several example lambdaQ code files.
+- Added syntax highlighting for vim & vscode.
+- Created the file structure for the language backend.
+#### Fixed
+- Made several improvements to the LBNF grammar.
+
 <br/>
 
 ### [0.1.0] - 2023-07-15 
