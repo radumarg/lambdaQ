@@ -1,7 +1,7 @@
-" Vim syntax file
+
 " Language: lambdaq
 " Maintainer: radu.marginean@transilvania-quantum.com
-" Latest Revision: 12 August 2023
+" Latest Revision: 17 August 2023
 
 if exists("b:current_syntax")
   finish
@@ -49,14 +49,16 @@ syn keyword codeBuiltin if then else let in with ctrl gate
 
 syn keyword codeType Bit Qbit 
 
-syn match codeOperator "*"
-syn match codeOperator "->"
+syn match codeType "!"
+syn match codeType "->"
+syn match codeType "\*\*\s\+\d\+"
+syn match codeType "\s\+\*\s\+"
+
 syn match codeOperator "\["
 syn match codeOperator "\]"
 syn match codeOperator "="
 syn match codeOperator "<-"
 syn match codeOperator "\."
-syn match codeOperator "!"
 syn match codeOperator "\$"
 syn match codeOperator ";"
 
