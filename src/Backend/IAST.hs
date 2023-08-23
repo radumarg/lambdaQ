@@ -16,22 +16,22 @@ data Type =
     TypeQbit          |
     TypeUnit          |
     TypeNonLin Type   |
+    Type :->: Type    |
     Type :*: Type     |
-    Type :**: Integer |
-    Type :->: Type 
+    Type :**: Integer 
   deriving (Eq, Ord, Show, Read)
 
 infixr 1 :->:
-infixr 2 :**:
-infixr 3 :*:
+infixr 2 :*:
+infixr 3 :**:
 
 data ControlState =
-    CStateZero   |
-    CStateOne    |
-    CStatePlus   |
-    CStateMinus  |
-    CStatePlusI  |
-    CStateMinusI
+    CtrlStateZero   |
+    CtrlStateOne    |
+    CtrlStatePlus   |
+    CtrlStateMinus  |
+    CtrlStatePlusI  |
+    CtrlStateMinusI
   deriving (Eq, Ord, Show, Read)
 
 newtype Angle = Angle Double
@@ -124,20 +124,20 @@ reverseMapType (t :**: i) = GenAbSyntax.TypeExp (reverseMapType t) i
 reverseMapType (l :->: r) = GenAbSyntax.TypeFunc (reverseMapType l) (reverseMapType r)
 
 mapControlState :: GenAbSyntax.ControlState -> ControlState
-mapControlState GenAbSyntax.CStateZero = CStateZero
-mapControlState GenAbSyntax.CStateOne = CStateOne
-mapControlState GenAbSyntax.CStatePlus = CStatePlus
-mapControlState GenAbSyntax.CStateMinus = CStateMinus
-mapControlState GenAbSyntax.CStatePlusI = CStatePlusI
-mapControlState GenAbSyntax.CStateMinusI = CStateMinusI
+mapControlState GenAbSyntax.CtrlStateZero = CtrlStateZero
+mapControlState GenAbSyntax.CtrlStateOne = CtrlStateOne
+mapControlState GenAbSyntax.CtrlStatePlus = CtrlStatePlus
+mapControlState GenAbSyntax.CtrlStateMinus = CtrlStateMinus
+mapControlState GenAbSyntax.CtrlStatePlusI = CtrlStatePlusI
+mapControlState GenAbSyntax.CtrlStateMinusI = CtrlStateMinusI
 
 reverseMapControlState :: ControlState -> GenAbSyntax.ControlState
-reverseMapControlState CStateZero = GenAbSyntax.CStateZero
-reverseMapControlState CStateOne = GenAbSyntax.CStateOne
-reverseMapControlState CStatePlus = GenAbSyntax.CStatePlus
-reverseMapControlState CStateMinus = GenAbSyntax.CStateMinus
-reverseMapControlState CStatePlusI = GenAbSyntax.CStatePlusI
-reverseMapControlState CStateMinusI = GenAbSyntax.CStateMinusI
+reverseMapControlState CtrlStateZero = GenAbSyntax.CtrlStateZero
+reverseMapControlState CtrlStateOne = GenAbSyntax.CtrlStateOne
+reverseMapControlState CtrlStatePlus = GenAbSyntax.CtrlStatePlus
+reverseMapControlState CtrlStateMinus = GenAbSyntax.CtrlStateMinus
+reverseMapControlState CtrlStatePlusI = GenAbSyntax.CtrlStatePlusI
+reverseMapControlState CtrlStateMinusI = GenAbSyntax.CtrlStateMinusI
 
 mapAngle :: GenAbSyntax.Angle -> Angle
 mapAngle (GenAbSyntax.AAngl angle) = Angle angle
