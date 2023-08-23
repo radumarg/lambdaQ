@@ -51,12 +51,12 @@ transAngle x = case x of
 
 transControlState :: Frontend.LambdaQ.Abs.ControlState -> Result
 transControlState x = case x of
-  Frontend.LambdaQ.Abs.CStateZero -> failure x
-  Frontend.LambdaQ.Abs.CStateOne -> failure x
-  Frontend.LambdaQ.Abs.CStatePlus -> failure x
-  Frontend.LambdaQ.Abs.CStateMinus -> failure x
-  Frontend.LambdaQ.Abs.CStatePlusI -> failure x
-  Frontend.LambdaQ.Abs.CStateMinusI -> failure x
+  Frontend.LambdaQ.Abs.CtrlStateZero -> failure x
+  Frontend.LambdaQ.Abs.CtrlStateOne -> failure x
+  Frontend.LambdaQ.Abs.CtrlStatePlus -> failure x
+  Frontend.LambdaQ.Abs.CtrlStateMinus -> failure x
+  Frontend.LambdaQ.Abs.CtrlStatePlusI -> failure x
+  Frontend.LambdaQ.Abs.CtrlStateMinusI -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of

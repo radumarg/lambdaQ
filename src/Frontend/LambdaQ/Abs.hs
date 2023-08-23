@@ -31,12 +31,12 @@ data Angle = AAngl Double
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlState
-    = CStateZero
-    | CStateOne
-    | CStatePlus
-    | CStateMinus
-    | CStatePlusI
-    | CStateMinusI
+    = CtrlStateZero
+    | CtrlStateOne
+    | CtrlStatePlus
+    | CtrlStateMinus
+    | CtrlStatePlusI
+    | CtrlStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate

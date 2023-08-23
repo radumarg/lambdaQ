@@ -27,12 +27,12 @@ position token Bit ('0' | '1') ;
 AAngl . Angle ::= Double ;
 
 -- Control States --
-CStateZero   . ControlState ::= "@0" ;
-CStateOne    . ControlState ::= "@1" ;
-CStatePlus   . ControlState ::= "@+" ;
-CStateMinus  . ControlState ::= "@-" ;
-CStatePlusI  . ControlState ::= "@+i" ;
-CStateMinusI . ControlState ::= "@-i" ;
+CtrlStateZero   . ControlState ::= "@0" ;
+CtrlStateOne    . ControlState ::= "@1" ;
+CtrlStatePlus   . ControlState ::= "@+" ;
+CtrlStateMinus  . ControlState ::= "@-" ;
+CtrlStatePlusI  . ControlState ::= "@+i" ;
+CtrlStateMinusI . ControlState ::= "@-i" ;
 
 
 position token GateIdent (upper (letter | digit | '_')*) ;

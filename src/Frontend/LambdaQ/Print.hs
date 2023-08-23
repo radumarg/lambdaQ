@@ -166,12 +166,12 @@ instance Print Frontend.LambdaQ.Abs.Angle where
 
 instance Print Frontend.LambdaQ.Abs.ControlState where
   prt i = \case
-    Frontend.LambdaQ.Abs.CStateZero -> prPrec i 0 (concatD [doc (showString "@0")])
-    Frontend.LambdaQ.Abs.CStateOne -> prPrec i 0 (concatD [doc (showString "@1")])
-    Frontend.LambdaQ.Abs.CStatePlus -> prPrec i 0 (concatD [doc (showString "@+")])
-    Frontend.LambdaQ.Abs.CStateMinus -> prPrec i 0 (concatD [doc (showString "@-")])
-    Frontend.LambdaQ.Abs.CStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
-    Frontend.LambdaQ.Abs.CStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
+    Frontend.LambdaQ.Abs.CtrlStateZero -> prPrec i 0 (concatD [doc (showString "@0")])
+    Frontend.LambdaQ.Abs.CtrlStateOne -> prPrec i 0 (concatD [doc (showString "@1")])
+    Frontend.LambdaQ.Abs.CtrlStatePlus -> prPrec i 0 (concatD [doc (showString "@+")])
+    Frontend.LambdaQ.Abs.CtrlStateMinus -> prPrec i 0 (concatD [doc (showString "@-")])
+    Frontend.LambdaQ.Abs.CtrlStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
+    Frontend.LambdaQ.Abs.CtrlStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
 
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case

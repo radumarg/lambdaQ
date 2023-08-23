@@ -150,12 +150,12 @@ Angle : Double { Frontend.LambdaQ.Abs.AAngl $1 }
 
 ControlState :: { Frontend.LambdaQ.Abs.ControlState }
 ControlState
-  : '@0' { Frontend.LambdaQ.Abs.CStateZero }
-  | '@1' { Frontend.LambdaQ.Abs.CStateOne }
-  | '@+' { Frontend.LambdaQ.Abs.CStatePlus }
-  | '@-' { Frontend.LambdaQ.Abs.CStateMinus }
-  | '@+i' { Frontend.LambdaQ.Abs.CStatePlusI }
-  | '@-i' { Frontend.LambdaQ.Abs.CStateMinusI }
+  : '@0' { Frontend.LambdaQ.Abs.CtrlStateZero }
+  | '@1' { Frontend.LambdaQ.Abs.CtrlStateOne }
+  | '@+' { Frontend.LambdaQ.Abs.CtrlStatePlus }
+  | '@-' { Frontend.LambdaQ.Abs.CtrlStateMinus }
+  | '@+i' { Frontend.LambdaQ.Abs.CtrlStatePlusI }
+  | '@-i' { Frontend.LambdaQ.Abs.CtrlStateMinusI }
 
 Gate :: { Frontend.LambdaQ.Abs.Gate }
 Gate

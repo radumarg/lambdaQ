@@ -555,37 +555,37 @@ happyReduction_19 happy_x_1
 happyReduce_20 = happySpecReduce_1  12# happyReduction_20
 happyReduction_20 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStateZero
+		 (Frontend.LambdaQ.Abs.CtrlStateZero
 	)
 
 happyReduce_21 = happySpecReduce_1  12# happyReduction_21
 happyReduction_21 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStateOne
+		 (Frontend.LambdaQ.Abs.CtrlStateOne
 	)
 
 happyReduce_22 = happySpecReduce_1  12# happyReduction_22
 happyReduction_22 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStatePlus
+		 (Frontend.LambdaQ.Abs.CtrlStatePlus
 	)
 
 happyReduce_23 = happySpecReduce_1  12# happyReduction_23
 happyReduction_23 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStateMinus
+		 (Frontend.LambdaQ.Abs.CtrlStateMinus
 	)
 
 happyReduce_24 = happySpecReduce_1  12# happyReduction_24
 happyReduction_24 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStatePlusI
+		 (Frontend.LambdaQ.Abs.CtrlStatePlusI
 	)
 
 happyReduce_25 = happySpecReduce_1  12# happyReduction_25
 happyReduction_25 happy_x_1
 	 =  happyIn16
-		 (Frontend.LambdaQ.Abs.CStateMinusI
+		 (Frontend.LambdaQ.Abs.CtrlStateMinusI
 	)
 
 happyReduce_26 = happySpecReduce_1  13# happyReduction_26
