@@ -120,7 +120,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
   Frontend.LambdaQ.Abs.TermLet letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetSugar letvariable letvariables term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TCase term caseexpression caseexpressions -> failure x
+  Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermCtrlGate controls controlstates gate -> failure x

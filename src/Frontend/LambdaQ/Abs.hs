@@ -96,7 +96,7 @@ data Term
     | TermIfElse Term Term Term
     | TermLet LetVariable [LetVariable] Term Term
     | TermLetSugar LetVariable [LetVariable] Term Term
-    | TCase Term CaseExpression [CaseExpression]
+    | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda FunctionType Term
     | TermGate Gate
     | TermCtrlGate Controls ControlStates Gate

@@ -1041,7 +1041,7 @@ happyReduction_79 (happy_x_5 `HappyStk`
 	case happyOut29 happy_x_4 of { (HappyWrap29 happy_var_4) -> 
 	case happyOut30 happy_x_5 of { (HappyWrap30 happy_var_5) -> 
 	happyIn26
-		 (Frontend.LambdaQ.Abs.TCase happy_var_2 happy_var_4 happy_var_5
+		 (Frontend.LambdaQ.Abs.TermCase happy_var_2 happy_var_4 happy_var_5
 	) `HappyStk` happyRest}}}
 
 happyReduce_80 = happyReduce 4# 22# happyReduction_80

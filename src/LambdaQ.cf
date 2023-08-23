@@ -99,7 +99,7 @@ TermUnit      . Term3 ::= "()" ;
 TermIfElse    . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLet       . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TermLetSugar  . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
-TCase         . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
+TermCase      . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TermLambda    . Term1 ::= Lambda FunctionType "." Term ;
 TermGate      . Term1 ::= "gate" Gate ; -- TODO: make this right associative
 TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlStates "gate" Gate ;
