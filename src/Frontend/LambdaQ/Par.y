@@ -146,7 +146,7 @@ Type
   | Type1 { $1 }
 
 Angle :: { Frontend.LambdaQ.Abs.Angle }
-Angle : Double { Frontend.LambdaQ.Abs.AngleValue $1 }
+Angle : Double { Frontend.LambdaQ.Abs.Angle $1 }
 
 ControlState :: { Frontend.LambdaQ.Abs.ControlState }
 ControlState

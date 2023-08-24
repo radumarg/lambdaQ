@@ -27,7 +27,7 @@ data Type
     | TypeFunc Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Angle = AngleValue Double
+data Angle = Angle Double
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlState

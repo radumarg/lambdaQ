@@ -47,7 +47,7 @@ transType x = case x of
 
 transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
-  Frontend.LambdaQ.Abs.AngleValue double -> failure x
+  Frontend.LambdaQ.Abs.Angle double -> failure x
 
 transControlState :: Frontend.LambdaQ.Abs.ControlState -> Result
 transControlState x = case x of
