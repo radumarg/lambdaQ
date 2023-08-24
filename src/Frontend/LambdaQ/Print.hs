@@ -162,7 +162,7 @@ instance Print Frontend.LambdaQ.Abs.Type where
 
 instance Print Frontend.LambdaQ.Abs.Angle where
   prt i = \case
-    Frontend.LambdaQ.Abs.AAngl d -> prPrec i 0 (concatD [prt 0 d])
+    Frontend.LambdaQ.Abs.AngleValue d -> prPrec i 0 (concatD [prt 0 d])
 
 instance Print Frontend.LambdaQ.Abs.ControlState where
   prt i = \case

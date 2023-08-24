@@ -24,7 +24,7 @@ coercions Type 3 ;
 position token Bit ('0' | '1') ;
 
 -- Angle is a fraction of 2π --
-AAngl . Angle ::= Double ;
+AngleValue . Angle ::= Double ;
 
 -- Control States --
 CtrlStateZero   . ControlState ::= "@0" ;

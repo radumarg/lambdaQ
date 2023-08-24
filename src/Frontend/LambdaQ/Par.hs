@@ -549,7 +549,7 @@ happyReduce_19 = happySpecReduce_1  11# happyReduction_19
 happyReduction_19 happy_x_1
 	 =  case happyOut4 happy_x_1 of { (HappyWrap4 happy_var_1) -> 
 	happyIn15
-		 (Frontend.LambdaQ.Abs.AAngl happy_var_1
+		 (Frontend.LambdaQ.Abs.AngleValue happy_var_1
 	)}
 
 happyReduce_20 = happySpecReduce_1  12# happyReduction_20
