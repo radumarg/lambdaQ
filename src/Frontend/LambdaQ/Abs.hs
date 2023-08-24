@@ -30,13 +30,13 @@ data Type
 data Angle = Angle Double
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlState
-    = CtrlStateZero
-    | CtrlStateOne
-    | CtrlStatePlus
-    | CtrlStateMinus
-    | CtrlStatePlusI
-    | CtrlStateMinusI
+data BasisState
+    = BasisStateZero
+    | BasisStateOne
+    | BasisStatePlus
+    | BasisStateMinus
+    | BasisStatePlusI
+    | BasisStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
@@ -85,12 +85,12 @@ data Tuple = Tup Term [Term]
 data Controls = Ctrls Term [Term]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlStates = CtrlStates ControlState [ControlState]
+data ControlBasisStates = CtrlStates BasisState [BasisState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Term
-    = TermVar Var
-    | TermBit Bit
+    = TermQubit BasisState
+    | TermVar Var
     | TermTupl Tuple
     | TermUnit
     | TermIfElse Term Term Term
@@ -99,7 +99,7 @@ data Term
     | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda FunctionType Term
     | TermGate Gate
-    | TermCtrlGate Controls ControlStates Gate
+    | TermCtrlGate Controls ControlBasisStates Gate
     | TermApp Term Term
     | TermDollar Term Term
     | TermCompose Term Term
@@ -118,9 +118,6 @@ data FunctionType = FunType Var Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-newtype Bit = Bit ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype GateIdent = GateIdent ((C.Int, C.Int), String)
@@ -146,9 +143,6 @@ pattern BNFC'Position line col = C.Just (line, col)
 
 class HasPosition a where
   hasPosition :: a -> BNFC'Position
-
-instance HasPosition Bit where
-  hasPosition (Bit (p, _)) = C.Just p
 
 instance HasPosition GateIdent where
   hasPosition (GateIdent (p, _)) = C.Just p

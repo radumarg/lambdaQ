@@ -28,7 +28,7 @@ data LayoutDelimiters
 
 layoutWords :: [(TokSymbol, LayoutDelimiters)]
 layoutWords = [( TokSymbol "let" 64
-               , LayoutDelimiters (TokSymbol ";" 12) (Just (TokSymbol "{" 68)) (Just (TokSymbol "}" 69))
+               , LayoutDelimiters (TokSymbol ";" 12) (Just (TokSymbol "{" 69)) (Just (TokSymbol "}" 70))
                )]
 
 layoutStopWords :: [TokSymbol]

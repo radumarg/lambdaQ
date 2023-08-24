@@ -87,14 +87,14 @@ import Frontend.LambdaQ.Lex
   'if'            { PT _ (TS _ 62)       }
   'in'            { PT _ (TS _ 63)       }
   'let'           { PT _ (TS _ 64)       }
-  'of'            { PT _ (TS _ 65)       }
-  'then'          { PT _ (TS _ 66)       }
-  'with'          { PT _ (TS _ 67)       }
-  '{'             { PT _ (TS _ 68)       }
-  '}'             { PT _ (TS _ 69)       }
+  'new'           { PT _ (TS _ 65)       }
+  'of'            { PT _ (TS _ 66)       }
+  'then'          { PT _ (TS _ 67)       }
+  'with'          { PT _ (TS _ 68)       }
+  '{'             { PT _ (TS _ 69)       }
+  '}'             { PT _ (TS _ 70)       }
   L_doubl         { PT _ (TD $$)         }
   L_integ         { PT _ (TI $$)         }
-  L_Bit           { PT _ (T_Bit _)       }
   L_GateIdent     { PT _ (T_GateIdent _) }
   L_Var           { PT _ (T_Var _)       }
   L_Lambda        { PT _ (T_Lambda $$)   }
@@ -106,9 +106,6 @@ Double   : L_doubl  { (read $1) :: Double }
 
 Integer :: { Integer }
 Integer  : L_integ  { (read $1) :: Integer }
-
-Bit :: { Frontend.LambdaQ.Abs.Bit }
-Bit  : L_Bit { Frontend.LambdaQ.Abs.Bit (mkPosToken $1) }
 
 GateIdent :: { Frontend.LambdaQ.Abs.GateIdent }
 GateIdent  : L_GateIdent { Frontend.LambdaQ.Abs.GateIdent (mkPosToken $1) }
@@ -148,14 +145,14 @@ Type
 Angle :: { Frontend.LambdaQ.Abs.Angle }
 Angle : Double { Frontend.LambdaQ.Abs.Angle $1 }
 
-ControlState :: { Frontend.LambdaQ.Abs.ControlState }
-ControlState
-  : '@0' { Frontend.LambdaQ.Abs.CtrlStateZero }
-  | '@1' { Frontend.LambdaQ.Abs.CtrlStateOne }
-  | '@+' { Frontend.LambdaQ.Abs.CtrlStatePlus }
-  | '@-' { Frontend.LambdaQ.Abs.CtrlStateMinus }
-  | '@+i' { Frontend.LambdaQ.Abs.CtrlStatePlusI }
-  | '@-i' { Frontend.LambdaQ.Abs.CtrlStateMinusI }
+BasisState :: { Frontend.LambdaQ.Abs.BasisState }
+BasisState
+  : '@0' { Frontend.LambdaQ.Abs.BasisStateZero }
+  | '@1' { Frontend.LambdaQ.Abs.BasisStateOne }
+  | '@+' { Frontend.LambdaQ.Abs.BasisStatePlus }
+  | '@-' { Frontend.LambdaQ.Abs.BasisStateMinus }
+  | '@+i' { Frontend.LambdaQ.Abs.BasisStatePlusI }
+  | '@-i' { Frontend.LambdaQ.Abs.BasisStateMinusI }
 
 Gate :: { Frontend.LambdaQ.Abs.Gate }
 Gate
@@ -214,19 +211,19 @@ Controls
 ListTerm :: { [Frontend.LambdaQ.Abs.Term] }
 ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 
-ControlStates :: { Frontend.LambdaQ.Abs.ControlStates }
-ControlStates
-  : '[' ControlState ',' ListControlState ']' { Frontend.LambdaQ.Abs.CtrlStates $2 $4 }
+ControlBasisStates :: { Frontend.LambdaQ.Abs.ControlBasisStates }
+ControlBasisStates
+  : '[' BasisState ',' ListBasisState ']' { Frontend.LambdaQ.Abs.CtrlStates $2 $4 }
 
-ListControlState :: { [Frontend.LambdaQ.Abs.ControlState] }
-ListControlState
-  : ControlState { (:[]) $1 }
-  | ControlState ',' ListControlState { (:) $1 $3 }
+ListBasisState :: { [Frontend.LambdaQ.Abs.BasisState] }
+ListBasisState
+  : BasisState { (:[]) $1 }
+  | BasisState ',' ListBasisState { (:) $1 $3 }
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
 Term3
-  : Var { Frontend.LambdaQ.Abs.TermVar $1 }
-  | Bit { Frontend.LambdaQ.Abs.TermBit $1 }
+  : 'new' BasisState { Frontend.LambdaQ.Abs.TermQubit $2 }
+  | Var { Frontend.LambdaQ.Abs.TermVar $1 }
   | Tuple { Frontend.LambdaQ.Abs.TermTupl $1 }
   | '()' { Frontend.LambdaQ.Abs.TermUnit }
   | '(' Term ')' { $2 }
@@ -239,7 +236,7 @@ Term1
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
   | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $4 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
-  | 'with' Controls 'ctrl' ControlStates 'gate' Gate { Frontend.LambdaQ.Abs.TermCtrlGate $2 $4 $6 }
+  | 'with' Controls 'ctrl' ControlBasisStates 'gate' Gate { Frontend.LambdaQ.Abs.TermCtrlGate $2 $4 $6 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
 

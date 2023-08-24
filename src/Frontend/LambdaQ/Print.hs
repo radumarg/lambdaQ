@@ -138,8 +138,6 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print Frontend.LambdaQ.Abs.Bit where
-  prt _ (Frontend.LambdaQ.Abs.Bit (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.GateIdent where
   prt _ (Frontend.LambdaQ.Abs.GateIdent (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
@@ -164,14 +162,14 @@ instance Print Frontend.LambdaQ.Abs.Angle where
   prt i = \case
     Frontend.LambdaQ.Abs.Angle d -> prPrec i 0 (concatD [prt 0 d])
 
-instance Print Frontend.LambdaQ.Abs.ControlState where
+instance Print Frontend.LambdaQ.Abs.BasisState where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlStateZero -> prPrec i 0 (concatD [doc (showString "@0")])
-    Frontend.LambdaQ.Abs.CtrlStateOne -> prPrec i 0 (concatD [doc (showString "@1")])
-    Frontend.LambdaQ.Abs.CtrlStatePlus -> prPrec i 0 (concatD [doc (showString "@+")])
-    Frontend.LambdaQ.Abs.CtrlStateMinus -> prPrec i 0 (concatD [doc (showString "@-")])
-    Frontend.LambdaQ.Abs.CtrlStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
-    Frontend.LambdaQ.Abs.CtrlStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
+    Frontend.LambdaQ.Abs.BasisStateZero -> prPrec i 0 (concatD [doc (showString "@0")])
+    Frontend.LambdaQ.Abs.BasisStateOne -> prPrec i 0 (concatD [doc (showString "@1")])
+    Frontend.LambdaQ.Abs.BasisStatePlus -> prPrec i 0 (concatD [doc (showString "@+")])
+    Frontend.LambdaQ.Abs.BasisStateMinus -> prPrec i 0 (concatD [doc (showString "@-")])
+    Frontend.LambdaQ.Abs.BasisStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
+    Frontend.LambdaQ.Abs.BasisStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
 
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case
@@ -232,19 +230,19 @@ instance Print [Frontend.LambdaQ.Abs.Term] where
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
-instance Print Frontend.LambdaQ.Abs.ControlStates where
+instance Print Frontend.LambdaQ.Abs.ControlBasisStates where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlStates controlstate controlstates -> prPrec i 0 (concatD [doc (showString "["), prt 0 controlstate, doc (showString ","), prt 0 controlstates, doc (showString "]")])
+    Frontend.LambdaQ.Abs.CtrlStates basisstate basisstates -> prPrec i 0 (concatD [doc (showString "["), prt 0 basisstate, doc (showString ","), prt 0 basisstates, doc (showString "]")])
 
-instance Print [Frontend.LambdaQ.Abs.ControlState] where
+instance Print [Frontend.LambdaQ.Abs.BasisState] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
 instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
+    Frontend.LambdaQ.Abs.TermQubit basisstate -> prPrec i 3 (concatD [doc (showString "new"), prt 0 basisstate])
     Frontend.LambdaQ.Abs.TermVar var -> prPrec i 3 (concatD [prt 0 var])
-    Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermTupl tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
@@ -253,7 +251,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 functiontype, doc (showString "."), prt 0 term])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate])
-    Frontend.LambdaQ.Abs.TermCtrlGate controls controlstates gate -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlstates, doc (showString "gate"), prt 0 gate])
+    Frontend.LambdaQ.Abs.TermCtrlGate controls controlbasisstates gate -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlbasisstates, doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])

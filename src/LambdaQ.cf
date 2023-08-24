@@ -20,19 +20,16 @@ TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
--- Bit --
-position token Bit ('0' | '1') ;
-
 -- Angle is a fraction of 2π --
 Angle . Angle ::= Double ;
 
--- Control States --
-CtrlStateZero   . ControlState ::= "@0" ;
-CtrlStateOne    . ControlState ::= "@1" ;
-CtrlStatePlus   . ControlState ::= "@+" ;
-CtrlStateMinus  . ControlState ::= "@-" ;
-CtrlStatePlusI  . ControlState ::= "@+i" ;
-CtrlStateMinusI . ControlState ::= "@-i" ;
+-- Basis States --
+BasisStateZero   . BasisState ::= "@0" ;
+BasisStateOne    . BasisState ::= "@1" ;
+BasisStatePlus   . BasisState ::= "@+" ;
+BasisStateMinus  . BasisState ::= "@-" ;
+BasisStatePlusI  . BasisState ::= "@+i" ;
+BasisStateMinusI . BasisState ::= "@-i" ;
 
 
 position token GateIdent (upper (letter | digit | '_')*) ;
@@ -85,15 +82,15 @@ Ctrls . Controls ::= "[" Term "," [Term] "]" ;
 separator nonempty Term "," ;
 
 -- Declaring Control states --
-CtrlStates . ControlStates ::= "[" ControlState "," [ControlState] "]" ;
-separator nonempty ControlState "," ;
+CtrlStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
+separator nonempty BasisState "," ;
 
 -- Lambda token --
 token Lambda '\\' ;
 
 -- Terms --
+TermQubit     . Term3 ::= "new" BasisState ;
 TermVar       . Term3 ::= Var ;
-TermBit       . Term3 ::= Bit ;
 TermTupl      . Term3 ::= Tuple ;
 TermUnit      . Term3 ::= "()" ;
 TermIfElse    . Term1 ::= "if" Term "then" Term "else" Term ;
@@ -102,7 +99,7 @@ TermLetSugar  . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
 TermCase      . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
 TermLambda    . Term1 ::= Lambda FunctionType "." Term ;
 TermGate      . Term1 ::= "gate" Gate ; -- TODO: make this right associative
-TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlStates "gate" Gate ;
+TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBasisStates "gate" Gate ;
 TermApp       . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermDollar    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 TermCompose   . Term2 ::= Term2 "." Term3 ;  -- left-associative  --

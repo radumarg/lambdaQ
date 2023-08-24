@@ -24,10 +24,6 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
-
-Bit literals are recognized by the regular expression
-`````["01"]`````
-
 GateIdent literals are recognized by the regular expression
 `````upper ('_' | digit | letter)*`````
 
@@ -52,8 +48,8 @@ The reserved words used in LambdaQ are the following:
   | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
   | ``X`` | ``Y`` | ``Z`` | ``case``
   | ``ctrl`` | ``else`` | ``gate`` | ``if``
-  | ``in`` | ``let`` | ``of`` | ``then``
-  | ``with`` |  |  |
+  | ``in`` | ``let`` | ``new`` | ``of``
+  | ``then`` | ``with`` |  |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
@@ -85,7 +81,7 @@ All other symbols are terminals.
   | //Type// | -> | //Type1// ``->`` //Type//
   |  |  **|**  | //Type1//
   | //Angle// | -> | //Double//
-  | //ControlState// | -> | ``@0``
+  | //BasisState// | -> | ``@0``
   |  |  **|**  | ``@1``
   |  |  **|**  | ``@+``
   |  |  **|**  | ``@-``
@@ -133,11 +129,11 @@ All other symbols are terminals.
   | //Controls// | -> | ``[`` //Term// ``,`` //[Term]// ``]``
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
-  | //ControlStates// | -> | ``[`` //ControlState// ``,`` //[ControlState]// ``]``
-  | //[ControlState]// | -> | //ControlState//
-  |  |  **|**  | //ControlState// ``,`` //[ControlState]//
-  | //Term3// | -> | //Var//
-  |  |  **|**  | //Bit//
+  | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
+  | //[BasisState]// | -> | //BasisState//
+  |  |  **|**  | //BasisState// ``,`` //[BasisState]//
+  | //Term3// | -> | ``new`` //BasisState//
+  |  |  **|**  | //Var//
   |  |  **|**  | //Tuple//
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
@@ -147,7 +143,7 @@ All other symbols are terminals.
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //FunctionType// ``.`` //Term//
   |  |  **|**  | ``gate`` //Gate//
-  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlStates// ``gate`` //Gate//
+  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlBasisStates// ``gate`` //Gate//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
   | //Term2// | -> | //Term2// //Term3//

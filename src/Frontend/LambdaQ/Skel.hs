@@ -15,10 +15,6 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transBit :: Frontend.LambdaQ.Abs.Bit -> Result
-transBit x = case x of
-  Frontend.LambdaQ.Abs.Bit string -> failure x
-
 transGateIdent :: Frontend.LambdaQ.Abs.GateIdent -> Result
 transGateIdent x = case x of
   Frontend.LambdaQ.Abs.GateIdent string -> failure x
@@ -49,14 +45,14 @@ transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
   Frontend.LambdaQ.Abs.Angle double -> failure x
 
-transControlState :: Frontend.LambdaQ.Abs.ControlState -> Result
-transControlState x = case x of
-  Frontend.LambdaQ.Abs.CtrlStateZero -> failure x
-  Frontend.LambdaQ.Abs.CtrlStateOne -> failure x
-  Frontend.LambdaQ.Abs.CtrlStatePlus -> failure x
-  Frontend.LambdaQ.Abs.CtrlStateMinus -> failure x
-  Frontend.LambdaQ.Abs.CtrlStatePlusI -> failure x
-  Frontend.LambdaQ.Abs.CtrlStateMinusI -> failure x
+transBasisState :: Frontend.LambdaQ.Abs.BasisState -> Result
+transBasisState x = case x of
+  Frontend.LambdaQ.Abs.BasisStateZero -> failure x
+  Frontend.LambdaQ.Abs.BasisStateOne -> failure x
+  Frontend.LambdaQ.Abs.BasisStatePlus -> failure x
+  Frontend.LambdaQ.Abs.BasisStateMinus -> failure x
+  Frontend.LambdaQ.Abs.BasisStatePlusI -> failure x
+  Frontend.LambdaQ.Abs.BasisStateMinusI -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
@@ -107,14 +103,14 @@ transControls :: Frontend.LambdaQ.Abs.Controls -> Result
 transControls x = case x of
   Frontend.LambdaQ.Abs.Ctrls term terms -> failure x
 
-transControlStates :: Frontend.LambdaQ.Abs.ControlStates -> Result
-transControlStates x = case x of
-  Frontend.LambdaQ.Abs.CtrlStates controlstate controlstates -> failure x
+transControlBasisStates :: Frontend.LambdaQ.Abs.ControlBasisStates -> Result
+transControlBasisStates x = case x of
+  Frontend.LambdaQ.Abs.CtrlStates basisstate basisstates -> failure x
 
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
+  Frontend.LambdaQ.Abs.TermQubit basisstate -> failure x
   Frontend.LambdaQ.Abs.TermVar var -> failure x
-  Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermTupl tuple -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
@@ -123,7 +119,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
-  Frontend.LambdaQ.Abs.TermCtrlGate controls controlstates gate -> failure x
+  Frontend.LambdaQ.Abs.TermCtrlGate controls controlbasisstates gate -> failure x
   Frontend.LambdaQ.Abs.TermApp term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
