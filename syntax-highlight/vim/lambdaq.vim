@@ -63,12 +63,12 @@ syn match codeOperator "\$"
 syn match codeOperator ";"
 syn match codeOperator "::"
 
-syn match codeControl "@0"
-syn match codeControl "@1"
-syn match codeControl "@+i"
-syn match codeControl "@-i"
-syn match codeControl "@+"
-syn match codeControl "@-"
+syn match codeSpecial "@0"
+syn match codeSpecial "@1"
+syn match codeSpecial "@+i"
+syn match codeSpecial "@-i"
+syn match codeSpecial "@+"
+syn match codeSpecial "@-"
 
 let b:current_syntax = "lambdaq"
 
@@ -82,3 +82,4 @@ hi def link codeType Type
 hi def link codeOperator Operator
 hi def link codeControl Constant
 hi def link codeBuiltin Define
+hi def link codeSpecial Special

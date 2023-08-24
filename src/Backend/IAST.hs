@@ -142,10 +142,10 @@ reverseMapControlState CtrlStatePlusI = GeneratedAbSyntax.CtrlStatePlusI
 reverseMapControlState CtrlStateMinusI = GeneratedAbSyntax.CtrlStateMinusI
 
 mapAngle :: GeneratedAbSyntax.Angle -> Angle
-mapAngle (GeneratedAbSyntax.AAngl angle) = Angle angle
+mapAngle (GeneratedAbSyntax.Angle value) = Angle value
 
 reverseMapAngle :: Angle -> GeneratedAbSyntax.Angle
-reverseMapAngle (Angle angle) = GeneratedAbSyntax.AAngl angle
+reverseMapAngle (Angle value) = GeneratedAbSyntax.Angle value
 
 mapBit :: GeneratedAbSyntax.Bit -> Bit
 mapBit (GeneratedAbSyntax.Bit ((l, c), "0")) = Bit ((l, c), BitZero) 
