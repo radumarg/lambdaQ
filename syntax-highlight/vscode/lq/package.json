@@ -1,5 +1,5 @@
 {
-  "name": "lambdaq",
+  "name": "lq",
   "displayName": "lambdaQ",
   "description": "lambdaQ Quantum Programming Language",
   "version": "0.0.1",
@@ -12,7 +12,7 @@
   "contributes": {
     "languages": [{
       "id": "lambdaq",
-      "aliases": ["lambdaQ Quantum Programming Lanuage", "lambdaq"],
+      "aliases": ["lambdaQ Quantum Programming Language", "lambdaq"],
       "extensions": [".lq"],
       "configuration": "./language-configuration.json"
     }],

@@ -39,42 +39,42 @@
 		},
     "typeoperators": {
 			"patterns": [{
-				"name": "keyword.control.lambdaq",
+				"name": "comment.lambdaq",
 				"match": "->|!"
 			}]
 		},
     "typewords": {
 			"patterns": [{
-				"name": "keyword.control.lambdaq",
+				"name": "comment.lambdaq",
 				"match": "\\b(Qbit\\s+\\*\\s+|Bit\\s+\\*\\s+|Qbit\\s+\\*\\*\\s+\\d+|Bit\\s+\\*\\*\\s+\\d+|Qbit|Bit|\\(\\))\\b"
 			}]
 		},
     "numbers": {
 			"patterns": [{
-				"name": "invalid.number.lambdaq",
+				"name": "string.numeric.lambdaq",
 				"match": "\\b-?(?:\\d+\\.\\d*|\\.\\d+|\\d+)(?:[eE][-+]?\\d+)?\\b"
 			}]
 		},
     "keywords": {
 			"patterns": [{
-				"name": "constant.numeric.lambdaq",
+				"name": "keyword.number.lambdaq",
 				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
 			}]
 		},
 		"atcontrols": {
 			"patterns": [{
-				"name": "invalid.atcontrol.lambdaq",
+				"name": "string.lambdaq",
 				"match": "@1|@0|@\\+i|@-i|@\\+|@-"
 			}]
 		},
     "gates": {
 			"patterns": [{
-				"name": "keyword.gate.lambdaq",
+				"name": "string.gate.lambdaq",
 				"match": "\\b[A-Z][A-Z0-9]*\\b"
 			}]
 		},
 		"strings": {
-			"name": "string.quoted.double.lambdaq",
+			"name": "string.lambdaq",
 			"begin": "\"",
 			"end": "\"",
 			"patterns": [
@@ -87,15 +87,15 @@
     "comments": {
       "patterns": [
         {
-            "name": "comment.lambdaq",
+            "name": "constant.numeric.lambdaq",
             "match": "--.*"
         },
         {
-          "name": "comment.lambdaq",
+          "name": "constant.numeric.lambdaq",
           "begin": "{-",
 					"captures": {
 						"0": {
-							"name": "comment.lambdaq"
+							"name": "constant.numeric.lambdaq"
 						}
 					},
 					"end": "-}"
