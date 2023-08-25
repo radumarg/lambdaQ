@@ -24,7 +24,7 @@ execute qubits = let (qAncilla, qAlice, qBob) = qubits in
                    (if bitAlice then gate X qBob else gate ID qBob)
 
 teleport :: Qbit -> Qbit
-teleport q = execute . prepare ((new 0), q, (new 0))
+teleport q = execute . prepare ((new @0), q, (new @0))
 
 -- testing the teleport result --
 main :: !Bit

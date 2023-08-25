@@ -12,7 +12,7 @@ balancedOracle' qubits = q1, q2 <- qubits;
                          gate X q1
 
 deutsch :: Qbit * Qbit -> Qbit -> !Bit
-deutsch oracle = measr (gate H (oracle (gate H (new 0), gate H (new 1))))
+deutsch oracle = measr (gate H (oracle (gate H (new @0), gate H (new @1))))
 
 main :: !Bit
 main = deutsch balancedOracle
