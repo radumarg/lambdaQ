@@ -58,7 +58,7 @@
     "keywords": {
 			"patterns": [{
 				"name": "keyword.number.lambdaq",
-				"match": "\\b(if|then|else|let|in|with|ctrl|gate)\\b"
+				"match": "\\b(if|then|else|let|in|with|ctrl)\\b"
 			}]
 		},
 		"atcontrols": {

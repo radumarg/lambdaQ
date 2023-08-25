@@ -45,7 +45,7 @@ syn match codeFloat '\d[[:digit:]]*\.\d*[eE][\-+]\=\d\+'
 
 syn region codeString start='"' end='"'
 
-syn keyword codeBuiltin if then else let in with ctrl gate
+syn keyword codeBuiltin if then else let in with ctrl
 
 syn keyword codeType Bit Qbit 
 
