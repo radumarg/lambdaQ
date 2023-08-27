@@ -46,7 +46,7 @@
     "typewords": {
 			"patterns": [{
 				"name": "comment.lambdaq",
-				"match": "\\b(Qbit\\s+\\*\\s+|Bit\\s+\\*\\s+|Qbit\\s+\\*\\*\\s+\\d+|Bit\\s+\\*\\*\\s+\\d+|Qbit|Bit|\\(\\))\\b"
+				"match": "\\b(Qbit\\s+\\*\\s+|Bit\\s+\\*\\s+|State\\s+\\*\\s+|Unitary\\s+\\*\\s+|Qbit\\s+\\*\\*\\s+\\d+|Bit\\s+\\*\\*\\s+\\d+|State\\s+\\*\\*\\s+\\d+|Unitary\\s+\\*\\*\\s+\\d+|Qbit|Bit|State|Unitary|\\(\\))\\b"
 			}]
 		},
     "numbers": {

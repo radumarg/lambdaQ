@@ -47,7 +47,7 @@ syn region codeString start='"' end='"'
 
 syn keyword codeBuiltin if then else let in with ctrl
 
-syn keyword codeType Bit Qbit 
+syn keyword codeType Bit Qbit State Unitary
 
 syn match codeType "!"
 syn match codeType "->"
