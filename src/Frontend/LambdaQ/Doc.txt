@@ -23,10 +23,6 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
-
-GateIdent literals are recognized by the regular expression
-`````upper ('_' | digit | letter)*`````
-
 Var literals are recognized by the regular expression
 `````('_' | lower) (["'_"] | digit | letter)*`````
 
@@ -44,20 +40,21 @@ The reserved words used in LambdaQ are the following:
   | ``ROOT_Z`` | ``ROOT_Z_DAG`` | ``RX`` | ``RY``
   | ``RZ`` | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG``
   | ``SQRT_X`` | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG``
-  | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG`` | ``T``
-  | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
-  | ``X`` | ``Y`` | ``Z`` | ``case``
-  | ``ctrl`` | ``else`` | ``gate`` | ``if``
-  | ``in`` | ``let`` | ``new`` | ``of``
+  | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG`` | ``State``
+  | ``T`` | ``T_DAG`` | ``U1`` | ``U2``
+  | ``U3`` | ``Unitary`` | ``X`` | ``Y``
+  | ``Z`` | ``case`` | ``ctrl`` | ``else``
+  | ``if`` | ``in`` | ``let`` | ``of``
   | ``then`` | ``with`` |  |
 
 The symbols used in LambdaQ are the following:
-  | () | ! | ** | *
-  | -> | ( | ) | @0
-  | @1 | @+ | @- | @+i
-  | @-i | , | [ | ]
-  | { | = | } | <-
-  | ; | . | $ | ::
+  | () | ! | ** | +
+  | * | -> | ( | )
+  | @0 | @1 | @+ | @-
+  | @+i | @-i | , | [
+  | ] | { | = | }
+  | <- | ; | . | $
+  | :: |  |  |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -71,11 +68,14 @@ All other symbols are terminals.
   | //Program// | -> | //[FunctionDeclaration]//
   | //Type3// | -> | ``Bit``
   |  |  **|**  | ``Qbit``
+  |  |  **|**  | ``State``
+  |  |  **|**  | ``Unitary``
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Type// ``)``
   | //Type2// | -> | ``!`` //Type3//
+  |  |  **|**  | //Type3// ``**`` //Integer//
   |  |  **|**  | //Type3//
-  | //Type1// | -> | //Type2// ``**`` //Integer//
+  | //Type1// | -> | //Type2// ``+`` //Type1//
   |  |  **|**  | //Type2// ``*`` //Type1//
   |  |  **|**  | //Type2//
   | //Type// | -> | //Type1// ``->`` //Type//
@@ -87,6 +87,7 @@ All other symbols are terminals.
   |  |  **|**  | ``@-``
   |  |  **|**  | ``@+i``
   |  |  **|**  | ``@-i``
+  | //Bit// | -> | //Integer//
   | //Gate// | -> | ``H``
   |  |  **|**  | ``X``
   |  |  **|**  | ``Y``
@@ -120,7 +121,6 @@ All other symbols are terminals.
   |  |  **|**  | ``SWAP_THETA`` //Angle//
   |  |  **|**  | ``ROOT_SWAP`` //Integer//
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
-  |  |  **|**  | //GateIdent//
   | //LetVariable// | -> | //Var//
   | //[LetVariable]// | -> | **eps**
   |  |  **|**  | //LetVariable//
@@ -132,7 +132,11 @@ All other symbols are terminals.
   | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
   | //[BasisState]// | -> | //BasisState//
   |  |  **|**  | //BasisState// ``,`` //[BasisState]//
-  | //Term3// | -> | ``new`` //BasisState//
+  | //ControlBits// | -> | ``[`` //Integer// ``,`` //[Integer]// ``]``
+  | //[Integer]// | -> | //Integer//
+  |  |  **|**  | //Integer// ``,`` //[Integer]//
+  | //Term3// | -> | //BasisState//
+  |  |  **|**  | //Gate//
   |  |  **|**  | //Var//
   |  |  **|**  | //Tuple//
   |  |  **|**  | ``()``
@@ -142,8 +146,8 @@ All other symbols are terminals.
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]// ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //FunctionType// ``.`` //Term//
-  |  |  **|**  | ``gate`` //Gate//
-  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlBasisStates// ``gate`` //Gate//
+  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlBasisStates//
+  |  |  **|**  | ``with`` //Controls// ``ctrl`` //ControlBits//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
   | //Term2// | -> | //Term2// //Term3//

@@ -11,13 +11,16 @@ entrypoints Program;
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
-TypeBit    . Type3  ::= "Bit" ;
-TypeQbit   . Type3  ::= "Qbit" ;
-TypeUnit   . Type3  ::= "()" ;
-TypeNonLin . Type2  ::= "!" Type3 ;
-TypeExp    . Type1  ::= Type2 "**" Integer ;
-TypeTensr  . Type1  ::= Type2 "*" Type1 ;      -- right-associative
-TypeFunc   . Type   ::= Type1 "->" Type ;      -- right-associative
+TypeBit     . Type3  ::= "Bit" ;
+TypeQbit    . Type3  ::= "Qbit" ;
+TypeState   . Type3  ::= "State" ;
+TypeUnitary . Type3  ::= "Unitary" ;
+TypeUnit    . Type3  ::= "()" ;
+TypeNonLin  . Type2  ::= "!" Type3 ;
+TypeExp     . Type2  ::= Type3 "**" Integer ;
+TypeTensr   . Type1  ::= Type2 "+" Type1 ;      -- right-associative
+TypeTensr   . Type1  ::= Type2 "*" Type1 ;      -- right-associative
+TypeFunc    . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
 -- Angle is a fraction of 2π --
@@ -31,8 +34,8 @@ BasisStateMinus  . BasisState ::= "@-" ;
 BasisStatePlusI  . BasisState ::= "@+i" ;
 BasisStateMinusI . BasisState ::= "@-i" ;
 
-
-position token GateIdent (upper (letter | digit | '_')*) ;
+--- Bits ---
+BitValue . Bit ::= Integer;
 
 GateH             . Gate ::= "H" ;                                      -- Hadamard Gate
 GateX             . Gate ::= "X"  ;                                     -- Pauli X Gate
@@ -67,7 +70,6 @@ GateFSwp          . Gate ::= "FSWAP"  ;                                 -- FSwap
 GateSwpTheta      . Gate ::= "SWAP_THETA" Angle ;                       -- Swap theta gate
 GateSwpRt         . Gate ::= "ROOT_SWAP" Integer ;                      -- Root of Swap gate (root is specified as k in 1/2^k)
 GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer  ;                 -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
-GateGeneric       . Gate ::= GateIdent  ;                               -- Generic gate
 
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
@@ -85,24 +87,28 @@ separator nonempty Term "," ;
 CtrlStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
 separator nonempty BasisState "," ;
 
+CtrlBits . ControlBits ::= "[" Integer "," [Integer] "]" ;
+separator nonempty Integer "," ;
+
 -- Lambda token --
 token Lambda '\\' ;
 
 -- Terms --
-TermQubit     . Term3 ::= "new" BasisState ;
-TermVar       . Term3 ::= Var ;
-TermTupl      . Term3 ::= Tuple ;
-TermUnit      . Term3 ::= "()" ;
-TermIfElse    . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLet       . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TermLetSugar  . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
-TermCase      . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
-TermLambda    . Term1 ::= Lambda FunctionType "." Term ;
-TermGate      . Term1 ::= "gate" Gate ; -- TODO: make this right associative
-TermCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBasisStates "gate" Gate ;
-TermApp       . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TermDollar    . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
-TermCompose   . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermBasisState       . Term3 ::= BasisState ;
+TermGate             . Term3 ::= Gate ;
+TermVar              . Term3 ::= Var ;
+TermTupl             . Term3 ::= Tuple ;
+TermUnit             . Term3 ::= "()" ;
+TermIfElse           . Term1 ::= "if" Term "then" Term "else" Term ;
+TermLet              . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TermLetSugar         . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
+TermCase             . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
+TermLambda           . Term1 ::= Lambda FunctionType "." Term ;
+TermQuantumCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBasisStates ;
+TermClassicCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBits ;
+TermApp              . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 coercions Term 3 ;
 
 -- Case Expressions --
@@ -119,7 +125,7 @@ _      . FunctionDefinition ::= FunctionDefinition ";" ;   -- Semantic dummies: 
 
 -- Type Definition --
 FunType . FunctionType  ::= Var "::" Type ;
-_       . FunctionType  ::=  FunctionType ";" ;            -- Semantic dummies: parser accepts extra semicolons
+_       . FunctionType  ::= FunctionType ";" ;            -- Semantic dummies: parser accepts extra semicolons
 
 -- Function Declaration --
 FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;

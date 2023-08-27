@@ -20,6 +20,8 @@ data Program = ProgDef [FunctionDeclaration]
 data Type
     = TypeBit
     | TypeQbit
+    | TypeState
+    | TypeUnitary
     | TypeUnit
     | TypeNonLin Type
     | TypeExp Type Integer
@@ -37,6 +39,9 @@ data BasisState
     | BasisStateMinus
     | BasisStatePlusI
     | BasisStateMinusI
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data Bit = BitValue Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
@@ -73,7 +78,6 @@ data Gate
     | GateSwpTheta Angle
     | GateSwpRt Integer
     | GateSwpRtDag Integer
-    | GateGeneric GateIdent
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data LetVariable = LetVar Var
@@ -88,8 +92,12 @@ data Controls = Ctrls Term [Term]
 data ControlBasisStates = CtrlStates BasisState [BasisState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+data ControlBits = CtrlBits Integer [Integer]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data Term
-    = TermQubit BasisState
+    = TermBasisState BasisState
+    | TermGate Gate
     | TermVar Var
     | TermTupl Tuple
     | TermUnit
@@ -98,8 +106,8 @@ data Term
     | TermLetSugar LetVariable [LetVariable] Term Term
     | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda FunctionType Term
-    | TermGate Gate
-    | TermCtrlGate Controls ControlBasisStates Gate
+    | TermQuantumCtrlGate Controls ControlBasisStates
+    | TermClassicCtrlGate Controls ControlBits
     | TermApp Term Term
     | TermDollar Term Term
     | TermCompose Term Term
@@ -118,9 +126,6 @@ data FunctionType = FunType Var Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-newtype GateIdent = GateIdent ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Var = Var ((C.Int, C.Int), String)
@@ -143,9 +148,6 @@ pattern BNFC'Position line col = C.Just (line, col)
 
 class HasPosition a where
   hasPosition :: a -> BNFC'Position
-
-instance HasPosition GateIdent where
-  hasPosition (GateIdent (p, _)) = C.Just p
 
 instance HasPosition Var where
   hasPosition (Var (p, _)) = C.Just p

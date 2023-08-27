@@ -15,10 +15,6 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transGateIdent :: Frontend.LambdaQ.Abs.GateIdent -> Result
-transGateIdent x = case x of
-  Frontend.LambdaQ.Abs.GateIdent string -> failure x
-
 transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
   Frontend.LambdaQ.Abs.Var string -> failure x
@@ -35,6 +31,8 @@ transType :: Frontend.LambdaQ.Abs.Type -> Result
 transType x = case x of
   Frontend.LambdaQ.Abs.TypeBit -> failure x
   Frontend.LambdaQ.Abs.TypeQbit -> failure x
+  Frontend.LambdaQ.Abs.TypeState -> failure x
+  Frontend.LambdaQ.Abs.TypeUnitary -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
   Frontend.LambdaQ.Abs.TypeNonLin type_ -> failure x
   Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
@@ -53,6 +51,10 @@ transBasisState x = case x of
   Frontend.LambdaQ.Abs.BasisStateMinus -> failure x
   Frontend.LambdaQ.Abs.BasisStatePlusI -> failure x
   Frontend.LambdaQ.Abs.BasisStateMinusI -> failure x
+
+transBit :: Frontend.LambdaQ.Abs.Bit -> Result
+transBit x = case x of
+  Frontend.LambdaQ.Abs.BitValue integer -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
@@ -89,7 +91,6 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateSwpTheta angle -> failure x
   Frontend.LambdaQ.Abs.GateSwpRt integer -> failure x
   Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateGeneric gateident -> failure x
 
 transLetVariable :: Frontend.LambdaQ.Abs.LetVariable -> Result
 transLetVariable x = case x of
@@ -107,9 +108,14 @@ transControlBasisStates :: Frontend.LambdaQ.Abs.ControlBasisStates -> Result
 transControlBasisStates x = case x of
   Frontend.LambdaQ.Abs.CtrlStates basisstate basisstates -> failure x
 
+transControlBits :: Frontend.LambdaQ.Abs.ControlBits -> Result
+transControlBits x = case x of
+  Frontend.LambdaQ.Abs.CtrlBits integer integers -> failure x
+
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
-  Frontend.LambdaQ.Abs.TermQubit basisstate -> failure x
+  Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
+  Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermVar var -> failure x
   Frontend.LambdaQ.Abs.TermTupl tuple -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
@@ -118,8 +124,8 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermLetSugar letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> failure x
-  Frontend.LambdaQ.Abs.TermGate gate -> failure x
-  Frontend.LambdaQ.Abs.TermCtrlGate controls controlbasisstates gate -> failure x
+  Frontend.LambdaQ.Abs.TermQuantumCtrlGate controls controlbasisstates -> failure x
+  Frontend.LambdaQ.Abs.TermClassicCtrlGate controls controlbits -> failure x
   Frontend.LambdaQ.Abs.TermApp term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x

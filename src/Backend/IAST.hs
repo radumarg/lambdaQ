@@ -18,20 +18,22 @@ data Type =
    TypeNonLin Type   |
    Type :->: Type    |
    Type :*: Type     |
+   Type :+: Type     |
    Type :**: Integer 
   deriving (Eq, Ord, Show, Read)
 
 infixr 1 :->:
-infixr 2 :*:
-infixr 3 :**:
+infixr 2 :+:
+infixr 3 :*:
+infixr 4 :**:
 
-data ControlState =
-    CtrlStateZero   |
-    CtrlStateOne    |
-    CtrlStatePlus   |
-    CtrlStateMinus  |
-    CtrlStatePlusI  |
-    CtrlStateMinusI
+data BasisState =
+    BasisStateZero   |
+    BasisStateOne    |
+    BasisStatePlus   |
+    BasisStateMinus  |
+    BasisStatePlusI  |
+    BasisStateMinusI
   deriving (Eq, Ord, Show, Read)
 
 newtype Angle = Angle Double
@@ -42,10 +44,6 @@ data BitValue = BitZero | BitOne
 
 -- Integer arguments correspond to line and column position in code
 newtype Bit = Bit ((Int, Int), BitValue)
-  deriving (Eq, Ord, Show, Read)
-
--- Integer arguments correspond to line and column position in code
-newtype GateIdent = GateIdent ((Int, Int), String)
   deriving (Eq, Ord, Show, Read)
 
 data Gate =
@@ -82,15 +80,14 @@ data Gate =
     GateFSwp                   |
     GateSwpTheta Angle         |
     GateSwpRt Integer          |
-    GateSwpRtDag Integer       |
-    GateGeneric GateIdent 
+    GateSwpRtDag Integer
   deriving (Eq, Ord, Show, Read)
 
 data Term =
     TermFunction String                      |
     TermBit Bit                              |
     TermGate Gate                            |
-    TermCtrlGate [Term] [ControlState] Gate  |
+    TermCtrlGate [Term] [BasisState] Gate  |
     TermTuple Term Term                      |
     TermApp Term Term                        |
     TermDollar Term Term                     |
@@ -122,24 +119,25 @@ reverseMapType TypeQbit = GeneratedAbSyntax.TypeQbit
 reverseMapType TypeUnit = GeneratedAbSyntax.TypeUnit
 reverseMapType (TypeNonLin t) = GeneratedAbSyntax.TypeNonLin (reverseMapType t)
 reverseMapType (l :->: r) = GeneratedAbSyntax.TypeFunc (reverseMapType l) (reverseMapType r)
+reverseMapType (l :+: r) = GeneratedAbSyntax.TypeTensr (reverseMapType l) (reverseMapType r)
 reverseMapType (l :*: r) = GeneratedAbSyntax.TypeTensr (reverseMapType l) (reverseMapType r)
 reverseMapType (t :**: i) = GeneratedAbSyntax.TypeExp (reverseMapType t) i
 
-mapControlState :: GeneratedAbSyntax.ControlState -> ControlState
-mapControlState GeneratedAbSyntax.CtrlStateZero = CtrlStateZero
-mapControlState GeneratedAbSyntax.CtrlStateOne = CtrlStateOne
-mapControlState GeneratedAbSyntax.CtrlStatePlus = CtrlStatePlus
-mapControlState GeneratedAbSyntax.CtrlStateMinus = CtrlStateMinus
-mapControlState GeneratedAbSyntax.CtrlStatePlusI = CtrlStatePlusI
-mapControlState GeneratedAbSyntax.CtrlStateMinusI = CtrlStateMinusI
+mapBasisState :: GeneratedAbSyntax.BasisState -> BasisState
+mapBasisState GeneratedAbSyntax.BasisStateZero = BasisStateZero
+mapBasisState GeneratedAbSyntax.BasisStateOne = BasisStateOne
+mapBasisState GeneratedAbSyntax.BasisStatePlus = BasisStatePlus
+mapBasisState GeneratedAbSyntax.BasisStateMinus = BasisStateMinus
+mapBasisState GeneratedAbSyntax.BasisStatePlusI = BasisStatePlusI
+mapBasisState GeneratedAbSyntax.BasisStateMinusI = BasisStateMinusI
 
-reverseMapControlState :: ControlState -> GeneratedAbSyntax.ControlState
-reverseMapControlState CtrlStateZero = GeneratedAbSyntax.CtrlStateZero
-reverseMapControlState CtrlStateOne = GeneratedAbSyntax.CtrlStateOne
-reverseMapControlState CtrlStatePlus = GeneratedAbSyntax.CtrlStatePlus
-reverseMapControlState CtrlStateMinus = GeneratedAbSyntax.CtrlStateMinus
-reverseMapControlState CtrlStatePlusI = GeneratedAbSyntax.CtrlStatePlusI
-reverseMapControlState CtrlStateMinusI = GeneratedAbSyntax.CtrlStateMinusI
+reverseMapBasisState :: BasisState -> GeneratedAbSyntax.BasisState
+reverseMapBasisState BasisStateZero = GeneratedAbSyntax.BasisStateZero
+reverseMapBasisState BasisStateOne = GeneratedAbSyntax.BasisStateOne
+reverseMapBasisState BasisStatePlus = GeneratedAbSyntax.BasisStatePlus
+reverseMapBasisState BasisStateMinus = GeneratedAbSyntax.BasisStateMinus
+reverseMapBasisState BasisStatePlusI = GeneratedAbSyntax.BasisStatePlusI
+reverseMapBasisState BasisStateMinusI = GeneratedAbSyntax.BasisStateMinusI
 
 mapAngle :: GeneratedAbSyntax.Angle -> Angle
 mapAngle (GeneratedAbSyntax.Angle value) = Angle value
@@ -191,7 +189,6 @@ mapGate g = case g of
     GeneratedAbSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
     GeneratedAbSyntax.GateSwpRt rt -> GateSwpRt rt 
     GeneratedAbSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
-    GeneratedAbSyntax.GateGeneric (GeneratedAbSyntax.GateIdent ((l,c ), name)) -> GateGeneric (GateIdent ((l,c ), name))
 
 reverseMapGate :: Gate -> GeneratedAbSyntax.Gate
 reverseMapGate g = case g of 
@@ -228,7 +225,6 @@ reverseMapGate g = case g of
     GateSwpTheta angle -> GeneratedAbSyntax.GateSwpTheta (reverseMapAngle angle)
     GateSwpRt rt -> GeneratedAbSyntax.GateSwpRt rt
     GateSwpRtDag rt -> GeneratedAbSyntax.GateSwpRtDag rt
-    GateGeneric (GateIdent ((l,c ), name)) -> GeneratedAbSyntax.GateGeneric (GeneratedAbSyntax.GateIdent ((l,c ), name))
 
 mapFunction :: GeneratedAbSyntax.FunctionDeclaration -> Function
 mapFunction (GeneratedAbSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term

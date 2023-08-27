@@ -138,8 +138,6 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print Frontend.LambdaQ.Abs.GateIdent where
-  prt _ (Frontend.LambdaQ.Abs.GateIdent (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
@@ -152,10 +150,12 @@ instance Print Frontend.LambdaQ.Abs.Type where
   prt i = \case
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 3 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 3 (concatD [doc (showString "Qbit")])
+    Frontend.LambdaQ.Abs.TypeState -> prPrec i 3 (concatD [doc (showString "State")])
+    Frontend.LambdaQ.Abs.TypeUnitary -> prPrec i 3 (concatD [doc (showString "Unitary")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 3 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TypeNonLin type_ -> prPrec i 2 (concatD [doc (showString "!"), prt 3 type_])
-    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 1 (concatD [prt 2 type_, doc (showString "**"), prt 0 n])
-    Frontend.LambdaQ.Abs.TypeTensr type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "*"), prt 1 type_2])
+    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 2 (concatD [prt 3 type_, doc (showString "**"), prt 0 n])
+    Frontend.LambdaQ.Abs.TypeTensr type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "+"), prt 1 type_2])
     Frontend.LambdaQ.Abs.TypeFunc type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
 
 instance Print Frontend.LambdaQ.Abs.Angle where
@@ -170,6 +170,10 @@ instance Print Frontend.LambdaQ.Abs.BasisState where
     Frontend.LambdaQ.Abs.BasisStateMinus -> prPrec i 0 (concatD [doc (showString "@-")])
     Frontend.LambdaQ.Abs.BasisStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
     Frontend.LambdaQ.Abs.BasisStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
+
+instance Print Frontend.LambdaQ.Abs.Bit where
+  prt i = \case
+    Frontend.LambdaQ.Abs.BitValue n -> prPrec i 0 (concatD [prt 0 n])
 
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case
@@ -206,7 +210,6 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateSwpTheta angle -> prPrec i 0 (concatD [doc (showString "SWAP_THETA"), prt 0 angle])
     Frontend.LambdaQ.Abs.GateSwpRt n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP"), prt 0 n])
     Frontend.LambdaQ.Abs.GateSwpRtDag n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP_DAG"), prt 0 n])
-    Frontend.LambdaQ.Abs.GateGeneric gateident -> prPrec i 0 (concatD [prt 0 gateident])
 
 instance Print Frontend.LambdaQ.Abs.LetVariable where
   prt i = \case
@@ -239,9 +242,19 @@ instance Print [Frontend.LambdaQ.Abs.BasisState] where
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
+instance Print Frontend.LambdaQ.Abs.ControlBits where
+  prt i = \case
+    Frontend.LambdaQ.Abs.CtrlBits n ns -> prPrec i 0 (concatD [doc (showString "["), prt 0 n, doc (showString ","), prt 0 ns, doc (showString "]")])
+
+instance Print [Integer] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+
 instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
-    Frontend.LambdaQ.Abs.TermQubit basisstate -> prPrec i 3 (concatD [doc (showString "new"), prt 0 basisstate])
+    Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
+    Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [prt 0 gate])
     Frontend.LambdaQ.Abs.TermVar var -> prPrec i 3 (concatD [prt 0 var])
     Frontend.LambdaQ.Abs.TermTupl tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
@@ -250,8 +263,8 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermLetSugar letvariable letvariables term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 functiontype, doc (showString "."), prt 0 term])
-    Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 1 (concatD [doc (showString "gate"), prt 0 gate])
-    Frontend.LambdaQ.Abs.TermCtrlGate controls controlbasisstates gate -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlbasisstates, doc (showString "gate"), prt 0 gate])
+    Frontend.LambdaQ.Abs.TermQuantumCtrlGate controls controlbasisstates -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlbasisstates])
+    Frontend.LambdaQ.Abs.TermClassicCtrlGate controls controlbits -> prPrec i 1 (concatD [doc (showString "with"), prt 0 controls, doc (showString "ctrl"), prt 0 controlbits])
     Frontend.LambdaQ.Abs.TermApp term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
