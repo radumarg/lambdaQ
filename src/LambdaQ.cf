@@ -18,7 +18,7 @@ TypeUnitary . Type3  ::= "Unitary" ;
 TypeUnit    . Type3  ::= "()" ;
 TypeNonLin  . Type2  ::= "!" Type3 ;
 TypeExp     . Type2  ::= Type3 "**" Integer ;
-TypeTensr   . Type1  ::= Type2 "+" Type1 ;      -- right-associative
+TypeSum     . Type1  ::= Type2 "+" Type1 ;      -- right-associative
 TypeTensr   . Type1  ::= Type2 "*" Type1 ;      -- right-associative
 TypeFunc    . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
@@ -74,42 +74,49 @@ GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer  ;                 -- Conju
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 
-LetVar . LetVariable ::= Var ;
-separator LetVariable "," ;
-
--- Declaring Tuples --
-Tup . Tuple ::= "(" Term "," [Term] ")" ;
--- Declaring Controls --
-Ctrls . Controls ::= "[" Term "," [Term] "]" ;
-separator nonempty Term "," ;
-
 -- Declaring Control states --
-CtrlStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
+CtrlBasisState . ControlBasisState ::= "[" BasisState  "]" ;
+CtrlBasisStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
 separator nonempty BasisState "," ;
 
+CtrlBit . ControlBit   ::= "[" Integer "]" ;
 CtrlBits . ControlBits ::= "[" Integer "," [Integer] "]" ;
 separator nonempty Integer "," ;
 
 -- Lambda token --
 token Lambda '\\' ;
 
+-- Declaring Tuples --
+Tupl . Tuple ::= "(" Term "," [Term] ")" ;
+-- Declaring Controls --
+CtrlTerm . ControlTerm ::= "[" Term "]" ;
+CtrlTerms . ControlTerms ::= "[" Term "," [Term] "]" ;
+separator nonempty Term "," ;
+
 -- Terms --
-TermBasisState       . Term3 ::= BasisState ;
-TermGate             . Term3 ::= Gate ;
-TermVar              . Term3 ::= Var ;
-TermTupl             . Term3 ::= Tuple ;
-TermUnit             . Term3 ::= "()" ;
 TermIfElse           . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLet              . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TermLetSugar         . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
-TermCase             . Term1 ::= "case" Term "of" CaseExpression [ CaseExpression ] ;
+TermLetSingle        . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
+TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
+TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
+TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
 TermLambda           . Term1 ::= Lambda FunctionType "." Term ;
-TermQuantumCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBasisStates ;
-TermClassicCtrlGate  . Term1 ::= "with" Controls "ctrl" ControlBits ;
-TermApp              . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
+TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
+TermClassicCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
+TermClassicCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
+TermApply            . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermVariable         . Term3 ::= Var ;
+TermBasisState       . Term3 ::= BasisState ;
+TermGate             . Term3 ::= Gate ;
+TermTuple            . Term3 ::= Tuple ;
+TermUnit             . Term3 ::= "()" ;
 coercions Term 3 ;
+
+LetVar . LetVariable ::= Var ;
+separator LetVariable "," ;
 
 -- Case Expressions --
 CaseExp . CaseExpression ::= Term "->" Var ;
@@ -125,7 +132,7 @@ _      . FunctionDefinition ::= FunctionDefinition ";" ;   -- Semantic dummies: 
 
 -- Type Definition --
 FunType . FunctionType  ::= Var "::" Type ;
-_       . FunctionType  ::= FunctionType ";" ;            -- Semantic dummies: parser accepts extra semicolons
+_       . FunctionType  ::= FunctionType ";" ;             -- Semantic dummies: parser accepts extra semicolons
 
 -- Function Declaration --
 FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;
