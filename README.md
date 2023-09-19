@@ -47,7 +47,7 @@ In the future, with the introduction of error-corrected quantum computers, there
 - mid-circuit measurements should allow a subset of qubits in a quantum device to be measured in order to steer the execution of a quantum program.
 - perform relatively simple, fast, classical computation routines on classical registers concurrent with executing quantum gates on QPU.
 
-### What are the high-level facilities for working with circuits?
+### What are some high-level facilities for working with circuits?
 - automatically handle the raising to a power, exponentiation, or applying controls for any quantum function representing a circuit.
 - automatically handle the inverse (adjoint) of a circuit, type system should complain if we try to take the inverse of a non unitary operation like a circuit containing measurements.
 - support for parametrized circuit families.
