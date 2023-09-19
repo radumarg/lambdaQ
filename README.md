@@ -59,7 +59,7 @@ In the future, with the introduction of error-corrected quantum computers, there
 - transpile and optimize quantum circuits.
 - circuits can be constructed and modified dynamically based on mid-circuit measurement results.
 
-### What are unphysical operations?
+### What is meant by unphysical operations?
 - prevent the user from attempting to make a copy of a variable representing quantum data, an operation which is forbidden by the no-cloning theorem. Usually, this is implemented in a programming language using linear types.
 - dependent types are usually used to add to a programming language types representing families of circuits that are indexed by classical parameters.
 - a different use of dependent types is using existential dependent quantum data types to hide garbage qubits while guaranteeing that they will be uncomputed.
