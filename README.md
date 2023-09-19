@@ -32,7 +32,7 @@ In the future, with the introduction of error-corrected quantum computers, there
 ### A basic example of a higher-level quantum program:
 - take some given algebraic function and implement it as a boolean circuit.
 - translate the boolean circuit to an oracle implemented as a reversible quantum circuit.
-- apply the Groover search algorithm to the output of this oracle.
+- apply the Grover search algorithm to the output of this oracle.
 - copy the result to a scratch register (this is possible because?).
 - uncompute in order to free the ancilla qubits needed to implement the oracle for further reuse.
 
