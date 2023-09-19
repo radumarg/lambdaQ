@@ -87,7 +87,7 @@ LambdaQ will be compiled to different intermediate representations of quantum pr
 - compatibility with multiple quantum hardware providers.
 
 ### Taking a peek beyond
-LambdaQ is a functional quantum programming language. What is meant by this is that it runs by executing a version of lambda calculus, usually referred to as quantum lambda calculus. It turns out that the set of lambda terms that describe the computation can be given a vector space structure. This means that a quantum program can have as input not only an algorithm but a superposition of algorithms. This falls under a new paradigm: "quantum data and quantum control" which should be contrasted with the "quantum data and classical control" paradigm of the QRAM model. It is not yet clear how to implement this in the existing quantum computers, but at least at a mathematical level, it makes sense.
+LambdaQ is a functional quantum programming language. What is meant by this is that it runs by executing a version of lambda calculus, usually referred to as quantum lambda calculus. It turns out that the set of lambda terms that describe the computation can be given a vector space structure. This means that a quantum program can have as input not only an algorithm but a superposition of algorithms. This falls under a new paradigm: "quantum data and quantum control" which should be contrasted with the "quantum data and classical control" paradigm of the QRAM model. It is not yet clear how to implement this on the existing quantum computers, but at least at a mathematical level, it makes sense.
  
  
  
