@@ -3,7 +3,7 @@
 
 ##  lambdaQ - a functional quantum programming language
   
-A higher-order, functional quantum programming language whose starting point is the quantum lambda calculus created by Peter Selinger and Benoit Valiron: [Quantum Lambda Calculus](https://www.mscs.dal.ca/~selinger/papers/qlambdabook.pdf). This is an ongoing project, very much in the early stages of implementation. 
+A higher-order, functional quantum programming language whose starting point is the quantum lambda calculus created by Peter Selinger and Benoit Valiron: [Quantum Lambda Calculus](https://www.mscs.dal.ca/~selinger/papers/qlambdabook.pdf). This is an ongoing project, very much in the early stages of implementation. The purpose of this document is to answer some general questions I had when I started working on this project. More details regarding the plans that are currently being made for development, can be found here: [doc/development-plan.md](https://github.com/radumarg/lambdaQ/blob/main/doc/development-plan.md).
 
 
 ### Why a new programming language?
