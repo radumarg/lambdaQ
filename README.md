@@ -9,7 +9,7 @@ A higher-order, functional quantum programming language whose starting point is 
 ### Why a new programming language?
 In the future, with the introduction of error-corrected quantum computers, there will be a need for expressive, high-level quantum programming languages which can then be used to write more readable and less error-prone quantum code. By a high-level quantum language, I understand a language where the code is written preferably, but not exclusively, at an abstraction level above the simple quantum circuit description types of languages that we have all become accustomed to in the NISQ era. This may be easier said than done, however, here is a set of features that such a language might support:
 
-- start with implementing the QRAM model of quantum computation, namely the "quantum data and classical control" paradigm.
+- start with implementing the [QRAM](https://www.osti.gov/biblio/366453) model of quantum computation, namely the "quantum data and classical control" paradigm.
 - the type system and implicitly the compiler will prevent a programmer from attempting to make unphysical operations.
 - add quantum data types with nontrivial semantics using linear and dependent types.
 - predefined quantum algorithms primitives, for example phase kick-back and amplitude amplification. 
