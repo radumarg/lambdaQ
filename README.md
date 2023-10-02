@@ -11,7 +11,7 @@ In the future, with the introduction of error-corrected quantum computers, there
 - start with implementing the [QRAM](https://www.osti.gov/biblio/366453) model of quantum computation, namely the "quantum data and classical control" paradigm.
 - add quantum data types with nontrivial semantics using linear and dependent types.
 - the type system and implicitly the compiler will prevent a programmer from attempting to make unphysical operations.
-- predefined quantum algorithms primitives, for example phase kick-back and amplitude amplification. 
+- predefined quantum algorithms primitives, for example, phase kick-back, amplitude amplification or quantum Fourier transform. 
 - non-unitary operations like teleportation as a primitive.
 - high-level facilities for constructing and handling circuits.
 - parametrized circuits in the form of compiled circuits whose input parameters can be specified at runtime.
