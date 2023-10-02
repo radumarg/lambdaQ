@@ -39,13 +39,6 @@ data BasisState =
 newtype Angle = Angle Double
   deriving (Eq, Ord, Show, Read)
 
-data BitValue = BitZero | BitOne
-  deriving (Eq, Ord, Show, Read)
-
--- Integer arguments correspond to line and column position in code
-newtype Bit = Bit ((Int, Int), BitValue)
-  deriving (Eq, Ord, Show, Read)
-
 data Gate =
     GateH                      |
     GateX                      |
@@ -85,9 +78,8 @@ data Gate =
 
 data Term =
     TermFunction String                      |
-    TermBit Bit                              |
     TermGate Gate                            |
-    TermCtrlGate [Term] [BasisState] Gate  |
+    TermCtrlGate [Term] [BasisState] Gate    |
     TermTuple Term Term                      |
     TermApp Term Term                        |
     TermDollar Term Term                     |
@@ -144,15 +136,6 @@ mapAngle (GeneratedAbSyntax.Angle value) = Angle value
 
 reverseMapAngle :: Angle -> GeneratedAbSyntax.Angle
 reverseMapAngle (Angle value) = GeneratedAbSyntax.Angle value
-
-mapBit :: GeneratedAbSyntax.Bit -> Bit
-mapBit (GeneratedAbSyntax.Bit ((l, c), "0")) = Bit ((l, c), BitZero) 
-mapBit (GeneratedAbSyntax.Bit ((l, c), "1")) = Bit ((l, c), BitOne) 
-mapBit (GeneratedAbSyntax.Bit ((l, c), s)) = errorWithoutStackTrace $ "Unsupported bit value " ++ s ++ " at line: " ++ show l ++ " and column: " ++ show c
-
-reverseMapBit :: Bit -> GeneratedAbSyntax.Bit
-reverseMapBit (Bit ((l, c), BitZero)) = GeneratedAbSyntax.Bit ((l, c), "0")
-reverseMapBit (Bit ((l, c), BitOne)) = GeneratedAbSyntax.Bit ((l, c), "1")
 
 mapGate :: GeneratedAbSyntax.Gate -> Gate
 mapGate g = case g of 
@@ -256,17 +239,17 @@ reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbSyntax
 type Env = Map.Map String Integer
 
 mapTerm :: Env -> GeneratedAbSyntax.Term -> Term
-mapTerm env (GeneratedAbSyntax.TermApp l r) = TermApp (mapTerm env l) (mapTerm env r) 
-mapTerm _ (GeneratedAbSyntax.TermVar (GeneratedAbSyntax.Var ((l, c), "new"))) = TermNew (l, c)
-mapTerm _ (GeneratedAbSyntax.TermVar (GeneratedAbSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
+mapTerm env (GeneratedAbSyntax.TermApply l r) = TermApp (mapTerm env l) (mapTerm env r) 
+mapTerm _ (GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "new"))) = TermNew (l, c)
+mapTerm _ (GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
 mapTerm env (GeneratedAbSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
-mapTerm _ (GeneratedAbSyntax.TermBit b) = TermBit (mapBit b)
+
 
 reverseMapTerm :: Env -> Term -> GeneratedAbSyntax.Term
-reverseMapTerm env (TermApp l r) = GeneratedAbSyntax.TermApp (reverseMapTerm env l) (reverseMapTerm env r)
-reverseMapTerm _ (TermNew (l, c)) = GeneratedAbSyntax.TermVar (GeneratedAbSyntax.Var ((l, c), "new")) 
-reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbSyntax.TermVar (GeneratedAbSyntax.Var ((l, c), "measr"))
+reverseMapTerm env (TermApp l r) = GeneratedAbSyntax.TermApply (reverseMapTerm env l) (reverseMapTerm env r)
+reverseMapTerm _ (TermNew (l, c)) = GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "new")) 
+reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "measr"))
 reverseMapTerm env (TermDollar l r) = GeneratedAbSyntax.TermDollar (reverseMapTerm env l) (reverseMapTerm env r)
 reverseMapTerm env (TermIfElse cond t f) = GeneratedAbSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
 
