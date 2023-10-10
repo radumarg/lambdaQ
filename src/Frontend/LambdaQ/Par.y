@@ -128,19 +128,19 @@ Type3
 
 Type2 :: { Frontend.LambdaQ.Abs.Type }
 Type2
-  : '!' Type3 { Frontend.LambdaQ.Abs.TypeNonLin $2 }
+  : '!' Type3 { Frontend.LambdaQ.Abs.TypeNonLinear $2 }
   | Type3 '**' Integer { Frontend.LambdaQ.Abs.TypeExp $1 $3 }
   | Type3 { $1 }
 
 Type1 :: { Frontend.LambdaQ.Abs.Type }
 Type1
   : Type2 '+' Type1 { Frontend.LambdaQ.Abs.TypeSum $1 $3 }
-  | Type2 '*' Type1 { Frontend.LambdaQ.Abs.TypeTensr $1 $3 }
+  | Type2 '*' Type1 { Frontend.LambdaQ.Abs.TypeTensorProd $1 $3 }
   | Type2 { $1 }
 
 Type :: { Frontend.LambdaQ.Abs.Type }
 Type
-  : Type1 '->' Type { Frontend.LambdaQ.Abs.TypeFunc $1 $3 }
+  : Type1 '->' Type { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
   | Type1 { $1 }
 
 Angle :: { Frontend.LambdaQ.Abs.Angle }
@@ -240,7 +240,7 @@ Term1
   | LetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
   | LetVariable ',' ListLetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
-  | Lambda FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $4 }
+  | Lambda Var FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
 

@@ -23,11 +23,11 @@ data Type
     | TypeState
     | TypeUnitary
     | TypeUnit
-    | TypeNonLin Type
+    | TypeNonLinear Type
     | TypeExp Type Integer
     | TypeSum Type Type
-    | TypeTensr Type Type
-    | TypeFunc Type Type
+    | TypeTensorProd Type Type
+    | TypeFunction Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Angle = Angle Double
@@ -109,7 +109,7 @@ data Term
     | TermLetSugarSingle LetVariable Term Term
     | TermLetSugarMultiple LetVariable [LetVariable] Term Term
     | TermCase Term CaseExpression [CaseExpression]
-    | TermLambda Lambda FunctionType Term
+    | TermLambda Lambda Var FunctionType Term
     | TermQuantumCtrlGate ControlTerm ControlBasisState
     | TermQuantumCtrlsGate ControlTerms ControlBasisStates
     | TermClassicCtrlGate ControlTerm ControlBit

@@ -34,11 +34,11 @@ transType x = case x of
   Frontend.LambdaQ.Abs.TypeState -> failure x
   Frontend.LambdaQ.Abs.TypeUnitary -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
-  Frontend.LambdaQ.Abs.TypeNonLin type_ -> failure x
+  Frontend.LambdaQ.Abs.TypeNonLinear type_ -> failure x
   Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
   Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> failure x
-  Frontend.LambdaQ.Abs.TypeTensr type_1 type_2 -> failure x
-  Frontend.LambdaQ.Abs.TypeFunc type_1 type_2 -> failure x
+  Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> failure x
+  Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> failure x
 
 transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
@@ -129,7 +129,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermLetSugarSingle letvariable term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetSugarMultiple letvariable letvariables term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
-  Frontend.LambdaQ.Abs.TermLambda lambda functiontype term -> failure x
+  Frontend.LambdaQ.Abs.TermLambda lambda var functiontype term -> failure x
   Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
   Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> failure x
   Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x

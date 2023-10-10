@@ -7,14 +7,16 @@ module Backend.TypeChecker where
 
 import Backend.ASTConverter (parse)
 import Backend.IAST (Program, Term, Type)
+import Control.Monad.Reader ()
+import Control.Monad.State ()
 import Data.Map (Map)
 import Data.Set (Set)
 
-typecheckProgram :: Program -> Either TypeError ()
-typecheckProgram program = undefined
-
 typecheckString :: String -> Either TypeError ()
 typecheckString = typecheckProgram . parse
+
+typecheckProgram :: Program -> Either TypeError ()
+typecheckProgram program = undefined
 
 data TypeErrorInstance =
     NotAFunction Type             |

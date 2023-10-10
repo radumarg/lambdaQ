@@ -11,16 +11,16 @@ entrypoints Program;
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
-TypeBit     . Type3  ::= "Bit" ;
-TypeQbit    . Type3  ::= "Qbit" ;
-TypeState   . Type3  ::= "State" ;
-TypeUnitary . Type3  ::= "Unitary" ;
-TypeUnit    . Type3  ::= "()" ;
-TypeNonLin  . Type2  ::= "!" Type3 ;
-TypeExp     . Type2  ::= Type3 "**" Integer ;
-TypeSum     . Type1  ::= Type2 "+" Type1 ;      -- right-associative
-TypeTensr   . Type1  ::= Type2 "*" Type1 ;      -- right-associative
-TypeFunc    . Type   ::= Type1 "->" Type ;      -- right-associative
+TypeBit        . Type3  ::= "Bit" ;
+TypeQbit       . Type3  ::= "Qbit" ;
+TypeState      . Type3  ::= "State" ;
+TypeUnitary    . Type3  ::= "Unitary" ;
+TypeUnit       . Type3  ::= "()" ;
+TypeNonLinear  . Type2  ::= "!" Type3 ;
+TypeExp        . Type2  ::= Type3 "**" Integer ;
+TypeSum        . Type1  ::= Type2 "+" Type1 ;      -- right-associative
+TypeTensorProd . Type1  ::= Type2 "*" Type1 ;      -- right-associative
+TypeFunction   . Type   ::= Type1 "->" Type ;      -- right-associative
 coercions Type 3 ;
 
 -- Angle is a fraction of 2π --
@@ -100,7 +100,7 @@ TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")"
 TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
 TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
 TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
-TermLambda           . Term1 ::= Lambda FunctionType "." Term ;
+TermLambda           . Term1 ::= Lambda Var FunctionType "." Term ;
 TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
 TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
 TermClassicCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;

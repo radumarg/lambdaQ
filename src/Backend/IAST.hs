@@ -4,21 +4,23 @@
 -- checker and the code generator:
 --   *  functions to be be converted to lambda abstractions
 --   *  BNFC generated AST terms to be converted into an intermediate abstract syntax tree terms 
---   *  introduce De Bruijn indices for bound variables
+--   *  introduce De Bruijn indices for bound variables in lambda expressions
 
 module Backend.IAST where
 
-import qualified Frontend.LambdaQ.Abs as GeneratedAbSyntax
+import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 import qualified Data.Map as Map
 
 data Type = 
-   TypeBit           |
-   TypeQbit          |
-   TypeUnit          |
-   TypeNonLin Type   |
-   Type :->: Type    |
-   Type :*: Type     |
-   Type :+: Type     |
+   TypeBit             |
+   TypeQbit            |
+   TypeState           |
+   TypeUnitary         |
+   TypeNonLinear Type  |
+   TypeUnit            |
+   Type :->: Type      |
+   Type :*: Type       |
+   Type :+: Type       |
    Type :**: Integer 
   deriving (Eq, Ord, Show, Read)
 
@@ -77,181 +79,192 @@ data Gate =
   deriving (Eq, Ord, Show, Read)
 
 data Term =
-    TermFunction String                      |
-    TermGate Gate                            |
-    TermCtrlGate [Term] [BasisState] Gate    |
-    TermTuple Term Term                      |
-    TermApp Term Term                        |
-    TermDollar Term Term                     |
-    TermCompose Term Term                    |
-    TermIfElse Term Term Term                |
-    TermLet Term Term                        |
-    TermLetSugar Term Term                   |
-    TermLambda Type Term                     |
-    TermNew  (Int, Int)                      |
-    TermMeasure (Int, Int)                   |
+    TermIfElse Term Term Term                     |
+    TermLetSingle Term Term                       |
+    TermLetMultiple Term Term                     |
+    TermLetSugarSingle Term Term                  |
+    TermLetSugarMultiple Term Term                |
+    TermCase Term [Term]                          |
+    TermLambda Type Term                          |
+    TermFunction String                           |
+    TermGate Gate                                 |
+    TermQuantumCtrlGate Term BasisState Gate      |
+    TermQuantumCtrlsGate [Term] [BasisState] Gate |
+    TermClassicCtrlGate Term Integer Gate         |
+    TermClassicCtrlsGate [Term] [Integer] Gate    |
+    TermApply Term Term                           |
+    TermDollar Term Term                          |
+    TermCompose Term Term                         |
+    TermNew  (Int, Int)                           |
+    TermMeasure (Int, Int)                        |
+    TermTuple Term Term                           |
     TermUnit
   deriving (Eq, Ord, Show, Read)
 
 data Function = Function String (Int, Int) Type Term
 type Program = [Function]
 
-mapType :: GeneratedAbSyntax.Type -> Type
-mapType GeneratedAbSyntax.TypeBit   = TypeBit
-mapType GeneratedAbSyntax.TypeQbit  = TypeQbit
-mapType GeneratedAbSyntax.TypeUnit  = TypeUnit
-mapType (GeneratedAbSyntax.TypeNonLin t) = TypeNonLin (mapType t)
-mapType (GeneratedAbSyntax.TypeFunc l r) = mapType l :->: mapType r
-mapType (GeneratedAbSyntax.TypeTensr l r) = mapType l :*: mapType r
-mapType (GeneratedAbSyntax.TypeExp t i) = mapType t :**: i
+mapType :: GeneratedAbstractSyntax.Type -> Type
+mapType GeneratedAbstractSyntax.TypeBit   = TypeBit
+mapType GeneratedAbstractSyntax.TypeQbit  = TypeQbit
+mapType GeneratedAbstractSyntax.TypeState  = TypeState
+mapType GeneratedAbstractSyntax.TypeUnitary  = TypeUnitary
+mapType GeneratedAbstractSyntax.TypeUnit  = TypeUnit
+mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
+mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r
+mapType (GeneratedAbstractSyntax.TypeSum l r) = mapType l :+: mapType r
+mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = mapType l :*: mapType r
+mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
 
-reverseMapType :: Type -> GeneratedAbSyntax.Type
-reverseMapType TypeBit  = GeneratedAbSyntax.TypeBit
-reverseMapType TypeQbit = GeneratedAbSyntax.TypeQbit
-reverseMapType TypeUnit = GeneratedAbSyntax.TypeUnit
-reverseMapType (TypeNonLin t) = GeneratedAbSyntax.TypeNonLin (reverseMapType t)
-reverseMapType (l :->: r) = GeneratedAbSyntax.TypeFunc (reverseMapType l) (reverseMapType r)
-reverseMapType (l :+: r) = GeneratedAbSyntax.TypeTensr (reverseMapType l) (reverseMapType r)
-reverseMapType (l :*: r) = GeneratedAbSyntax.TypeTensr (reverseMapType l) (reverseMapType r)
-reverseMapType (t :**: i) = GeneratedAbSyntax.TypeExp (reverseMapType t) i
+reverseMapType :: Type -> GeneratedAbstractSyntax.Type
+reverseMapType TypeBit  = GeneratedAbstractSyntax.TypeBit
+reverseMapType TypeQbit = GeneratedAbstractSyntax.TypeQbit
+reverseMapType TypeState  = GeneratedAbstractSyntax.TypeState
+reverseMapType TypeUnitary  = GeneratedAbstractSyntax.TypeUnitary
+reverseMapType TypeUnit = GeneratedAbstractSyntax.TypeUnit
+reverseMapType (TypeNonLinear t) = GeneratedAbstractSyntax.TypeNonLinear (reverseMapType t)
+reverseMapType (l :->: r) = GeneratedAbstractSyntax.TypeFunction (reverseMapType l) (reverseMapType r)
+reverseMapType (l :+: r) = GeneratedAbstractSyntax.TypeSum (reverseMapType l) (reverseMapType r)
+reverseMapType (l :*: r) = GeneratedAbstractSyntax.TypeTensorProd (reverseMapType l) (reverseMapType r)
+reverseMapType (t :**: i) = GeneratedAbstractSyntax.TypeExp (reverseMapType t) i
 
-mapBasisState :: GeneratedAbSyntax.BasisState -> BasisState
-mapBasisState GeneratedAbSyntax.BasisStateZero = BasisStateZero
-mapBasisState GeneratedAbSyntax.BasisStateOne = BasisStateOne
-mapBasisState GeneratedAbSyntax.BasisStatePlus = BasisStatePlus
-mapBasisState GeneratedAbSyntax.BasisStateMinus = BasisStateMinus
-mapBasisState GeneratedAbSyntax.BasisStatePlusI = BasisStatePlusI
-mapBasisState GeneratedAbSyntax.BasisStateMinusI = BasisStateMinusI
+mapBasisState :: GeneratedAbstractSyntax.BasisState -> BasisState
+mapBasisState GeneratedAbstractSyntax.BasisStateZero = BasisStateZero
+mapBasisState GeneratedAbstractSyntax.BasisStateOne = BasisStateOne
+mapBasisState GeneratedAbstractSyntax.BasisStatePlus = BasisStatePlus
+mapBasisState GeneratedAbstractSyntax.BasisStateMinus = BasisStateMinus
+mapBasisState GeneratedAbstractSyntax.BasisStatePlusI = BasisStatePlusI
+mapBasisState GeneratedAbstractSyntax.BasisStateMinusI = BasisStateMinusI
 
-reverseMapBasisState :: BasisState -> GeneratedAbSyntax.BasisState
-reverseMapBasisState BasisStateZero = GeneratedAbSyntax.BasisStateZero
-reverseMapBasisState BasisStateOne = GeneratedAbSyntax.BasisStateOne
-reverseMapBasisState BasisStatePlus = GeneratedAbSyntax.BasisStatePlus
-reverseMapBasisState BasisStateMinus = GeneratedAbSyntax.BasisStateMinus
-reverseMapBasisState BasisStatePlusI = GeneratedAbSyntax.BasisStatePlusI
-reverseMapBasisState BasisStateMinusI = GeneratedAbSyntax.BasisStateMinusI
+reverseMapBasisState :: BasisState -> GeneratedAbstractSyntax.BasisState
+reverseMapBasisState BasisStateZero = GeneratedAbstractSyntax.BasisStateZero
+reverseMapBasisState BasisStateOne = GeneratedAbstractSyntax.BasisStateOne
+reverseMapBasisState BasisStatePlus = GeneratedAbstractSyntax.BasisStatePlus
+reverseMapBasisState BasisStateMinus = GeneratedAbstractSyntax.BasisStateMinus
+reverseMapBasisState BasisStatePlusI = GeneratedAbstractSyntax.BasisStatePlusI
+reverseMapBasisState BasisStateMinusI = GeneratedAbstractSyntax.BasisStateMinusI
 
-mapAngle :: GeneratedAbSyntax.Angle -> Angle
-mapAngle (GeneratedAbSyntax.Angle value) = Angle value
+-- mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
+-- mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
 
-reverseMapAngle :: Angle -> GeneratedAbSyntax.Angle
-reverseMapAngle (Angle value) = GeneratedAbSyntax.Angle value
+-- reverseMapAngle :: Angle -> GeneratedAbstractSyntax.Angle
+-- reverseMapAngle (Angle value) = GeneratedAbstractSyntax.Angle value
 
-mapGate :: GeneratedAbSyntax.Gate -> Gate
-mapGate g = case g of 
-    GeneratedAbSyntax.GateH ->  GateH
-    GeneratedAbSyntax.GateX -> GateX
-    GeneratedAbSyntax.GateY -> GateY
-    GeneratedAbSyntax.GateZ -> GateZ
-    GeneratedAbSyntax.GateID -> GateID
-    GeneratedAbSyntax.GateXRt rt -> GateXRt rt
-    GeneratedAbSyntax.GateXRtDag rt -> GateXRtDag rt
-    GeneratedAbSyntax.GateYRt rt -> GateYRt rt
-    GeneratedAbSyntax.GateYRtDag rt -> GateYRtDag rt
-    GeneratedAbSyntax.GateZRt rt -> GateZRt rt
-    GeneratedAbSyntax.GateZRtDag rt -> GateZRtDag rt
-    GeneratedAbSyntax.GateS -> GateS
-    GeneratedAbSyntax.GateSDag -> GateSDag
-    GeneratedAbSyntax.GateT -> GateT
-    GeneratedAbSyntax.GateTDag -> GateTDag
-    GeneratedAbSyntax.GateSqrtX -> GateSqrtX
-    GeneratedAbSyntax.GateSqrtXDag -> GateSqrtXDag
-    GeneratedAbSyntax.GateSqrtY -> GateSqrtY
-    GeneratedAbSyntax.GateSqrtYDag -> GateSqrtYDag 
-    GeneratedAbSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
-    GeneratedAbSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
-    GeneratedAbSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
-    GeneratedAbSyntax.GateU1 angle -> GateU1 (mapAngle angle)
-    GeneratedAbSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
-    GeneratedAbSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
-    GeneratedAbSyntax.GateSwp -> GateSwp 
-    GeneratedAbSyntax.GateSqrtSwp -> GateSqrtSwp
-    GeneratedAbSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
-    GeneratedAbSyntax.GateISwp -> GateISwp
-    GeneratedAbSyntax.GateFSwp -> GateFSwp 
-    GeneratedAbSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
-    GeneratedAbSyntax.GateSwpRt rt -> GateSwpRt rt 
-    GeneratedAbSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
+-- mapGate :: GeneratedAbstractSyntax.Gate -> Gate
+-- mapGate g = case g of 
+--     GeneratedAbstractSyntax.GateH ->  GateH
+--     GeneratedAbstractSyntax.GateX -> GateX
+--     GeneratedAbstractSyntax.GateY -> GateY
+--     GeneratedAbstractSyntax.GateZ -> GateZ
+--     GeneratedAbstractSyntax.GateID -> GateID
+--     GeneratedAbstractSyntax.GateXRt rt -> GateXRt rt
+--     GeneratedAbstractSyntax.GateXRtDag rt -> GateXRtDag rt
+--     GeneratedAbstractSyntax.GateYRt rt -> GateYRt rt
+--     GeneratedAbstractSyntax.GateYRtDag rt -> GateYRtDag rt
+--     GeneratedAbstractSyntax.GateZRt rt -> GateZRt rt
+--     GeneratedAbstractSyntax.GateZRtDag rt -> GateZRtDag rt
+--     GeneratedAbstractSyntax.GateS -> GateS
+--     GeneratedAbstractSyntax.GateSDag -> GateSDag
+--     GeneratedAbstractSyntax.GateT -> GateT
+--     GeneratedAbstractSyntax.GateTDag -> GateTDag
+--     GeneratedAbstractSyntax.GateSqrtX -> GateSqrtX
+--     GeneratedAbstractSyntax.GateSqrtXDag -> GateSqrtXDag
+--     GeneratedAbstractSyntax.GateSqrtY -> GateSqrtY
+--     GeneratedAbstractSyntax.GateSqrtYDag -> GateSqrtYDag 
+--     GeneratedAbstractSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
+--     GeneratedAbstractSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
+--     GeneratedAbstractSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
+--     GeneratedAbstractSyntax.GateU1 angle -> GateU1 (mapAngle angle)
+--     GeneratedAbstractSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
+--     GeneratedAbstractSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
+--     GeneratedAbstractSyntax.GateSwp -> GateSwp 
+--     GeneratedAbstractSyntax.GateSqrtSwp -> GateSqrtSwp
+--     GeneratedAbstractSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
+--     GeneratedAbstractSyntax.GateISwp -> GateISwp
+--     GeneratedAbstractSyntax.GateFSwp -> GateFSwp 
+--     GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
+--     GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt 
+--     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
 
-reverseMapGate :: Gate -> GeneratedAbSyntax.Gate
-reverseMapGate g = case g of 
-    GateH ->  GeneratedAbSyntax.GateH
-    GateX -> GeneratedAbSyntax.GateX
-    GateY -> GeneratedAbSyntax.GateY
-    GateZ -> GeneratedAbSyntax.GateZ
-    GateID -> GeneratedAbSyntax.GateID
-    GateXRt rt -> GeneratedAbSyntax.GateXRt rt
-    GateXRtDag rt -> GeneratedAbSyntax.GateXRtDag rt
-    GateYRt rt -> GeneratedAbSyntax.GateYRt rt
-    GateYRtDag rt -> GeneratedAbSyntax.GateYRtDag rt
-    GateZRt rt -> GeneratedAbSyntax.GateZRt rt
-    GateZRtDag rt -> GeneratedAbSyntax.GateZRtDag rt
-    GateS -> GeneratedAbSyntax.GateS
-    GateSDag -> GeneratedAbSyntax.GateSDag
-    GateT -> GeneratedAbSyntax.GateT
-    GateTDag -> GeneratedAbSyntax.GateTDag
-    GateSqrtX -> GeneratedAbSyntax.GateSqrtX
-    GateSqrtXDag -> GeneratedAbSyntax.GateSqrtXDag
-    GateSqrtY -> GeneratedAbSyntax.GateSqrtY
-    GateSqrtYDag -> GeneratedAbSyntax.GateSqrtYDag
-    GateRxTheta angle -> GeneratedAbSyntax.GateRxTheta (reverseMapAngle angle)
-    GateRyTheta angle -> GeneratedAbSyntax.GateRyTheta (reverseMapAngle angle)
-    GateRzTheta angle -> GeneratedAbSyntax.GateRzTheta (reverseMapAngle angle)
-    GateU1 angle -> GeneratedAbSyntax.GateU1 (reverseMapAngle angle)
-    GateU2 angle1 angle2 -> GeneratedAbSyntax.GateU2 (reverseMapAngle angle1) (reverseMapAngle angle2)
-    GateU3 angle1 angle2 angle3 -> GeneratedAbSyntax.GateU3 (reverseMapAngle angle1) (reverseMapAngle angle2) (reverseMapAngle angle3)
-    GateSwp -> GeneratedAbSyntax.GateSwp
-    GateSqrtSwp -> GeneratedAbSyntax.GateSqrtSwp
-    GateSqrtSwpDag -> GeneratedAbSyntax.GateSqrtSwpDag
-    GateISwp -> GeneratedAbSyntax.GateISwp
-    GateFSwp -> GeneratedAbSyntax.GateFSwp
-    GateSwpTheta angle -> GeneratedAbSyntax.GateSwpTheta (reverseMapAngle angle)
-    GateSwpRt rt -> GeneratedAbSyntax.GateSwpRt rt
-    GateSwpRtDag rt -> GeneratedAbSyntax.GateSwpRtDag rt
+-- reverseMapGate :: Gate -> GeneratedAbstractSyntax.Gate
+-- reverseMapGate g = case g of 
+--     GateH ->  GeneratedAbstractSyntax.GateH
+--     GateX -> GeneratedAbstractSyntax.GateX
+--     GateY -> GeneratedAbstractSyntax.GateY
+--     GateZ -> GeneratedAbstractSyntax.GateZ
+--     GateID -> GeneratedAbstractSyntax.GateID
+--     GateXRt rt -> GeneratedAbstractSyntax.GateXRt rt
+--     GateXRtDag rt -> GeneratedAbstractSyntax.GateXRtDag rt
+--     GateYRt rt -> GeneratedAbstractSyntax.GateYRt rt
+--     GateYRtDag rt -> GeneratedAbstractSyntax.GateYRtDag rt
+--     GateZRt rt -> GeneratedAbstractSyntax.GateZRt rt
+--     GateZRtDag rt -> GeneratedAbstractSyntax.GateZRtDag rt
+--     GateS -> GeneratedAbstractSyntax.GateS
+--     GateSDag -> GeneratedAbstractSyntax.GateSDag
+--     GateT -> GeneratedAbstractSyntax.GateT
+--     GateTDag -> GeneratedAbstractSyntax.GateTDag
+--     GateSqrtX -> GeneratedAbstractSyntax.GateSqrtX
+--     GateSqrtXDag -> GeneratedAbstractSyntax.GateSqrtXDag
+--     GateSqrtY -> GeneratedAbstractSyntax.GateSqrtY
+--     GateSqrtYDag -> GeneratedAbstractSyntax.GateSqrtYDag
+--     GateRxTheta angle -> GeneratedAbstractSyntax.GateRxTheta (reverseMapAngle angle)
+--     GateRyTheta angle -> GeneratedAbstractSyntax.GateRyTheta (reverseMapAngle angle)
+--     GateRzTheta angle -> GeneratedAbstractSyntax.GateRzTheta (reverseMapAngle angle)
+--     GateU1 angle -> GeneratedAbstractSyntax.GateU1 (reverseMapAngle angle)
+--     GateU2 angle1 angle2 -> GeneratedAbstractSyntax.GateU2 (reverseMapAngle angle1) (reverseMapAngle angle2)
+--     GateU3 angle1 angle2 angle3 -> GeneratedAbstractSyntax.GateU3 (reverseMapAngle angle1) (reverseMapAngle angle2) (reverseMapAngle angle3)
+--     GateSwp -> GeneratedAbstractSyntax.GateSwp
+--     GateSqrtSwp -> GeneratedAbstractSyntax.GateSqrtSwp
+--     GateSqrtSwpDag -> GeneratedAbstractSyntax.GateSqrtSwpDag
+--     GateISwp -> GeneratedAbstractSyntax.GateISwp
+--     GateFSwp -> GeneratedAbstractSyntax.GateFSwp
+--     GateSwpTheta angle -> GeneratedAbstractSyntax.GateSwpTheta (reverseMapAngle angle)
+--     GateSwpRt rt -> GeneratedAbstractSyntax.GateSwpRt rt
+--     GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
 
-mapFunction :: GeneratedAbSyntax.FunctionDeclaration -> Function
-mapFunction (GeneratedAbSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
-   where
-     (GeneratedAbSyntax.FunType _ ftype) = funType
-     (GeneratedAbSyntax.FunDef (GeneratedAbSyntax.Var fvar) fargs fbody) = funDef
-     ((fline, fcol), fname) = fvar
-     term = mapTerm Map.empty $ toLambda (trimNonLinType ftype) fargs fbody
+-- mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
+-- mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
+--    where
+--      (GeneratedAbstractSyntax.FunType _ ftype) = funType
+--      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+--      ((fline, fcol), fname) = fvar
+--      term = mapTerm Map.empty $ toLambda (trimNonLinType ftype) fargs fbody
 
--- convert function to a lambda abstraction 
-toLambda :: GeneratedAbSyntax.Type -> [GeneratedAbSyntax.Arg] ->  GeneratedAbSyntax.Term -> GeneratedAbSyntax.Term
-toLambda ftype [] fbody = fbody
-toLambda (GeneratedAbSyntax.TypeFunc ltype rtype) (GeneratedAbSyntax.FunArg (GeneratedAbSyntax.Var var) : vars ) fbody =
-   GeneratedAbSyntax.TermLambda (GeneratedAbSyntax.Lambda "\\") (GeneratedAbSyntax.FunType (GeneratedAbSyntax.Var var) ltype) (toLambda rtype vars fbody)
-toLambda (GeneratedAbSyntax.TypeNonLin (GeneratedAbSyntax.TypeFunc ltype rtype)) (GeneratedAbSyntax.FunArg (GeneratedAbSyntax.Var var) : vars ) fbody =
-   GeneratedAbSyntax.TermLambda (GeneratedAbSyntax.Lambda "\\") (GeneratedAbSyntax.FunType (GeneratedAbSyntax.Var var) ltype) (toLambda rtype vars fbody)
+-- -- convert function to a lambda abstraction 
+-- toLambda :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
+-- toLambda ftype [] fbody = fbody
+-- toLambda (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
+--    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
+-- toLambda (GeneratedAbstractSyntax.TypeNonLinear (GeneratedAbstractSyntax.TypeFunction ltype rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
+--    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
 
--- the outer non-linear type flag(s) '!' will be removed if present
-trimNonLinType :: GeneratedAbSyntax.Type -> GeneratedAbSyntax.Type
-trimNonLinType (GeneratedAbSyntax.TypeNonLin t) = trimNonLinType t
-trimNonLinType t = t
+-- -- the outer non-linear type flag(s) '!' will be removed if present
+-- trimNonLinType :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
+-- trimNonLinType (GeneratedAbstractSyntax.TypeNonLinear t) = trimNonLinType t
+-- trimNonLinType t = t
 
-reverseMapFunction :: Function -> GeneratedAbSyntax.FunctionDeclaration
-reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbSyntax.FunDecl funType funDefinition
-  where
-    funType = GeneratedAbSyntax.FunType (GeneratedAbSyntax.Var ((fline, fcol), fname)) (reverseMapType ftype)
-    funDefinition = GeneratedAbSyntax.FunDef (GeneratedAbSyntax.Var ((fline, fcol), fname)) [] (reverseMapTerm Map.empty term)
+-- reverseMapFunction :: Function -> GeneratedAbstractSyntax.FunctionDeclaration
+-- reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbstractSyntax.FunDecl funType funDefinition
+--   where
+--     funType = GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) (reverseMapType ftype)
+--     funDefinition = GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) [] (reverseMapTerm Map.empty term)
 
-type Env = Map.Map String Integer
+-- type Env = Map.Map String Integer
 
-mapTerm :: Env -> GeneratedAbSyntax.Term -> Term
-mapTerm env (GeneratedAbSyntax.TermApply l r) = TermApp (mapTerm env l) (mapTerm env r) 
-mapTerm _ (GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "new"))) = TermNew (l, c)
-mapTerm _ (GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
-mapTerm env (GeneratedAbSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
-mapTerm env (GeneratedAbSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
+-- mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
+-- mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r) 
+-- mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
+-- mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
+-- mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
+-- mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
 
 
-reverseMapTerm :: Env -> Term -> GeneratedAbSyntax.Term
-reverseMapTerm env (TermApp l r) = GeneratedAbSyntax.TermApply (reverseMapTerm env l) (reverseMapTerm env r)
-reverseMapTerm _ (TermNew (l, c)) = GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "new")) 
-reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbSyntax.TermVariable (GeneratedAbSyntax.Var ((l, c), "measr"))
-reverseMapTerm env (TermDollar l r) = GeneratedAbSyntax.TermDollar (reverseMapTerm env l) (reverseMapTerm env r)
-reverseMapTerm env (TermIfElse cond t f) = GeneratedAbSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
+-- reverseMapTerm :: Env -> Term -> GeneratedAbstractSyntax.Term
+-- reverseMapTerm env (TermApply l r) = GeneratedAbstractSyntax.TermApply (reverseMapTerm env l) (reverseMapTerm env r)
+-- reverseMapTerm _ (TermNew (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new")) 
+-- reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))
+-- reverseMapTerm env (TermDollar l r) = GeneratedAbstractSyntax.TermDollar (reverseMapTerm env l) (reverseMapTerm env r)
+-- reverseMapTerm env (TermIfElse cond t f) = GeneratedAbstractSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
 
 
 
