@@ -71,7 +71,6 @@ data Gate =
     GateSqrtSwp                |
     GateSqrtSwpDag             |
     GateISwp                   |
-    GateISwpC                  |
     GateFSwp                   |
     GateSwpTheta Angle         |
     GateSwpRt Integer          |
@@ -144,83 +143,83 @@ reverseMapBasisState BasisStateMinus = GeneratedAbstractSyntax.BasisStateMinus
 reverseMapBasisState BasisStatePlusI = GeneratedAbstractSyntax.BasisStatePlusI
 reverseMapBasisState BasisStateMinusI = GeneratedAbstractSyntax.BasisStateMinusI
 
--- mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
--- mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
+mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
+mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
 
--- reverseMapAngle :: Angle -> GeneratedAbstractSyntax.Angle
--- reverseMapAngle (Angle value) = GeneratedAbstractSyntax.Angle value
+reverseMapAngle :: Angle -> GeneratedAbstractSyntax.Angle
+reverseMapAngle (Angle value) = GeneratedAbstractSyntax.Angle value
 
 -- mapGate :: GeneratedAbstractSyntax.Gate -> Gate
--- mapGate g = case g of 
---     GeneratedAbstractSyntax.GateH ->  GateH
---     GeneratedAbstractSyntax.GateX -> GateX
---     GeneratedAbstractSyntax.GateY -> GateY
---     GeneratedAbstractSyntax.GateZ -> GateZ
---     GeneratedAbstractSyntax.GateID -> GateID
---     GeneratedAbstractSyntax.GateXRt rt -> GateXRt rt
---     GeneratedAbstractSyntax.GateXRtDag rt -> GateXRtDag rt
---     GeneratedAbstractSyntax.GateYRt rt -> GateYRt rt
---     GeneratedAbstractSyntax.GateYRtDag rt -> GateYRtDag rt
---     GeneratedAbstractSyntax.GateZRt rt -> GateZRt rt
---     GeneratedAbstractSyntax.GateZRtDag rt -> GateZRtDag rt
---     GeneratedAbstractSyntax.GateS -> GateS
---     GeneratedAbstractSyntax.GateSDag -> GateSDag
---     GeneratedAbstractSyntax.GateT -> GateT
---     GeneratedAbstractSyntax.GateTDag -> GateTDag
---     GeneratedAbstractSyntax.GateSqrtX -> GateSqrtX
---     GeneratedAbstractSyntax.GateSqrtXDag -> GateSqrtXDag
---     GeneratedAbstractSyntax.GateSqrtY -> GateSqrtY
---     GeneratedAbstractSyntax.GateSqrtYDag -> GateSqrtYDag 
---     GeneratedAbstractSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
---     GeneratedAbstractSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
---     GeneratedAbstractSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
---     GeneratedAbstractSyntax.GateU1 angle -> GateU1 (mapAngle angle)
---     GeneratedAbstractSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
---     GeneratedAbstractSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
---     GeneratedAbstractSyntax.GateSwp -> GateSwp 
---     GeneratedAbstractSyntax.GateSqrtSwp -> GateSqrtSwp
---     GeneratedAbstractSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
---     GeneratedAbstractSyntax.GateISwp -> GateISwp
---     GeneratedAbstractSyntax.GateFSwp -> GateFSwp 
---     GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
---     GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt 
---     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
+mapGate g = case g of 
+    GeneratedAbstractSyntax.GateH ->  GateH
+    GeneratedAbstractSyntax.GateX -> GateX
+    GeneratedAbstractSyntax.GateY -> GateY
+    GeneratedAbstractSyntax.GateZ -> GateZ
+    GeneratedAbstractSyntax.GateID -> GateID
+    GeneratedAbstractSyntax.GateXRt rt -> GateXRt rt
+    GeneratedAbstractSyntax.GateXRtDag rt -> GateXRtDag rt
+    GeneratedAbstractSyntax.GateYRt rt -> GateYRt rt
+    GeneratedAbstractSyntax.GateYRtDag rt -> GateYRtDag rt
+    GeneratedAbstractSyntax.GateZRt rt -> GateZRt rt
+    GeneratedAbstractSyntax.GateZRtDag rt -> GateZRtDag rt
+    GeneratedAbstractSyntax.GateS -> GateS
+    GeneratedAbstractSyntax.GateSDag -> GateSDag
+    GeneratedAbstractSyntax.GateT -> GateT
+    GeneratedAbstractSyntax.GateTDag -> GateTDag
+    GeneratedAbstractSyntax.GateSqrtX -> GateSqrtX
+    GeneratedAbstractSyntax.GateSqrtXDag -> GateSqrtXDag
+    GeneratedAbstractSyntax.GateSqrtY -> GateSqrtY
+    GeneratedAbstractSyntax.GateSqrtYDag -> GateSqrtYDag 
+    GeneratedAbstractSyntax.GateRxTheta angle -> GateRxTheta (mapAngle angle)
+    GeneratedAbstractSyntax.GateRyTheta angle -> GateRyTheta (mapAngle angle)
+    GeneratedAbstractSyntax.GateRzTheta angle -> GateRzTheta (mapAngle angle)
+    GeneratedAbstractSyntax.GateU1 angle -> GateU1 (mapAngle angle)
+    GeneratedAbstractSyntax.GateU2 angle1 angle2 -> GateU2 (mapAngle angle1) (mapAngle angle2)
+    GeneratedAbstractSyntax.GateU3 angle1 angle2 angle3 -> GateU3 (mapAngle angle1) (mapAngle angle2) (mapAngle angle3)
+    GeneratedAbstractSyntax.GateSwp -> GateSwp 
+    GeneratedAbstractSyntax.GateSqrtSwp -> GateSqrtSwp
+    GeneratedAbstractSyntax.GateSqrtSwpDag -> GateSqrtSwpDag 
+    GeneratedAbstractSyntax.GateISwp -> GateISwp
+    GeneratedAbstractSyntax.GateFSwp -> GateFSwp 
+    GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
+    GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt 
+    GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt 
 
--- reverseMapGate :: Gate -> GeneratedAbstractSyntax.Gate
--- reverseMapGate g = case g of 
---     GateH ->  GeneratedAbstractSyntax.GateH
---     GateX -> GeneratedAbstractSyntax.GateX
---     GateY -> GeneratedAbstractSyntax.GateY
---     GateZ -> GeneratedAbstractSyntax.GateZ
---     GateID -> GeneratedAbstractSyntax.GateID
---     GateXRt rt -> GeneratedAbstractSyntax.GateXRt rt
---     GateXRtDag rt -> GeneratedAbstractSyntax.GateXRtDag rt
---     GateYRt rt -> GeneratedAbstractSyntax.GateYRt rt
---     GateYRtDag rt -> GeneratedAbstractSyntax.GateYRtDag rt
---     GateZRt rt -> GeneratedAbstractSyntax.GateZRt rt
---     GateZRtDag rt -> GeneratedAbstractSyntax.GateZRtDag rt
---     GateS -> GeneratedAbstractSyntax.GateS
---     GateSDag -> GeneratedAbstractSyntax.GateSDag
---     GateT -> GeneratedAbstractSyntax.GateT
---     GateTDag -> GeneratedAbstractSyntax.GateTDag
---     GateSqrtX -> GeneratedAbstractSyntax.GateSqrtX
---     GateSqrtXDag -> GeneratedAbstractSyntax.GateSqrtXDag
---     GateSqrtY -> GeneratedAbstractSyntax.GateSqrtY
---     GateSqrtYDag -> GeneratedAbstractSyntax.GateSqrtYDag
---     GateRxTheta angle -> GeneratedAbstractSyntax.GateRxTheta (reverseMapAngle angle)
---     GateRyTheta angle -> GeneratedAbstractSyntax.GateRyTheta (reverseMapAngle angle)
---     GateRzTheta angle -> GeneratedAbstractSyntax.GateRzTheta (reverseMapAngle angle)
---     GateU1 angle -> GeneratedAbstractSyntax.GateU1 (reverseMapAngle angle)
---     GateU2 angle1 angle2 -> GeneratedAbstractSyntax.GateU2 (reverseMapAngle angle1) (reverseMapAngle angle2)
---     GateU3 angle1 angle2 angle3 -> GeneratedAbstractSyntax.GateU3 (reverseMapAngle angle1) (reverseMapAngle angle2) (reverseMapAngle angle3)
---     GateSwp -> GeneratedAbstractSyntax.GateSwp
---     GateSqrtSwp -> GeneratedAbstractSyntax.GateSqrtSwp
---     GateSqrtSwpDag -> GeneratedAbstractSyntax.GateSqrtSwpDag
---     GateISwp -> GeneratedAbstractSyntax.GateISwp
---     GateFSwp -> GeneratedAbstractSyntax.GateFSwp
---     GateSwpTheta angle -> GeneratedAbstractSyntax.GateSwpTheta (reverseMapAngle angle)
---     GateSwpRt rt -> GeneratedAbstractSyntax.GateSwpRt rt
---     GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
+reverseMapGate :: Gate -> GeneratedAbstractSyntax.Gate
+reverseMapGate g = case g of 
+    GateH ->  GeneratedAbstractSyntax.GateH
+    GateX -> GeneratedAbstractSyntax.GateX
+    GateY -> GeneratedAbstractSyntax.GateY
+    GateZ -> GeneratedAbstractSyntax.GateZ
+    GateID -> GeneratedAbstractSyntax.GateID
+    GateXRt rt -> GeneratedAbstractSyntax.GateXRt rt
+    GateXRtDag rt -> GeneratedAbstractSyntax.GateXRtDag rt
+    GateYRt rt -> GeneratedAbstractSyntax.GateYRt rt
+    GateYRtDag rt -> GeneratedAbstractSyntax.GateYRtDag rt
+    GateZRt rt -> GeneratedAbstractSyntax.GateZRt rt
+    GateZRtDag rt -> GeneratedAbstractSyntax.GateZRtDag rt
+    GateS -> GeneratedAbstractSyntax.GateS
+    GateSDag -> GeneratedAbstractSyntax.GateSDag
+    GateT -> GeneratedAbstractSyntax.GateT
+    GateTDag -> GeneratedAbstractSyntax.GateTDag
+    GateSqrtX -> GeneratedAbstractSyntax.GateSqrtX
+    GateSqrtXDag -> GeneratedAbstractSyntax.GateSqrtXDag
+    GateSqrtY -> GeneratedAbstractSyntax.GateSqrtY
+    GateSqrtYDag -> GeneratedAbstractSyntax.GateSqrtYDag
+    GateRxTheta angle -> GeneratedAbstractSyntax.GateRxTheta (reverseMapAngle angle)
+    GateRyTheta angle -> GeneratedAbstractSyntax.GateRyTheta (reverseMapAngle angle)
+    GateRzTheta angle -> GeneratedAbstractSyntax.GateRzTheta (reverseMapAngle angle)
+    GateU1 angle -> GeneratedAbstractSyntax.GateU1 (reverseMapAngle angle)
+    GateU2 angle1 angle2 -> GeneratedAbstractSyntax.GateU2 (reverseMapAngle angle1) (reverseMapAngle angle2)
+    GateU3 angle1 angle2 angle3 -> GeneratedAbstractSyntax.GateU3 (reverseMapAngle angle1) (reverseMapAngle angle2) (reverseMapAngle angle3)
+    GateSwp -> GeneratedAbstractSyntax.GateSwp
+    GateSqrtSwp -> GeneratedAbstractSyntax.GateSqrtSwp
+    GateSqrtSwpDag -> GeneratedAbstractSyntax.GateSqrtSwpDag
+    GateISwp -> GeneratedAbstractSyntax.GateISwp
+    GateFSwp -> GeneratedAbstractSyntax.GateFSwp
+    GateSwpTheta angle -> GeneratedAbstractSyntax.GateSwpTheta (reverseMapAngle angle)
+    GateSwpRt rt -> GeneratedAbstractSyntax.GateSwpRt rt
+    GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
 
 -- mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
 -- mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
@@ -230,18 +229,19 @@ reverseMapBasisState BasisStateMinusI = GeneratedAbstractSyntax.BasisStateMinusI
 --      ((fline, fcol), fname) = fvar
 --      term = mapTerm Map.empty $ toLambda (trimNonLinType ftype) fargs fbody
 
--- -- convert function to a lambda abstraction 
--- toLambda :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
+-- convert function to a lambda abstraction 
+toLambda :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
+toLambda = undefined
 -- toLambda ftype [] fbody = fbody
 -- toLambda (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
 --    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
 -- toLambda (GeneratedAbstractSyntax.TypeNonLinear (GeneratedAbstractSyntax.TypeFunction ltype rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
 --    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
 
--- -- the outer non-linear type flag(s) '!' will be removed if present
--- trimNonLinType :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
--- trimNonLinType (GeneratedAbstractSyntax.TypeNonLinear t) = trimNonLinType t
--- trimNonLinType t = t
+-- the outer non-linear type flag(s) '!' will be removed if present
+trimNonLinearTypeModifier :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
+trimNonLinearTypeModifier (GeneratedAbstractSyntax.TypeNonLinear t) = trimNonLinearTypeModifier t
+trimNonLinearTypeModifier t = t
 
 -- reverseMapFunction :: Function -> GeneratedAbstractSyntax.FunctionDeclaration
 -- reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbstractSyntax.FunDecl funType funDefinition
