@@ -108,7 +108,6 @@ data Term
     | TermLetMultiple LetVariable [LetVariable] Term Term
     | TermLetSugarSingle LetVariable Term Term
     | TermLetSugarMultiple LetVariable [LetVariable] Term Term
-    | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda Var FunctionType Term
     | TermQuantumCtrlGate ControlTerm ControlBasisState
     | TermQuantumCtrlsGate ControlTerms ControlBasisStates

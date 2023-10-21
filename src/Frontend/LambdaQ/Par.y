@@ -83,17 +83,15 @@ import Frontend.LambdaQ.Lex
   'Z'             { PT _ (TS _ 58)     }
   '['             { PT _ (TS _ 59)     }
   ']'             { PT _ (TS _ 60)     }
-  'case'          { PT _ (TS _ 61)     }
-  'ctrl'          { PT _ (TS _ 62)     }
-  'else'          { PT _ (TS _ 63)     }
-  'if'            { PT _ (TS _ 64)     }
-  'in'            { PT _ (TS _ 65)     }
-  'let'           { PT _ (TS _ 66)     }
-  'of'            { PT _ (TS _ 67)     }
-  'then'          { PT _ (TS _ 68)     }
-  'with'          { PT _ (TS _ 69)     }
-  '{'             { PT _ (TS _ 70)     }
-  '}'             { PT _ (TS _ 71)     }
+  'ctrl'          { PT _ (TS _ 61)     }
+  'else'          { PT _ (TS _ 62)     }
+  'if'            { PT _ (TS _ 63)     }
+  'in'            { PT _ (TS _ 64)     }
+  'let'           { PT _ (TS _ 65)     }
+  'then'          { PT _ (TS _ 66)     }
+  'with'          { PT _ (TS _ 67)     }
+  '{'             { PT _ (TS _ 68)     }
+  '}'             { PT _ (TS _ 69)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_Var           { PT _ (T_Var _)     }
@@ -136,12 +134,11 @@ Type1 :: { Frontend.LambdaQ.Abs.Type }
 Type1
   : Type2 '+' Type1 { Frontend.LambdaQ.Abs.TypeSum $1 $3 }
   | Type2 '*' Type1 { Frontend.LambdaQ.Abs.TypeTensorProd $1 $3 }
+  | Type2 '->' Type1 { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
   | Type2 { $1 }
 
 Type :: { Frontend.LambdaQ.Abs.Type }
-Type
-  : Type1 '->' Type { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
-  | Type1 { $1 }
+Type : Type1 { $1 }
 
 Angle :: { Frontend.LambdaQ.Abs.Angle }
 Angle : Double { Frontend.LambdaQ.Abs.Angle $1 }
@@ -239,7 +236,6 @@ Term1
   | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
   | LetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
   | LetVariable ',' ListLetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
-  | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
   | Lambda Var FunctionType '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }

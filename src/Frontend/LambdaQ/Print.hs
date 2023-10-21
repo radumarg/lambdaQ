@@ -156,7 +156,7 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 2 (concatD [prt 3 type_, doc (showString "**"), prt 0 n])
     Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "+"), prt 1 type_2])
     Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "*"), prt 1 type_2])
-    Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 0 (concatD [prt 1 type_1, doc (showString "->"), prt 0 type_2])
+    Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "->"), prt 1 type_2])
 
 instance Print Frontend.LambdaQ.Abs.Angle where
   prt i = \case
@@ -261,7 +261,6 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermLetMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarSingle letvariable term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TermLambda lambda var functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 var, prt 0 functiontype, doc (showString "."), prt 0 term])
     Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterm, doc (showString "ctrl"), prt 0 controlbasisstate])
     Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterms, doc (showString "ctrl"), prt 0 controlbasisstates])

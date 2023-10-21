@@ -20,7 +20,7 @@ TypeNonLinear  . Type2  ::= "!" Type3 ;
 TypeExp        . Type2  ::= Type3 "**" Integer ;
 TypeSum        . Type1  ::= Type2 "+" Type1 ;      -- right-associative
 TypeTensorProd . Type1  ::= Type2 "*" Type1 ;      -- right-associative
-TypeFunction   . Type   ::= Type1 "->" Type ;      -- right-associative
+TypeFunction   . Type1  ::= Type2 "->" Type1 ;     -- right-associative
 coercions Type 3 ;
 
 -- Angle is a fraction of 2π --
@@ -99,7 +99,7 @@ TermLetSingle        . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
 TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
-TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
+--TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
 TermLambda           . Term1 ::= Lambda Var FunctionType "." Term ;
 TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
 TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;

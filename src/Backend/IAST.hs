@@ -221,51 +221,90 @@ reverseMapGate g = case g of
     GateSwpRt rt -> GeneratedAbstractSyntax.GateSwpRt rt
     GateSwpRtDag rt -> GeneratedAbstractSyntax.GateSwpRtDag rt
 
--- mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
--- mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
---    where
---      (GeneratedAbstractSyntax.FunType _ ftype) = funType
---      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
---      ((fline, fcol), fname) = fvar
---      term = mapTerm Map.empty $ toLambda (trimNonLinType ftype) fargs fbody
+mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
+mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
+   where
+     (GeneratedAbstractSyntax.FunType _ ftype) = funType
+     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+     ((fline, fcol), fname) = fvar
+     term = mapTerm Map.empty $ toLambda (trimNonLinearTypeModifier ftype) fargs fbody
+
+reverseMapFunction :: Function -> GeneratedAbstractSyntax.FunctionDeclaration
+reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbstractSyntax.FunDecl funType funDefinition
+  where
+    funType = GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) (reverseMapType ftype)
+    funDefinition = GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) [] (reverseMapTerm Map.empty term)
 
 -- convert function to a lambda abstraction 
 toLambda :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
-toLambda = undefined
--- toLambda ftype [] fbody = fbody
--- toLambda (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
---    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
--- toLambda (GeneratedAbstractSyntax.TypeNonLinear (GeneratedAbstractSyntax.TypeFunction ltype rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars ) fbody =
---    GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambda rtype vars fbody)
+toLambda ftype [] fbody = fbody
+toLambda
+  (GeneratedAbstractSyntax.TypeFunction ltype rtype)
+  (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars)
+  fbody =
+    GeneratedAbstractSyntax.TermLambda
+      (GeneratedAbstractSyntax.Lambda "\\")
+      (GeneratedAbstractSyntax.Var var)
+      (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype)
+      (toLambda rtype vars fbody)
+toLambda
+  (GeneratedAbstractSyntax.TypeNonLinear (GeneratedAbstractSyntax.TypeFunction ltype rtype))
+  (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars)
+  fbody =
+    GeneratedAbstractSyntax.TermLambda
+      (GeneratedAbstractSyntax.Lambda "\\")
+      (GeneratedAbstractSyntax.Var var)
+      (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype)
+      (toLambda rtype vars fbody)
+toLambda _ _ _ = undefined
 
 -- the outer non-linear type flag(s) '!' will be removed if present
 trimNonLinearTypeModifier :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
 trimNonLinearTypeModifier (GeneratedAbstractSyntax.TypeNonLinear t) = trimNonLinearTypeModifier t
 trimNonLinearTypeModifier t = t
 
--- reverseMapFunction :: Function -> GeneratedAbstractSyntax.FunctionDeclaration
--- reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbstractSyntax.FunDecl funType funDefinition
---   where
---     funType = GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) (reverseMapType ftype)
---     funDefinition = GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var ((fline, fcol), fname)) [] (reverseMapTerm Map.empty term)
+type Environment = Map.Map String Integer
 
--- type Env = Map.Map String Integer
-
--- mapTerm :: Env -> GeneratedAbstractSyntax.Term -> Term
+mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
+mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
+mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm env letIn)
 -- mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r) 
--- mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
--- mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
 -- mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
--- mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
+mapTerm _ _ = undefined
+
+toTerm :: GeneratedAbstractSyntax.LetVariable -> GeneratedAbstractSyntax.Term
+toTerm (GeneratedAbstractSyntax.LetVar var) = GeneratedAbstractSyntax.TermVariable var
 
 
--- reverseMapTerm :: Env -> Term -> GeneratedAbstractSyntax.Term
+reverseMapTerm :: Environment -> Term -> GeneratedAbstractSyntax.Term
+reverseMapTerm _ (TermNew (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new")) 
+reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))
+reverseMapTerm env (TermIfElse cond t f) = GeneratedAbstractSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
 -- reverseMapTerm env (TermApply l r) = GeneratedAbstractSyntax.TermApply (reverseMapTerm env l) (reverseMapTerm env r)
--- reverseMapTerm _ (TermNew (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new")) 
--- reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))
 -- reverseMapTerm env (TermDollar l r) = GeneratedAbstractSyntax.TermDollar (reverseMapTerm env l) (reverseMapTerm env r)
--- reverseMapTerm env (TermIfElse cond t f) = GeneratedAbstractSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
+reverseMapTerm _ _ = undefined
 
+-- TermIfElse           . Term1 ::= "if" Term "then" Term "else" Term ;
+-- TermLetSingle        . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
+-- TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
+-- TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
+-- TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
+-- TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
+-- TermLambda           . Term1 ::= Lambda Var FunctionType "." Term ;
+-- TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
+-- TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
+-- TermClassicCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
+-- TermClassicCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
+-- TermApply            . Term2 ::= Term2 Term3 ;      -- left-associative  --
+-- TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+-- TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+-- TermVariable         . Term3 ::= Var ;
+-- TermBasisState       . Term3 ::= BasisState ;
+-- TermGate             . Term3 ::= Gate ;
+-- TermTuple            . Term3 ::= Tuple ;
+-- TermUnit             . Term3 ::= "()" ;
 
 
 
