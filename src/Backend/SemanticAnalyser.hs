@@ -9,8 +9,6 @@ import Text.Parsec.Error (errorMessages)
 
 data SemanticError =
     DuplicatedFunctionName String                     |  -- function names must be unique
-    DuplicateFunctionDefinition String                |  -- there should be no duplicated function definition
-    DuplicateFunctionDeclaration String               |  -- there should be no duplicated function declaration
     MismatchedFunctionDefinitionAndDeclaration String |  -- function signature in declaration has a definition with a matching signature
     IncorrectNumberOfFunctionArguments String         |  -- number of function arguments for a function call does not exceed number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates must be distinct
@@ -21,8 +19,6 @@ data SemanticError =
 
 instance Show SemanticError where
     show (DuplicatedFunctionName error) = "Function name is not unique: " ++ error
-    show (DuplicateFunctionDefinition error) = "Function definition is duplicated: "  ++ error
-    show (DuplicateFunctionDeclaration error) = "Function declaration is duplicated: "  ++ error
     show (MismatchedFunctionDefinitionAndDeclaration error) = "Function signature in declaration  does not match the signature in definition: " ++ error
     show (IncorrectNumberOfFunctionArguments error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
@@ -35,8 +31,6 @@ runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String ()
 runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) = 
     mapM_ ($ functions) [
         functionNamesAreUnique, 
-        functionDefinitionsAreUnique, 
-        functionDeclarationsAreUnique, 
         functionDeclarationSignaturesMatchDefinitions,
         functionsHaveCorrectNumberOfArguments,
         controlQubitsAreDistinct,
@@ -46,45 +40,73 @@ runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) =
         gateNamesAreValid
     ]
 
-performSemanticAnalysis :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration  -> Bool) -> (String -> SemanticError) -> Either String ()
-performSemanticAnalysis functions conditionPredicate semanticError = if null allErrors then Right () else Left allErrors
-  where allErrors = intercalate ", " $ uniquify $ testSemanticCondition functions conditionPredicate semanticError []
-
-testSemanticCondition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> (String -> SemanticError) -> [String] -> [String]
-testSemanticCondition [] _ _ errorMessages = errorMessages
-testSemanticCondition (fun:funs) conditionPredicate semanticError errorMessages = 
+testSemanticCondition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
+testSemanticCondition [] _  errorMessages = errorMessages
+testSemanticCondition (fun:funs) conditionPredicate  errorMessages = 
   if conditionPredicate fun 
     then 
-      testSemanticCondition funs conditionPredicate semanticError errorMessages
+      testSemanticCondition funs conditionPredicate  errorMessages
     else 
-      testSemanticCondition funs conditionPredicate semanticError (newErrorMessage : errorMessages)
+      testSemanticCondition funs conditionPredicate  (newErrorMessage : errorMessages)
     where 
-      newErrorMessage = show (semanticError errorInfo)
+      newErrorMessage = show (DuplicatedFunctionName errorInfo)
       errorInfo = getFunctionInfo fun
+
+testFunctionNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testFunctionNames [] errorMessages = errorMessages
+testFunctionNames (fun:funs)  errorMessages = 
+  if functionNamesAreMatching fun
+    then
+      testFunctionNames funs errorMessages
+    else
+      testFunctionNames funs (newErrorMessage : errorMessages)
+    where
+      newErrorMessage = show (MismatchedFunctionDefinitionAndDeclaration errorInfo)
+      errorInfo = getFunctionInfo fun
+
+testNumberOfFunctionArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testNumberOfFunctionArguments [] errorMessages = errorMessages
+testNumberOfFunctionArguments (fun:funs)  errorMessages = 
+  if toInteger noFunctionArguments > maxTypeArgs
+    then
+      testFunctionNames funs errorMessages
+    else
+      testFunctionNames funs (newErrorMessage : errorMessages)
+    where
+      noFunctionArguments = getNoFunctionArguments funDef
+      maxTypeArgs = getMaxTypeArgs tp
+      newErrorMessage = show (IncorrectNumberOfFunctionArguments (errorInfo ++ "function has " ++ show noFunctionArguments ++ " but expect as most " ++ show maxTypeArgs))
+      errorInfo = getFunctionInfo fun
+      getNoFunctionArguments (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
+      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType var tp) funDef) = fun
+      getMaxTypeArgs :: GeneratedAbstractSyntax.Type -> Integer
+      getMaxTypeArgs (GeneratedAbstractSyntax.TypeFunction t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
+      getMaxTypeArgs (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
+      getMaxTypeArgs (GeneratedAbstractSyntax.TypeSum t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
+      getMaxTypeArgs (GeneratedAbstractSyntax.TypeNonLinear t) = getMaxTypeArgs t
+      getMaxTypeArgs (GeneratedAbstractSyntax.TypeExp t i) = getMaxTypeArgs t * i
+      getMaxTypeArgs _ = 1
+
 
 -- test for DuplicatedFunctionName
 functionNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionNamesAreUnique functions = performSemanticAnalysis functions conditionPredicate semanticError
+functionNamesAreUnique functions = if null allErrors then Right () else Left allErrors
   where
+    allErrors = intercalate ", " $ uniquify $ testSemanticCondition functions conditionPredicate []
     conditionPredicate function = length (filter (== getFunctionName function) functionNames) == 1
     functionNames = map getFunctionName functions
-    semanticError = DuplicatedFunctionName
-
--- test for DuplicateFunctionDefinition
-functionDefinitionsAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionDefinitionsAreUnique function = undefined
-
--- test for DuplicateFunctionDeclaration
-functionDeclarationsAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionDeclarationsAreUnique function = undefined
 
 -- test for MismatchedFunctionDefinitionAndDeclaration
 functionDeclarationSignaturesMatchDefinitions :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionDeclarationSignaturesMatchDefinitions function = undefined
+functionDeclarationSignaturesMatchDefinitions functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testFunctionNames functions []
 
 -- test for IncorrectNumberOfFunctionArguments
 functionsHaveCorrectNumberOfArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionsHaveCorrectNumberOfArguments function = undefined
+functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testNumberOfFunctionArguments functions []
 
 -- test for ControlQbitsNotDistinct
 controlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -123,3 +145,9 @@ getFunctionInfo (GeneratedAbstractSyntax.FunDecl _ funDef) =
 
 uniquify :: Ord a => [a] -> [a]
 uniquify lst = toList $ fromList lst
+
+functionNamesAreMatching :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
+functionNamesAreMatching (GeneratedAbstractSyntax.FunDecl funType funDef) = show fname == functionName
+  where
+    functionName = getFunctionName (GeneratedAbstractSyntax.FunDecl funType funDef)
+    (GeneratedAbstractSyntax.FunType fname ftype) = funType
