@@ -13,7 +13,7 @@ data SemanticError =
     IncorrectNumberOfFunArgs String                   |  -- number of function arguments for a function call does not exceed number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates must be distinct
     ControlBitsNotDistinct String                     |  -- control bits for classically controlled gates must be distinct
-    ControlAndTargetQubitsNotDistinct String           |  -- for a controlled gate the control and target qubits must be distinct
+    ControlAndTargetQubitsNotDistinct String          |  -- for a controlled gate the control and target qubits must be distinct
     UnknownGate String                                   -- gate names should be recognized as belonging to the set of supported gates
 
 instance Show SemanticError where
