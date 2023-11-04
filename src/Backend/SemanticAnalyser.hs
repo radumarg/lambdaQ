@@ -77,7 +77,9 @@ controlBitsAreDistinct functions = if null allErrors then Right () else Left all
 
 -- test for ControlAndTargetQbitsNotDistinct --
 controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlAndTargetQubitsAreDistinct functions = undefined
+controlAndTargetQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testCtrlAndTgtQubitsAreDistinctAndGetErrors functions []
 
 -- test semantic conditions --
 
@@ -167,6 +169,19 @@ testBitsAreDistinctAndGetErrors (fun:funs) errorMessages =
       newErrorMessage = show (ControlBitsNotDistinct errorInfo)
       errorInfo = getFunInfo fun
 
+testCtrlAndTgtQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testCtrlAndTgtQubitsAreDistinctAndGetErrors [] errorMessages = errorMessages
+testCtrlAndTgtQubitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+  if null duplicatedQubits
+    then
+      testBitsAreDistinctAndGetErrors funs errorMessages
+    else
+      testBitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+    where
+      duplicatedQubits = getDuplicatedCtrlAndTgtQubits fun []
+      newErrorMessage = show (ControlAndTargetQbitsNotDistinct errorInfo) ++ " for qubits identified with: " ++ intercalate ", " duplicatedQubits
+      errorInfo = getFunInfo fun
+
 -- some helper functions --
 
 getFunName :: GeneratedAbstractSyntax.FunctionDeclaration -> String
@@ -243,3 +258,26 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
     -- TODO: ADD TUPLE TERM
     collectNotDistinct _ unknownGates = unknownGates
  
+getDuplicatedCtrlAndTgtQubits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
+getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectDuplicated fbody
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+    collectDuplicated :: GeneratedAbstractSyntax.Term -> [String] -> [String]
+    collectDuplicated (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 [] ++ collectDuplicated t3 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLambda _ _ _ t) duplicatedQubits = duplicatedQubits ++ collectDuplicated t [] 
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) term) duplicatedQubits 
+      = duplicatedQubits ++ getDuplicated ctrlTerm term
+      where
+        getDuplicated ctrlTerm term = [show term | show term == show ctrlTerm]
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) term) duplicatedQubits
+      = duplicatedQubits ++ getDuplicated (ctrlTerm:ctrlTerms) term
+      where
+        getDuplicated ctrlTerms term = [show term | show term `elem` map show ctrlTerms]
+    collectDuplicated (GeneratedAbstractSyntax.TermApply t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermDollar t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermCompose t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated _ duplicatedQubits = duplicatedQubits
