@@ -18,7 +18,7 @@ data SemanticError =
 
 instance Show SemanticError where
     show (DuplicatedFunctionName error) = "Function name is not unique: " ++ error
-    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function signature in declaration  does not match the signature in definition: " ++ error
+    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function signature in declaration does not match the signature in definition: " ++ error
     show (IncorrectNumberOfFunArgs error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
     show (ControlBitsNotDistinct error) = "The control bits for classical controlled gate are not distinct: " ++ error
