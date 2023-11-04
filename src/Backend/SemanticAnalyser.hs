@@ -13,7 +13,7 @@ data SemanticError =
     IncorrectNumberOfFunArgs String                   |  -- number of function arguments for a function call does not exceed number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates must be distinct
     ControlBitsNotDistinct String                     |  -- control bits for classically controlled gates must be distinct
-    ControlAndTargetQbitsNotDistinct String           |  -- for a controlled gate the control and target qubits must be distinct
+    ControlAndTargetQubitsNotDistinct String           |  -- for a controlled gate the control and target qubits must be distinct
     UnknownGate String                                   -- gate names should be recognized as belonging to the set of supported gates
 
 instance Show SemanticError where
@@ -22,7 +22,7 @@ instance Show SemanticError where
     show (IncorrectNumberOfFunArgs error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
     show (ControlBitsNotDistinct error) = "The control bits for classical controlled gate are not distinct: " ++ error
-    show (ControlAndTargetQbitsNotDistinct error) = "The control and target qubits are not distinct: " ++ error
+    show (ControlAndTargetQubitsNotDistinct error) = "The control and target qubits are not distinct: " ++ error
     show (UnknownGate error) = "This gate is not supported: " ++ error
 
 runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String ()
@@ -75,7 +75,7 @@ controlBitsAreDistinct functions = if null allErrors then Right () else Left all
   where
     allErrors = intercalate ", " $ testBitsAreDistinctAndGetErrors functions []
 
--- test for ControlAndTargetQbitsNotDistinct --
+-- test for ControlAndTargetQubitsNotDistinct --
 controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 controlAndTargetQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
@@ -179,7 +179,7 @@ testCtrlAndTgtQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
       testBitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
     where
       duplicatedQubits = getDuplicatedCtrlAndTgtQubits fun []
-      newErrorMessage = show (ControlAndTargetQbitsNotDistinct errorInfo) ++ " for qubits identified with: " ++ intercalate ", " duplicatedQubits
+      newErrorMessage = show (ControlAndTargetQubitsNotDistinct errorInfo) ++ " for qubits identified with: " ++ intercalate ", " duplicatedQubits
       errorInfo = getFunInfo fun
 
 -- some helper functions --
