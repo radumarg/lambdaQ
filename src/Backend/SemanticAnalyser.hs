@@ -10,7 +10,7 @@ import Text.Parsec.Error (errorMessages)
 data SemanticError =
     DuplicatedFunctionName String                     |  -- function names must be unique
     MismatchedFunctionDefinitionAndDeclaration String |  -- function signature in declaration has a definition with a matching signature
-    IncorrectNumberOfFunctionArguments String         |  -- number of function arguments for a function call does not exceed number of arguments in signature
+    IncorrectNumberOfFunArgs String         |  -- number of function arguments for a function call does not exceed number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates must be distinct
     ControlBitsNotDistinct String                     |  -- control bits for classically controlled gates must be distinct
     ControlAndTargetQbitsNotDistinct String           |  -- for a controlled gate the control and target qubits must be distinct
@@ -20,7 +20,7 @@ data SemanticError =
 instance Show SemanticError where
     show (DuplicatedFunctionName error) = "Function name is not unique: " ++ error
     show (MismatchedFunctionDefinitionAndDeclaration error) = "Function signature in declaration  does not match the signature in definition: " ++ error
-    show (IncorrectNumberOfFunctionArguments error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
+    show (IncorrectNumberOfFunArgs error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
     show (ControlBitsNotDistinct error) = "The control bits for classical controlled gate are not distinct: " ++ error
     show (ControlAndTargetQbitsNotDistinct error) = "The control and target qubits are not distinct: " ++ error
@@ -30,7 +30,7 @@ instance Show SemanticError where
 runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String ()
 runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) = 
     mapM_ ($ functions) [
-        functionNamesAreUnique, 
+        funNamesAreUnique, 
         functionDeclarationSignaturesMatchDefinitions,
         functionsHaveCorrectNumberOfArguments,
         controlQubitsAreDistinct,
@@ -40,45 +40,94 @@ runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) =
         gateNamesAreValid
     ]
 
-testSemanticCondition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
-testSemanticCondition [] _  errorMessages = errorMessages
-testSemanticCondition (fun:funs) conditionPredicate  errorMessages = 
+-- test for DuplicatedFunctionName --
+funNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+funNamesAreUnique functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ uniquify $ testForDuplicatedFunNamesAndGetErrors functions conditionPredicate []
+    conditionPredicate function = length (filter (== getFunName function) funNames) == 1
+    funNames = map getFunName functions
+
+-- test for MismatchedFunctionDefinitionAndDeclaration --
+functionDeclarationSignaturesMatchDefinitions :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+functionDeclarationSignaturesMatchDefinitions functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testFunNamesAndGetErrors functions []
+
+-- test for IncorrectNumberOfFunArgs --
+functionsHaveCorrectNumberOfArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testNumberOfFunArgsAndGetErrors functions []
+
+-- test for UnknownGates --
+gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+gateNamesAreValid functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testGateNamesAndGetErrors functions []
+
+-- test for ControlQbitsNotDistinct --
+controlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+controlQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testQubitsAreDistinctAndGetErrors functions []
+
+-- test for controlBitsNotDistinct --
+controlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+controlBitsAreDistinct functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = intercalate ", " $ testBitsAreDistinctAndGetErrors functions []
+
+-- test for ControlAndTargetQbitsNotDistinct --
+controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+controlAndTargetQubitsAreDistinct functions = undefined
+
+-- test for InvalidBitValue --
+bitValuesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+bitValuesAreValid function = undefined
+
+
+-- test semantic conditions --
+
+testForDuplicatedFunNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
+testForDuplicatedFunNamesAndGetErrors [] _  errorMessages = errorMessages
+testForDuplicatedFunNamesAndGetErrors (fun:funs) conditionPredicate  errorMessages = 
   if conditionPredicate fun 
     then 
-      testSemanticCondition funs conditionPredicate  errorMessages
+      testForDuplicatedFunNamesAndGetErrors funs conditionPredicate  errorMessages
     else 
-      testSemanticCondition funs conditionPredicate  (newErrorMessage : errorMessages)
+      testForDuplicatedFunNamesAndGetErrors funs conditionPredicate  (newErrorMessage : errorMessages)
     where 
       newErrorMessage = show (DuplicatedFunctionName errorInfo)
-      errorInfo = getFunctionInfo fun
+      errorInfo = getFunInfo fun
 
-testFunctionNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testFunctionNames [] errorMessages = errorMessages
-testFunctionNames (fun:funs)  errorMessages = 
-  if functionNamesAreMatching fun
+testFunNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testFunNamesAndGetErrors [] errorMessages = errorMessages
+testFunNamesAndGetErrors (fun:funs)  errorMessages = 
+  if funNamesAreMatching fun
     then
-      testFunctionNames funs errorMessages
+      testFunNamesAndGetErrors funs errorMessages
     else
-      testFunctionNames funs (newErrorMessage : errorMessages)
+      testFunNamesAndGetErrors funs (newErrorMessage : errorMessages)
     where
       newErrorMessage = show (MismatchedFunctionDefinitionAndDeclaration errorInfo)
-      errorInfo = getFunctionInfo fun
+      errorInfo = getFunInfo fun
 
-testNumberOfFunctionArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testNumberOfFunctionArguments [] errorMessages = errorMessages
-testNumberOfFunctionArguments (fun:funs)  errorMessages = 
-  if toInteger noFunctionArguments > maxTypeArgs
+testNumberOfFunArgsAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testNumberOfFunArgsAndGetErrors [] errorMessages = errorMessages
+testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages = 
+  if toInteger noFunArgs > maxTypeArgs
     then
-      testFunctionNames funs errorMessages
+      testFunNamesAndGetErrors funs errorMessages
     else
-      testFunctionNames funs (newErrorMessage : errorMessages)
+      testFunNamesAndGetErrors funs (newErrorMessage : errorMessages)
     where
-      noFunctionArguments = getNoFunctionArguments funDef
+      noFunArgs = getNoFunArgs funDef
       maxTypeArgs = getMaxTypeArgs tp
-      newErrorMessage = show (IncorrectNumberOfFunctionArguments (errorInfo ++ "function has " ++ show noFunctionArguments ++ " but expect as most " ++ show maxTypeArgs))
-      errorInfo = getFunctionInfo fun
-      getNoFunctionArguments (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
-      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType var tp) funDef) = fun
+      newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ "function has " ++ show noFunArgs ++ " but expect as most " ++ show maxTypeArgs))
+      errorInfo = getFunInfo fun
+      getNoFunArgs (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
+      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ tp) funDef) = fun
       getMaxTypeArgs :: GeneratedAbstractSyntax.Type -> Integer
       getMaxTypeArgs (GeneratedAbstractSyntax.TypeFunction t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
       getMaxTypeArgs (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
@@ -87,57 +136,55 @@ testNumberOfFunctionArguments (fun:funs)  errorMessages =
       getMaxTypeArgs (GeneratedAbstractSyntax.TypeExp t i) = getMaxTypeArgs t * i
       getMaxTypeArgs _ = 1
 
+testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testGateNamesAndGetErrors [] errorMessages = errorMessages
+testGateNamesAndGetErrors (fun:funs)  errorMessages = 
+  if null unknownGates
+    then
+      testFunNamesAndGetErrors funs errorMessages
+    else
+      testFunNamesAndGetErrors funs (newErrorMessage : errorMessages)
+    where
+      unknownGates = getUnknownGates fun
+      newErrorMessage = show (UnknownGate errorInfo) ++ " for gates named: " ++ intercalate ", " unknownGates
+      errorInfo = getFunInfo fun
 
--- test for DuplicatedFunctionName
-functionNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionNamesAreUnique functions = if null allErrors then Right () else Left allErrors
-  where
-    allErrors = intercalate ", " $ uniquify $ testSemanticCondition functions conditionPredicate []
-    conditionPredicate function = length (filter (== getFunctionName function) functionNames) == 1
-    functionNames = map getFunctionName functions
+testQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testQubitsAreDistinctAndGetErrors [] errorMessages = errorMessages
+testQubitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+  if null incorrectQubits
+    then
+      testQubitsAreDistinctAndGetErrors funs errorMessages
+    else
+      testQubitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+    where
+      incorrectQubits = getNotDistinctQubits fun []
+      newErrorMessage = show (UnknownGate errorInfo)
+      errorInfo = getFunInfo fun
 
--- test for MismatchedFunctionDefinitionAndDeclaration
-functionDeclarationSignaturesMatchDefinitions :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionDeclarationSignaturesMatchDefinitions functions = if null allErrors then Right () else Left allErrors
-  where
-    allErrors = intercalate ", " $ testFunctionNames functions []
+testBitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+testBitsAreDistinctAndGetErrors [] errorMessages = errorMessages
+testBitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+  if null incorrectQubits
+    then
+      testBitsAreDistinctAndGetErrors funs errorMessages
+    else
+      testBitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+    where
+      incorrectQubits = getNotDistinctBits fun []
+      newErrorMessage = show (UnknownGate errorInfo)
+      errorInfo = getFunInfo fun
 
--- test for IncorrectNumberOfFunctionArguments
-functionsHaveCorrectNumberOfArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right () else Left allErrors
-  where
-    allErrors = intercalate ", " $ testNumberOfFunctionArguments functions []
+-- some helper functions --
 
--- test for ControlQbitsNotDistinct
-controlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlQubitsAreDistinct function = undefined
-
--- test for controlBitsNotDistinct
-controlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlBitsAreDistinct function = undefined
-
--- test for ControlAndTargetQbitsNotDistinct
-controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlAndTargetQubitsAreDistinct function = undefined
-
--- test for InvalidBitValue
-bitValuesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-bitValuesAreValid function = undefined
-
--- test for UnknownGate
-gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-gateNamesAreValid function = undefined
-
--- some helper functions
-
-getFunctionName :: GeneratedAbstractSyntax.FunctionDeclaration -> String
-getFunctionName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
+getFunName :: GeneratedAbstractSyntax.FunctionDeclaration -> String
+getFunName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
     ((fline, fcol), fname) = fvar
 
-getFunctionInfo :: GeneratedAbstractSyntax.FunctionDeclaration -> String
-getFunctionInfo (GeneratedAbstractSyntax.FunDecl _ funDef) = 
+getFunInfo :: GeneratedAbstractSyntax.FunctionDeclaration -> String
+getFunInfo (GeneratedAbstractSyntax.FunDecl _ funDef) = 
     "for function: " ++ fname ++ " at line: " ++ show fline ++  " and column: " ++ show fcol
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
@@ -146,8 +193,65 @@ getFunctionInfo (GeneratedAbstractSyntax.FunDecl _ funDef) =
 uniquify :: Ord a => [a] -> [a]
 uniquify lst = toList $ fromList lst
 
-functionNamesAreMatching :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
-functionNamesAreMatching (GeneratedAbstractSyntax.FunDecl funType funDef) = show fname == functionName
+funNamesAreMatching :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
+funNamesAreMatching (GeneratedAbstractSyntax.FunDecl funType funDef) = show fname == functionName
   where
-    functionName = getFunctionName (GeneratedAbstractSyntax.FunDecl funType funDef)
+    functionName = getFunName (GeneratedAbstractSyntax.FunDecl funType funDef)
     (GeneratedAbstractSyntax.FunType fname ftype) = funType
+
+getUnknownGates :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
+getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody []
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+    collectUnknowns :: GeneratedAbstractSyntax.Term -> [String] -> [String] 
+    collectUnknowns _ _ = []
+    -- TODO: DO I WANT TO CATCH INCORRECTLY NAMED GATES DURING PARSING OR HERE?
+
+getNotDistinctQubits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
+getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistinct fbody
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+    collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
+    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlsGate controlTerms _) unknownGates = if distinct then unknownGates else unknownGates ++ [show controlTerms]
+      where
+        distinct = controlTermsAreDistinct controlTerms
+        controlTermsAreDistinct :: GeneratedAbstractSyntax.ControlTerms -> Bool
+        controlTermsAreDistinct (GeneratedAbstractSyntax.CtrlTerms term [terms]) = length termVariables == length (uniquify termVariables)
+          where termVariables = show term : map show [terms]
+        controlTermsAreDistinct _ = undefined
+    collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) unknownGates = unknownGates ++ collectNotDistinct t []
+    collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- TODO: ADD TUPLE TERM
+    collectNotDistinct _ unknownGates = unknownGates
+
+getNotDistinctBits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
+getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistinct fbody
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
+    collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
+    collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlsGate controlTerms _) unknownGates = if distinct then unknownGates else unknownGates ++ [show controlTerms]
+      where
+        distinct = controlTermsAreDistinct controlTerms
+        controlTermsAreDistinct :: GeneratedAbstractSyntax.ControlTerms -> Bool
+        controlTermsAreDistinct (GeneratedAbstractSyntax.CtrlTerms term [terms]) = length termVariables == length (uniquify termVariables)
+          where termVariables = show term : map show [terms]
+        controlTermsAreDistinct _ = undefined
+    collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) unknownGates = unknownGates ++ collectNotDistinct t []
+    collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- TODO: ADD TUPLE TERM
+    collectNotDistinct _ unknownGates = unknownGates
+ 
