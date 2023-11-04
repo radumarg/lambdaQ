@@ -214,11 +214,9 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
     collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
     collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlsGate controlTerms _) unknownGates = if distinct then unknownGates else unknownGates ++ [show controlTerms]
       where
-        distinct = controlTermsAreDistinct controlTerms
-        controlTermsAreDistinct :: GeneratedAbstractSyntax.ControlTerms -> Bool
-        controlTermsAreDistinct (GeneratedAbstractSyntax.CtrlTerms term [terms]) = length termVariables == length (uniquify termVariables)
-          where termVariables = show term : map show [terms]
-        controlTermsAreDistinct _ = undefined
+        distinct = length termVariables == length (uniquify termVariables)
+        (GeneratedAbstractSyntax.CtrlTerms term [terms]) = controlTerms
+        termVariables = show term : map show [terms]
     collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
     collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
@@ -238,11 +236,9 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
     collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
     collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlsGate controlTerms _) unknownGates = if distinct then unknownGates else unknownGates ++ [show controlTerms]
       where
-        distinct = controlTermsAreDistinct controlTerms
-        controlTermsAreDistinct :: GeneratedAbstractSyntax.ControlTerms -> Bool
-        controlTermsAreDistinct (GeneratedAbstractSyntax.CtrlTerms term [terms]) = length termVariables == length (uniquify termVariables)
-          where termVariables = show term : map show [terms]
-        controlTermsAreDistinct _ = undefined
+        distinct = length termVariables == length (uniquify termVariables)
+        (GeneratedAbstractSyntax.CtrlTerms term [terms]) = controlTerms
+        termVariables = show term : map show [terms]
     collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
     collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
