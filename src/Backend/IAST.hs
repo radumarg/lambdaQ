@@ -299,8 +299,8 @@ mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
 mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
-mapTerm env (GeneratedAbstractSyntax.TermLetSingle x letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Map.insert (toLetVariableName x) 0 (Map.map succ env)
+mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
+  where inEnv = Map.insert (toLetVariableName var) 0 (Map.map succ env)
 mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x [y] letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm inEnv letIn)
   where inEnv = Map.insert (toLetVariableName y) 1 $ Map.insert (toLetVariableName x) 0 (Map.map (succ . succ) env)
 mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x (y:ys) letEq letIn) = 
@@ -333,10 +333,8 @@ reverseMapTerm :: Environment -> Term -> GeneratedAbstractSyntax.Term
 reverseMapTerm _ (TermNew (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new")) 
 reverseMapTerm _ (TermMeasure (l, c)) = GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))
 reverseMapTerm env (TermIfElse cond t f) = GeneratedAbstractSyntax.TermIfElse (reverseMapTerm env cond) (reverseMapTerm env t) (reverseMapTerm env f)
-reverseMapTerm env (TermQuantumCtrlGate term basisState) =
-  GeneratedAbstractSyntax.TermQuantumCtrlGate 
-  (GeneratedAbstractSyntax.CtrlTerm (reverseMapTerm env term)) 
-  (GeneratedAbstractSyntax.CtrlBasisState (reverseMapBasisState basisState))
+reverseMapTerm env (TermQuantumCtrlGate term basisState) = GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm (reverseMapTerm env term))  (GeneratedAbstractSyntax.CtrlBasisState (reverseMapBasisState basisState))
+reverseMapTerm env (TermLetSingle )
 reverseMapTerm _ _ = undefined
 
 
@@ -351,24 +349,6 @@ reverseMapTerm _ _ = undefined
 --   [GeneratedAbstractSyntax.LetVar . GeneratedAbstractSyntax.Var $ 'x' : show (env + 1)] 
 --   (reverseMapTerm env letEq) 
 --   (reverseMapTerm (env + 2) letIn)
-
-mapControlTerm :: Environment -> GeneratedAbstractSyntax.ControlTerm -> ControlTerm
-mapControlTerm env (GeneratedAbstractSyntax.CtrlTerm term) = CtrlTerm (mapTerm env term)
-
-reverseMapControlTerm :: Environment -> ControlTerm -> GeneratedAbstractSyntax.ControlTerm
-reverseMapControlTerm env (CtrlTerm term) = GeneratedAbstractSyntax.CtrlTerm (reverseMapTerm env term)
-
-mapControlTerms :: Environment -> GeneratedAbstractSyntax.ControlTerms -> ControlTerms
-mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term []) = CtrlTerms (mapTerm env term) []
-mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term [terms]) = CtrlTerms (mapTerm env term) (map mapControl [terms])
-  where mapControl = mapTerm env
-mapControlTerms _ _ = undefined
-
-reverseMapControlTerms :: Environment -> ControlTerms -> GeneratedAbstractSyntax.ControlTerms
-reverseMapControlTerms env (CtrlTerms term []) = GeneratedAbstractSyntax.CtrlTerms (reverseMapTerm env term) []
-reverseMapControlTerms env (CtrlTerms term [terms]) = GeneratedAbstractSyntax.CtrlTerms (reverseMapTerm env term) (map reverseMapControl [terms])
-  where reverseMapControl = reverseMapTerm env
-reverseMapControlTerms _ _ = undefined
 
 
 -- reverseMapTerm env (TermApply l r) = GeneratedAbstractSyntax.TermApply (reverseMapTerm env l) (reverseMapTerm env r)
@@ -387,3 +367,33 @@ reverseMapControlTerms _ _ = undefined
 -- TermVariable         . Term3 ::= Var ;
 -- TermTuple            . Term3 ::= Tuple ;
 -- TermUnit             . Term3 ::= "()" ;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+mapControlTerm :: Environment -> GeneratedAbstractSyntax.ControlTerm -> ControlTerm
+mapControlTerm env (GeneratedAbstractSyntax.CtrlTerm term) = CtrlTerm (mapTerm env term)
+
+reverseMapControlTerm :: Environment -> ControlTerm -> GeneratedAbstractSyntax.ControlTerm
+reverseMapControlTerm env (CtrlTerm term) = GeneratedAbstractSyntax.CtrlTerm (reverseMapTerm env term)
+
+mapControlTerms :: Environment -> GeneratedAbstractSyntax.ControlTerms -> ControlTerms
+mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term []) = CtrlTerms (mapTerm env term) []
+mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term [terms]) = CtrlTerms (mapTerm env term) (map (mapTerm env) [terms])
+mapControlTerms _ _ = undefined
+
+reverseMapControlTerms :: Environment -> ControlTerms -> GeneratedAbstractSyntax.ControlTerms
+reverseMapControlTerms env (CtrlTerms term []) = GeneratedAbstractSyntax.CtrlTerms (reverseMapTerm env term) []
+reverseMapControlTerms env (CtrlTerms term [terms]) = GeneratedAbstractSyntax.CtrlTerms (reverseMapTerm env term) (map (reverseMapTerm env) [terms])
+reverseMapControlTerms _ _ = undefined

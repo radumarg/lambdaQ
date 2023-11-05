@@ -14,4 +14,5 @@ carry qubits = q0, q1, q2, q3 <- qubits;
                q0, q2, q3 <- with [ q0, q2 ] ctrl [ @1, @1 ] gate X q3;
                (q0, q1, q2, q3)
 
--- TODO: finish implementation
+-- Implementing this circuit need "reverse" operation to be applied on a function which is compiled to a circuit.
+-- This feature will be implemented in subsequent iterations of the language development.
