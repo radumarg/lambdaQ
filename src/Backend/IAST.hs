@@ -307,10 +307,10 @@ reverseMapFunction (Function fname (fline, fcol) ftype term) = GeneratedAbstract
 
 
 mapVariable :: GeneratedAbstractSyntax.Var -> Var
-mapVariable (GeneratedAbstractSyntax.Var var) = undefined --Var (snd var) --TODO
+mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
 
 reverseMapVariable :: Var -> GeneratedAbstractSyntax.Var
-reverseMapVariable (Var var) = undefined --GeneratedAbstractSyntax.Var (snd var) -TODO
+reverseMapVariable (Var ((l, c), var)) = GeneratedAbstractSyntax.Var ((l, c), var)
 
 type Environment = Map.Map String Integer
 
