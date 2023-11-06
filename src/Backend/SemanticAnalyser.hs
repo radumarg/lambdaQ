@@ -1,5 +1,6 @@
-
-module Backend.SemanticAnalyer where
+module Backend.SemanticAnalyser (
+  SemanticError,
+) where
 
 import Backend.IAST (Program)
 import Data.List (intercalate)
