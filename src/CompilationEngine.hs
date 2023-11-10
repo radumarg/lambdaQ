@@ -16,7 +16,7 @@ import qualified Backend.TypeChecker as TypeChecker
 import qualified Backend.CodeGenerator as CodeGenerator
 
  
-data ExecutionError = 
+data ExecutionError =
     ParseError String                                    | 
     SemanticError SemanticAnalyser.SemanticError         | 
     TypeError TypeChecker.TypeError                      |
