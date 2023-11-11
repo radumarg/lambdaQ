@@ -12,7 +12,6 @@ runSemanticAnalysis filePath = readTheFile filePath
                               >>= parseProgram
                               >>= semanticAnalysis
 
-
 lastN :: Int -> [a] -> [a]
 lastN n xs = drop (length xs - n) xs
 

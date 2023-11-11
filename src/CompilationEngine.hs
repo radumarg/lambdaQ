@@ -17,9 +17,9 @@ import qualified Backend.CodeGenerator as CodeGenerator
 
  
 data CompilationError =
-    ParseError String                                    | 
-    SemanticError SemanticAnalyser.SemanticError         | 
-    TypeError TypeChecker.TypeError                      |
+    ParseError String                                     | 
+    SemanticError SemanticAnalyser.SemanticError          | 
+    TypeError TypeChecker.TypeError                       |
     CodeGenerationError CodeGenerator.CodeGenerationError |
     FileDoesNotExist FilePath
 
