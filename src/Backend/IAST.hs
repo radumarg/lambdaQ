@@ -355,7 +355,7 @@ mapTerm env (GeneratedAbstractSyntax.TermCompose l r) = TermCompose (mapTerm env
 mapTerm _ (GeneratedAbstractSyntax.TermVariable var) = TermVariable (mapVariable var)
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
 mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
-mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term [terms])) = undefined -- TODO TermTuple (mapTerm env term) (map (mapTerm env) terms)
+mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term [terms])) = foldr1 TermTuple $ map (mapTerm env) (term:[terms])
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 mapTerm _ _ = undefined
 
@@ -391,6 +391,6 @@ reverseMapTerm env (TermCompose l r) = GeneratedAbstractSyntax.TermCompose (reve
 reverseMapTerm _ (TermVariable var) = GeneratedAbstractSyntax.TermVariable (reverseMapVariable var)
 reverseMapTerm _ (TermBasisState bs) = GeneratedAbstractSyntax.TermBasisState (reverseMapBasisState bs)
 reverseMapTerm _ (TermGate gate) = GeneratedAbstractSyntax.TermGate (reverseMapGate gate)
-reverseMapTerm env (TermTuple term1 term2) = undefined -- TODO ??
+reverseMapTerm env (TermTuple term1 term2) = GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl (reverseMapTerm env term1) [reverseMapTerm env term2])
 reverseMapTerm _ TermUnit = GeneratedAbstractSyntax.TermUnit
 reverseMapTerm _ _ = undefined
