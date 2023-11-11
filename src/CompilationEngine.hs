@@ -16,16 +16,32 @@ import qualified Backend.TypeChecker as TypeChecker
 import qualified Backend.CodeGenerator as CodeGenerator
 
  
-data ExecutionError =
+data CompilationError =
     ParseError String                                    | 
     SemanticError SemanticAnalyser.SemanticError         | 
     TypeError TypeChecker.TypeError                      |
-    CodeGeneratioError CodeGenerator.CodeGenerationError |
+    CodeGenerationError CodeGenerator.CodeGenerationError |
     FileDoesNotExist FilePath
+
+instance Show CompilationError where
+  show (ParseError e) =
+    "parse error:\n" ++ show e
+
+  show (SemanticError e) =
+    "semantic error:\n" ++ show e
+
+  show (TypeError e) =
+    "type error:\n" ++ show e
+
+  show (CodeGenerationError e) =
+    "code generation error " ++ show e
+
+  show (FileDoesNotExist file) =
+    "file not found: " ++ show file
 
 -- ExceptT monad transformer can be used to 
 -- add error handling to another monad
-type Exec a = ExceptT ExecutionError IO a
+type Exec a = ExceptT CompilationError IO a
 
 readTheFile :: FilePath -> Exec String
 readTheFile = undefined

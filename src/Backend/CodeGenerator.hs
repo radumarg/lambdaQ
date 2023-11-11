@@ -10,3 +10,8 @@ data CodeGenerationError =
     SomeCodeGenerationError String      |
     SomeOtherCodeGenerationError String |
     EvenMoreCodeGenerationError String
+
+instance Show CodeGenerationError where
+    show (SomeCodeGenerationError error) = "?: " ++ error
+    show (SomeOtherCodeGenerationError error) = "?: " ++ error
+    show (EvenMoreCodeGenerationError error) = "?: " ++ error
