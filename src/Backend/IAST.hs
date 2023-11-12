@@ -403,5 +403,5 @@ mapProgram (GeneratedAbstractSyntax.ProgDef functions) = map mapFunction functio
 reverseMapProgram :: Program -> GeneratedAbstractSyntax.Program
 reverseMapProgram = GeneratedAbstractSyntax.ProgDef . map reverseMapFunction
 
-astToIastConversion :: GeneratedAbstractSyntax.Program -> Either String Program
-astToIastConversion = Right . mapProgram
+runAstToIastConverter :: GeneratedAbstractSyntax.Program -> Either String Program
+runAstToIastConverter = Right . mapProgram

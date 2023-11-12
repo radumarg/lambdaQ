@@ -6,8 +6,8 @@ import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, con
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 import Backend.IAST (Program)
 
-runCodeGenerator :: FilePath -> Exec String
-runCodeGenerator filePath = readTheFile filePath
+runCodeGeneration :: FilePath -> Exec String
+runCodeGeneration filePath = readTheFile filePath
                           >>= parseProgram
                           >>= semanticAnalysis
                           >>= convertAstToIast
@@ -24,7 +24,7 @@ main = do
     then
       do
         let filePath = head args
-        runExceptT (runCodeGenerator filePath) >>= \case
+        runExceptT (runCodeGeneration filePath) >>= \case
           Left error -> putStrLn $ "Error: " ++ show error ++ "!"
           Right code -> putStrLn code
       else

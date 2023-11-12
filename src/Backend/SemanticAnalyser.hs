@@ -1,6 +1,6 @@
 module Backend.SemanticAnalyser (
   SemanticError,
-  runSemanticAnalysis
+  runSemanticAnalyser
 ) where
 
 import Backend.IAST (Program)
@@ -27,8 +27,8 @@ instance Show SemanticError where
     show (ControlAndTargetQubitsNotDistinct error) = "The control and target qubits are not distinct: " ++ error
     show (UnknownGate error) = "This gate is not supported: " ++ error
 
-runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
-runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) =
+runSemanticAnalyser :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
+runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
   if null err then Right (GeneratedAbstractSyntax.ProgDef functions) else Left err
   where
     err1 = toString $ funNamesAreUnique functions

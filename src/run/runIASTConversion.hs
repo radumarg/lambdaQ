@@ -2,7 +2,7 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import Backend.IAST (Program, reverseMapFunction)
+import Backend.IAST (Program, reverseMapFunction, mapProgram)
 import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast)
 import Frontend.LambdaQ.Print ( printTree )
 

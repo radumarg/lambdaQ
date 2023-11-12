@@ -9,9 +9,9 @@ import Control.Monad.Except
   )
 import Control.Exception (Exception, try)
 
-import Backend.IAST (Program, astToIastConversion)
+import Backend.IAST (Program, runAstToIastConverter)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
-import Backend.SemanticAnalyser (runSemanticAnalysis)
+import Backend.SemanticAnalyser (runSemanticAnalyser)
 import Backend.TypeChecker (runTypeChecker)
 import Backend.CodeGenerator (runCodeGenerator)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
@@ -54,10 +54,10 @@ parseProgram :: String -> Exec GeneratedAbstractSyntax.Program
 parseProgram = ExceptT . return . first ParseError . pProgram . myLexer
 
 semanticAnalysis :: GeneratedAbstractSyntax.Program -> Exec GeneratedAbstractSyntax.Program
-semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalysis
+semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalyser
 
 convertAstToIast :: GeneratedAbstractSyntax.Program -> Exec Program
-convertAstToIast = ExceptT . return . first undefined . astToIastConversion
+convertAstToIast = ExceptT . return . first undefined . runAstToIastConverter
 
 typeCheck :: Program -> Exec Program
 typeCheck = ExceptT . return . first TypeError . runTypeChecker
