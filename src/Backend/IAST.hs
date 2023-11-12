@@ -394,3 +394,14 @@ reverseMapTerm _ (TermGate gate) = GeneratedAbstractSyntax.TermGate (reverseMapG
 reverseMapTerm env (TermTuple term1 term2) = GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl (reverseMapTerm env term1) [reverseMapTerm env term2])
 reverseMapTerm _ TermUnit = GeneratedAbstractSyntax.TermUnit
 reverseMapTerm _ _ = undefined
+
+-- an AST program is just a list of functions --
+mapProgram :: GeneratedAbstractSyntax.Program -> Program
+mapProgram (GeneratedAbstractSyntax.ProgDef functions) = map mapFunction functions
+
+-- an IAST program is also just a list of functions --
+reverseMapProgram :: Program -> GeneratedAbstractSyntax.Program
+reverseMapProgram = GeneratedAbstractSyntax.ProgDef . map reverseMapFunction
+
+astToIastConversion :: GeneratedAbstractSyntax.Program -> Either String Program
+astToIastConversion = Right . mapProgram

@@ -3,7 +3,10 @@
 
 module Backend.CodeGenerator (
   CodeGenerationError,
+  runCodeGenerator
 ) where
+
+import Backend.IAST (Program)
 
 -- not all code errors can be caught during semantic analysis and type checking
 data CodeGenerationError =
@@ -15,3 +18,6 @@ instance Show CodeGenerationError where
     show (SomeCodeGenerationError error) = "?: " ++ error
     show (SomeOtherCodeGenerationError error) = "?: " ++ error
     show (EvenMoreCodeGenerationError error) = "?: " ++ error
+
+runCodeGenerator :: Program -> Either String String
+runCodeGenerator program = undefined

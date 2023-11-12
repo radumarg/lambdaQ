@@ -5,20 +5,22 @@
 -- Type checker will return an annotated syntax tree (??) - to be determined ..
 module Backend.TypeChecker (
   TypeError,
+  runTypeChecker,
 ) where
 
-import Backend.ASTConverter (parse)
+-- import Backend.ASTConverter (parse)
 import Backend.IAST (Program, Term, Type)
 import Control.Monad.Reader ()
 import Control.Monad.State ()
 import Data.Map (Map)
 import Data.Set (Set)
+import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
-typecheckString :: String -> Either TypeError ()
-typecheckString = typecheckProgram . parse
+-- typecheckString :: String -> Either TypeError ()
+-- typecheckString = runTypeChecker . parse
 
-typecheckProgram :: Program -> Either TypeError ()
-typecheckProgram program = undefined
+runTypeChecker :: Program -> Either String Program
+runTypeChecker program = undefined
 
 data TypeErrorInstance =
     NotAFunction Type             |

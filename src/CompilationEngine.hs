@@ -9,18 +9,18 @@ import Control.Monad.Except
   )
 import Control.Exception (Exception, try)
 
-import Backend.IAST (Program)
+import Backend.IAST (Program, astToIastConversion)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Backend.SemanticAnalyser (runSemanticAnalysis)
+import Backend.TypeChecker (runTypeChecker)
+import Backend.CodeGenerator (runCodeGenerator)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import qualified Backend.TypeChecker as TypeChecker
-import qualified Backend.CodeGenerator as CodeGenerator
 
 data CompilationError =
-    ParseError String                                     |
-    SemanticError String                                  |
-    TypeError TypeChecker.TypeError                       |
-    CodeGenerationError CodeGenerator.CodeGenerationError |
+    ParseError String          |
+    SemanticError String       |
+    TypeError String           |
+    CodeGenerationError String |
     FileDoesNotExist FilePath
 
 instance Show CompilationError where
@@ -57,10 +57,10 @@ semanticAnalysis :: GeneratedAbstractSyntax.Program -> Exec GeneratedAbstractSyn
 semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalysis
 
 convertAstToIast :: GeneratedAbstractSyntax.Program -> Exec Program
-convertAstToIast = undefined
+convertAstToIast = ExceptT . return . first undefined . astToIastConversion
 
 typeCheck :: Program -> Exec Program
-typeCheck = undefined
+typeCheck = ExceptT . return . first TypeError . runTypeChecker
 
 generateCode  :: Program -> Exec String
-generateCode = undefined
+generateCode = ExceptT . return . first CodeGenerationError . runCodeGenerator
