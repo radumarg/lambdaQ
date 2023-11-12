@@ -1,7 +1,8 @@
 module CompilationEngine where
 
+import Data.Bifunctor ( Bifunctor(bimap, first) )
 import Control.Monad.Except
-  ( 
+  (
     MonadIO(liftIO),
     MonadError(throwError),
     ExceptT(..),
@@ -10,15 +11,14 @@ import Control.Exception (Exception, try)
 
 import Backend.IAST (Program)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
+import Backend.SemanticAnalyser (runSemanticAnalysis)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import qualified Backend.SemanticAnalyser as SemanticAnalyser
 import qualified Backend.TypeChecker as TypeChecker
 import qualified Backend.CodeGenerator as CodeGenerator
 
- 
 data CompilationError =
-    ParseError String                                     | 
-    SemanticError SemanticAnalyser.SemanticError          | 
+    ParseError String                                     |
+    SemanticError String                                  |
     TypeError TypeChecker.TypeError                       |
     CodeGenerationError CodeGenerator.CodeGenerationError |
     FileDoesNotExist FilePath
@@ -44,13 +44,17 @@ instance Show CompilationError where
 type Exec a = ExceptT CompilationError IO a
 
 readTheFile :: FilePath -> Exec String
-readTheFile = undefined
+readTheFile path = do
+  read <- liftIO (try (readFile path) :: IO (Either IOError String))
+  case read of
+    Left  _ -> throwError $ FileDoesNotExist path
+    Right str -> return str
 
 parseProgram :: String -> Exec GeneratedAbstractSyntax.Program
-parseProgram = undefined
+parseProgram = ExceptT . return . first ParseError . pProgram . myLexer
 
 semanticAnalysis :: GeneratedAbstractSyntax.Program -> Exec GeneratedAbstractSyntax.Program
-semanticAnalysis = undefined
+semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalysis
 
 convertAstToIast :: GeneratedAbstractSyntax.Program -> Exec Program
 convertAstToIast = undefined

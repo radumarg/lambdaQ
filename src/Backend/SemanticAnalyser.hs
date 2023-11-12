@@ -1,5 +1,6 @@
 module Backend.SemanticAnalyser (
   SemanticError,
+  runSemanticAnalysis
 ) where
 
 import Backend.IAST (Program)
@@ -26,17 +27,21 @@ instance Show SemanticError where
     show (ControlAndTargetQubitsNotDistinct error) = "The control and target qubits are not distinct: " ++ error
     show (UnknownGate error) = "This gate is not supported: " ++ error
 
-runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String ()
-runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) = 
-    mapM_ ($ functions) [
-        funNamesAreUnique, 
-        functionDeclarationSignaturesMatchDefinitions,
-        functionsHaveCorrectNumberOfArguments,
-        controlQubitsAreDistinct,
-        controlBitsAreDistinct,
-        controlAndTargetQubitsAreDistinct,
-        gateNamesAreValid
-    ]
+runSemanticAnalysis :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
+runSemanticAnalysis (GeneratedAbstractSyntax.ProgDef functions) =
+  if null err then Right (GeneratedAbstractSyntax.ProgDef functions) else Left err
+  where
+    err1 = toString $ funNamesAreUnique functions
+    err2 = toString $ functionDeclarationSignaturesMatchDefinitions functions
+    err3 = toString $ functionsHaveCorrectNumberOfArguments functions
+    err4 = toString $ controlQubitsAreDistinct functions
+    err5 = toString $ controlBitsAreDistinct functions
+    err6 = toString $ controlAndTargetQubitsAreDistinct functions
+    err7 = toString $ gateNamesAreValid functions
+    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7
+    toString::Either String () -> String
+    toString (Left str) = str
+    toString (Right ()) = ""
 
 -- test for DuplicatedFunctionName --
 funNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -86,19 +91,19 @@ controlAndTargetQubitsAreDistinct functions = if null allErrors then Right () el
 
 testForDuplicatedFunNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
 testForDuplicatedFunNamesAndGetErrors [] _  errorMessages = errorMessages
-testForDuplicatedFunNamesAndGetErrors (fun:funs) conditionPredicate  errorMessages = 
-  if conditionPredicate fun 
-    then 
+testForDuplicatedFunNamesAndGetErrors (fun:funs) conditionPredicate  errorMessages =
+  if conditionPredicate fun
+    then
       testForDuplicatedFunNamesAndGetErrors funs conditionPredicate  errorMessages
-    else 
+    else
       testForDuplicatedFunNamesAndGetErrors funs conditionPredicate  (newErrorMessage : errorMessages)
-    where 
+    where
       newErrorMessage = show (DuplicatedFunctionName errorInfo)
       errorInfo = getFunInfo fun
 
 testFunNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testFunNamesAndGetErrors [] errorMessages = errorMessages
-testFunNamesAndGetErrors (fun:funs)  errorMessages = 
+testFunNamesAndGetErrors (fun:funs)  errorMessages =
   if funNamesAreMatching fun
     then
       testFunNamesAndGetErrors funs errorMessages
@@ -110,7 +115,7 @@ testFunNamesAndGetErrors (fun:funs)  errorMessages =
 
 testNumberOfFunArgsAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testNumberOfFunArgsAndGetErrors [] errorMessages = errorMessages
-testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages = 
+testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
   if toInteger noFunArgs > maxTypeArgs
     then
       testFunNamesAndGetErrors funs errorMessages
@@ -133,7 +138,7 @@ testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
 
 testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testGateNamesAndGetErrors [] errorMessages = errorMessages
-testGateNamesAndGetErrors (fun:funs)  errorMessages = 
+testGateNamesAndGetErrors (fun:funs)  errorMessages =
   if null unknownGates
     then
       testFunNamesAndGetErrors funs errorMessages
@@ -146,7 +151,7 @@ testGateNamesAndGetErrors (fun:funs)  errorMessages =
 
 testQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testQubitsAreDistinctAndGetErrors [] errorMessages = errorMessages
-testQubitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+testQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
   if null incorrectQubits
     then
       testQubitsAreDistinctAndGetErrors funs errorMessages
@@ -159,7 +164,7 @@ testQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
 
 testBitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testBitsAreDistinctAndGetErrors [] errorMessages = errorMessages
-testBitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+testBitsAreDistinctAndGetErrors (fun:funs) errorMessages =
   if null incorrectQubits
     then
       testBitsAreDistinctAndGetErrors funs errorMessages
@@ -172,7 +177,7 @@ testBitsAreDistinctAndGetErrors (fun:funs) errorMessages =
 
 testCtrlAndTgtQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testCtrlAndTgtQubitsAreDistinctAndGetErrors [] errorMessages = errorMessages
-testCtrlAndTgtQubitsAreDistinctAndGetErrors (fun:funs) errorMessages = 
+testCtrlAndTgtQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
   if null duplicatedQubits
     then
       testBitsAreDistinctAndGetErrors funs errorMessages
@@ -192,7 +197,7 @@ getFunName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
     ((fline, fcol), fname) = fvar
 
 getFunInfo :: GeneratedAbstractSyntax.FunctionDeclaration -> String
-getFunInfo (GeneratedAbstractSyntax.FunDecl _ funDef) = 
+getFunInfo (GeneratedAbstractSyntax.FunDecl _ funDef) =
     "for function: " ++ fname ++ " at line: " ++ show fline ++  " and column: " ++ show fcol
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
@@ -211,7 +216,7 @@ getUnknownGates :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
 getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody []
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
-    collectUnknowns :: GeneratedAbstractSyntax.Term -> [String] -> [String] 
+    collectUnknowns :: GeneratedAbstractSyntax.Term -> [String] -> [String]
     collectUnknowns _ _ = []
     -- TODO: DO I WANT TO CATCH INCORRECTLY NAMED GATES DURING PARSING OR HERE?
 
@@ -258,7 +263,7 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
     collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) unknownGates = unknownGates ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     -- TODO: ADD TUPLE TERM
     collectNotDistinct _ unknownGates = unknownGates
- 
+
 getDuplicatedCtrlAndTgtQubits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
 getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectDuplicated fbody
   where
@@ -269,8 +274,8 @@ getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = colle
     collectDuplicated (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
     collectDuplicated (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
     collectDuplicated (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLambda _ _ _ t) duplicatedQubits = duplicatedQubits ++ collectDuplicated t [] 
-    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) term) duplicatedQubits 
+    collectDuplicated (GeneratedAbstractSyntax.TermLambda _ _ _ t) duplicatedQubits = duplicatedQubits ++ collectDuplicated t []
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) term) duplicatedQubits
       = duplicatedQubits ++ getDuplicated ctrlTerm term
       where
         getDuplicated ctrlTerm term = [show term | show term == show ctrlTerm]
