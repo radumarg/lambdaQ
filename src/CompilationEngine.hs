@@ -9,7 +9,7 @@ import Control.Monad.Except
   )
 import Control.Exception (Exception, try)
 
-import Backend.IAST (Program, runAstToIastConverter)
+import Backend.ASTtoIASTConverter (Program, runAstToIastConverter)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Backend.SemanticAnalyser (runSemanticAnalyser)
 import Backend.TypeChecker (runTypeChecker)

@@ -6,7 +6,7 @@ module Backend.CodeGenerator (
   runCodeGenerator
 ) where
 
-import Backend.IAST (Program)
+import Backend.ASTtoIASTConverter (Program)
 
 -- not all code errors can be caught during semantic analysis and type checking
 data CodeGenerationError =

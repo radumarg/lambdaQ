@@ -2,7 +2,7 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import Backend.IAST (Program)
+import Backend.ASTtoIASTConverter (Program)
 import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 

@@ -4,7 +4,7 @@ import System.Environment ( getArgs )
 import Control.Monad.Except ( runExceptT)
 import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import Backend.IAST (Program)
+import Backend.ASTtoIASTConverter (Program)
 
 runCodeGeneration :: FilePath -> Exec String
 runCodeGeneration filePath = readTheFile filePath

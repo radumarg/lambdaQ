@@ -8,12 +8,14 @@ module Backend.TypeChecker (
   runTypeChecker,
 ) where
 
--- import Backend.ASTConverter (parse)
-import Backend.IAST (Program, Term, Type)
+-- import GHC.Err ( errorWithoutStackTrace )
 import Control.Monad.Reader ()
 import Control.Monad.State ()
 import Data.Map (Map)
 import Data.Set (Set)
+
+import Backend.ASTtoIASTConverter (Program, Term, Type, mapProgram)
+import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 -- typecheckString :: String -> Either TypeError ()
@@ -37,3 +39,8 @@ data TypeError = TypeError String TypeErrorInstance
 
 type LinearEnvironment = Set String
 type TopEnvironment = Map String Type
+
+parse :: String -> Program
+parse str = case pProgram (myLexer str) of
+   Left str -> errorWithoutStackTrace str
+   Right p -> mapProgram p

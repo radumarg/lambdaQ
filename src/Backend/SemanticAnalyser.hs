@@ -3,7 +3,7 @@ module Backend.SemanticAnalyser (
   runSemanticAnalyser
 ) where
 
-import Backend.IAST (Program)
+import Backend.ASTtoIASTConverter (Program)
 import Data.List (intercalate)
 import Data.Set (toList, fromList)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
