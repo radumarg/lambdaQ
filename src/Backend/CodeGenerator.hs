@@ -1,12 +1,10 @@
 -- Here the (annotated??) intermediate abstract syntax tree is evaluated and OpenQASM programs will be generated.
 -- Language lambdaQ implements classical control and call by value formal semantics.
 
-module Backend.CodeGenerator (
-  CodeGenerationError,
-  runCodeGenerator
-) where
+module Backend.CodeGenerator (CodeGenerationError, runCodeGenerator) where
 
-import Backend.ASTtoIASTConverter (Program)
+import Backend.ASTtoIASTConverter (Program, mapProgram)
+import Frontend.LambdaQ.Par ( myLexer, pProgram )
 
 -- not all code errors can be caught during semantic analysis and type checking
 data CodeGenerationError =
@@ -21,3 +19,8 @@ instance Show CodeGenerationError where
 
 runCodeGenerator :: Program -> Either String String
 runCodeGenerator program = undefined
+
+parse :: String -> Program
+parse str = case pProgram (myLexer str) of
+   Left str -> errorWithoutStackTrace str
+   Right p -> mapProgram p

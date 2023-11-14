@@ -3,12 +3,9 @@
 -- affine intuitionistic linear logic. An afine value can be used at most once but can optionally 
 -- be discarded (not used at all), see https://arxiv.org/abs/cs/0404056.
 -- Type checker will return an annotated syntax tree (??) - to be determined ..
-module Backend.TypeChecker (
-  TypeError,
-  runTypeChecker,
-) where
+{-# LANGUAGE InstanceSigs #-}
+module Backend.TypeChecker (TypeError, runTypeChecker, ) where
 
--- import GHC.Err ( errorWithoutStackTrace )
 import Control.Monad.Reader ()
 import Control.Monad.State ()
 import Data.Map (Map)
@@ -18,12 +15,6 @@ import Backend.ASTtoIASTConverter (Program, Term, Type, mapProgram)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
--- typecheckString :: String -> Either TypeError ()
--- typecheckString = runTypeChecker . parse
-
-runTypeChecker :: Program -> Either String Program
-runTypeChecker program = undefined
-
 data TypeErrorInstance =
     NotAFunction Type             |
     FunctionNotInScope String     |
@@ -32,13 +23,25 @@ data TypeErrorInstance =
     NotALinearType String         |
     NotALinearTerm Term Type      |
     NoCommonSupertype Type Type
-  deriving (Eq, Ord, Show, Read)
+    deriving (Eq, Ord, Read)
+
+instance Show TypeErrorInstance where
+    show (NotAFunction typ) = "?: " ++ show typ
+    show (FunctionNotInScope error) = "?: " ++ error
+    show (TypeMismatch type1 type2) = "?: " ++ show type1 ++ show type2
+    show (NotAProductType typ) = "?: " ++ show typ
+    show (NotALinearType error) = "?: " ++ error
+    show (NotALinearTerm type1 type2) = "?: " ++ show type1 ++ show type2
+    show (NoCommonSupertype type1 type2) = "?: " ++ show type1 ++ show type2
 
 data TypeError = TypeError String TypeErrorInstance
   deriving (Eq, Ord, Show, Read)
 
 type LinearEnvironment = Set String
 type TopEnvironment = Map String Type
+
+runTypeChecker :: Program -> Either String Program
+runTypeChecker program = undefined
 
 parse :: String -> Program
 parse str = case pProgram (myLexer str) of
