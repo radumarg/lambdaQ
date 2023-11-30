@@ -8,6 +8,13 @@ and this project adheres to the
 
 ### [Unreleased]   
 
+### [0.1.0] - 2023-10-01
+#### Added
+- First version of semantic analaysis and AST to IAST converter.
+- Support files for running interactively: parser, semantic analyser, type checker and code generator.
+
+<br/>
+
 ### [0.1.0] - 2023-08-17
 #### Added
 - Added several example lambdaQ code files.
