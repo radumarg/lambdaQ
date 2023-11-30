@@ -10,10 +10,11 @@ import Control.Monad.Except
 import Control.Exception (Exception, try)
 
 import Backend.ASTtoIASTConverter (Program, runAstToIastConverter)
-import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Backend.SemanticAnalyser (runSemanticAnalyser)
 import Backend.TypeChecker (runTypeChecker)
 import Backend.CodeGenerator (runCodeGenerator)
+import Frontend.LambdaQ.Par ( myLexer, pProgram )
+import Frontend.LambdaQ.Layout ( resolveLayout )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 data CompilationError =
@@ -51,7 +52,7 @@ readTheFile path = do
     Right str -> return str
 
 parseProgram :: String -> Exec GeneratedAbstractSyntax.Program
-parseProgram = ExceptT . return . first ParseError . pProgram . myLexer
+parseProgram = ExceptT . return . first ParseError . pProgram . resolveLayout True . myLexer
 
 semanticAnalysis :: GeneratedAbstractSyntax.Program -> Exec GeneratedAbstractSyntax.Program
 semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalyser
