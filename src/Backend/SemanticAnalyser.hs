@@ -11,7 +11,7 @@ import Text.Parsec.Error (errorMessages)
 
 data SemanticError =
     DuplicatedFunctionName String                     |  -- function names must be unique
-    MismatchedFunctionDefinitionAndDeclaration String |  -- function signature in declaration has a definition with a matching signature
+    MismatchedFunctionDefinitionAndDeclaration String |  -- function name in declaration has a definition with a matching name
     IncorrectNumberOfFunArgs String                   |  -- number of function arguments for a function call does not exceed number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates must be distinct
     ControlBitsNotDistinct String                     |  -- control bits for classically controlled gates must be distinct
@@ -20,7 +20,7 @@ data SemanticError =
 
 instance Show SemanticError where
     show (DuplicatedFunctionName error) = "Function name is not unique: " ++ error
-    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function signature in declaration does not match the signature in definition: " ++ error
+    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function name in declaration does not match the name in definition: " ++ error
     show (IncorrectNumberOfFunArgs error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
     show (ControlBitsNotDistinct error) = "The control bits for classical controlled gate are not distinct: " ++ error
@@ -32,7 +32,7 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
   if null err then Right (GeneratedAbstractSyntax.ProgDef functions) else Left err
   where
     err1 = toString $ funNamesAreUnique functions
-    err2 = toString $ functionDeclarationSignaturesMatchDefinitions functions
+    err2 = toString $ functionDeclarationNameMatchesDefinition functions
     err3 = toString $ functionsHaveCorrectNumberOfArguments functions
     err4 = toString $ controlQubitsAreDistinct functions
     err5 = toString $ controlBitsAreDistinct functions
@@ -52,8 +52,8 @@ funNamesAreUnique functions = if null allErrors then Right () else Left allError
     funNames = map getFunName functions
 
 -- test for MismatchedFunctionDefinitionAndDeclaration --
-functionDeclarationSignaturesMatchDefinitions :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-functionDeclarationSignaturesMatchDefinitions functions = if null allErrors then Right () else Left allErrors
+functionDeclarationNameMatchesDefinition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+functionDeclarationNameMatchesDefinition functions = if null allErrors then Right () else Left allErrors
   where
     allErrors = intercalate ", " $ testFunNamesAndGetErrors functions []
 
