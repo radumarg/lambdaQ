@@ -34,11 +34,11 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err1 = toString $ funNamesAreUnique functions
     err2 = toString $ functionDeclarationNameMatchesDefinition functions
     err3 = toString $ functionsHaveCorrectNumberOfArguments functions
-    err4 = toString $ controlQubitsAreDistinct functions
-    err5 = toString $ controlBitsAreDistinct functions
-    err6 = toString $ controlAndTargetQubitsAreDistinct functions
-    err7 = toString $ gateNamesAreValid functions
-    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7
+    -- err4 = toString $ controlQubitsAreDistinct functions
+    -- err5 = toString $ controlBitsAreDistinct functions
+    -- err6 = toString $ controlAndTargetQubitsAreDistinct functions
+    -- err7 = toString $ gateNamesAreValid functions
+    err = err1 ++ err2 ++ err3 -- ++ err4 ++ err5 ++ err6 ++ err7
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
@@ -47,7 +47,7 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
 funNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 funNamesAreUnique functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = intercalate ", " $ uniquify $ testForDuplicatedFunNamesAndGetErrors functions conditionPredicate []
+    allErrors = intercalate ", " $ reverse $ uniquify $ testForDuplicatedFunNamesAndGetErrors functions conditionPredicate []
     conditionPredicate function = length (filter (== getFunName function) funNames) == 1
     funNames = map getFunName functions
 
@@ -55,13 +55,13 @@ funNamesAreUnique functions = if null allErrors then Right () else Left allError
 functionDeclarationNameMatchesDefinition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 functionDeclarationNameMatchesDefinition functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = intercalate ", " $ testFunNamesAndGetErrors functions []
+    allErrors = intercalate ", " $ reverse $ testFunNamesAndGetErrors functions []
 
 -- test for IncorrectNumberOfFunArgs --
 functionsHaveCorrectNumberOfArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = intercalate ", " $ testNumberOfFunArgsAndGetErrors functions []
+    allErrors = intercalate ", " $ reverse $ testNumberOfFunArgsAndGetErrors functions []
 
 -- test for UnknownGates --
 gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -118,32 +118,33 @@ testNumberOfFunArgsAndGetErrors [] errorMessages = errorMessages
 testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
   if toInteger noFunArgs > maxTypeArgs
     then
-      testFunNamesAndGetErrors funs errorMessages
+      testNumberOfFunArgsAndGetErrors funs (newErrorMessage : errorMessages)
     else
-      testFunNamesAndGetErrors funs (newErrorMessage : errorMessages)
+      testNumberOfFunArgsAndGetErrors funs errorMessages
     where
       noFunArgs = getNoFunArgs funDef
-      maxTypeArgs = getMaxTypeArgs tp
-      newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ "function has " ++ show noFunArgs ++ " but expect as most " ++ show maxTypeArgs))
+      maxTypeArgs = getMaxArgs typ
+      newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ ", the function has " ++ show noFunArgs ++ " arguments but expect as most " ++ show maxTypeArgs))
       errorInfo = getFunInfo fun
+      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ typ) funDef) = fun
       getNoFunArgs (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
-      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ tp) funDef) = fun
-      getMaxTypeArgs :: GeneratedAbstractSyntax.Type -> Integer
-      getMaxTypeArgs (GeneratedAbstractSyntax.TypeFunction t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
-      getMaxTypeArgs (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
-      getMaxTypeArgs (GeneratedAbstractSyntax.TypeSum t1 t2) = getMaxTypeArgs t1 + getMaxTypeArgs t2
-      getMaxTypeArgs (GeneratedAbstractSyntax.TypeNonLinear t) = getMaxTypeArgs t
-      getMaxTypeArgs (GeneratedAbstractSyntax.TypeExp t i) = getMaxTypeArgs t * i
-      getMaxTypeArgs _ = 1
+      getMaxArgs :: GeneratedAbstractSyntax.Type -> Integer
+      getMaxArgs typ = getNumberOfTypes typ - 1
+      getNumberOfTypes (GeneratedAbstractSyntax.TypeFunction t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
+      getNumberOfTypes (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
+      getNumberOfTypes (GeneratedAbstractSyntax.TypeSum t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
+      getNumberOfTypes (GeneratedAbstractSyntax.TypeExp t i) = getNumberOfTypes t * i
+      getNumberOfTypes (GeneratedAbstractSyntax.TypeNonLinear t) = getNumberOfTypes t
+      getNumberOfTypes _ = 1
 
 testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testGateNamesAndGetErrors [] errorMessages = errorMessages
 testGateNamesAndGetErrors (fun:funs)  errorMessages =
   if null unknownGates
     then
-      testFunNamesAndGetErrors funs errorMessages
+      testGateNamesAndGetErrors funs errorMessages
     else
-      testFunNamesAndGetErrors funs (newErrorMessage : errorMessages)
+      testGateNamesAndGetErrors funs (newErrorMessage : errorMessages)
     where
       unknownGates = getUnknownGates fun
       newErrorMessage = show (UnknownGate errorInfo) ++ " for gates named: " ++ intercalate ", " unknownGates
@@ -198,7 +199,7 @@ getFunName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
 
 getFunInfo :: GeneratedAbstractSyntax.FunctionDeclaration -> String
 getFunInfo (GeneratedAbstractSyntax.FunDecl _ funDef) =
-    "for function: " ++ fname ++ " at line: " ++ show fline ++  " and column: " ++ show fcol
+    "for function " ++ fname ++ " at line: " ++ show fline ++  " and column: " ++ show fcol
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
     ((fline, fcol), fname) = fvar
@@ -207,10 +208,11 @@ uniquify :: Ord a => [a] -> [a]
 uniquify lst = toList $ fromList lst
 
 funNamesAreMatching :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
-funNamesAreMatching (GeneratedAbstractSyntax.FunDecl funType funDef) = show fname == functionName
+funNamesAreMatching (GeneratedAbstractSyntax.FunDecl funType funDef) = varName == functionName
   where
     functionName = getFunName (GeneratedAbstractSyntax.FunDecl funType funDef)
     (GeneratedAbstractSyntax.FunType fname ftype) = funType
+    (GeneratedAbstractSyntax.Var ((fline, fcol), varName)) = fname 
 
 getUnknownGates :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
 getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody []

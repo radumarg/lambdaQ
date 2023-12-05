@@ -1,0 +1,2 @@
+-- Implementing this algorithm need a "power" operation to be applied on a function which is compiled as a circuit.
+-- This feature will be implemented in subsequent iterations of the language development.

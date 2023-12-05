@@ -1,0 +1,9 @@
+coinFlip :: !Bit
+coinFlip = measr (gate H (new @0))
+
+coinFlip :: !Bit
+coinFlip = measr (gate H (new @1))
+
+main :: !Bit
+main = coinFlip
+
