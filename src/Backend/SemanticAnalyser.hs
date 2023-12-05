@@ -124,7 +124,7 @@ testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
     where
       noFunArgs = getNoFunArgs funDef
       maxTypeArgs = getMaxArgs typ
-      newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ ", the function has " ++ show noFunArgs ++ " arguments but expect as most " ++ show maxTypeArgs))
+      newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ ", the function has " ++ show noFunArgs ++ " arguments but expects as most " ++ show maxTypeArgs))
       errorInfo = getFunInfo fun
       (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ typ) funDef) = fun
       getNoFunArgs (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
