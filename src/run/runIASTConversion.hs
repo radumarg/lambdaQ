@@ -25,7 +25,7 @@ main = do
       do
         let filePath = head args
         runExceptT (runIASTConversion filePath) >>= \case
-          Left error -> putStrLn $ "Error: " ++ show error ++ "!"
+          Left err -> putStrLn $ "Error: " ++ show err ++ "!"
           Right program -> putStrLn $ printTree (map reverseMapFunction program)
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"

@@ -23,7 +23,7 @@ main = do
       do
         let filePath = head args
         runExceptT (runSemanticAnalysis filePath) >>= \case
-          Left error -> putStrLn $ "Error: " ++ show error ++ "!"
+          Left err -> putStrLn $ "Error: " ++ show err ++ "!"
           Right _ -> putStrLn "All good."
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"

@@ -3,8 +3,6 @@
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
 import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
-import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import Backend.ASTtoIASTConverter (Program)
 
 runCodeGeneration :: FilePath -> Exec String
 runCodeGeneration filePath = readTheFile filePath
@@ -25,7 +23,7 @@ main = do
       do
         let filePath = head args
         runExceptT (runCodeGeneration filePath) >>= \case
-          Left error -> putStrLn $ "Error: " ++ show error ++ "!"
+          Left err -> putStrLn $ "Error: " ++ show err ++ "!"
           Right code -> putStrLn code
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
