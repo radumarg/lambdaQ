@@ -47,8 +47,8 @@ The reserved words used in LambdaQ are the following:
   | ``in`` | ``let`` | ``then`` | ``with``
 
 The symbols used in LambdaQ are the following:
-  | () | ! | ** | +
-  | * | -> | ( | )
+  | () | ! | ** | *
+  | + | -> | ( | )
   | @0 | @1 | @+ | @-
   | @+i | @-i | , | [
   | ] | { | = | }
@@ -65,18 +65,20 @@ and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
   | //Program// | -> | //[FunctionDeclaration]//
-  | //Type3// | -> | ``Bit``
+  | //Type5// | -> | ``Bit``
   |  |  **|**  | ``Qbit``
   |  |  **|**  | ``State``
   |  |  **|**  | ``Unitary``
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Type// ``)``
-  | //Type2// | -> | ``!`` //Type3//
-  |  |  **|**  | //Type3// ``**`` //Integer//
+  | //Type4// | -> | ``!`` //Type5//
+  |  |  **|**  | //Type5//
+  | //Type3// | -> | //Type4// ``**`` //Integer//
+  |  |  **|**  | //Type4// ``*`` //Type3//
+  |  |  **|**  | //Type4//
+  | //Type2// | -> | //Type3// ``+`` //Type2//
   |  |  **|**  | //Type3//
-  | //Type1// | -> | //Type2// ``+`` //Type1//
-  |  |  **|**  | //Type2// ``*`` //Type1//
-  |  |  **|**  | //Type2// ``->`` //Type1//
+  | //Type1// | -> | //Type2// ``->`` //Type1//
   |  |  **|**  | //Type2//
   | //Type// | -> | //Type1//
   | //Angle// | -> | //Double//

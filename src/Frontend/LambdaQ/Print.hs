@@ -147,15 +147,15 @@ instance Print Frontend.LambdaQ.Abs.Program where
 
 instance Print Frontend.LambdaQ.Abs.Type where
   prt i = \case
-    Frontend.LambdaQ.Abs.TypeBit -> prPrec i 3 (concatD [doc (showString "Bit")])
-    Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 3 (concatD [doc (showString "Qbit")])
-    Frontend.LambdaQ.Abs.TypeState -> prPrec i 3 (concatD [doc (showString "State")])
-    Frontend.LambdaQ.Abs.TypeUnitary -> prPrec i 3 (concatD [doc (showString "Unitary")])
-    Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 3 (concatD [doc (showString "()")])
-    Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 2 (concatD [doc (showString "!"), prt 3 type_])
-    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 2 (concatD [prt 3 type_, doc (showString "**"), prt 0 n])
-    Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "+"), prt 1 type_2])
-    Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "*"), prt 1 type_2])
+    Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
+    Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
+    Frontend.LambdaQ.Abs.TypeState -> prPrec i 5 (concatD [doc (showString "State")])
+    Frontend.LambdaQ.Abs.TypeUnitary -> prPrec i 5 (concatD [doc (showString "Unitary")])
+    Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
+    Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 4 (concatD [doc (showString "!"), prt 5 type_])
+    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 3 (concatD [prt 4 type_, doc (showString "**"), prt 0 n])
+    Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 3 (concatD [prt 4 type_1, doc (showString "*"), prt 3 type_2])
+    Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 2 (concatD [prt 3 type_1, doc (showString "+"), prt 2 type_2])
     Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "->"), prt 1 type_2])
 
 instance Print Frontend.LambdaQ.Abs.Angle where

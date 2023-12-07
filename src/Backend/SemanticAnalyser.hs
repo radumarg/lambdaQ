@@ -3,11 +3,9 @@ module Backend.SemanticAnalyser (
   runSemanticAnalyser
 ) where
 
-import Backend.ASTtoIASTConverter (Program)
 import Data.List (intercalate)
 import Data.Set (toList, fromList)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import Text.Parsec.Error (errorMessages)
 
 data SemanticError =
     DuplicatedFunctionName String                     |  -- function names must be unique
@@ -20,7 +18,7 @@ data SemanticError =
 
 instance Show SemanticError where
     show (DuplicatedFunctionName error) = "Function name is not unique: " ++ error
-    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function name in declaration does not match the name in definition: " ++ error
+    show (MismatchedFunctionDefinitionAndDeclaration error) = "Function name in type definition does not match the function name in declaration: " ++ error
     show (IncorrectNumberOfFunArgs error) = "Number of function arguments exceeds the number of arguments in signature: " ++ error
     show (ControlQbitsNotDistinct error) = "The control qubits for controlled gate are not distinct: " ++ error
     show (ControlBitsNotDistinct error) = "The control bits for classical controlled gate are not distinct: " ++ error
@@ -123,19 +121,24 @@ testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
       testNumberOfFunArgsAndGetErrors funs errorMessages
     where
       noFunArgs = getNoFunArgs funDef
-      maxTypeArgs = getMaxArgs typ
+      maxTypeArgs = getMaxArgs funType
       newErrorMessage = show (IncorrectNumberOfFunArgs (errorInfo ++ ", the function has " ++ show noFunArgs ++ " arguments but expects as most " ++ show maxTypeArgs))
       errorInfo = getFunInfo fun
-      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ typ) funDef) = fun
-      getNoFunArgs (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = length fargs
+      (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ funType) funDef) = fun
+      getNoFunArgs (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) fargs _) = length fargs
       getMaxArgs :: GeneratedAbstractSyntax.Type -> Integer
       getMaxArgs typ = getNumberOfTypes typ - 1
+      getNumberOfTypes :: GeneratedAbstractSyntax.Type -> Integer
       getNumberOfTypes (GeneratedAbstractSyntax.TypeFunction t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
       getNumberOfTypes (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
       getNumberOfTypes (GeneratedAbstractSyntax.TypeSum t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
       getNumberOfTypes (GeneratedAbstractSyntax.TypeExp t i) = getNumberOfTypes t * i
       getNumberOfTypes (GeneratedAbstractSyntax.TypeNonLinear t) = getNumberOfTypes t
-      getNumberOfTypes _ = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeBit = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeQbit = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeState = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeUnitary = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeUnit = 1
 
 testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testGateNamesAndGetErrors [] errorMessages = errorMessages
@@ -199,7 +202,7 @@ getFunName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
 
 getFunInfo :: GeneratedAbstractSyntax.FunctionDeclaration -> String
 getFunInfo (GeneratedAbstractSyntax.FunDecl _ funDef) =
-    "for function " ++ fname ++ " at line: " ++ show fline ++  " and column: " ++ show fcol
+    "for function '" ++ fname ++ "' at line: " ++ show fline ++  " and column: " ++ show fcol
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
     ((fline, fcol), fname) = fvar

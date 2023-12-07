@@ -25,8 +25,8 @@ data Type
     | TypeUnit
     | TypeNonLinear Type
     | TypeExp Type Integer
-    | TypeSum Type Type
     | TypeTensorProd Type Type
+    | TypeSum Type Type
     | TypeFunction Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

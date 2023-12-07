@@ -1,0 +1,10 @@
+coinFlip :: !Bit
+coinFlip  = measr (gate H (new @0)) 
+
+other :: Qbit * Qbit -> !Bit
+other qubits = q0, q1 <- qubits;
+               coinFlip
+
+main :: !Bit
+main arg1 arg2 arg3 = other arg1 arg2 arg3
+

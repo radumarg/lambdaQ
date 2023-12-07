@@ -1,0 +1,10 @@
+coinFlip :: Bit
+coinFlip  = measr (gate H (new @0)) 
+
+other ::  Qbit * Qbit -> Qbit ** 2
+other qubits = q0, q1 <- qubits;
+               coinFlip
+               ((q0), (q1)) --TODO: fix grammar and remove paranthesis
+
+main :: Qbit ** 4 -> Bit
+main arg1 arg2 arg3 arg4 = other arg1 arg2 arg3 arg4

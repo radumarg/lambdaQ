@@ -115,8 +115,8 @@ Program :: { Frontend.LambdaQ.Abs.Program }
 Program
   : ListFunctionDeclaration { Frontend.LambdaQ.Abs.ProgDef $1 }
 
-Type3 :: { Frontend.LambdaQ.Abs.Type }
-Type3
+Type5 :: { Frontend.LambdaQ.Abs.Type }
+Type5
   : 'Bit' { Frontend.LambdaQ.Abs.TypeBit }
   | 'Qbit' { Frontend.LambdaQ.Abs.TypeQbit }
   | 'State' { Frontend.LambdaQ.Abs.TypeState }
@@ -124,17 +124,25 @@ Type3
   | '()' { Frontend.LambdaQ.Abs.TypeUnit }
   | '(' Type ')' { $2 }
 
+Type4 :: { Frontend.LambdaQ.Abs.Type }
+Type4
+  : '!' Type5 { Frontend.LambdaQ.Abs.TypeNonLinear $2 }
+  | Type5 { $1 }
+
+Type3 :: { Frontend.LambdaQ.Abs.Type }
+Type3
+  : Type4 '**' Integer { Frontend.LambdaQ.Abs.TypeExp $1 $3 }
+  | Type4 '*' Type3 { Frontend.LambdaQ.Abs.TypeTensorProd $1 $3 }
+  | Type4 { $1 }
+
 Type2 :: { Frontend.LambdaQ.Abs.Type }
 Type2
-  : '!' Type3 { Frontend.LambdaQ.Abs.TypeNonLinear $2 }
-  | Type3 '**' Integer { Frontend.LambdaQ.Abs.TypeExp $1 $3 }
+  : Type3 '+' Type2 { Frontend.LambdaQ.Abs.TypeSum $1 $3 }
   | Type3 { $1 }
 
 Type1 :: { Frontend.LambdaQ.Abs.Type }
 Type1
-  : Type2 '+' Type1 { Frontend.LambdaQ.Abs.TypeSum $1 $3 }
-  | Type2 '*' Type1 { Frontend.LambdaQ.Abs.TypeTensorProd $1 $3 }
-  | Type2 '->' Type1 { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
+  : Type2 '->' Type1 { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
   | Type2 { $1 }
 
 Type :: { Frontend.LambdaQ.Abs.Type }

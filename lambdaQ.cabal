@@ -76,6 +76,8 @@ test-suite lambdaQ-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Backend.ASTtoIASTConverterSpec
+      Backend.SemanticAnalyserSpec
       Paths_lambdaQ
   hs-source-dirs:
       test
