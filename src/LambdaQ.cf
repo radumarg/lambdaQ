@@ -11,17 +11,17 @@ entrypoints Program;
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
-TypeBit        . Type3  ::= "Bit" ;
-TypeQbit       . Type3  ::= "Qbit" ;
-TypeState      . Type3  ::= "State" ;
-TypeUnitary    . Type3  ::= "Unitary" ;
-TypeUnit       . Type3  ::= "()" ;
-TypeNonLinear  . Type2  ::= "!" Type3 ;
-TypeExp        . Type2  ::= Type3 "**" Integer ;
-TypeTensorProd . Type2  ::= Type3 "*" Type2 ;      -- right-associative
+TypeBit        . Type5  ::= "Bit" ;
+TypeQbit       . Type5  ::= "Qbit" ;
+TypeState      . Type5  ::= "State" ;
+TypeUnitary    . Type5  ::= "Unitary" ;
+TypeUnit       . Type5  ::= "()" ;
+TypeNonLinear  . Type4  ::= "!" Type5 ;
+TypeExp        . Type3  ::= Type4 "**" Integer ;
+TypeTensorProd . Type3  ::= Type4 "*" Type3 ;      -- right-associative
 TypeSum        . Type2  ::= Type3 "+" Type2 ;      -- right-associative
 TypeFunction   . Type1  ::= Type2 "->" Type1 ;     -- right-associative
-coercions Type 3 ;
+coercions Type 5 ;
 
 -- Angle is a fraction of 2π --
 Angle . Angle ::= Double ;

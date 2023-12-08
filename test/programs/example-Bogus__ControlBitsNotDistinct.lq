@@ -1,0 +1,10 @@
+
+fun :: !(Bit * Bit * Qbit * Qbit ->  Qbit * Qbit)
+fun bits qubits = 
+            b1, b2 <- bits;
+            q1, q2 <- qubits;
+            q1 <- with [ (b1), (b1) ] ctrl [ 1, 1 ] gate X q3;           -- TODO: fix grammar and remove paranthesis
+            q1, q2 <- with [ q1 ] ctrl [ @1 ] gate X q2;
+            q2 <- with [ (b2), (b1), (b2) ] ctrl [ 0, 0, 0 ] gate X q3;  -- TODO: fix grammar and remove paranthesis
+            ((q1), (q2))                                                 -- TODO: fix grammar and remove paranthesis
+

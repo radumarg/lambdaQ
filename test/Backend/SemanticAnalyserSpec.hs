@@ -67,11 +67,67 @@ spec =  do
       it "returns no error" $ do
         testProgram "test/programs/example10-shorAlgorithm__Good.lq" `shouldReturn` "OK"
 
+    context "when provided with a coinflip program where function names are not unique" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example00-CoinFlip__FunctionNamesAreNotUnique.lq"
+        result `shouldSatisfy` (\str -> "Function name is not unique" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'coinFlip' at line: 2 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'coinFlip' at line: 5 and column: 1" `isInfixOf` str)
+
+    context "when provided with a Grover algorithm program where function names are not unique" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example08-groverAlgorithm__FunctionNamesAreNotUnique.lq"
+        result `shouldSatisfy` (\str -> "Function name is not unique" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 9 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 18 and column: 1" `isInfixOf` str)
+
     context "when provided with a coinflip program where function name does not match declaration" $ do
       it "returns an error" $ do
-         result <- testProgram "test/programs/example00-CoinFlip__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
-         result `shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
+        result <- testProgram "test/programs/example00-CoinFlip__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
+        result `shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "at line: 2 and column: 1" `isInfixOf` str)
 
+    context "when provided with a Grover algorithm program where two function names do not match declaration" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example08-groverAlgorithm__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
+        result `shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "at line: 5 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "at line: 9 and column: 1" `isInfixOf` str)
 
+    context "when provided with a coinflip program where number of function arguments is correct" $ do
+      it "returns an error" $ do
+        testProgram "test/programs/example00-CoinFlip__CorrectNumberOfFunctionArguments_1.lq" `shouldReturn` "OK"
 
+    context "when provided with a coinflip program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example00-CoinFlip__IncorrectNumberOfFunctionArguments_1.lq"
+        result `shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'other' at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'main' at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
+    context "when provided with a coinflip program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example00-CoinFlip__IncorrectNumberOfFunctionArguments_2.lq"
+        result `shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'main' at line: 9 and column: 1, the function has 3 arguments but expects as most 0" `isInfixOf` str)
+
+    -- TODO: uncomment and complete
+    -- context "when provided with a coinflip program where number of function arguments is incorrect" $ do
+    --   it "returns an error" $ do
+    --     result <- testProgram "test/programs/example00-CoinFlip__IncorrectNumberOfFunctionArguments_3.lq"
+    --     result `shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+    --     -- TODO: add function details 
+    
+    context "when provided with a four qubit adder program where controls qubits are not distinct" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
+        result `shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'carry' at line: 11 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for the following qubits: q1,q1, and ,q3,q3" `isInfixOf` str)
+
+    context "when provided with a bogus program where controls bits are not distinct" $ do
+      it "returns an error" $ do
+        result <- testProgram "test/programs/example-Bogus__ControlBitsNotDistinct.lq"
+        result `shouldSatisfy` (\str -> "The control bits for classical controlled gate(s) are not distinct" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'fun' at line: 3 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for the following bits: b1,b1, and ,b2,b1,b2" `isInfixOf` str)
