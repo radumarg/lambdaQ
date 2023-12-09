@@ -18,10 +18,11 @@ import Frontend.LambdaQ.Layout ( resolveLayout )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 data CompilationError =
-    ParseError String          |
-    SemanticError String       |
-    TypeError String           |
-    CodeGenerationError String |
+    ParseError String                |
+    SemanticError String             |
+    SyntaxTreeConversionError String |
+    TypeError String                 |
+    CodeGenerationError String       |
     FileDoesNotExist FilePath
 
 instance Show CompilationError where
@@ -30,6 +31,9 @@ instance Show CompilationError where
 
   show (SemanticError e) =
     "semantic error:\n" ++ show e
+
+  show (SyntaxTreeConversionError e) =
+    "syntax tree conversion error:\n" ++ show e
 
   show (TypeError e) =
     "type error:\n" ++ show e
@@ -58,7 +62,7 @@ semanticAnalysis :: GeneratedAbstractSyntax.Program -> Exec GeneratedAbstractSyn
 semanticAnalysis = ExceptT . return . first SemanticError . runSemanticAnalyser
 
 convertAstToIast :: GeneratedAbstractSyntax.Program -> Exec Program
-convertAstToIast = ExceptT . return . first undefined . runAstToIastConverter
+convertAstToIast = ExceptT . return . first SyntaxTreeConversionError . runAstToIastConverter
 
 typeCheck :: Program -> Exec Program
 typeCheck = ExceptT . return . first TypeError . runTypeChecker

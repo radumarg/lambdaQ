@@ -1,6 +1,3 @@
--- For more context, checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/59/
-
--- the '<-' syntax is just syntactic sugar for let expressions (see example01-deutschAlgorithm.lq)
 balancedOracle' :: Qbit ** 6 -> Qbit ** 6  
 balancedOracle' qubits = q0, q1, q2, q3, q4, q5 <- qubits;
                          q0 <- gate X q0;

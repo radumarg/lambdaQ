@@ -1,6 +1,3 @@
--- For more context, checkout the circuit here: https://uranium.transilvania-quantum.org/circuit-editor/?projectid=71
-
--- the '<-' syntax is just syntactic sugar for let expressions (see example01-deutschAlgorithm.lq)
 oracle ::  !(Qbit ** 8 -> Qbit ** 8)
 oracle' qubits = q0, q1, q2, q3, q4, q5, q6, q7 <- qubits;
                 with [ (q0), (q1), (q2), (q3), (q4), (q5), (q6) ] ctrl [ @1, @0, @1, @1, @1, @1, @1] gate X q7 -- TODO: fix grammar and remove paranthesis

@@ -1,10 +1,13 @@
 coinFlip :: Bit
 coinFlip  = measr (gate H (new @0)) 
 
-other ::  Qbit * Qbit -> Qbit ** 2
-other qubits = q0, q1 <- qubits;
+other ::  Qbit * Qbit * Qbit -> Qbit ** 2
+other qubits = q0, q1, q2 <- qubits;
                coinFlip
                ((q0), (q1)) --TODO: fix grammar and remove paranthesis
 
+other' :: (Bit * Bit) ** 2 -> Bit
+other' arg1 arg2 arg3 arg4 arg5 arg6 = other arg1 arg2 arg3 arg4
+
 main :: Qbit ** 4 -> Bit
-main arg1 arg2 arg3 arg4 = other arg1 arg2 arg3 arg4
+main arg1 arg2 arg3 arg4 arg5 = other arg1 arg2 arg3 arg4

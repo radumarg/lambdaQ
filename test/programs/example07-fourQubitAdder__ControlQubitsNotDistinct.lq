@@ -1,6 +1,3 @@
--- For more context, checkout the circuit here: https://uranium.transilvania-quantum.org/projects/public-project/62/
-
--- the '<-' syntax is just syntactic sugar for let expressions (see example01-deutschAlgorithm.lq)
 sum :: !(Qbit * Qbit * Qbit -> Qbit * Qbit * Qbit)
 sum qubits = q0, q1, q2 <- qubits;
              q0, q2 <- with [ q0 ] ctrl [ @1 ] gate X q2;
