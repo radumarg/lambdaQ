@@ -140,6 +140,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
+  Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
 
 transLetVariable :: Frontend.LambdaQ.Abs.LetVariable -> Result

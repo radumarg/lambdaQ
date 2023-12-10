@@ -264,6 +264,7 @@ Term3
   | BasisState { Frontend.LambdaQ.Abs.TermBasisState $1 }
   | Gate { Frontend.LambdaQ.Abs.TermGate $1 }
   | Tuple { Frontend.LambdaQ.Abs.TermTuple $1 }
+  | Bit { Frontend.LambdaQ.Abs.TermBit $1 }
   | '()' { Frontend.LambdaQ.Abs.TermUnit }
   | '(' Term ')' { $2 }
 

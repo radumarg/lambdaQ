@@ -120,6 +120,7 @@ data Term
     | TermBasisState BasisState
     | TermGate Gate
     | TermTuple Tuple
+    | TermBit Bit
     | TermUnit
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

@@ -154,6 +154,7 @@ All other symbols are terminals.
   |  |  **|**  | //BasisState//
   |  |  **|**  | //Gate//
   |  |  **|**  | //Tuple//
+  |  |  **|**  | //Bit//
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
   | //Term// | -> | //Term1//

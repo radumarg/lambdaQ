@@ -1,0 +1,4 @@
+fun :: !Bit
+fun = measr (with [ (new @1) ] ctrl [ @1 ] gate X (new @0))
+    
+

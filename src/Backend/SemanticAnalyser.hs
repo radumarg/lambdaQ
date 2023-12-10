@@ -260,6 +260,7 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
     collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermTuple _) notDistinctQubits = notDistinctQubits
+    collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctQubits = notDistinctQubits
     collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctQubits = notDistinctQubits
 
 getNotDistinctBits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
@@ -292,6 +293,7 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
     collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermTuple _) notDistinctBits = notDistinctBits
+    collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctBits = notDistinctBits
     collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctBits = notDistinctBits
 
 -- TODO multiple qubits gates not supported yet
@@ -327,6 +329,7 @@ getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = colle
     collectDuplicated (GeneratedAbstractSyntax.TermBasisState _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermGate _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermTuple _) duplicatedQubits = duplicatedQubits
+    collectDuplicated (GeneratedAbstractSyntax.TermBit _) duplicatedQubits = duplicatedQubits
     collectDuplicated GeneratedAbstractSyntax.TermUnit duplicatedQubits = duplicatedQubits
 
 getQubit :: GeneratedAbstractSyntax.Term -> String

@@ -82,8 +82,8 @@ spec =  do
       it "returns an error" $ do
         result <- testProgram "test/programs/example08-groverAlgorithm__FunctionNamesAreNotUnique.lq"
         result `shouldSatisfy` (\str -> "Function name is not unique" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 9 and column: 1" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 18 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 6 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator' at line: 15 and column: 1" `isInfixOf` str)
 
     context "when provided with a coinflip program where function name does not match declaration" $ do
       it "returns an error" $ do
@@ -97,8 +97,8 @@ spec =  do
       it "returns an error" $ do
         result <- testProgram "test/programs/example08-groverAlgorithm__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
         result `shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "at line: 5 and column: 1" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "at line: 9 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'oracle'' at line: 2 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'groverDiffusionOperator'' at line: 6 and column: 1" `isInfixOf` str)
 
     context "when provided with a coinflip program where number of function arguments is correct" $ do
       it "returns an error" $ do
@@ -132,7 +132,7 @@ spec =  do
       it "returns an error" $ do
         result <- testProgram "test/programs/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
         result `shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "for function 'carry' at line: 11 and column: 1" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'carry' at line: 8 and column: 1" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "for the following qubits: q1,q1, and ,q3,q3" `isInfixOf` str)
 
     -- EXPECT SOME ERRORS: CONTROL BITS ARE NOT DISTINCT  --
