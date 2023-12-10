@@ -40,7 +40,7 @@ data BasisState =
     BasisStateMinusI
   deriving (Eq, Ord, Show, Read)
 
-data ControlBasisState = CtrlBasisState BasisState
+newtype ControlBasisState = CtrlBasisState BasisState
   deriving (Eq, Ord, Show, Read)
 
 data ControlBasisStates = CtrlBasisStates BasisState [BasisState]
