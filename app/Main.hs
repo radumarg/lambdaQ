@@ -31,7 +31,7 @@ main = do
               putStr code
               hClose handle
             where
-              outputFile = init (init filePath) ++ ".qasm"
+              outputFile = init (init filePath) ++ "qasm"
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
   where
