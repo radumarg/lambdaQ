@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.1.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -38,7 +38,6 @@ library
       Frontend.LambdaQ.Print
       Frontend.LambdaQ.Skel
       Frontend.LambdaQ.Test
-      Lib
   other-modules:
       Paths_lambdaQ
   hs-source-dirs:

@@ -214,9 +214,14 @@ spec =  do
         result `shouldSatisfy` (\str -> "TermQuantumCtrlsGate TermVariable (Var ((3,22),q1)),TermVariable (Var ((3,28),q3)),TermVariable (Var ((3,34),q4)) BasisStateOne,BasisStateOne,BasisStateOne)" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "(TermGate GateY)) (TermVariable (Var ((3,67),q2)))" `isInfixOf` str)
 
+  -- do let single
+  -- do let sugar single
+  -- do let multiple
+
     context "when provided with a small program fragment" $ do
       it "returns a syntax tree processed in the intermediate syntax tree format" $ do
-        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_15.lq"
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_18.lq"
         result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "TypeQbit" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "TermApply (TermNew (2,7)) (TermBasisState BasisStateZero)" `isInfixOf` str)
+
