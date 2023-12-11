@@ -1,0 +1,5 @@
+fun :: Qbit
+fun = let bit = measr gate H new @0 in
+      if bit then gate H new @0 else new @1
+
+

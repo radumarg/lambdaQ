@@ -214,14 +214,57 @@ spec =  do
         result `shouldSatisfy` (\str -> "TermQuantumCtrlsGate TermVariable (Var ((3,22),q1)),TermVariable (Var ((3,28),q3)),TermVariable (Var ((3,34),q4)) BasisStateOne,BasisStateOne,BasisStateOne)" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "(TermGate GateY)) (TermVariable (Var ((3,67),q2)))" `isInfixOf` str)
 
-  -- do let single
-  -- do let sugar single
-  -- do let multiple
+
+    context "when provided with a small program fragment" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_15.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeBit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermApply (TermNew (2,16)) (TermBasisState BasisStateMinusI)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermMeasure (3,7)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermVariable (Var ((3,14),gate))) (TermGate GateX))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermVariable (Var ((3,21),q)))" `isInfixOf` str)
+
+    context "when provided with a small program fragment" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_16.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeBit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermApply (TermNew (2,12)) (TermBasisState BasisStateZero)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermMeasure (3,7)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermVariable (Var ((3,14),gate))) (TermGate GateZ))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermVariable (Var ((3,21),q)))" `isInfixOf` str)
+
+    context "when provided with a small program fragment" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_17.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeQbit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermApply (TermNew (2,7)) (TermBasisState BasisStateZero)" `isInfixOf` str)
 
     context "when provided with a small program fragment" $ do
       it "returns a syntax tree processed in the intermediate syntax tree format" $ do
         result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_18.lq"
         result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "TypeQbit" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "TermApply (TermNew (2,7)) (TermBasisState BasisStateZero)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeQbit :**: 3" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermNew" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermBasisState BasisStateZero" `isInfixOf` str)
 
+    context "when provided with a small program fragment" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_19.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeQbit :*: TypeQbit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermApply (TermVariable (Var ((2,8),gate))) (TermGate GateH)) (TermNew (2,15))) (TermBasisState BasisStateZero))" `isInfixOf` str)
+
+    context "when provided with a small program fragment" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_20.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TypeQbit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLetSingle" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermMeasure (2,17)) (TermVariable (Var ((2,23),gate)))) (TermGate GateH)) (TermNew (2,30))) (TermBasisState BasisStateZero))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermIfElse (TermVariable (Var ((3,10),bit))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermApply (TermApply (TermApply (TermVariable (Var ((3,19),gate))) (TermGate GateH)) (TermNew (3,26))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermApply (TermNew (3,38)) (TermBasisState BasisStateOne)" `isInfixOf` str)
