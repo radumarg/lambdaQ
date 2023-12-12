@@ -42,7 +42,7 @@ In the future, with the introduction of error-corrected quantum computers, there
 - one should keep in mind that when a quantum variable is discarded, the qubits it points to are implicitly measured which may have an effect on the quantum computation
 - reset classical registers.
 - create a duplicate of a quantum register (in general duplicates are allowed: |0⟩ + |1⟩ -> |0⟩⊗|0⟩ + |1⟩⊗|1⟩ cloning: |ψ⟩ -> |ψ⟩⊗|ψ⟩ is not).
-- apply quantum gates and classically controlled quantum gates.
+- apply quantum gates quantum controlled gates and classically controlled quantum gates.
 - mid-circuit measurements should allow a subset of qubits in a quantum device to be measured in order to steer the execution of a quantum program.
 - perform relatively simple, fast, classical computation routines on classical registers concurrent with executing quantum gates on QPU.
 
