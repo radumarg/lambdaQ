@@ -204,11 +204,6 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt
     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt
 
--- -- the outer non-linear type flag(s) will be removed if present
--- trimOuterNonLinearTypeModifier :: GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
--- trimOuterNonLinearTypeModifier (GeneratedAbstractSyntax.TypeNonLinear t) = trimOuterNonLinearTypeModifier t
--- trimOuterNonLinearTypeModifier t = t
-
 -- convert function to Church-style lambda abstractions
 toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
 
@@ -219,7 +214,6 @@ toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction (GeneratedAbstractSynt
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype (GeneratedAbstractSyntax.TypeNonLinear rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
   GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambdaAbstraction rtype vars fbody)
-
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
   GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) (GeneratedAbstractSyntax.FunType (GeneratedAbstractSyntax.Var var) ltype) (toLambdaAbstraction rtype vars fbody)

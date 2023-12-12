@@ -1,0 +1,5 @@
+fun :: ()
+fun = ()
+
+main :: ()
+main = fun

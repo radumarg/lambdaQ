@@ -1,0 +1,6 @@
+fun :: Qbit
+fun = new @0
+
+main :: Qbit
+main = fun
+

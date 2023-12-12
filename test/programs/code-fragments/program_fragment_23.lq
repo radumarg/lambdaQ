@@ -1,0 +1,7 @@
+fun :: Bit -> Qbit
+fun bit = if bit then new @1 else new @0
+
+main :: Qbit
+main = fun measr (gate H new @0)
+
+
