@@ -1,4 +1,5 @@
-fun :: Bit -> Qbit
-fun bit = if bit then new @1 else new @0
+fun :: Bit -> Bit -> Bit
+fun bit1 bit2 = if bit1 then bit2 else bit1
+
 
 
