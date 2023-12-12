@@ -29,11 +29,11 @@ In the future, with the introduction of error-corrected quantum computers, there
 - the denotational semantics of a quantum programming language can be used to ensure that a program written in this language is compatible with quantum physics. This is a complicated mathematical problem, and we will ignore it further on.
 
 ### A basic example of a higher-level quantum program:
-(step 1) take some given algebraic function and implement it as a boolean circuit.
-(step 2) translate the boolean circuit to an oracle implemented as a reversible quantum circuit.
-(step 3) apply the Grover search algorithm to the output of this oracle.
-(step 4) copy the result to a scratch register. Copying is possible as long as the function implemented by the oracle is classical.
-(step 5) uncompute in order to free the ancilla qubits needed to implement the oracle for further reuse.
+- step 1: take some given algebraic function and implement it as a boolean circuit.
+- step 2: translate the boolean circuit to an oracle implemented as a reversible quantum circuit.
+- step 3: apply the Grover search algorithm to the output of this oracle.
+- step 4: copy the result to a scratch register. Copying is possible as long as the function implemented by the oracle is classical.
+- step 5: uncompute in order to free the ancilla qubits needed to implement the oracle for further reuse.
 
 ### What kind of operations can be executed by a quantum computer?
 - initialize quantum and classical registers.
