@@ -261,7 +261,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermLetMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarSingle letvariable term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermLambda lambda var functiontype term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 var, prt 0 functiontype, doc (showString "."), prt 0 term])
+    Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 var, prt 0 type_, doc (showString "."), prt 0 term])
     Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterm, doc (showString "ctrl"), prt 0 controlbasisstate])
     Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterms, doc (showString "ctrl"), prt 0 controlbasisstates])
     Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterm, doc (showString "ctrl"), prt 0 controlbit])

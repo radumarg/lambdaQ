@@ -302,5 +302,6 @@ spec =  do
     context "when provided with a small program fragment(25)" $ do
       it "returns a syntax tree processed in the intermediate syntax tree format" $ do
         result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_25.lq"
-        result `shouldSatisfy` (\str -> "?" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> "?" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function fun (2,1) (TypeBit :->: (TypeBit :->: TypeBit))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLambda TypeBit (TermLambda TypeBit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermIfElse (TermVariable (Var ((2,20),bit1))) (TermVariable (Var ((2,30),bit2))) (TermVariable (Var ((2,40),bit1)))" `isInfixOf` str)
