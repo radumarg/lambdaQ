@@ -1,3 +1,5 @@
-fun :: !Bit
+fun :: Bit
 fun = let (q1, q2) = (new @1, new @0) in
-      measr (with [ q1 ] ctrl [ @1 ] gate X q2)
+      measr (with [ q1 ] ctrl [ @1 ] gate X q2) -- TODO: how will select the qubit to perform measure upon?
+
+

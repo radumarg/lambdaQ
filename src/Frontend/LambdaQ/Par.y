@@ -85,13 +85,14 @@ import Frontend.LambdaQ.Lex
   ']'             { PT _ (TS _ 60)     }
   'ctrl'          { PT _ (TS _ 61)     }
   'else'          { PT _ (TS _ 62)     }
-  'if'            { PT _ (TS _ 63)     }
-  'in'            { PT _ (TS _ 64)     }
-  'let'           { PT _ (TS _ 65)     }
-  'then'          { PT _ (TS _ 66)     }
-  'with'          { PT _ (TS _ 67)     }
-  '{'             { PT _ (TS _ 68)     }
-  '}'             { PT _ (TS _ 69)     }
+  'gate'          { PT _ (TS _ 63)     }
+  'if'            { PT _ (TS _ 64)     }
+  'in'            { PT _ (TS _ 65)     }
+  'let'           { PT _ (TS _ 66)     }
+  'then'          { PT _ (TS _ 67)     }
+  'with'          { PT _ (TS _ 68)     }
+  '{'             { PT _ (TS _ 69)     }
+  '}'             { PT _ (TS _ 70)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_Var           { PT _ (T_Var _)     }
@@ -262,7 +263,7 @@ Term3 :: { Frontend.LambdaQ.Abs.Term }
 Term3
   : Var { Frontend.LambdaQ.Abs.TermVariable $1 }
   | BasisState { Frontend.LambdaQ.Abs.TermBasisState $1 }
-  | Gate { Frontend.LambdaQ.Abs.TermGate $1 }
+  | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
   | Tuple { Frontend.LambdaQ.Abs.TermTuple $1 }
   | Bit { Frontend.LambdaQ.Abs.TermBit $1 }
   | '()' { Frontend.LambdaQ.Abs.TermUnit }

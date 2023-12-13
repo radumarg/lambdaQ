@@ -271,7 +271,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
     Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
-    Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [prt 0 gate])
+    Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])

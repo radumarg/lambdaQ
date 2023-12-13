@@ -49,7 +49,7 @@ data ControlBasisStates = CtrlBasisStates BasisState [BasisState]
 newtype Angle = Angle Double
   deriving (Eq, Ord, Show, Read)
 
-newtype Bit = BitValue Integer
+data Bit = BitZero | BitOne
   deriving (Eq, Ord, Show, Read)
 
 data Gate =
@@ -89,6 +89,8 @@ data Gate =
   deriving (Eq, Ord, Read, Show)
 
 data Term =
+    TermBoundVariable Integer                     |
+    TermFreeVariable String                       |
     TermIfElse Term Term Term                     |
     TermLetSingle Term Term                       |
     TermLetMultiple Term Term                     |
@@ -107,7 +109,6 @@ data Term =
     TermCompose Term Term                         |
     TermNew  (Int, Int)                           |
     TermMeasure (Int, Int)                        |
-    TermVariable Var                              |
     TermBasisState BasisState                     |
     TermTuple Term Term                           |
     TermBit Bit                                   |
@@ -166,9 +167,11 @@ mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
 
 mapBit :: GeneratedAbstractSyntax.Bit -> Bit
-mapBit (GeneratedAbstractSyntax.BitValue bit) = BitValue bit
+mapBit (GeneratedAbstractSyntax.BitValue 0) = BitZero
+mapBit (GeneratedAbstractSyntax.BitValue 1) = BitOne
+mapBit _ = undefined -- -- should not happen, TODO: add test for bit values in semantic analysis
 
--- mapGate :: GeneratedAbstractSyntax.Gate -> Gate
+mapGate :: GeneratedAbstractSyntax.Gate -> Gate
 mapGate g = case g of
     GeneratedAbstractSyntax.GateH ->  GateH
     GeneratedAbstractSyntax.GateX -> GateX
@@ -244,6 +247,8 @@ toVariableName (GeneratedAbstractSyntax.Var var) = snd var
 toLetVariableName :: GeneratedAbstractSyntax.LetVariable -> String
 toLetVariableName (GeneratedAbstractSyntax.LetVar var) = toVariableName var
 
+-- Section: mapping terms --
+
 mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
@@ -253,8 +258,8 @@ mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm 
 mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
   where inEnv = Map.insert (toLetVariableName var) 0 (Map.map succ env)
 
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle x letEq letIn) = TermLetSugarSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Map.insert (toLetVariableName x) 0 (Map.map succ env)
+mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var letEq letIn) = TermLetSugarSingle (mapTerm env letEq) (mapTerm inEnv letIn)
+  where inEnv = Map.insert (toLetVariableName var) 0 (Map.map succ env)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x [] letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
   where letEnv = updateEnv x [] env
@@ -278,14 +283,23 @@ mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlsGate (GeneratedAbstractSynt
 mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermCompose l r) = TermCompose (mapTerm env l) (mapTerm env r)
-mapTerm _ (GeneratedAbstractSyntax.TermVariable var) = TermVariable (mapVariable var)
+mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Map.lookup varName env of
+    Just int -> TermBoundVariable int
+    Nothing  -> TermFreeVariable varName
+  where
+    varName = toVariableName var
+
+mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
+
+mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
+  where envUpdated = Map.insert (toVariableName var) 0 (Map.map succ env)
+
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
 mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
-mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
-mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
-  where envUpdated = Map.insert (filter (\x -> x /= ' ' && x /= ':') $ toVariableName var) 0 (Map.map succ env)
-mapTerm _ (GeneratedAbstractSyntax.TermBit (GeneratedAbstractSyntax.BitValue bit)) = TermBit (BitValue bit)
+mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
+
+-- Done mapping terms --
 
 updateEnv :: GeneratedAbstractSyntax.LetVariable -> [GeneratedAbstractSyntax.LetVariable] -> Environment -> Environment
 updateEnv x [] env = Map.insert (toLetVariableName x) 0 (Map.map succ env)
