@@ -1,3 +1,4 @@
-fun :: Bit
+fun :: !(!Bit)
 fun = q <- new @0;
       measr (gate Z q)
+

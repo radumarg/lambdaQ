@@ -1,3 +1,4 @@
 fun :: Bit
 fun = let q = (new @-i) in
       measr (gate X q)
+
