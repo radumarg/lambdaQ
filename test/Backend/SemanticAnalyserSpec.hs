@@ -145,11 +145,13 @@ spec =  do
         result `shouldSatisfy` (\str -> "for the following bits: b1,b1, and ,b2,b1,b2" `isInfixOf` str)
 
     -- EXPECT SOME ERRORS: CONTROL QUBITS AND TARGET QUBITS ARE NOT DISTINCT  --
-    -- TODO add support and test for multiple controlled gates
 
     context "when provided with a Grover algorithm program where control and target qubits are not different" $ do
       it "returns an error" $ do
         result <- testProgram "test/programs/example08-groverAlgorithm__ControlAnTargetQubitsNotDifferent.lq"
         result `shouldSatisfy` (\str -> "The control and target qubits are not distinct" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "for function 'oracle' at line: 2 and column: 1 for qubits identified with names: q6" `isInfixOf` str)
-        result `shouldSatisfy` (\str -> " for function 'oracle'' at line: 6 and column: 1 for qubits identified with names: q0" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "for function 'oracle'' at line: 6 and column: 1 for qubits identified with names: q0" `isInfixOf` str)
+
+    -- TODO add support and test for multiple controlled gates
+    
