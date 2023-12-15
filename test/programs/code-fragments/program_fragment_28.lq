@@ -1,0 +1,16 @@
+fun1 :: Qbit ** 3
+fun1 bit1 bit2 = (new @0, new @0, new @0)
+
+fun2 :: Bit -> Bit
+fun2 bit = bit
+
+main :: Bit ** 3
+main = q1, q2, q3 <- fun1;
+       b1 <- measr q1;
+       b2 <- measr q2;
+       b3 <- fun2 0;
+       b4 <- measr q3;
+       ((b1), (b2), (b3), b4) --TODO fix grammar and remove paranthesis
+
+
+

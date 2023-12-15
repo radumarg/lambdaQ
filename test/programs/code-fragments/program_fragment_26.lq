@@ -1,0 +1,12 @@
+fun1 :: Bit -> Bit -> Bit
+fun1 bit1 bit2 = if bit1 then bit2 else bit1
+
+fun2 :: Bit -> Qbit * Qbit
+fun2 bit = let (q1, q2) = if bit then (new @0, new @0) else (new @1, new @1) in
+           (gate H q1, gate H q2)
+
+main :: Qbit * Qbit
+main = fun2 (fun1 0 1)
+
+
+
