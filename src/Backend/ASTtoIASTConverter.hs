@@ -299,11 +299,11 @@ mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
 mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 
--- Done mapping terms --
-
 updateEnv :: GeneratedAbstractSyntax.LetVariable -> [GeneratedAbstractSyntax.LetVariable] -> Environment -> Environment
 updateEnv x [] env = Map.insert (toLetVariableName x) 0 (Map.map succ env)
 updateEnv x (y:ys) env = updateEnv y ys (updateEnv x [] env)
+
+-- Done mapping terms --
 
 mapProgram :: GeneratedAbstractSyntax.Program -> Program
 mapProgram (GeneratedAbstractSyntax.ProgDef functions) = map mapFunction functions
