@@ -308,17 +308,47 @@ spec =  do
         result `shouldSatisfy` (\str -> "Function main (9,1) (TypeQbit :**: 2)" `isInfixOf` str)
         result `shouldSatisfy` (\str -> "TermApply (TermFreeVariable fun2) (TermApply (TermApply (TermFreeVariable fun1) (TermBit BitZero)) (TermBit BitOne))" `isInfixOf` str)
 
-    -- context "when provided with a small program fragment(28)" $ do
-    --   it "returns a syntax tree processed in the intermediate syntax tree format" $ do
-    --     result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_28.lq"
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "" `isInfixOf` str)
+    context "when provided with a small program fragment(28)" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_28.lq"
+        result `shouldSatisfy` (\str -> "Function fun1 (2,1) (TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "(TermTuple (TermApply (TermNew (2,9)) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermNew (2,17)) (TermBasisState BasisStateZero)) (TermApply (TermNew (2,25)) (TermBasisState BasisStateZero)))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function fun2 (5,1) (TypeBit :->: TypeBit)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLambda TypeBit (TermBoundVariable 0)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function main (8,1) (TypeBit :**: 4)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLetSugarMultiple (TermFreeVariable fun1)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLetSugarSingle (TermApply (TermMeasure (9,14)) (TermBoundVariable 2)) (TermLetSugarSingle (TermApply (TermMeasure (10,14)) (TermBoundVariable 2)) (TermLetSugarSingle (TermApply (TermFreeVariable fun2) (TermBit BitZero)) (TermLetSugarSingle (TermApply (TermMeasure (12,14)) (TermBoundVariable 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple (TermBoundVariable 3) (TermTuple (TermBoundVariable 2) (TermTuple (TermBoundVariable 1) (TermBoundVariable 0))" `isInfixOf` str)
+
+    context "when provided with a small program fragment(29)" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_29.lq"
+        result `shouldSatisfy` (\str -> "Function fun (2,1) TypeBit" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,33))) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,48))) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,63))) (TermBasisState BasisStateZero)) (TermApply (TermApply (TermGate GateH) (TermNew (2,78))) (TermBasisState BasisStateZero)))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLetSugarSingle (TermApply (TermMeasure (3,13)) (TermBoundVariable 3)) (TermLetSugarSingle (TermApply (TermMeasure (4,13)) (TermBoundVariable 3)) (TermLetSugarSingle (TermApply (TermMeasure (5,13)) (TermBoundVariable 3))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermApply (TermMeasure (6,7)) (TermApply (TermApply (TermClassicCtrlsGate TermBoundVariable 2,TermBoundVariable 1,TermBoundVariable 0 0,0,1) (TermGate GateY)) (TermBoundVariable 5))" `isInfixOf` str)
+
+    context "when provided with a small program fragment(30)" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_30.lq"
+        result `shouldSatisfy` (\str -> "Function fun1 (2,1) (TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermNew (2,9)) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermNew (2,17)) (TermBasisState BasisStateZero)) (TermApply (TermNew (2,25)) (TermBasisState BasisStateZero)))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function fun2 (5,1) (TypeQbit :**: 3 :->: TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLambda (TypeQbit :**: 3) (TermApply (TermApply (TermFreeVariable qbit3) (TermFreeVariable qbit2)) (TermBoundVariable 0))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function main (8,1) (TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermCompose (TermFreeVariable fun2) (TermFreeVariable fun1)" `isInfixOf` str)
+
+    context "when provided with a small program fragment(31)" $ do
+      it "returns a syntax tree processed in the intermediate syntax tree format" $ do
+        result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_31.lq"
+        result `shouldSatisfy` (\str -> "Function fun1 (2,1) (TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermNew (2,9)) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermNew (2,17)) (TermBasisState BasisStateZero)) (TermApply (TermNew (2,25)) (TermBasisState BasisStateZero)))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function fun2 (5,1) (TypeQbit :**: 3 :->: TypeQbit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLambda (TypeQbit :**: 3) (TermApply (TermApply (TermFreeVariable q3) (TermFreeVariable q2)) (TermBoundVariable 0))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function measureall (8,1) (TypeQbit :**: 3 :->: TypeBit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermLambda (TypeQbit :**: 3) (TermTuple (TermApply (TermMeasure (8,24)) (TermBoundVariable 0)) (TermTuple (TermApply (TermMeasure (8,34)) (TermFreeVariable q2)) (TermApply (TermMeasure (8,44)) (TermFreeVariable q3))))" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "Function main (11,1) (TypeBit :**: 3)" `isInfixOf` str)
+        result `shouldSatisfy` (\str -> "TermDollar (TermFreeVariable measureall) (TermApply (TermFreeVariable fun2) (TermFreeVariable fun1))" `isInfixOf` str)
+
+
+        

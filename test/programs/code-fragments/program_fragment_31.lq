@@ -1,0 +1,13 @@
+fun1 :: Qbit ** 3
+fun1 = (new @0, new @0, new @0)
+
+fun2 :: Qbit ** 3 -> Qbit ** 3
+fun2 q1 q2 q3 = q3 q2 q1
+
+measureall :: Qbit ** 3 -> Bit ** 3
+measureall q1 q2 q3 = (measr q1, measr q2, measr q3)
+
+main :: Bit ** 3
+main = measureall $ fun2 fun1
+
+

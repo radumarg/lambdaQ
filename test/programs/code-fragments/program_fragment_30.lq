@@ -1,0 +1,9 @@
+fun1 :: Qbit ** 3
+fun1 = (new @0, new @0, new @0)
+
+fun2 :: Qbit ** 3 -> Qbit ** 3
+fun2 qbit1 qbit2 qbit3 = qbit3 qbit2 qbit1
+
+main :: Qbit ** 3
+main = fun2 . fun1
+
