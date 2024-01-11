@@ -21,7 +21,7 @@ data CompilationError =
     ParseError String                |
     SemanticError String             |
     SyntaxTreeConversionError String |
-    TypeError String                 |
+    TypeCheckError String            |
     CodeGenerationError String       |
     FileDoesNotExist FilePath
 
@@ -35,7 +35,7 @@ instance Show CompilationError where
   show (SyntaxTreeConversionError e) =
     "syntax tree conversion error:\n" ++ show e
 
-  show (TypeError e) =
+  show (TypeCheckError e) =
     "type error:\n" ++ show e
 
   show (CodeGenerationError e) =
@@ -65,7 +65,7 @@ convertAstToIast :: GeneratedAbstractSyntax.Program -> Exec Program
 convertAstToIast = ExceptT . return . first SyntaxTreeConversionError . runAstToIastConverter
 
 typeCheck :: Program -> Exec Program
-typeCheck = ExceptT . return . first TypeError . runTypeChecker
+typeCheck = ExceptT . return . first TypeCheckError . runTypeChecker
 
 generateCode  :: Program -> Exec String
 generateCode = ExceptT . return . first CodeGenerationError . runCodeGenerator

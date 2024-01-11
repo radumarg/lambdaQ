@@ -12,31 +12,31 @@ import Control.Monad.State
 import Data.Map (Map)
 import Data.Set (Set)
 
-import Backend.ASTtoIASTConverter (Program, Term, Type, Var, mapProgram)
+import Backend.ASTtoIASTConverter (Function, Program, Term, Type, Var, mapProgram)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 import GHC.Base (undefined)
 
-data TypeErrorInstance =
-    NotAFunction Type             |
-    VariableNotInScope String     |
-    TypeMismatch Type Type        |
-    NotAProductType Type          | 
-    NotALinearType String         |
-    NotALinearTerm Var Type Term  |
+data TypeError =
+    NotAFunction Type               |
+    VariableNotInScope String       |
+    TypeMismatch Type Type          |
+    NotAProductType Type            | 
+    DuplicatedLinearVariable String |
+    NotALinearTerm Var Type Term    |
     NoCommonSupertype Type Type
     deriving (Eq, Ord, Read)
 
-instance Show TypeErrorInstance where
+instance Show TypeError where
     show (NotAFunction typ) = "The type '" ++ show typ ++ "' is not a function type."
     show (VariableNotInScope var) = "The variable " ++ var ++ " is not in scope."
-    show (TypeMismatch type1 type2) = "The expected type '" ++ show type1 ++"' cannot be matched with actual type '" ++ show type2 ++ "'"
+    show (TypeMismatch type1 type2) = "The expected type '" ++ show type1 ++ "' cannot be matched with actual type '" ++ show type2 ++ "'"
     show (NotAProductType typ) = "The type '" ++ show typ ++ "' is not a product type."
-    show (NotALinearType var) = "The linear variable '" ++ var ++ "' is used more than once."
+    show (DuplicatedLinearVariable var) = "The linear variable '" ++ var ++ "' is used more than once."
     --show (NotALinearTerm var typ term) = "Expression is not a linear term: " ++ show (GeneratedAbstractSyntax.TermLambda GeneratedAbstractSyntax.Lambda var typ term)
     show (NoCommonSupertype type1 type2) = "Could not find a common super-type for type '" ++ show type1 ++ "' and type '" ++ show type2 ++ "'"
 
-data TypeError = TypeError String TypeErrorInstance
+data TypeCheckFailure = TypeCheckFailure String TypeError
   deriving (Eq, Ord, Show, Read)
 
 type LinearEnvironment = Set String
@@ -47,10 +47,14 @@ data ErrorEnvironment = ErrorEnv {
     currentFunction :: String
   } deriving Show
 
-type Check = ExceptT TypeError (ReaderT MainEnvironment (State ErrorEnvironment))
+type Check = ExceptT TypeCheckFailure (ReaderT MainEnvironment (State ErrorEnvironment))
 
 runTypeChecker :: Program -> Either String Program
-runTypeChecker program = undefined
+runTypeChecker program = if null err then Right program else Left err
+  where err = concatMap typeCheckFunction program
+
+typeCheckFunction :: Function -> String
+typeCheckFunction = undefined
 
 inferTerm :: [Type] -> Term -> Check Type
 inferTerm = undefined
