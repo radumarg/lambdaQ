@@ -18,23 +18,23 @@ import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 import GHC.Base (undefined)
 
 data TypeError =
-    NotAFunction Type               |
-    VariableNotInScope String       |
-    TypeMismatch Type Type          |
-    NotAProductType Type            | 
-    DuplicatedLinearVariable String |
-    NotALinearTerm Var Type Term    |
-    NoCommonSupertype Type Type
+    NotAFunction Type               | -- this type should be a function but it is not
+    FunctionNotInScope String       | -- this variable denotes a function which is not in scope at the point where it is declared
+    TypeMismatch Type Type          | -- this type does not match the type expected at the point where it was declared
+    NotAProductType Type            | -- this type should be a product type but it is not
+    DuplicatedLinearVariable String | -- this linear variable is used more than once
+    NotALinearTerm Type Term        | -- this term is not linear despite being declared linear
+    NoCommonSupertype Type Type       -- these two types have no common supertype
     deriving (Eq, Ord, Read)
 
 instance Show TypeError where
     show (NotAFunction typ) = "The type '" ++ show typ ++ "' is not a function type."
-    show (VariableNotInScope var) = "The variable " ++ var ++ " is not in scope."
+    show (FunctionNotInScope var) = "The variable " ++ var ++ " denotes a function which is not in scope."
     show (TypeMismatch type1 type2) = "The expected type '" ++ show type1 ++ "' cannot be matched with actual type '" ++ show type2 ++ "'"
     show (NotAProductType typ) = "The type '" ++ show typ ++ "' is not a product type."
     show (DuplicatedLinearVariable var) = "The linear variable '" ++ var ++ "' is used more than once."
-    --show (NotALinearTerm var typ term) = "Expression is not a linear term: " ++ show (GeneratedAbstractSyntax.TermLambda GeneratedAbstractSyntax.Lambda var typ term)
-    show (NoCommonSupertype type1 type2) = "Could not find a common super-type for type '" ++ show type1 ++ "' and type '" ++ show type2 ++ "'"
+    show (NotALinearTerm typ term) = "Expression " ++ show term ++ " is not a linear type but: " ++ show typ
+    show (NoCommonSupertype type1 type2) = "Could not find a common super-type for types '" ++ show type1 ++ "' and '" ++ show type2 ++ "'"
 
 data TypeCheckFailure = TypeCheckFailure String TypeError
   deriving (Eq, Ord, Show, Read)
