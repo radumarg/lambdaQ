@@ -50,8 +50,8 @@ type Exec a = ExceptT CompilationError IO a
 
 readTheFile :: FilePath -> Exec String
 readTheFile path = do
-  read <- liftIO (try (readFile path) :: IO (Either IOError String))
-  case read of
+  fileContents <- liftIO (try (readFile path) :: IO (Either IOError String))
+  case fileContents of
     Left  _ -> throwError $ FileDoesNotExist path
     Right str -> return str
 
