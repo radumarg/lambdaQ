@@ -1,4 +1,12 @@
-module CompilationEngine where
+module CompilationEngine (
+  Exec,
+  readTheFile,
+  parseProgram,
+  semanticAnalysis,
+  convertAstToIast,
+  typeCheck,
+  generateCode,
+) where
 
 import Data.Bifunctor ( Bifunctor(first) )
 import Control.Monad.Except
