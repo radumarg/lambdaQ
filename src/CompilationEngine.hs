@@ -1,13 +1,13 @@
 module CompilationEngine where
 
-import Data.Bifunctor ( Bifunctor(bimap, first) )
+import Data.Bifunctor ( Bifunctor(first) )
 import Control.Monad.Except
   (
     MonadIO(liftIO),
     MonadError(throwError),
     ExceptT(..),
   )
-import Control.Exception (Exception, try)
+import Control.Exception (try)
 
 import Backend.ASTtoIASTConverter (Program, runAstToIastConverter)
 import Backend.SemanticAnalyser (runSemanticAnalyser)
