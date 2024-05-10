@@ -4,7 +4,10 @@
 -- be discarded (not used at all), see https://arxiv.org/abs/cs/0404056.
 -- Type checker will return an annotated syntax tree (??) - to be determined ..
 
-module Backend.TypeChecker (TypeError, runTypeChecker, ) where
+module Backend.TypeChecker (
+  TypeError,
+  runTypeChecker,
+) where
 
 import Control.Monad.Except (ExceptT(..))
 import Control.Monad.Reader ( ReaderT )
