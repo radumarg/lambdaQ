@@ -43,9 +43,54 @@ library:
   source-dirs: src
 
 executables:
-  lambdaQ-run:
+  lambdaQ:
     main:                Main.hs
     source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - lambdaQ
+  runParser:
+    main:                runParser.hs
+    source-dirs:         src/run
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - lambdaQ
+  runSemanticAnalysis:
+    main:                runSemanticAnalysis.hs
+    source-dirs:         src/run
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - lambdaQ
+  # runIASTConversion:
+  #   main:                runIASTConversion.hs
+  #   source-dirs:         src/run
+  #   ghc-options:
+  #   - -threaded
+  #   - -rtsopts
+  #   - -with-rtsopts=-N
+  #   dependencies:
+  #   - lambdaQ
+  runTypeChecker:
+    main:                runTypeChecker.hs
+    source-dirs:         src/run
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - lambdaQ
+  runCodeGenerator:
+    main:                runCodeGenerator.hs
+    source-dirs:         src/run
     ghc-options:
     - -threaded
     - -rtsopts

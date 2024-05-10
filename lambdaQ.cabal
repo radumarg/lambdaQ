@@ -53,12 +53,84 @@ library
     , parsec
   default-language: Haskell2010
 
-executable lambdaQ-run
+executable lambdaQ
   main-is: Main.hs
   other-modules:
       Paths_lambdaQ
   hs-source-dirs:
       app
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , array
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , lambdaQ
+    , mtl
+    , parsec
+  default-language: Haskell2010
+
+executable runCodeGenerator
+  main-is: runCodeGenerator.hs
+  other-modules:
+      Paths_lambdaQ
+  hs-source-dirs:
+      src/run
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , array
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , lambdaQ
+    , mtl
+    , parsec
+  default-language: Haskell2010
+
+executable runParser
+  main-is: runParser.hs
+  other-modules:
+      Paths_lambdaQ
+  hs-source-dirs:
+      src/run
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , array
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , lambdaQ
+    , mtl
+    , parsec
+  default-language: Haskell2010
+
+executable runSemanticAnalysis
+  main-is: runSemanticAnalysis.hs
+  other-modules:
+      Paths_lambdaQ
+  hs-source-dirs:
+      src/run
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
+  build-depends:
+      QuickCheck
+    , array
+    , base >=4.7 && <5
+    , containers
+    , hspec
+    , lambdaQ
+    , mtl
+    , parsec
+  default-language: Haskell2010
+
+executable runTypeChecker
+  main-is: runTypeChecker.hs
+  other-modules:
+      Paths_lambdaQ
+  hs-source-dirs:
+      src/run
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       QuickCheck
