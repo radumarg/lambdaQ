@@ -1,6 +1,6 @@
 module CompilationEngine (
   Exec,
-  readTheFile,
+  readFileContents,
   parseProgram,
   semanticAnalysis,
   convertAstToIast,
@@ -56,8 +56,8 @@ instance Show CompilationError where
 -- add error handling to another monad
 type Exec a = ExceptT CompilationError IO a
 
-readTheFile :: FilePath -> Exec String
-readTheFile path = do
+readFileContents :: FilePath -> Exec String
+readFileContents path = do
   fileContents <- liftIO (try (readFile path) :: IO (Either IOError String))
   case fileContents of
     Left  _ -> throwError $ FileDoesNotExist path
