@@ -2,7 +2,7 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
 import System.IO ( hClose, openFile, IOMode(ReadMode) )
 
 main :: IO ()
@@ -27,7 +27,7 @@ main = do
     last3Elements = lastNElements 3
 
 compile :: FilePath -> Exec String
-compile filePath = readTheFile filePath
+compile filePath = readFileContents filePath
                           >>= parseProgram
                           >>= semanticAnalysis
                           >>= convertAstToIast
