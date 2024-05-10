@@ -7,11 +7,12 @@ import Test.Hspec
 import Control.Monad.Except (runExceptT)
 
 import Backend.ASTtoIASTConverter (Program)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast)
-import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast)
+
+-- import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 runIASTConversion :: FilePath -> Exec Program
-runIASTConversion filePath = readTheFile filePath
+runIASTConversion filePath = readFileContents filePath
                             >>= parseProgram
                             >>= semanticAnalysis
                             >>= convertAstToIast
