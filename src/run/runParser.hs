@@ -1,3 +1,5 @@
+{-# LANGUAGE LambdaCase #-}
+
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
 import CompilationEngine (Exec, readFileContents, parseProgram)
