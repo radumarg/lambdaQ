@@ -22,7 +22,7 @@ main = do
             where
               outputFile = init (init filePath) ++ "qasm"
       else
-        putStrLn "Please supply one argument: a path ponting to a lambdaQ program file!"
+        putStrLn "Please supply one command argument: a path ponting to a lambdaQ program file!"
   where
     last3Elements = lastNElements 3
 
