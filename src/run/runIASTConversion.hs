@@ -1,7 +1,8 @@
 {-# LANGUAGE LambdaCase #-}
+
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import Backend.ASTtoIASTConverter (Program, reverseMapFunction, mapProgram)
+import Backend.ASTtoIASTConverter (Program, mapProgram)
 import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast)
 import Frontend.LambdaQ.Print ( printTree )
 
@@ -25,7 +26,7 @@ main = do
         let filePath = head args
         runExceptT (runIASTConversion filePath) >>= \case
           Left err -> putStrLn $ "Error: " ++ show err ++ "!"
-          Right program -> putStrLn $ printTree (map reverseMapFunction program)
+          Right program -> putStrLn "hei" -- $ printTree reverseMapProgram program
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
   where
