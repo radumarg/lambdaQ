@@ -1,9 +1,11 @@
+{-# LANGUAGE LambdaCase #-}
+
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast, typeCheck, generateCode)
 
 runCodeGeneration :: FilePath -> Exec String
-runCodeGeneration filePath = readTheFile filePath
+runCodeGeneration filePath = readFileContents filePath
                           >>= parseProgram
                           >>= semanticAnalysis
                           >>= convertAstToIast

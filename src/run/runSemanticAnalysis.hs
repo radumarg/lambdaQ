@@ -3,12 +3,12 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis)
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis)
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 runSemanticAnalysis :: FilePath -> Exec GeneratedAbstractSyntax.Program
-runSemanticAnalysis filePath = readTheFile filePath
+runSemanticAnalysis filePath = readFileContents filePath
                               >>= parseProgram
                               >>= semanticAnalysis
 

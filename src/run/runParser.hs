@@ -1,12 +1,12 @@
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import CompilationEngine (Exec, readTheFile, parseProgram)
+import CompilationEngine (Exec, readFileContents, parseProgram)
 import Frontend.LambdaQ.Print ( printTree )
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 runParser :: FilePath -> Exec GeneratedAbstractSyntax.Program
-runParser filePath = readTheFile filePath
+runParser filePath = readFileContents filePath
                     >>= parseProgram
 
 lastNElements :: Int -> [a] -> [a]

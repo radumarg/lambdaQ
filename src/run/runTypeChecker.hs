@@ -1,10 +1,12 @@
+{-# LANGUAGE LambdaCase #-}
+
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
 import Backend.ASTtoIASTConverter (Program)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast, typeCheck)
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast, typeCheck)
 
 runTypeChecker :: FilePath -> Exec Program
-runTypeChecker filePath = readTheFile filePath
+runTypeChecker filePath = readFileContents filePath
                           >>= parseProgram
                           >>= semanticAnalysis
                           >>= convertAstToIast

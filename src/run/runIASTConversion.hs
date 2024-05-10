@@ -1,13 +1,14 @@
+{-# LANGUAGE LambdaCase #-}
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
 import Backend.ASTtoIASTConverter (Program, reverseMapFunction, mapProgram)
-import CompilationEngine (Exec, readTheFile, parseProgram, semanticAnalysis, convertAstToIast)
+import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast)
 import Frontend.LambdaQ.Print ( printTree )
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 runIASTConversion :: FilePath -> Exec Program
-runIASTConversion filePath = readTheFile filePath
+runIASTConversion filePath = readFileContents filePath
                             >>= parseProgram
                             >>= semanticAnalysis
                             >>= convertAstToIast
