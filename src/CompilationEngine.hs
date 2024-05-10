@@ -1,11 +1,11 @@
 module CompilationEngine (
   Exec,
-  readFileContents,
-  parseProgram,
-  semanticAnalysis,
   convertAstToIast,
-  typeCheck,
   generateCode,
+  parseProgram,
+  readFileContents,
+  semanticAnalysis,
+  typeCheck,
 ) where
 
 import Data.Bifunctor ( Bifunctor(first) )

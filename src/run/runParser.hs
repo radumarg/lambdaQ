@@ -9,8 +9,8 @@ runParser :: FilePath -> Exec GeneratedAbstractSyntax.Program
 runParser filePath = readTheFile filePath
                     >>= parseProgram
 
-lastN :: Int -> [a] -> [a]
-lastN n xs = drop (length xs - n) xs
+lastNElements :: Int -> [a] -> [a]
+lastNElements n xs = drop (length xs - n) xs
 
 main :: IO ()
 main = do
@@ -25,4 +25,4 @@ main = do
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
   where
-    last3 = lastN 3
+    last3 = lastNElements 3
