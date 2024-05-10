@@ -7,15 +7,17 @@
 module Backend.TypeChecker (TypeError, runTypeChecker, ) where
 
 import Control.Monad.Except (ExceptT(..))
-import Control.Monad.Reader
-import Control.Monad.State
+import Control.Monad.Reader ( ReaderT )
+import Control.Monad.State ( State )
 import Data.Map (Map)
 import Data.Set (Set)
 
-import Backend.ASTtoIASTConverter (Function, Program, Term, Type, Var, mapProgram)
-import Frontend.LambdaQ.Par ( myLexer, pProgram )
-import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import GHC.Base (undefined)
+import Backend.ASTtoIASTConverter (Function, Program, Term, Type, )
+
+-- import Backend.ASTtoIASTConverter (Function, Program, Term, Type, Var, mapProgram)
+-- import Frontend.LambdaQ.Par ( myLexer, pProgram )
+-- import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
+-- import GHC.Base (undefined)
 
 data TypeError =
     NotAFunction Type               | -- this type should be a function but it is not
