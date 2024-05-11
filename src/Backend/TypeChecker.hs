@@ -53,8 +53,9 @@ data ErrorEnvironment = ErrorEnv {
   } deriving Show
 
 type Check = ExceptT TypeCheckFailure (ReaderT MainEnvironment (State ErrorEnvironment))
+type ErrorMessage = String
 
-runTypeChecker :: Program -> Either String Program
+runTypeChecker :: Program -> Either ErrorMessage Program
 runTypeChecker program = if null err then Right program else Left err
   where err = concatMap typeCheckFunction program
 
