@@ -29,6 +29,7 @@ library
       Backend.CodeGenerator
       Backend.SemanticAnalyser
       Backend.TypeChecker
+      Common
       CompilationEngine
       Frontend.LambdaQ.Abs
       Frontend.LambdaQ.ErrM

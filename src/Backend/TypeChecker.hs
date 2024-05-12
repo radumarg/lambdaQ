@@ -15,6 +15,7 @@ import Control.Monad.State ( State )
 import Data.Map (Map)
 import Data.Set (Set)
 
+import Common ( ErrorMessage )
 import Backend.ASTtoIASTConverter (Function, Program, Term, Type, )
 
 -- import Backend.ASTtoIASTConverter (Function, Program, Term, Type, Var, mapProgram)
@@ -53,7 +54,6 @@ data ErrorEnvironment = ErrorEnv {
   } deriving Show
 
 type Check = ExceptT TypeCheckFailure (ReaderT MainEnvironment (State ErrorEnvironment))
-type ErrorMessage = String
 
 runTypeChecker :: Program -> Either ErrorMessage Program
 runTypeChecker program = if null err then Right program else Left err

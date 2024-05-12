@@ -17,6 +17,7 @@ import Control.Monad.Except
   )
 import Control.Exception (try)
 
+import Common ( ErrorMessage )
 import Backend.ASTtoIASTConverter (Program, runAstToIastConverter)
 import Backend.SemanticAnalyser (runSemanticAnalyser)
 import Backend.TypeChecker (runTypeChecker)
@@ -26,11 +27,11 @@ import Frontend.LambdaQ.Layout ( resolveLayout )
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 data CompilationError =
-    ParseError String                |
-    SemanticError String             |
-    SyntaxTreeConversionError String |
-    TypeCheckError String            |
-    CodeGenerationError String       |
+    ParseError ErrorMessage                |
+    SemanticError ErrorMessage             |
+    SyntaxTreeConversionError ErrorMessage |
+    TypeCheckError ErrorMessage            |
+    CodeGenerationError ErrorMessage       |
     FileDoesNotExist FilePath
 
 instance Show CompilationError where
