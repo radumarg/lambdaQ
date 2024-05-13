@@ -5,7 +5,7 @@
 --   *  introduce De Bruijn indices for bound variables in lambda abstractions
 --   *  BNFC generated AST terms to be converted into an intermediate abstract syntax tree terms
 module Backend.ASTtoIASTConverter (
-  Function,
+  Function(..),
   mapProgram,
   Program,
   runAstToIastConverter,
