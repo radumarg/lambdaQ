@@ -171,12 +171,12 @@ Gate
   | 'Y' { Frontend.LambdaQ.Abs.GateY }
   | 'Z' { Frontend.LambdaQ.Abs.GateZ }
   | 'ID' { Frontend.LambdaQ.Abs.GateID }
-  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRt $2 }
-  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRtDag $2 }
-  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRt $2 }
-  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GateYRtDag $2 }
-  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GateZRt $2 }
-  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GateZRtDag $2 }
+  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRoot $2 }
+  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRootDag $2 }
+  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRoot $2 }
+  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GateYRootDag $2 }
+  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GateZRoot $2 }
+  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GateZRootDag $2 }
   | 'S' { Frontend.LambdaQ.Abs.GateS }
   | 'S_DAG' { Frontend.LambdaQ.Abs.GateSDag }
   | 'T' { Frontend.LambdaQ.Abs.GateT }

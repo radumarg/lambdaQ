@@ -51,12 +51,12 @@ data Gate
     | GateY
     | GateZ
     | GateID
-    | GateXRt Integer
-    | GateXRtDag Integer
-    | GateYRt Integer
-    | GateYRtDag Integer
-    | GateZRt Integer
-    | GateZRtDag Integer
+    | GateXRoot Integer
+    | GateXRootDag Integer
+    | GateYRoot Integer
+    | GateYRootDag Integer
+    | GateZRoot Integer
+    | GateZRootDag Integer
     | GateS
     | GateSDag
     | GateT

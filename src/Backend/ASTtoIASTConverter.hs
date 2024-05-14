@@ -64,12 +64,12 @@ data Gate =
     GateY                      |
     GateZ                      |
     GateID                     |
-    GateXRt Integer            |
-    GateXRtDag Integer         |
-    GateYRt Integer            |
-    GateYRtDag Integer         |
-    GateZRt Integer            |
-    GateZRtDag Integer         |
+    GateXRoot Integer          |
+    GateXRootDag Integer       |
+    GateYRoot Integer          |
+    GateYRootDag Integer       |
+    GateZRoot Integer          |
+    GateZRootDag Integer       |
     GateS                      |
     GateSDag                   |
     GateT                      |
@@ -184,12 +184,12 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateY -> GateY
     GeneratedAbstractSyntax.GateZ -> GateZ
     GeneratedAbstractSyntax.GateID -> GateID
-    GeneratedAbstractSyntax.GateXRt rt -> GateXRt rt
-    GeneratedAbstractSyntax.GateXRtDag rt -> GateXRtDag rt
-    GeneratedAbstractSyntax.GateYRt rt -> GateYRt rt
-    GeneratedAbstractSyntax.GateYRtDag rt -> GateYRtDag rt
-    GeneratedAbstractSyntax.GateZRt rt -> GateZRt rt
-    GeneratedAbstractSyntax.GateZRtDag rt -> GateZRtDag rt
+    GeneratedAbstractSyntax.GateXRoot rt -> GateXRoot rt
+    GeneratedAbstractSyntax.GateXRootDag rt -> GateXRootDag rt
+    GeneratedAbstractSyntax.GateYRoot rt -> GateYRoot rt
+    GeneratedAbstractSyntax.GateYRootDag rt -> GateYRootDag rt
+    GeneratedAbstractSyntax.GateZRoot rt -> GateZRoot rt
+    GeneratedAbstractSyntax.GateZRootDag rt -> GateZRootDag rt
     GeneratedAbstractSyntax.GateS -> GateS
     GeneratedAbstractSyntax.GateSDag -> GateSDag
     GeneratedAbstractSyntax.GateT -> GateT

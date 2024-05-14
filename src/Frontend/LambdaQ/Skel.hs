@@ -64,12 +64,12 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateY -> failure x
   Frontend.LambdaQ.Abs.GateZ -> failure x
   Frontend.LambdaQ.Abs.GateID -> failure x
-  Frontend.LambdaQ.Abs.GateXRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateXRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRtDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateXRoot integer -> failure x
+  Frontend.LambdaQ.Abs.GateXRootDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateYRoot integer -> failure x
+  Frontend.LambdaQ.Abs.GateYRootDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateZRoot integer -> failure x
+  Frontend.LambdaQ.Abs.GateZRootDag integer -> failure x
   Frontend.LambdaQ.Abs.GateS -> failure x
   Frontend.LambdaQ.Abs.GateSDag -> failure x
   Frontend.LambdaQ.Abs.GateT -> failure x
