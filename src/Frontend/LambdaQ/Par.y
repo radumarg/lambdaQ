@@ -49,50 +49,52 @@ import Frontend.LambdaQ.Lex
   'H'             { PT _ (TS _ 24)     }
   'ID'            { PT _ (TS _ 25)     }
   'ISWAP'         { PT _ (TS _ 26)     }
-  'Qbit'          { PT _ (TS _ 27)     }
-  'ROOT_SWAP'     { PT _ (TS _ 28)     }
-  'ROOT_SWAP_DAG' { PT _ (TS _ 29)     }
-  'ROOT_X'        { PT _ (TS _ 30)     }
-  'ROOT_X_DAG'    { PT _ (TS _ 31)     }
-  'ROOT_Y'        { PT _ (TS _ 32)     }
-  'ROOT_Y_DAG'    { PT _ (TS _ 33)     }
-  'ROOT_Z'        { PT _ (TS _ 34)     }
-  'ROOT_Z_DAG'    { PT _ (TS _ 35)     }
-  'RX'            { PT _ (TS _ 36)     }
-  'RY'            { PT _ (TS _ 37)     }
-  'RZ'            { PT _ (TS _ 38)     }
-  'S'             { PT _ (TS _ 39)     }
-  'SQRT_SWAP'     { PT _ (TS _ 40)     }
-  'SQRT_SWAP_DAG' { PT _ (TS _ 41)     }
-  'SQRT_X'        { PT _ (TS _ 42)     }
-  'SQRT_X_DAG'    { PT _ (TS _ 43)     }
-  'SQRT_Y'        { PT _ (TS _ 44)     }
-  'SQRT_Y_DAG'    { PT _ (TS _ 45)     }
-  'SWAP'          { PT _ (TS _ 46)     }
-  'SWAP_THETA'    { PT _ (TS _ 47)     }
-  'S_DAG'         { PT _ (TS _ 48)     }
-  'State'         { PT _ (TS _ 49)     }
-  'T'             { PT _ (TS _ 50)     }
-  'T_DAG'         { PT _ (TS _ 51)     }
-  'U1'            { PT _ (TS _ 52)     }
-  'U2'            { PT _ (TS _ 53)     }
-  'U3'            { PT _ (TS _ 54)     }
-  'Unitary'       { PT _ (TS _ 55)     }
-  'X'             { PT _ (TS _ 56)     }
-  'Y'             { PT _ (TS _ 57)     }
-  'Z'             { PT _ (TS _ 58)     }
-  '['             { PT _ (TS _ 59)     }
-  ']'             { PT _ (TS _ 60)     }
-  'ctrl'          { PT _ (TS _ 61)     }
-  'else'          { PT _ (TS _ 62)     }
-  'gate'          { PT _ (TS _ 63)     }
-  'if'            { PT _ (TS _ 64)     }
-  'in'            { PT _ (TS _ 65)     }
-  'let'           { PT _ (TS _ 66)     }
-  'then'          { PT _ (TS _ 67)     }
-  'with'          { PT _ (TS _ 68)     }
-  '{'             { PT _ (TS _ 69)     }
-  '}'             { PT _ (TS _ 70)     }
+  'QFT'           { PT _ (TS _ 27)     }
+  'QFT_DAG'       { PT _ (TS _ 28)     }
+  'Qbit'          { PT _ (TS _ 29)     }
+  'ROOT_SWAP'     { PT _ (TS _ 30)     }
+  'ROOT_SWAP_DAG' { PT _ (TS _ 31)     }
+  'ROOT_X'        { PT _ (TS _ 32)     }
+  'ROOT_X_DAG'    { PT _ (TS _ 33)     }
+  'ROOT_Y'        { PT _ (TS _ 34)     }
+  'ROOT_Y_DAG'    { PT _ (TS _ 35)     }
+  'ROOT_Z'        { PT _ (TS _ 36)     }
+  'ROOT_Z_DAG'    { PT _ (TS _ 37)     }
+  'RX'            { PT _ (TS _ 38)     }
+  'RY'            { PT _ (TS _ 39)     }
+  'RZ'            { PT _ (TS _ 40)     }
+  'S'             { PT _ (TS _ 41)     }
+  'SQRT_SWAP'     { PT _ (TS _ 42)     }
+  'SQRT_SWAP_DAG' { PT _ (TS _ 43)     }
+  'SQRT_X'        { PT _ (TS _ 44)     }
+  'SQRT_X_DAG'    { PT _ (TS _ 45)     }
+  'SQRT_Y'        { PT _ (TS _ 46)     }
+  'SQRT_Y_DAG'    { PT _ (TS _ 47)     }
+  'SWAP'          { PT _ (TS _ 48)     }
+  'SWAP_THETA'    { PT _ (TS _ 49)     }
+  'S_DAG'         { PT _ (TS _ 50)     }
+  'State'         { PT _ (TS _ 51)     }
+  'T'             { PT _ (TS _ 52)     }
+  'T_DAG'         { PT _ (TS _ 53)     }
+  'U1'            { PT _ (TS _ 54)     }
+  'U2'            { PT _ (TS _ 55)     }
+  'U3'            { PT _ (TS _ 56)     }
+  'Unitary'       { PT _ (TS _ 57)     }
+  'X'             { PT _ (TS _ 58)     }
+  'Y'             { PT _ (TS _ 59)     }
+  'Z'             { PT _ (TS _ 60)     }
+  '['             { PT _ (TS _ 61)     }
+  ']'             { PT _ (TS _ 62)     }
+  'ctrl'          { PT _ (TS _ 63)     }
+  'else'          { PT _ (TS _ 64)     }
+  'gate'          { PT _ (TS _ 65)     }
+  'if'            { PT _ (TS _ 66)     }
+  'in'            { PT _ (TS _ 67)     }
+  'let'           { PT _ (TS _ 68)     }
+  'then'          { PT _ (TS _ 69)     }
+  'with'          { PT _ (TS _ 70)     }
+  '{'             { PT _ (TS _ 71)     }
+  '}'             { PT _ (TS _ 72)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_Var           { PT _ (T_Var _)     }
@@ -199,6 +201,8 @@ Gate
   | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwpTheta $2 }
   | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
   | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }
+  | 'QFT' Integer { Frontend.LambdaQ.Abs.GateQft $2 }
+  | 'QFT_DAG' Integer { Frontend.LambdaQ.Abs.GateQftDag $2 }
 
 ControlBasisState :: { Frontend.LambdaQ.Abs.ControlBasisState }
 ControlBasisState

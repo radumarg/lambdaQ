@@ -70,6 +70,8 @@ GateFSwp          . Gate ::= "FSWAP"  ;                                 -- FSwap
 GateSwpTheta      . Gate ::= "SWAP_THETA" Angle ;                       -- Swap theta gate
 GateSwpRt         . Gate ::= "ROOT_SWAP" Integer ;                      -- Root of Swap gate (root is specified as k in 1/2^k)
 GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer  ;                 -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
+GateQft           . Gate ::= "QFT" Integer  ;                           -- Quantum Fourier Transform
+GateQftDag        . Gate ::= "QFT_DAG" Integer  ;                       -- Conjugate of Quantum Fourier Transform
 
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;

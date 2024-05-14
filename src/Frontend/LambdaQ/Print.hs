@@ -210,6 +210,8 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateSwpTheta angle -> prPrec i 0 (concatD [doc (showString "SWAP_THETA"), prt 0 angle])
     Frontend.LambdaQ.Abs.GateSwpRt n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP"), prt 0 n])
     Frontend.LambdaQ.Abs.GateSwpRtDag n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP_DAG"), prt 0 n])
+    Frontend.LambdaQ.Abs.GateQft n -> prPrec i 0 (concatD [doc (showString "QFT"), prt 0 n])
+    Frontend.LambdaQ.Abs.GateQftDag n -> prPrec i 0 (concatD [doc (showString "QFT_DAG"), prt 0 n])
 
 instance Print Frontend.LambdaQ.Abs.ControlBasisState where
   prt i = \case

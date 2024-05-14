@@ -79,6 +79,8 @@ data Gate
     | GateSwpTheta Angle
     | GateSwpRt Integer
     | GateSwpRtDag Integer
+    | GateQft Integer
+    | GateQftDag Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlBasisState = CtrlBasisState BasisState

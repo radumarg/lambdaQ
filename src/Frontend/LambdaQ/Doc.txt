@@ -35,17 +35,17 @@ The set of reserved words is the set of terminals appearing in the grammar. Thos
 
 The reserved words used in LambdaQ are the following:
   | ``Bit`` | ``FSWAP`` | ``H`` | ``ID``
-  | ``ISWAP`` | ``Qbit`` | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG``
-  | ``ROOT_X`` | ``ROOT_X_DAG`` | ``ROOT_Y`` | ``ROOT_Y_DAG``
-  | ``ROOT_Z`` | ``ROOT_Z_DAG`` | ``RX`` | ``RY``
-  | ``RZ`` | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG``
-  | ``SQRT_X`` | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG``
-  | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG`` | ``State``
-  | ``T`` | ``T_DAG`` | ``U1`` | ``U2``
-  | ``U3`` | ``Unitary`` | ``X`` | ``Y``
-  | ``Z`` | ``ctrl`` | ``else`` | ``gate``
-  | ``if`` | ``in`` | ``let`` | ``then``
-  | ``with`` |  |  |
+  | ``ISWAP`` | ``QFT`` | ``QFT_DAG`` | ``Qbit``
+  | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG`` | ``ROOT_X`` | ``ROOT_X_DAG``
+  | ``ROOT_Y`` | ``ROOT_Y_DAG`` | ``ROOT_Z`` | ``ROOT_Z_DAG``
+  | ``RX`` | ``RY`` | ``RZ`` | ``S``
+  | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG`` | ``SQRT_X`` | ``SQRT_X_DAG``
+  | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP`` | ``SWAP_THETA``
+  | ``S_DAG`` | ``State`` | ``T`` | ``T_DAG``
+  | ``U1`` | ``U2`` | ``U3`` | ``Unitary``
+  | ``X`` | ``Y`` | ``Z`` | ``ctrl``
+  | ``else`` | ``gate`` | ``if`` | ``in``
+  | ``let`` | ``then`` | ``with`` |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
@@ -123,6 +123,8 @@ All other symbols are terminals.
   |  |  **|**  | ``SWAP_THETA`` //Angle//
   |  |  **|**  | ``ROOT_SWAP`` //Integer//
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
+  |  |  **|**  | ``QFT`` //Integer//
+  |  |  **|**  | ``QFT_DAG`` //Integer//
   | //ControlBasisState// | -> | ``[`` //BasisState// ``]``
   | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
   | //[BasisState]// | -> | //BasisState//

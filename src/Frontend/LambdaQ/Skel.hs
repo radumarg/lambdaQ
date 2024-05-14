@@ -92,6 +92,8 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateSwpTheta angle -> failure x
   Frontend.LambdaQ.Abs.GateSwpRt integer -> failure x
   Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateQft integer -> failure x
+  Frontend.LambdaQ.Abs.GateQftDag integer -> failure x
 
 transControlBasisState :: Frontend.LambdaQ.Abs.ControlBasisState -> Result
 transControlBasisState x = case x of

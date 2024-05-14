@@ -27,12 +27,12 @@ data LayoutDelimiters
     }
 
 layoutWords :: [(TokSymbol, LayoutDelimiters)]
-layoutWords = [( TokSymbol "let" 66
-               , LayoutDelimiters (TokSymbol ";" 13) (Just (TokSymbol "{" 69)) (Just (TokSymbol "}" 70))
+layoutWords = [( TokSymbol "let" 68
+               , LayoutDelimiters (TokSymbol ";" 13) (Just (TokSymbol "{" 71)) (Just (TokSymbol "}" 72))
                )]
 
 layoutStopWords :: [TokSymbol]
-layoutStopWords = [TokSymbol "in" 65]
+layoutStopWords = [TokSymbol "in" 67]
 
 -- layout separators
 
@@ -44,11 +44,11 @@ layoutSep   = List.nub $ TokSymbol ";" 13 : map (delimSep . snd) layoutWords
 parenOpen, parenClose :: [TokSymbol]
 parenOpen  =
   [ TokSymbol "(" 3
-  , TokSymbol "[" 59
+  , TokSymbol "[" 61
   ]
 parenClose =
   [ TokSymbol ")" 5
-  , TokSymbol "]" 60
+  , TokSymbol "]" 62
   ]
 
 -- | Report an error during layout resolution.
