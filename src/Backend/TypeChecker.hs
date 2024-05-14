@@ -7,7 +7,7 @@
 {-# HLINT ignore "Eta reduce" #-}
 
 module Backend.TypeChecker
-  ( 
+  (
     TypeError,
     runTypeChecker,
   )
@@ -40,26 +40,26 @@ data TypeError
   deriving (Eq, Ord, Read)
 
 instance Show TypeError where
-  show (NotAFunction typ (line, col)) = 
+  show (NotAFunction typ (line, col)) =
     "The type '" ++ show typ ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is not a function type."
-  show (FunctionNotInScope var (line, col)) = 
+  show (FunctionNotInScope var (line, col)) =
     "The variable " ++ var ++ " at line: " ++ show line ++ " and column: "++ show col ++ " denotes a function which is not in scope."
-  show (TypeMismatch type1 type2 (line, col)) = 
+  show (TypeMismatch type1 type2 (line, col)) =
     "The expected type '" ++ show type1 ++  "' at line: " ++ show line ++ " and column: "++ show col ++ " cannot be matched with actual type '" ++ show type2 ++ "'"
-  show (NotAProductType typ (line, col)) = 
+  show (NotAProductType typ (line, col)) =
     "The type '" ++ show typ ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is not a product type."
-  show (DuplicatedLinearVariable var (line, col)) = 
+  show (DuplicatedLinearVariable var (line, col)) =
     "The linear variable '" ++ var ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is used more than once."
-  show (NotALinearTerm typ term (line, col)) = 
+  show (NotALinearTerm typ term (line, col)) =
     "Expression " ++ show term ++ " at line: " ++ show line ++ " and column: "++ show col ++ " is not a linear type but: " ++ show typ
-  show (NoCommonSupertype type1 type2) = 
+  show (NoCommonSupertype type1 type2) =
     "Could not find a common super-type for types '" ++ show type1 ++ " and '" ++ show type2 ++ "'"
 
 type LinearEnvironment = Set String
 type MainEnvironment = Map String Type
 
 data ErrorEnvironment = ErrorEnvironment
-  { 
+  {
     linearEnvironment :: LinearEnvironment,
     currentFunction :: String
   }
@@ -96,8 +96,24 @@ inferType _ (TermGate gate)  = return $ inferGateType gate
 inferType _ TermUnit = return $ TypeNonLinear TypeUnit
 
 inferGateType :: Gate -> Type
-inferGateType GateH = undefined
+inferGateType gate
+  | qubits > 2 = TypeQbit :**: qubits
+  | qubits == 2 = TypeQbit :*: TypeQbit
+  | otherwise = TypeQbit
+  where
+      qubits = case gate of
+        GateQft nq -> nq
+        GateQftDag nq -> nq
+        GateSwp -> 2
+        GateSqrtSwp -> 2
+        GateSqrtSwpDag -> 2
+        GateISwp -> 2
+        GateFSwp -> 2
+        GateSwpTheta _ -> 2
+        GateSwpRt _ -> 2
+        GateSwpRtDag _ -> 2
+        _ -> 1
 
 -- Verify it type left is a subtype of type right
 (<:) :: Type -> Type -> Bool
-a <: b  = a == b    
+a <: b  = a == b

@@ -91,7 +91,9 @@ data Gate =
     GateFSwp                   |
     GateSwpTheta Angle         |
     GateSwpRt Integer          |
-    GateSwpRtDag Integer
+    GateSwpRtDag Integer       |
+    GateQft Integer            |
+    GateQftDag Integer
   deriving (Eq, Ord, Read, Show)
 
 data Term =
@@ -212,6 +214,8 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
     GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt
     GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt
+    GeneratedAbstractSyntax.GateQft n -> GateQft n
+    GeneratedAbstractSyntax.GateQftDag n -> GateQftDag n
 
 -- convert function to Church-style lambda abstractions
 toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
