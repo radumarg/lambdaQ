@@ -6,11 +6,12 @@
 --   *  BNFC generated AST terms to be converted into an intermediate abstract syntax tree terms
 module Backend.ASTtoIASTConverter (
   Function(..),
+  Gate(..),
   mapProgram,
   Program,
   runAstToIastConverter,
-  Term,
-  Type,
+  Term(..),
+  Type(..),
 ) where
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
