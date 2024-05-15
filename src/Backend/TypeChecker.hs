@@ -94,6 +94,10 @@ inferType _ (TermMeasure _)  = return $ TypeNonLinear (TypeQbit :->: TypeNonLine
 inferType _ (TermBit _)  = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate)  = return $ inferGateType gate
 inferType _ TermUnit = return $ TypeNonLinear TypeUnit
+inferType context (TermTuple l r) = do
+    l <- inferType context l
+    r <- inferType context r
+    return $ pullOutBangs (l :*: r)
 
 inferGateType :: Gate -> Type
 inferGateType gate
@@ -114,6 +118,27 @@ inferGateType gate
         GateSwpRtDag _ -> 2
         _ -> 1
 
--- Verify it type left is a subtype of type right
+pullOutBangs :: Type -> Type
+pullOutBangs (TypeNonLinear l :*: TypeNonLinear r) = TypeNonLinear (pullOutBangs (l :*: r))
+pullOutBangs (TypeNonLinear t :**: n) = TypeNonLinear (pullOutBangs (t :**: n))
+pullOutBangs t = t
+
+removeBang :: Type -> Type
+removeBang (TypeNonLinear t) = removeBang t
+removeBang t = t
+
+noBangs :: Type -> Integer
+noBangs (TypeNonLinear t) = 1 + noBangs t
+noBangs t = 0
+
+appendBangs :: Integer -> Type -> Type
+appendBangs 0 t = t
+appendBangs n t = appendBangs (n - 1) (TypeNonLinear t)
+
+isLinear :: Type -> Bool
+isLinear (TypeNonLinear _) = False
+isLinear _  = True
+
+-- Verify it type l is a subtype of type right
 (<:) :: Type -> Type -> Bool
 a <: b  = a == b
