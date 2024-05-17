@@ -3,8 +3,6 @@
 -- affine intuitionistic linear logic. An afine value can be used at most once but can optionally
 -- be discarded (not used at all), see https://arxiv.org/abs/cs/0404056.
 -- Type checker will return an annotated syntax tree (??) - to be determined ..
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Eta reduce" #-}
 
 module Backend.TypeChecker
   (
@@ -22,13 +20,6 @@ import Data.Map (Map)
 import Data.Set (Set)
 
 import Backend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..))
-
-
-
--- import Backend.ASTtoIASTConverter (Function, Program, Term, Type, Var, mapProgram)
--- import Frontend.LambdaQ.Par ( myLexer, pProgram )
--- import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
--- import GHC.Base (undefined)
 
 data TypeError
   = NotAFunction Type (Int, Int, String)               -- this type should be a function but it is not
@@ -79,7 +70,7 @@ typeCheckFunction' = undefined
 -----------------------------------------
 
 typeCheckProgram :: Program -> Check ()
-typeCheckProgram program = mapM_ typeCheckFunction program
+typeCheckProgram = mapM_ typeCheckFunction
 
 typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
@@ -130,13 +121,13 @@ smallestCommonSupertype (TypeNonLinear (t1 :->: t2)) (t1' :->: t2') (line, col, 
   = (:->:) <$> smallestCommonSupertype  (TypeNonLinear t1) t1' (line, col, fname) <*> smallestCommonSupertype (TypeNonLinear t2) t2' (line, col, fname)
 smallestCommonSupertype (t1 :->: t2) (TypeNonLinear (t1' :->: t2')) (line, col, fname)
   = (:->:) <$> smallestCommonSupertype  t1 (TypeNonLinear t1') (line, col, fname)  <*> smallestCommonSupertype t2  (TypeNonLinear t2') (line, col, fname)
--- smallestCommonSupertype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
---   | i == j =   (smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)) :**:  i
+smallestCommonSupertype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
+  | i == j =  (:**: i) <$> smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) = TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (t1 :**: i) (t2 :**: j) (line, col, fname)
-  | i == j = smallestCommonSupertype t1 (t2 :**: i) (line, col, fname)
+  | i == j = (:**: i) <$> smallestCommonSupertype t1 t2  (line, col, fname)
 smallestCommonSupertype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
   = (:*:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
 smallestCommonSupertype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
