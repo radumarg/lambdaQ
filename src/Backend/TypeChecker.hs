@@ -76,7 +76,7 @@ typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
     modify $ \x -> x {currentFunction = functionName}
     inferredType <- inferType [] term (line, col, functionName)
-    if subtypeOf inferredType functionType
+    if isSubtype inferredType functionType
         then return ()
         else throwError (TypeMismatch functionType inferredType (line, col, functionName))
 
@@ -86,15 +86,15 @@ inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLin
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
-inferType context (TermApply fun args) (line, col, fname) = do
-    funType <- inferType context fun (line, col, fname)
-    argsType <- inferType context args (line, col, fname)
+inferType context (TermApply funTerm argTerm) (line, col, fname) = do
+    funType <- inferType context funTerm (line, col, fname)
+    argsType <- inferType context argTerm (line, col, fname)
     case removeBangs funType of
         (funArgsType :->: funReturnType)
-            | subtypeOf argsType funArgsType -> return funReturnType
+            | isSubtype argsType funArgsType -> return funReturnType
             | otherwise -> throwError $ TypeMismatch funArgsType argsType (line, col, fname)
         _ -> throwError $ NotAFunction funType (line, col, fname)
-        
+
 inferType context (TermTuple left right) (line, col, fname) = do
     left <- inferType context left (line, col, fname)
     right <- inferType context right (line, col, fname)
@@ -104,7 +104,7 @@ inferType context (TermIfElse cond t f) (line, col, fname) = do
     -- TODO: are the two lines below correct?
     typT <- inferType context t (line, col, fname)
     typF <- inferType context f (line, col, fname)
-    if subtypeOf typCond TypeBit
+    if isSubtype typCond TypeBit
         then smallestCommonSupertype typT typF (line, col, fname)
         else throwError (TypeMismatch TypeBit typCond (line, col, fname))
 -- inferType context (TermLetSingle termEq termIn) = do
@@ -164,16 +164,16 @@ largestCommonSubtype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
   = (:->:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
 largestCommonSubtype t1 t2 (line, col, fname) = throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
-subtypeOf :: Type -> Type -> Bool
-subtypeOf (TypeNonLinear t1 :*: t2) (t1' :*: t2') = subtypeOf (TypeNonLinear t1) t1' && subtypeOf (TypeNonLinear t2) t2'
-subtypeOf (TypeNonLinear t1 :+: t2) (t1' :+: t2') = subtypeOf (TypeNonLinear t1) t1' && subtypeOf (TypeNonLinear t2) t2'
-subtypeOf (TypeNonLinear t1) (TypeNonLinear t2) = subtypeOf (TypeNonLinear t1) t2
-subtypeOf (TypeNonLinear t1) t2 = subtypeOf t1 t2
-subtypeOf (t1 :->: t2) (t1' :->: t2') = subtypeOf t1 t1' && subtypeOf t2 t2'
-subtypeOf (t1 :*: t2) (t1' :*: t2') = subtypeOf t1 t1' && subtypeOf t2 t2'
-subtypeOf (t1 :**: i) (t1' :**: j) = subtypeOf t1 t1' && i == j
-subtypeOf (t1 :+: t2) (t1' :+: t2') = subtypeOf t1 t1' && subtypeOf t2 t2'
-subtypeOf t1 t2  = t1 == t2
+isSubtype :: Type -> Type -> Bool
+isSubtype (TypeNonLinear t1 :*: t2) (t1' :*: t2') = isSubtype (TypeNonLinear t1) t1' && isSubtype (TypeNonLinear t2) t2'
+isSubtype (TypeNonLinear t1 :+: t2) (t1' :+: t2') = isSubtype (TypeNonLinear t1) t1' && isSubtype (TypeNonLinear t2) t2'
+isSubtype (TypeNonLinear t1) (TypeNonLinear t2) = isSubtype (TypeNonLinear t1) t2
+isSubtype (TypeNonLinear t1) t2 = isSubtype t1 t2
+isSubtype (t1 :->: t2) (t1' :->: t2') = isSubtype t1 t1' && isSubtype t2 t2'
+isSubtype (t1 :*: t2) (t1' :*: t2') = isSubtype t1 t1' && isSubtype t2 t2'
+isSubtype (t1 :**: i) (t1' :**: j) = isSubtype t1 t1' && i == j
+isSubtype (t1 :+: t2) (t1' :+: t2') = isSubtype t1 t1' && isSubtype t2 t2'
+isSubtype t1 t2  = t1 == t2
 
 inferGateType :: Gate -> Type
 inferGateType gate
