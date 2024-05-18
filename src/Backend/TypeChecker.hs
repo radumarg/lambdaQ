@@ -117,13 +117,12 @@ smallestCommonSupertype (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fn
   = (:*:) <$> smallestCommonSupertype  (TypeNonLinear t1) t1' (line, col, fname) <*> smallestCommonSupertype (TypeNonLinear t2) t2' (line, col, fname)
 smallestCommonSupertype (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
   = (:*:) <$> smallestCommonSupertype  t1 (TypeNonLinear t1') (line, col, fname)  <*> smallestCommonSupertype t2  (TypeNonLinear t2') (line, col, fname)
-smallestCommonSupertype (TypeNonLinear (t1 :->: t2)) (t1' :->: t2') (line, col, fname)
-  = (:->:) <$> smallestCommonSupertype  (TypeNonLinear t1) t1' (line, col, fname) <*> smallestCommonSupertype (TypeNonLinear t2) t2' (line, col, fname)
-smallestCommonSupertype (t1 :->: t2) (TypeNonLinear (t1' :->: t2')) (line, col, fname)
-  = (:->:) <$> smallestCommonSupertype  t1 (TypeNonLinear t1') (line, col, fname)  <*> smallestCommonSupertype t2  (TypeNonLinear t2') (line, col, fname)
 smallestCommonSupertype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
   | i == j =  (:**: i) <$> smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)
-smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) = TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
+smallestCommonSupertype (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
+  | i == j =  (:**: i) <$> smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname)
+smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) = 
+  TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (t1 :**: i) (t2 :**: j) (line, col, fname)
@@ -134,13 +133,26 @@ smallestCommonSupertype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
   = (:->:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
 smallestCommonSupertype t1 t2 (line, col, fname) = throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
-
-
-
-
-
 largestCommonSubtype :: Type -> Type -> (Int, Int, String) -> Check Type
 largestCommonSubtype t1 t2 _ | t1 == t2 = return t1
+largestCommonSubtype (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fname)
+  = (:*:) <$> largestCommonSubtype  (TypeNonLinear t1) t1' (line, col, fname) <*> largestCommonSubtype (TypeNonLinear t2) t2' (line, col, fname)
+largestCommonSubtype (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
+  = (:*:) <$> largestCommonSubtype  t1 (TypeNonLinear t1') (line, col, fname)  <*> largestCommonSubtype t2  (TypeNonLinear t2') (line, col, fname)
+largestCommonSubtype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
+  | i == j =  (:**: i) <$> largestCommonSubtype (TypeNonLinear t1) t2 (line, col, fname)
+largestCommonSubtype (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
+  | i == j =  (:**: i) <$> largestCommonSubtype t1 (TypeNonLinear t2) (line, col, fname)
+largestCommonSubtype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
+  TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
+largestCommonSubtype (TypeNonLinear t1) t2 (line, col, fname) = TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
+largestCommonSubtype t1 (TypeNonLinear t2) (line, col, fname) = TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
+largestCommonSubtype (t1 :**: i) (t2 :**: j) (line, col, fname)
+  | i == j = (:**: i) <$> largestCommonSubtype t1 t2  (line, col, fname)
+largestCommonSubtype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
+  = (:*:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
+largestCommonSubtype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
+  = (:->:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
 largestCommonSubtype t1 t2 (line, col, fname) = throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
 subtypeOf :: Type -> Type -> Bool
