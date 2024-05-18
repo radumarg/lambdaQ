@@ -86,14 +86,14 @@ inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLin
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
-inferType context (TermApply funTerm argTerm) (line, col, fname) = do
-    funType <- inferType context funTerm (line, col, fname)
-    argsType <- inferType context argTerm (line, col, fname)
-    case removeBangs funType of
-        (funArgsType :->: funReturnType)
-            | isSubtype argsType funArgsType -> return funReturnType
-            | otherwise -> throwError $ TypeMismatch funArgsType argsType (line, col, fname)
-        _ -> throwError $ NotAFunction funType (line, col, fname)
+inferType context (TermApply termLeft termRight) (line, col, fname) = do
+    leftTermType <- inferType context termLeft (line, col, fname)
+    rightTermType <- inferType context termRight (line, col, fname)
+    case removeBangs leftTermType of
+        (argsType :->: returnsType)
+            | isSubtype rightTermType argsType -> return returnsType
+            | otherwise -> throwError $ TypeMismatch argsType rightTermType (line, col, fname)
+        _ -> throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType context (TermTuple left right) (line, col, fname) = do
     left <- inferType context left (line, col, fname)
