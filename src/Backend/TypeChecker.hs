@@ -13,21 +13,22 @@ where
 
 import Common (ErrorMessage)
 import Control.Monad.Except (ExceptT (..), throwError)
-import Control.Monad.Reader (ReaderT)
-import Control.Monad.State (State)
+import Control.Monad.Reader (ReaderT, MonadReader (ask))
+import Control.Monad.State (State, gets)
 import Control.Monad.State.Class (modify)
-import Data.Map (Map)
-import Data.Set (Set)
+import Data.Map (Map, lookup)
+import Data.Set (Set, member, insert)
 
 import Backend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..))
 
+
 data TypeError
   = NotAFunction Type (Int, Int, String)               -- this type should be a function but it is not
-  | FunctionNotInScope String (Int, Int, String)       -- this variable denotes a function which is not in scope at the point where it is declared
+  | FunctionNotInScope String (Int, Int, String)       -- this variable denotes a function which is not in scope at the point where it is used
   | TypeMismatch Type Type (Int, Int, String)          -- this type does not match the type expected at the point where it was declared
   | NotAProductType Type (Int, Int, String)            -- this type should be a product type but it is not
   | DuplicatedLinearVariable String (Int, Int, String) -- this linear variable is used more than once
-  | NotALinearTerm Type Term (Int, Int, String)        -- this term is not linear despite being declared linear
+  | NotALinearFunction String (Int, Int, String)       -- this function is used more than once despite being declared linear
   | NoCommonSupertype Type Type (Int, Int, String)     -- these two types have no common supertype
   deriving (Eq, Ord, Read)
 
@@ -35,15 +36,15 @@ instance Show TypeError where
   show (NotAFunction typ (line, col, fname)) =
     "The inferred type: '" ++ show typ ++  "' of the function named " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " should be a function type but it is not."
   show (FunctionNotInScope var (line, col, fname)) =
-    "The variable " ++ var ++ " at line: " ++ show line ++ " and column: "++ show col ++ " denotes a function which is not in scope."
+    "The variable named " ++ var ++ " in function " ++ fname ++ " declared at line: " ++ show line ++ " and column: "++ show col ++ " denotes a function which is not in the scope of " ++ fname ++ "."
   show (TypeMismatch type1 type2 (line, col, fname)) =
-    "The expected type '" ++ show type1 ++  "' of function " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " cannot be matched with actual type: " ++ show type2 ++ "'"
+    "The expected type '" ++ show type1 ++  "' in function " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " cannot be matched with actual type: " ++ show type2 ++ "'"
   show (NotAProductType typ (line, col, fname)) =
     "The type '" ++ show typ ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is not a product type."
   show (DuplicatedLinearVariable var (line, col, fname)) =
     "The linear variable '" ++ var ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is used more than once."
-  show (NotALinearTerm typ term (line, col, fname)) =
-    "Expression " ++ show term ++ " at line: " ++ show line ++ " and column: "++ show col ++ " is not a linear type but: " ++ show typ
+  show (NotALinearFunction fun (line, col, fname)) =
+    "Function named: '" ++ show fun ++ "' which is used in function " ++ fname ++ " declated at line: " ++ show line ++ " and column: "++ show col ++ " is used more than once despite being declared linear."
   show (NoCommonSupertype type1 type2 (line, col, fname)) =
     "Could not find a common super-type for types '" ++ show type1 ++ " and '" ++ show type2 ++ "' expected by function " ++ fname ++ " at line: " ++ show line ++ " and column: " ++ show col
 
@@ -74,11 +75,11 @@ typeCheckProgram = mapM_ typeCheckFunction
 
 typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
-    modify $ \x -> x {currentFunction = functionName}
+    Control.Monad.State.Class.modify $ \x -> x {currentFunction = functionName}
     inferredType <- inferType [] term (line, col, functionName)
     if isSubtype inferredType functionType
         then return ()
-        else throwError (TypeMismatch functionType inferredType (line, col, functionName))
+        else Control.Monad.Except.throwError (TypeMismatch functionType inferredType (line, col, functionName))
 
 inferType :: [Type] -> Term -> (Int, Int, String) -> Check Type
 inferType _ (TermNew _) _  = return $ TypeNonLinear (TypeBit :->: TypeQbit)
@@ -86,19 +87,32 @@ inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLin
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
+
+inferType context (TermFunction function) (line, col, fname) = do
+    mainEnv <- Control.Monad.Reader.ask
+    linearEnv <- Control.Monad.State.gets linearEnvironment
+    case Data.Map.lookup function mainEnv of
+        Nothing -> Control.Monad.Except.throwError $ FunctionNotInScope function (line, col, fname)
+        Just typ
+            | isLinear typ -> if Data.Set.member function linearEnv
+                                then Control.Monad.Except.throwError $ NotALinearFunction function (line, col, fname)
+                                else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert function linearEnv}) >> return typ
+            | otherwise -> return typ
+
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
     rightTermType <- inferType context termRight (line, col, fname)
     case removeBangs leftTermType of
         (argsType :->: returnsType)
             | isSubtype rightTermType argsType -> return returnsType
-            | otherwise -> throwError $ TypeMismatch argsType rightTermType (line, col, fname)
+            | otherwise -> Control.Monad.Except.throwError $ TypeMismatch argsType rightTermType (line, col, fname)
         _ -> throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType context (TermTuple left right) (line, col, fname) = do
     left <- inferType context left (line, col, fname)
     right <- inferType context right (line, col, fname)
     return $ pullOutBangs (left :*: right)
+
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
     -- TODO: are the two lines below correct?
@@ -106,7 +120,8 @@ inferType context (TermIfElse cond t f) (line, col, fname) = do
     typF <- inferType context f (line, col, fname)
     if isSubtype typCond TypeBit
         then smallestCommonSupertype typT typF (line, col, fname)
-        else throwError (TypeMismatch TypeBit typCond (line, col, fname))
+        else Control.Monad.Except.throwError (TypeMismatch TypeBit typCond (line, col, fname))
+
 -- inferType context (TermLetSingle termEq termIn) = do
 --     typEq <- inferType context termEq
 --     let bangs = numberOfBangs typEq
@@ -130,7 +145,7 @@ smallestCommonSupertype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fnam
   | i == j =  (:**: i) <$> smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)
 smallestCommonSupertype (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
   | i == j =  (:**: i) <$> smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname)
-smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) = 
+smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
   TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
@@ -140,7 +155,7 @@ smallestCommonSupertype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
   = (:*:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
 smallestCommonSupertype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
   = (:->:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
-smallestCommonSupertype t1 t2 (line, col, fname) = throwError (NoCommonSupertype t1 t2 (line, col, fname))
+smallestCommonSupertype t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
 largestCommonSubtype :: Type -> Type -> (Int, Int, String) -> Check Type
 largestCommonSubtype t1 t2 _ | t1 == t2 = return t1
@@ -162,7 +177,7 @@ largestCommonSubtype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
   = (:*:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
 largestCommonSubtype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
   = (:->:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
-largestCommonSubtype t1 t2 (line, col, fname) = throwError (NoCommonSupertype t1 t2 (line, col, fname))
+largestCommonSubtype t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
 isSubtype :: Type -> Type -> Bool
 isSubtype (TypeNonLinear t1 :*: t2) (t1' :*: t2') = isSubtype (TypeNonLinear t1) t1' && isSubtype (TypeNonLinear t2) t2'
