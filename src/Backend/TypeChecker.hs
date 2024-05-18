@@ -33,11 +33,11 @@ data TypeError
 
 instance Show TypeError where
   show (NotAFunction typ (line, col, fname)) =
-    "The type '" ++ show typ ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is not a function type."
+    "The inferred type: '" ++ show typ ++  "' of the function named " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " should be a function type but it is not."
   show (FunctionNotInScope var (line, col, fname)) =
     "The variable " ++ var ++ " at line: " ++ show line ++ " and column: "++ show col ++ " denotes a function which is not in scope."
   show (TypeMismatch type1 type2 (line, col, fname)) =
-    "The expected type '" ++ show type1 ++  "' for function " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " cannot be matched with actual type '" ++ show type2 ++ "'"
+    "The expected type '" ++ show type1 ++  "' of function " ++ fname ++ " at line: " ++ show line ++ " and column: "++ show col ++ " cannot be matched with actual type: " ++ show type2 ++ "'"
   show (NotAProductType typ (line, col, fname)) =
     "The type '" ++ show typ ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is not a product type."
   show (DuplicatedLinearVariable var (line, col, fname)) =
@@ -86,6 +86,15 @@ inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLin
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
+inferType context (TermApply fun args) (line, col, fname) = do
+    funType <- inferType context fun (line, col, fname)
+    argsType <- inferType context args (line, col, fname)
+    case removeBangs funType of
+        (funArgsType :->: funReturnType)
+            | subtypeOf argsType funArgsType -> return funReturnType
+            | otherwise -> throwError $ TypeMismatch funArgsType argsType (line, col, fname)
+        _ -> throwError $ NotAFunction funType (line, col, fname)
+        
 inferType context (TermTuple left right) (line, col, fname) = do
     left <- inferType context left (line, col, fname)
     right <- inferType context right (line, col, fname)
