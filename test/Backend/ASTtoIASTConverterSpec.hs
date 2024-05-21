@@ -38,47 +38,47 @@ spec =  do
 
     context "when provided with a valid coinflip program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example00-CoinFlip__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example00-CoinFlip.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Deutsch algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example01-deutschAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example01-deutschAlgorithm.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Deutsch Jozsa algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example02-deutschJozsaAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example02-deutschJozsaAlgorithm.lq" `shouldReturn` "OK"
 
     context "when provided with a valid phase kick back program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example03-phaseKickBack__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example03-phaseKickBack.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Bernstein Vazirani algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example04-bernsteinVaziraniAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example04-bernsteinVaziraniAlgorithm.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Simon algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example05-simonAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example05-simonAlgorithm.lq" `shouldReturn` "OK"
 
     context "when provided with a valid teleportation protocol program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example06-teleportationProtocol__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example06-teleportationProtocol.lq" `shouldReturn` "OK"
 
     context "when provided with a valid four qubit adder program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example07-fourQubitAdder__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example07-fourQubitAdder.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Grover algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example08-groverAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example08-groverAlgorithm.lq" `shouldReturn` "OK"
 
     context "when provided with a valid quantum phase estimation program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example09-quantumPhaseEstimation__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example09-quantumPhaseEstimation.lq" `shouldReturn` "OK"
 
     context "when provided with a valid Shor algorithm program" $ do
       it "returns no error" $ do
-        testProgram "test/programs/example10-shorAlgorithm__Good.lq" `shouldReturn` "OK"
+        testProgram "test/programs/good/example10-shorAlgorithm.lq" `shouldReturn` "OK"
 
     -- TESTING VARIOUS CODE FRAGMENTS: RETURNS VARIOUS SYNTAX TREES  --
 
