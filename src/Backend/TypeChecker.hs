@@ -4,6 +4,10 @@
 -- be discarded (not used at all), see https://arxiv.org/abs/cs/0404056.
 -- Type checker will return an annotated syntax tree (??) - to be determined ..
 
+-- TODO: remove after implementation is complete
+{-# OPTIONS_GHC -Wno-unused-top-binds #-}
+{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 module Backend.TypeChecker
   (
     TypeError,
@@ -29,6 +33,7 @@ data TypeError
   | NotAProductType Type (Int, Int, String)            -- this type should be a product type but it is not
   | DuplicatedLinearVariable String (Int, Int, String) -- this linear variable is used more than once
   | NotALinearFunction String (Int, Int, String)       -- this function is used more than once despite being declared linear
+  | NotALinearTerm Term Type (Int, Int, String)        -- this term should be linear but is is not
   | NoCommonSupertype Type Type (Int, Int, String)     -- these two types have no common supertype
   deriving (Eq, Ord, Read)
 
@@ -45,6 +50,8 @@ instance Show TypeError where
     "The linear variable '" ++ var ++ "' at line: " ++ show line ++ " and column: "++ show col ++ " is used more than once."
   show (NotALinearFunction fun (line, col, fname)) =
     "Function named: '" ++ show fun ++ "' which is used in function " ++ fname ++ " declated at line: " ++ show line ++ " and column: "++ show col ++ " is used more than once despite being declared linear."
+  show (NotALinearTerm term typ (line, col, fname)) =
+    "Term: '" ++ show term ++ "' having as type: " ++ show typ ++ " which occurs in function " ++ fname ++ " declated at line: " ++ show line ++ " and column: "++ show col ++ " is not linear."
   show (NoCommonSupertype type1 type2 (line, col, fname)) =
     "Could not find a common super-type for types '" ++ show type1 ++ " and '" ++ show type2 ++ "' expected by function " ++ fname ++ " at line: " ++ show line ++ " and column: " ++ show col
 
@@ -88,16 +95,21 @@ inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 
-inferType context (TermFunction function) (line, col, fname) = do
+inferType _ (TermFreeVariable var) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     linearEnv <- Control.Monad.State.gets linearEnvironment
-    case Data.Map.lookup function mainEnv of
-        Nothing -> Control.Monad.Except.throwError $ FunctionNotInScope function (line, col, fname)
+    case Data.Map.lookup var mainEnv of
+        Nothing -> Control.Monad.Except.throwError $ FunctionNotInScope var (line, col, fname)
         Just typ
-            | isLinear typ -> if Data.Set.member function linearEnv
-                                then Control.Monad.Except.throwError $ NotALinearFunction function (line, col, fname)
-                                else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert function linearEnv}) >> return typ
+            | isLinear typ -> if Data.Set.member var linearEnv
+                                then Control.Monad.Except.throwError $ NotALinearFunction var (line, col, fname)
+                                else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert var linearEnv}) >> return typ
             | otherwise -> return typ
+
+inferType context (TermLambda typ term) (line, col, fname) = do
+    mainEnv <- Control.Monad.Reader.ask
+    checkLinearExpression term typ (line, col, fname)
+    Control.Monad.Except.throwError (TypeMismatch typ typ (line, col, fname)) -- temporary code to make it compile
 
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
@@ -109,9 +121,9 @@ inferType context (TermApply termLeft termRight) (line, col, fname) = do
         _ -> throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType context (TermTuple left right) (line, col, fname) = do
-    left <- inferType context left (line, col, fname)
-    right <- inferType context right (line, col, fname)
-    return $ pullOutBangs (left :*: right)
+    leftTyp <- inferType context left (line, col, fname)
+    rightTyp <- inferType context right (line, col, fname)
+    return $ pullOutBangs (leftTyp :*: rightTyp)
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
@@ -129,54 +141,56 @@ inferType context (TermIfElse cond t f) (line, col, fname) = do
 --         (a1 :*: a2) -> do
 --             let a1t = addBangs bangs a1
 --             let a2t = addBangs bangs a2
---             checkLinear inn a2t
---             checkLinear (Abs a2t inn) a1t
+--             checkLinearExpression inn a2t
+--             checkLinearExpression (Abs a2t inn) a1t
 --             inferTerm (a2t : a1t : ctx) inn
 --         _ -> throwError $ NotAProductType teq
 
 
 smallestCommonSupertype :: Type -> Type -> (Int, Int, String) -> Check Type
-smallestCommonSupertype t1 t2 _ | t1 == t2 = return t1
+smallestCommonSupertype t1 t2 _
+    | t1 == t2 = return t1
 smallestCommonSupertype (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fname)
-  = (:*:) <$> smallestCommonSupertype  (TypeNonLinear t1) t1' (line, col, fname) <*> smallestCommonSupertype (TypeNonLinear t2) t2' (line, col, fname)
+    = (:*:) <$> smallestCommonSupertype  (TypeNonLinear t1) t1' (line, col, fname) <*> smallestCommonSupertype (TypeNonLinear t2) t2' (line, col, fname)
 smallestCommonSupertype (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
-  = (:*:) <$> smallestCommonSupertype  t1 (TypeNonLinear t1') (line, col, fname)  <*> smallestCommonSupertype t2  (TypeNonLinear t2') (line, col, fname)
+    = (:*:) <$> smallestCommonSupertype  t1 (TypeNonLinear t1') (line, col, fname)  <*> smallestCommonSupertype t2  (TypeNonLinear t2') (line, col, fname)
 smallestCommonSupertype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
-  | i == j =  (:**: i) <$> smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)
+    | i == j =  (:**: i) <$> smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname)
 smallestCommonSupertype (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
-  | i == j =  (:**: i) <$> smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname)
+    | i == j =  (:**: i) <$> smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
-  TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
+    TypeNonLinear <$> smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (TypeNonLinear t1) t2 (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype t1 (TypeNonLinear t2) (line, col, fname) = smallestCommonSupertype t1 t2 (line, col, fname)
 smallestCommonSupertype (t1 :**: i) (t2 :**: j) (line, col, fname)
-  | i == j = (:**: i) <$> smallestCommonSupertype t1 t2  (line, col, fname)
+    | i == j = (:**: i) <$> smallestCommonSupertype t1 t2  (line, col, fname)
 smallestCommonSupertype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
-  = (:*:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
+    = (:*:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
 smallestCommonSupertype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
-  = (:->:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
+    = (:->:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> smallestCommonSupertype t2 t2' (line, col, fname)
 smallestCommonSupertype t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
 largestCommonSubtype :: Type -> Type -> (Int, Int, String) -> Check Type
-largestCommonSubtype t1 t2 _ | t1 == t2 = return t1
+largestCommonSubtype t1 t2 _
+    | t1 == t2 = return t1
 largestCommonSubtype (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fname)
-  = (:*:) <$> largestCommonSubtype  (TypeNonLinear t1) t1' (line, col, fname) <*> largestCommonSubtype (TypeNonLinear t2) t2' (line, col, fname)
+    = (:*:) <$> largestCommonSubtype  (TypeNonLinear t1) t1' (line, col, fname) <*> largestCommonSubtype (TypeNonLinear t2) t2' (line, col, fname)
 largestCommonSubtype (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
-  = (:*:) <$> largestCommonSubtype  t1 (TypeNonLinear t1') (line, col, fname)  <*> largestCommonSubtype t2  (TypeNonLinear t2') (line, col, fname)
+    = (:*:) <$> largestCommonSubtype  t1 (TypeNonLinear t1') (line, col, fname)  <*> largestCommonSubtype t2  (TypeNonLinear t2') (line, col, fname)
 largestCommonSubtype (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
-  | i == j =  (:**: i) <$> largestCommonSubtype (TypeNonLinear t1) t2 (line, col, fname)
+    | i == j =  (:**: i) <$> largestCommonSubtype (TypeNonLinear t1) t2 (line, col, fname)
 largestCommonSubtype (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
-  | i == j =  (:**: i) <$> largestCommonSubtype t1 (TypeNonLinear t2) (line, col, fname)
+    | i == j =  (:**: i) <$> largestCommonSubtype t1 (TypeNonLinear t2) (line, col, fname)
 largestCommonSubtype (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
-  TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
+    TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
 largestCommonSubtype (TypeNonLinear t1) t2 (line, col, fname) = TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
 largestCommonSubtype t1 (TypeNonLinear t2) (line, col, fname) = TypeNonLinear <$> largestCommonSubtype t1 t2 (line, col, fname)
 largestCommonSubtype (t1 :**: i) (t2 :**: j) (line, col, fname)
-  | i == j = (:**: i) <$> largestCommonSubtype t1 t2  (line, col, fname)
+    | i == j = (:**: i) <$> largestCommonSubtype t1 t2  (line, col, fname)
 largestCommonSubtype (t1 :*: t2) (t1' :*: t2') (line, col, fname)
-  = (:*:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
+    = (:*:) <$> largestCommonSubtype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
 largestCommonSubtype (t1 :->: t2) (t1' :->: t2') (line, col, fname)
-  = (:->:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
+    = (:->:) <$> smallestCommonSupertype t1 t1' (line, col, fname) <*> largestCommonSubtype t2 t2' (line, col, fname)
 largestCommonSubtype t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
 isSubtype :: Type -> Type -> Bool
@@ -220,7 +234,7 @@ removeBangs t = t
 
 numberOfBangs :: Type -> Integer
 numberOfBangs (TypeNonLinear t) = 1 + numberOfBangs t
-numberOfBangs t = 0
+numberOfBangs _ = 0
 
 appendBangs :: Integer -> Type -> Type
 appendBangs 0 t = t
@@ -230,3 +244,25 @@ isLinear :: Type -> Bool
 isLinear (TypeNonLinear _) = False
 isLinear _  = True
 
+checkLinearExpression :: Term -> Type -> (Int, Int, String) -> Check ()
+checkLinearExpression term typ (line, col, fname) = case typ of
+    TypeNonLinear _ -> return ()
+    t  -> if headBoundVarCount term <= 1
+            then return ()
+            else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
+
+headBoundVarCount :: Term -> Integer
+headBoundVarCount = headBoundVarCount' 0
+    where
+        headBoundVarCount' :: Integer -> Term -> Integer
+        headBoundVarCount' absl term = case term of
+            TermBoundVariable i -> if absl == i then 1 else 0
+            TermLambda _ lambdaTerm -> headBoundVarCount' (absl + 1) lambdaTerm
+            TermApply termLeft termRight -> headBoundVarCount' absl termLeft + headBoundVarCount' absl termRight
+            TermIfElse cond t f -> headBoundVarCount' absl cond + max (headBoundVarCount' absl t) (headBoundVarCount' absl f)
+            TermTuple left right -> headBoundVarCount' absl left + headBoundVarCount' absl right
+            TermLetSingle termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 1) termIn
+            TermLetSugarSingle termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 1) termIn
+            TermLetMultiple termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 2) termIn
+            TermLetSugarMultiple termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 2) termIn
+            _  -> 0
