@@ -247,22 +247,22 @@ isLinear _  = True
 checkLinearExpression :: Term -> Type -> (Int, Int, String) -> Check ()
 checkLinearExpression term typ (line, col, fname) = case typ of
     TypeNonLinear _ -> return ()
-    t  -> if headBoundVarCount term <= 1
+    t  -> if headBoundVariableCount term <= 1
             then return ()
             else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
 
-headBoundVarCount :: Term -> Integer
-headBoundVarCount = headBoundVarCount' 0
+headBoundVariableCount :: Term -> Integer
+headBoundVariableCount = headBoundVariableCount' 0
     where
-        headBoundVarCount' :: Integer -> Term -> Integer
-        headBoundVarCount' absl term = case term of
+        headBoundVariableCount' :: Integer -> Term -> Integer
+        headBoundVariableCount' absl term = case term of
             TermBoundVariable i -> if absl == i then 1 else 0
-            TermLambda _ lambdaTerm -> headBoundVarCount' (absl + 1) lambdaTerm
-            TermApply termLeft termRight -> headBoundVarCount' absl termLeft + headBoundVarCount' absl termRight
-            TermIfElse cond t f -> headBoundVarCount' absl cond + max (headBoundVarCount' absl t) (headBoundVarCount' absl f)
-            TermTuple left right -> headBoundVarCount' absl left + headBoundVarCount' absl right
-            TermLetSingle termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 1) termIn
-            TermLetSugarSingle termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 1) termIn
-            TermLetMultiple termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 2) termIn
-            TermLetSugarMultiple termEq termIn -> headBoundVarCount' absl termEq + headBoundVarCount' (absl + 2) termIn
+            TermLambda _ lambdaTerm -> headBoundVariableCount' (absl + 1) lambdaTerm
+            TermApply termLeft termRight -> headBoundVariableCount' absl termLeft + headBoundVariableCount' absl termRight
+            TermIfElse cond t f -> headBoundVariableCount' absl cond + max (headBoundVariableCount' absl t) (headBoundVariableCount' absl f)
+            TermTuple left right -> headBoundVariableCount' absl left + headBoundVariableCount' absl right
+            TermLetSingle termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 1) termIn
+            TermLetSugarSingle termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 1) termIn
+            TermLetMultiple termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 2) termIn
+            TermLetSugarMultiple termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 2) termIn
             _  -> 0
