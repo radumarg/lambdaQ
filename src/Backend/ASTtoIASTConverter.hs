@@ -17,7 +17,8 @@ module Backend.ASTtoIASTConverter (
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 import Frontend.LambdaQ.Print ( printTree )
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
-import qualified Data.Map as Map
+import qualified Data.Map
+
 
 data Type =
    TypeBit             |
@@ -241,12 +242,12 @@ mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (f
      (GeneratedAbstractSyntax.FunType var ftype) = funType
      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
      ((fline, fcol), fname) = fvar
-     term = mapTerm Map.empty $ toLambdaAbstraction ftype fargs fbody
+     term = mapTerm Data.Map.empty $ toLambdaAbstraction ftype fargs fbody
 
 mapVariable :: GeneratedAbstractSyntax.Var -> Var
 mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
 
-type Environment = Map.Map String Integer
+type Environment = Data.Map.Map String Integer
 
 toTerm :: GeneratedAbstractSyntax.LetVariable -> GeneratedAbstractSyntax.Term
 toTerm (GeneratedAbstractSyntax.LetVar var) = GeneratedAbstractSyntax.TermVariable var
@@ -266,10 +267,10 @@ mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l
 mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Map.insert (toLetVariableName var) 0 (Map.map succ env)
+  where inEnv = Data.Map.insert (toLetVariableName var) 0 (Data.Map.map succ env)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var letEq letIn) = TermLetSugarSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Map.insert (toLetVariableName var) 0 (Map.map succ env)
+  where inEnv = Data.Map.insert (toLetVariableName var) 0 (Data.Map.map succ env)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x [] letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
   where letEnv = updateEnv x [] env
@@ -293,7 +294,7 @@ mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlsGate (GeneratedAbstractSynt
 mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermCompose l r) = TermCompose (mapTerm env l) (mapTerm env r)
-mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Map.lookup varName env of
+mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup varName env of
     Just int -> TermBoundVariable int
     Nothing  -> TermFreeVariable varName
   where
@@ -302,7 +303,7 @@ mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Map.lookup varName
 mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
 
 mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
-  where envUpdated = Map.insert (toVariableName var) 0 (Map.map succ env)
+  where envUpdated = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
 
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
 mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
@@ -310,7 +311,7 @@ mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 
 updateEnv :: GeneratedAbstractSyntax.LetVariable -> [GeneratedAbstractSyntax.LetVariable] -> Environment -> Environment
-updateEnv x [] env = Map.insert (toLetVariableName x) 0 (Map.map succ env)
+updateEnv x [] env = Data.Map.insert (toLetVariableName x) 0 (Data.Map.map succ env)
 updateEnv x (y:ys) env = updateEnv y ys (updateEnv x [] env)
 
 -- Done mapping terms --
