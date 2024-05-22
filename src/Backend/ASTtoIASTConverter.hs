@@ -107,7 +107,6 @@ data Term =
     TermLetSugarMultiple Term Term                |
     TermCase Term [Term]                          |
     TermLambda Type Term                          |
-    TermFunction String                           |
     TermGate Gate                                 |
     TermQuantumCtrlGate Term BasisState           |
     TermQuantumCtrlsGate [Term] [BasisState]      |
