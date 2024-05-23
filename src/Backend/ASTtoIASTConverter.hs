@@ -325,9 +325,9 @@ runAstToIastConverter program = if substring "error" programString then Left pro
       programString = show mappedProgram
 
 parseAndPrintTreeFromString :: String -> String
-parseAndPrintTreeFromString str = case pProgram (myLexer str) of
+parseAndPrintTreeFromString str = case Frontend.LambdaQ.Par.pProgram (Frontend.LambdaQ.Par.myLexer str) of
     Left str -> errorWithoutStackTrace str
-    Right program -> printTree program
+    Right program -> Frontend.LambdaQ.Print.printTree program
 
 parseAndPrintTreeFromFile :: FilePath -> IO String
 parseAndPrintTreeFromFile path = parseAndPrintTreeFromString <$> readFile path
