@@ -110,6 +110,7 @@ data Term
     | TermLetMultiple LetVariable [LetVariable] Term Term
     | TermLetSugarSingle LetVariable Term Term
     | TermLetSugarMultiple LetVariable [LetVariable] Term Term
+    | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda Var Type Term
     | TermQuantumCtrlGate ControlTerm ControlBasisState
     | TermQuantumCtrlsGate ControlTerms ControlBasisStates
@@ -129,7 +130,7 @@ data Term
 data LetVariable = LetVar Var
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data CaseExpression = CaseExp Term Var
+data CaseExpression = CaseExp Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Arg = FunArg Var

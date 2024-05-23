@@ -85,16 +85,18 @@ import Frontend.LambdaQ.Lex
   'Z'             { PT _ (TS _ 60)     }
   '['             { PT _ (TS _ 61)     }
   ']'             { PT _ (TS _ 62)     }
-  'ctrl'          { PT _ (TS _ 63)     }
-  'else'          { PT _ (TS _ 64)     }
-  'gate'          { PT _ (TS _ 65)     }
-  'if'            { PT _ (TS _ 66)     }
-  'in'            { PT _ (TS _ 67)     }
-  'let'           { PT _ (TS _ 68)     }
-  'then'          { PT _ (TS _ 69)     }
-  'with'          { PT _ (TS _ 70)     }
-  '{'             { PT _ (TS _ 71)     }
-  '}'             { PT _ (TS _ 72)     }
+  'case'          { PT _ (TS _ 63)     }
+  'ctrl'          { PT _ (TS _ 64)     }
+  'else'          { PT _ (TS _ 65)     }
+  'gate'          { PT _ (TS _ 66)     }
+  'if'            { PT _ (TS _ 67)     }
+  'in'            { PT _ (TS _ 68)     }
+  'let'           { PT _ (TS _ 69)     }
+  'of'            { PT _ (TS _ 70)     }
+  'then'          { PT _ (TS _ 71)     }
+  'with'          { PT _ (TS _ 72)     }
+  '{'             { PT _ (TS _ 73)     }
+  '}'             { PT _ (TS _ 74)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_Var           { PT _ (T_Var _)     }
@@ -249,6 +251,7 @@ Term1
   | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
   | LetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
   | LetVariable ',' ListLetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
+  | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
@@ -287,7 +290,7 @@ ListLetVariable
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression
-  : Term '->' Var { Frontend.LambdaQ.Abs.CaseExp $1 $3 }
+  : Term '->' Term { Frontend.LambdaQ.Abs.CaseExp $1 $3 }
 
 ListCaseExpression :: { [Frontend.LambdaQ.Abs.CaseExpression] }
 ListCaseExpression

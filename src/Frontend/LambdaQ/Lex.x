@@ -170,7 +170,7 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "ROOT_Z_DAG" 37
+  b "RX" 38
     (b "@-i" 19
        (b "->" 10
           (b ")" 5
@@ -179,30 +179,32 @@ resWords =
           (b "=" 15
              (b ";" 13 (b "::" 12 (b "." 11 N N) N) (b "<-" 14 N N))
              (b "@+i" 17 (b "@+" 16 N N) (b "@-" 18 N N))))
-       (b "QFT_DAG" 28
+       (b "Qbit" 29
           (b "H" 24
              (b "Bit" 22 (b "@1" 21 (b "@0" 20 N N) N) (b "FSWAP" 23 N N))
-             (b "ISWAP" 26 (b "ID" 25 N N) (b "QFT" 27 N N)))
-          (b "ROOT_X_DAG" 33
-             (b "ROOT_SWAP_DAG" 31
-                (b "ROOT_SWAP" 30 (b "Qbit" 29 N N) N) (b "ROOT_X" 32 N N))
-             (b "ROOT_Y_DAG" 35 (b "ROOT_Y" 34 N N) (b "ROOT_Z" 36 N N)))))
-    (b "U2" 55
-       (b "SQRT_Y" 46
-          (b "SQRT_SWAP" 42
-             (b "RZ" 40 (b "RY" 39 (b "RX" 38 N N) N) (b "S" 41 N N))
-             (b "SQRT_X" 44 (b "SQRT_SWAP_DAG" 43 N N) (b "SQRT_X_DAG" 45 N N)))
-          (b "State" 51
-             (b "SWAP_THETA" 49
-                (b "SWAP" 48 (b "SQRT_Y_DAG" 47 N N) N) (b "S_DAG" 50 N N))
-             (b "T_DAG" 53 (b "T" 52 N N) (b "U1" 54 N N))))
-       (b "else" 64
-          (b "Z" 60
-             (b "X" 58 (b "Unitary" 57 (b "U3" 56 N N) N) (b "Y" 59 N N))
-             (b "]" 62 (b "[" 61 N N) (b "ctrl" 63 N N)))
-          (b "then" 69
-             (b "in" 67 (b "if" 66 (b "gate" 65 N N) N) (b "let" 68 N N))
-             (b "{" 71 (b "with" 70 N N) (b "}" 72 N N)))))
+             (b "QFT" 27 (b "ISWAP" 26 (b "ID" 25 N N) N) (b "QFT_DAG" 28 N N)))
+          (b "ROOT_Y" 34
+             (b "ROOT_X" 32
+                (b "ROOT_SWAP_DAG" 31 (b "ROOT_SWAP" 30 N N) N)
+                (b "ROOT_X_DAG" 33 N N))
+             (b "ROOT_Z" 36 (b "ROOT_Y_DAG" 35 N N) (b "ROOT_Z_DAG" 37 N N)))))
+    (b "Unitary" 57
+       (b "SWAP" 48
+          (b "SQRT_SWAP_DAG" 43
+             (b "S" 41 (b "RZ" 40 (b "RY" 39 N N) N) (b "SQRT_SWAP" 42 N N))
+             (b "SQRT_Y" 46
+                (b "SQRT_X_DAG" 45 (b "SQRT_X" 44 N N) N) (b "SQRT_Y_DAG" 47 N N)))
+          (b "T_DAG" 53
+             (b "State" 51
+                (b "S_DAG" 50 (b "SWAP_THETA" 49 N N) N) (b "T" 52 N N))
+             (b "U2" 55 (b "U1" 54 N N) (b "U3" 56 N N))))
+       (b "gate" 66
+          (b "]" 62
+             (b "Z" 60 (b "Y" 59 (b "X" 58 N N) N) (b "[" 61 N N))
+             (b "ctrl" 64 (b "case" 63 N N) (b "else" 65 N N)))
+          (b "then" 71
+             (b "let" 69 (b "in" 68 (b "if" 67 N N) N) (b "of" 70 N N))
+             (b "{" 73 (b "with" 72 N N) (b "}" 74 N N)))))
   where
   b s n = B bs (TS bs n)
     where

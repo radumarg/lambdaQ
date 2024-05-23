@@ -101,7 +101,7 @@ TermLetSingle        . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
 TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
 TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
 TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
---TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ; TODO: add case
+TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
 TermLambda           . Term1 ::= Lambda Var Type "." Term ;
 TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
 TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
@@ -122,7 +122,7 @@ LetVar . LetVariable ::= Var ;
 separator LetVariable "," ;
 
 -- Case Expressions --
-CaseExp . CaseExpression ::= Term "->" Var ;
+CaseExp . CaseExpression ::= Term "->" Term ;
 separator nonempty CaseExpression " " ;
 
 -- Function Arguments --

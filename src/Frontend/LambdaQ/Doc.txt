@@ -43,9 +43,10 @@ The reserved words used in LambdaQ are the following:
   | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP`` | ``SWAP_THETA``
   | ``S_DAG`` | ``State`` | ``T`` | ``T_DAG``
   | ``U1`` | ``U2`` | ``U3`` | ``Unitary``
-  | ``X`` | ``Y`` | ``Z`` | ``ctrl``
-  | ``else`` | ``gate`` | ``if`` | ``in``
-  | ``let`` | ``then`` | ``with`` |
+  | ``X`` | ``Y`` | ``Z`` | ``case``
+  | ``ctrl`` | ``else`` | ``gate`` | ``if``
+  | ``in`` | ``let`` | ``of`` | ``then``
+  | ``with`` |  |  |
 
 The symbols used in LambdaQ are the following:
   | () | ! | ** | *
@@ -143,6 +144,7 @@ All other symbols are terminals.
   |  |  **|**  | ``let`` ``{`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | //LetVariable// ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]// ``<-`` //Term// ``;`` //Term//
+  |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
@@ -165,7 +167,7 @@ All other symbols are terminals.
   | //[LetVariable]// | -> | **eps**
   |  |  **|**  | //LetVariable//
   |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//
-  | //CaseExpression// | -> | //Term// ``->`` //Var//
+  | //CaseExpression// | -> | //Term// ``->`` //Term//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//
   | //Arg// | -> | //Var//
