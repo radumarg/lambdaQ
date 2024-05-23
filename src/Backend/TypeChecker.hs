@@ -42,7 +42,7 @@ instance Show TypeError where
   show (NotAFunction typ (line, _, fname)) =
     "The inferred type: '" ++ show typ ++  "' of the function named " ++ fname ++ " defined at line: " ++ show line ++ " should be a function type but it is not"
   show (FunctionNotInScope var (line, _, fname)) =
-    "The variable named " ++ var ++ " in function " ++ fname ++ " defined at line: " ++ show line ++ " denotes a function which is not in the scope of " ++ fname ++ "."
+    "The variable named " ++ var ++ " in function " ++ fname ++ " defined at line: " ++ show line ++ " denotes a function which is not in scope."
   show (TypeMismatch type1 type2 (line, _, fname)) =
     "The expected type '" ++ show type1 ++  "' in function " ++ fname ++ " defined at line: " ++ show line ++ " cannot be matched with actual type: " ++ show type2 ++ "'."
   show (NotAProductType typ (line, _, fname)) =
