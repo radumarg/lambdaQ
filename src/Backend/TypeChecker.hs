@@ -20,6 +20,7 @@ import Control.Monad.Except (ExceptT (..), throwError)
 import Control.Monad.Reader (ReaderT, MonadReader (ask))
 import Control.Monad.State (State, gets)
 import Control.Monad.State.Class (modify)
+import Data.Maybe (mapMaybe)
 import Data.Map (Map, lookup)
 import Data.Set (Set, member, insert)
 
@@ -109,7 +110,12 @@ inferType _ (TermFreeVariable var) (line, col, fname) = do
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     checkLinearExpression term typ (line, col, fname)
-    Control.Monad.Except.throwError (TypeMismatch typ typ (line, col, fname)) -- temporary code to make it compile
+    termTyp <- inferType (typ:context) term (line, col, fname)
+    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVariables (TermLambda typ term))
+    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (functionNames term)
+    if boundedLinearVars || freeLinearVars
+        then return (typ :->: termTyp)
+        else return $ TypeNonLinear (typ :->: termTyp)
 
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
@@ -255,14 +261,39 @@ headBoundVariableCount :: Term -> Integer
 headBoundVariableCount = headBoundVariableCount' 0
     where
         headBoundVariableCount' :: Integer -> Term -> Integer
-        headBoundVariableCount' absl term = case term of
-            TermBoundVariable i -> if absl == i then 1 else 0
-            TermLambda _ lambdaTerm -> headBoundVariableCount' (absl + 1) lambdaTerm
-            TermApply termLeft termRight -> headBoundVariableCount' absl termLeft + headBoundVariableCount' absl termRight
-            TermIfElse cond t f -> headBoundVariableCount' absl cond + max (headBoundVariableCount' absl t) (headBoundVariableCount' absl f)
-            TermTuple left right -> headBoundVariableCount' absl left + headBoundVariableCount' absl right
-            TermLetSingle termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 1) termIn
-            TermLetSugarSingle termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 1) termIn
-            TermLetMultiple termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 2) termIn
-            TermLetSugarMultiple termEq termIn -> headBoundVariableCount' absl termEq + headBoundVariableCount' (absl + 2) termIn
+        headBoundVariableCount' cnt term = case term of
+            TermBoundVariable i -> if cnt == i then 1 else 0
+            TermLambda _ lambdaTerm -> headBoundVariableCount' (cnt + 1) lambdaTerm
+            TermApply termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
+            TermIfElse cond t f -> headBoundVariableCount' cnt cond + max (headBoundVariableCount' cnt t) (headBoundVariableCount' cnt f)
+            TermTuple left right -> headBoundVariableCount' cnt left + headBoundVariableCount' cnt right
+            TermLetSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn        --TODO: verify
+            TermLetSugarSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn   --TODO: verify
+            TermLetMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
+            TermLetSugarMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
             _  -> 0
+
+freeVariables :: Term -> [Integer]
+freeVariables = freeVariables' 0
+    where
+        freeVariables' :: Integer -> Term -> [Integer]
+        freeVariables' cnt (TermTuple left right)    = freeVariables' cnt left ++ freeVariables' cnt right
+        freeVariables' cnt (TermApply termLeft termRight)    = freeVariables' cnt termLeft ++ freeVariables' cnt termRight
+        freeVariables' cnt (TermLetSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn         --TODO: verify
+        freeVariables' cnt (TermLetSugarSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn    --TODO: verify
+        freeVariables' cnt (TermLetMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
+        freeVariables' cnt (TermLetSugarMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
+        freeVariables' cnt (TermLambda _ lambdaTerm)    = freeVariables' (cnt + 1) lambdaTerm
+        freeVariables' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
+        freeVariables' _ _ = []
+
+functionNames :: Term -> [String]
+functionNames (TermTuple left right) = functionNames left ++ functionNames right
+functionNames (TermApply termLeft termRight)  = functionNames termLeft ++ functionNames termRight
+functionNames (TermLetSingle termEq termIn) = functionNames termEq ++ functionNames termIn
+functionNames (TermLetSugarSingle termEq termIn) = functionNames termEq ++ functionNames termIn
+functionNames (TermLetMultiple termEq termIn) = functionNames termEq ++ functionNames termIn
+functionNames (TermLetSugarMultiple termEq termIn) = functionNames termEq ++ functionNames termIn
+functionNames (TermLambda _ lambdaTerm) = functionNames lambdaTerm
+functionNames (TermFreeVariable fun) = [fun]
+functionNames _ = []
