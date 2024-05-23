@@ -6,7 +6,7 @@
 
 -- TODO: remove after implementation is complete
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
+
 
 module Backend.TypeChecker
   (
@@ -96,6 +96,17 @@ inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 
+-- TODO: extend
+inferType _ (TermBoundVariable _) _ = undefined
+inferType _ (TermCase _ _) _ = undefined
+inferType _ (TermQuantumCtrlGate _ _) _ = undefined
+inferType _ (TermQuantumCtrlsGate _ _) _ = undefined
+inferType _ (TermClassicCtrlGate _ _) _ = undefined
+inferType _ (TermClassicCtrlsGate _ _) _ = undefined
+inferType _ (TermDollar _ _) _ = undefined
+inferType _ (TermCompose _ _) _ = undefined
+inferType _ (TermBasisState _) _ = undefined
+
 inferType _ (TermFreeVariable var) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     linearEnv <- Control.Monad.State.gets linearEnvironment
@@ -140,18 +151,35 @@ inferType context (TermIfElse cond t f) (line, col, fname) = do
         then smallestCommonSupertype typT typF (line, col, fname)
         else Control.Monad.Except.throwError (TypeMismatch TypeBit typCond (line, col, fname))
 
--- inferType context (TermLetSingle termEq termIn) = do
---     typEq <- inferType context termEq
---     let bangs = numberOfBangs typEq
---     case removeBangs typEq of
---         (a1 :*: a2) -> do
---             let a1t = addBangs bangs a1
---             let a2t = addBangs bangs a2
---             checkLinearExpression inn a2t
---             checkLinearExpression (Abs a2t inn) a1t
---             inferTerm (a2t : a1t : ctx) inn
---         _ -> throwError $ NotAProductType teq
+inferType context (TermLetMultiple termEq termIn) (line, col, fname) = do
+    typEq <- inferType context termEq (line, col, fname)
+    let noBangs = numberOfBangs typEq
+    case removeBangs typEq of
+        (t1 :*: t2) -> do
+            let t1' = appendBangs noBangs t1
+            let t2' = appendBangs noBangs t2
+            checkLinearExpression termIn t2' (line, col, fname)
+            checkLinearExpression (TermLambda t2' termIn) t1' (line, col, fname)
+            inferType (t2' : t1' : context) termIn (line, col, fname)
+        _ -> throwError $ NotAProductType typEq (line, col, fname)
 
+inferType context (TermLetSugarMultiple termEq termIn) (line, col, fname) = do
+    typEq <- inferType context termEq (line, col, fname)
+    let noBangs = numberOfBangs typEq
+    case removeBangs typEq of
+        (t1 :*: t2) -> do
+            let t1' = appendBangs noBangs t1
+            let t2' = appendBangs noBangs t2
+            checkLinearExpression termIn t2' (line, col, fname)
+            checkLinearExpression (TermLambda t2' termIn) t1' (line, col, fname)
+            inferType (t2' : t1' : context) termIn (line, col, fname)
+        _ -> throwError $ NotAProductType typEq (line, col, fname)
+
+-- TODO: fix
+inferType context (TermLetSingle termEq termIn) (line, col, fname) = undefined
+
+-- TODO: fix
+inferType context (TermLetSugarSingle termEq termIn) (line, col, fname) = undefined
 
 smallestCommonSupertype :: Type -> Type -> (Int, Int, String) -> Check Type
 smallestCommonSupertype t1 t2 _
