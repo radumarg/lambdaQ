@@ -112,7 +112,7 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     checkLinearExpression term typ (line, col, fname)
     termTyp <- inferType (typ:context) term (line, col, fname)
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVariables (TermLambda typ term))
-    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (functionNames term)
+    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFunctionNames term)
     if boundedLinearVars || freeLinearVars
         then return (typ :->: termTyp)
         else return $ TypeNonLinear (typ :->: termTyp)
@@ -287,13 +287,13 @@ freeVariables = freeVariables' 0
         freeVariables' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
         freeVariables' _ _ = []
 
-functionNames :: Term -> [String]
-functionNames (TermTuple left right) = functionNames left ++ functionNames right
-functionNames (TermApply termLeft termRight)  = functionNames termLeft ++ functionNames termRight
-functionNames (TermLetSingle termEq termIn) = functionNames termEq ++ functionNames termIn
-functionNames (TermLetSugarSingle termEq termIn) = functionNames termEq ++ functionNames termIn
-functionNames (TermLetMultiple termEq termIn) = functionNames termEq ++ functionNames termIn
-functionNames (TermLetSugarMultiple termEq termIn) = functionNames termEq ++ functionNames termIn
-functionNames (TermLambda _ lambdaTerm) = functionNames lambdaTerm
-functionNames (TermFreeVariable fun) = [fun]
-functionNames _ = []
+extractFunctionNames :: Term -> [String]
+extractFunctionNames (TermTuple left right) = extractFunctionNames left ++ extractFunctionNames right
+extractFunctionNames (TermApply termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
+extractFunctionNames (TermLetSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermLetSugarSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermLetMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermLetSugarMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermLambda _ lambdaTerm) = extractFunctionNames lambdaTerm
+extractFunctionNames (TermFreeVariable fun) = [fun]
+extractFunctionNames _ = []
