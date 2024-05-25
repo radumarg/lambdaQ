@@ -141,6 +141,20 @@ _       . FunctionType  ::= FunctionType ";" ;             -- Semantic dummies: 
 FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;
 separator FunctionDeclaration "" ;
 
+-- Integer Numbers
+ArithmExprAdd    . ArithmExpr ::= ArithmExpr "+" ArithmTerm ;
+ArithmExprSub    . ArithmExpr ::= ArithmExpr "-" ArithmTerm ;
+ArithmExprTerm   . ArithmExpr ::= ArithmTerm ;
+
+ArithmTermMul    . ArithmTerm ::= ArithmTerm "*" ArithmFactor ;
+ArithmTermDiv    . ArithmTerm ::= ArithmTerm "/" ArithmFactor ;
+ArithmTermFactor . ArithmTerm ::= ArithmFactor ;
+
+ArithmFactorInt  . ArithmFactor ::= Integer ;
+ArithmFactorExpr . ArithmFactor ::= "(" ArithmExpr ")" ;
+
+coercions ArithmFactor 2 ;
+
 -- Format for specifying comments --
 comment "--" ; 
 comment "{-" "-}" ;

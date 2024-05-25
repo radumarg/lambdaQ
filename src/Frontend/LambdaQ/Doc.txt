@@ -55,7 +55,7 @@ The symbols used in LambdaQ are the following:
   | @+i | @-i | , | [
   | ] | { | = | }
   | <- | ; | . | $
-  | :: |  |  |
+  | :: | - | / |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -180,6 +180,17 @@ All other symbols are terminals.
   | //FunctionDeclaration// | -> | //FunctionType// ``;`` //FunctionDefinition// ``;``
   | //[FunctionDeclaration]// | -> | **eps**
   |  |  **|**  | //FunctionDeclaration// //[FunctionDeclaration]//
+  | //ArithmExpr// | -> | //ArithmExpr// ``+`` //ArithmTerm//
+  |  |  **|**  | //ArithmExpr// ``-`` //ArithmTerm//
+  |  |  **|**  | //ArithmTerm//
+  | //ArithmTerm// | -> | //ArithmTerm// ``*`` //ArithmFactor//
+  |  |  **|**  | //ArithmTerm// ``/`` //ArithmFactor//
+  |  |  **|**  | //ArithmFactor//
+  | //ArithmFactor// | -> | //Integer//
+  |  |  **|**  | ``(`` //ArithmExpr// ``)``
+  |  |  **|**  | //ArithmFactor1//
+  | //ArithmFactor1// | -> | //ArithmFactor2//
+  | //ArithmFactor2// | -> | ``(`` //ArithmFactor// ``)``
 
 
 

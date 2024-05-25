@@ -145,6 +145,22 @@ data FunctionType = FunType Var Type
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+data ArithmExpr
+    = ArithmExprAdd ArithmExpr ArithmTerm
+    | ArithmExprSub ArithmExpr ArithmTerm
+    | ArithmExprTerm ArithmTerm
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data ArithmTerm
+    = ArithmTermMul ArithmTerm ArithmFactor
+    | ArithmTermDiv ArithmTerm ArithmFactor
+    | ArithmTermFactor ArithmFactor
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data ArithmFactor
+    = ArithmFactorInt Integer | ArithmFactorExpr ArithmExpr
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 newtype Var = Var ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

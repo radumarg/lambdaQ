@@ -320,3 +320,20 @@ instance Print Frontend.LambdaQ.Abs.FunctionDeclaration where
 instance Print [Frontend.LambdaQ.Abs.FunctionDeclaration] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
+
+instance Print Frontend.LambdaQ.Abs.ArithmExpr where
+  prt i = \case
+    Frontend.LambdaQ.Abs.ArithmExprAdd arithmexpr arithmterm -> prPrec i 0 (concatD [prt 0 arithmexpr, doc (showString "+"), prt 0 arithmterm])
+    Frontend.LambdaQ.Abs.ArithmExprSub arithmexpr arithmterm -> prPrec i 0 (concatD [prt 0 arithmexpr, doc (showString "-"), prt 0 arithmterm])
+    Frontend.LambdaQ.Abs.ArithmExprTerm arithmterm -> prPrec i 0 (concatD [prt 0 arithmterm])
+
+instance Print Frontend.LambdaQ.Abs.ArithmTerm where
+  prt i = \case
+    Frontend.LambdaQ.Abs.ArithmTermMul arithmterm arithmfactor -> prPrec i 0 (concatD [prt 0 arithmterm, doc (showString "*"), prt 0 arithmfactor])
+    Frontend.LambdaQ.Abs.ArithmTermDiv arithmterm arithmfactor -> prPrec i 0 (concatD [prt 0 arithmterm, doc (showString "/"), prt 0 arithmfactor])
+    Frontend.LambdaQ.Abs.ArithmTermFactor arithmfactor -> prPrec i 0 (concatD [prt 0 arithmfactor])
+
+instance Print Frontend.LambdaQ.Abs.ArithmFactor where
+  prt i = \case
+    Frontend.LambdaQ.Abs.ArithmFactorInt n -> prPrec i 0 (concatD [prt 0 n])
+    Frontend.LambdaQ.Abs.ArithmFactorExpr arithmexpr -> prPrec i 0 (concatD [doc (showString "("), prt 0 arithmexpr, doc (showString ")")])

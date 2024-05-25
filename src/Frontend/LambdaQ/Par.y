@@ -32,71 +32,73 @@ import Frontend.LambdaQ.Lex
   '**'            { PT _ (TS _ 7)      }
   '+'             { PT _ (TS _ 8)      }
   ','             { PT _ (TS _ 9)      }
-  '->'            { PT _ (TS _ 10)     }
-  '.'             { PT _ (TS _ 11)     }
-  '::'            { PT _ (TS _ 12)     }
-  ';'             { PT _ (TS _ 13)     }
-  '<-'            { PT _ (TS _ 14)     }
-  '='             { PT _ (TS _ 15)     }
-  '@+'            { PT _ (TS _ 16)     }
-  '@+i'           { PT _ (TS _ 17)     }
-  '@-'            { PT _ (TS _ 18)     }
-  '@-i'           { PT _ (TS _ 19)     }
-  '@0'            { PT _ (TS _ 20)     }
-  '@1'            { PT _ (TS _ 21)     }
-  'Bit'           { PT _ (TS _ 22)     }
-  'FSWAP'         { PT _ (TS _ 23)     }
-  'H'             { PT _ (TS _ 24)     }
-  'ID'            { PT _ (TS _ 25)     }
-  'ISWAP'         { PT _ (TS _ 26)     }
-  'QFT'           { PT _ (TS _ 27)     }
-  'QFT_DAG'       { PT _ (TS _ 28)     }
-  'Qbit'          { PT _ (TS _ 29)     }
-  'ROOT_SWAP'     { PT _ (TS _ 30)     }
-  'ROOT_SWAP_DAG' { PT _ (TS _ 31)     }
-  'ROOT_X'        { PT _ (TS _ 32)     }
-  'ROOT_X_DAG'    { PT _ (TS _ 33)     }
-  'ROOT_Y'        { PT _ (TS _ 34)     }
-  'ROOT_Y_DAG'    { PT _ (TS _ 35)     }
-  'ROOT_Z'        { PT _ (TS _ 36)     }
-  'ROOT_Z_DAG'    { PT _ (TS _ 37)     }
-  'RX'            { PT _ (TS _ 38)     }
-  'RY'            { PT _ (TS _ 39)     }
-  'RZ'            { PT _ (TS _ 40)     }
-  'S'             { PT _ (TS _ 41)     }
-  'SQRT_SWAP'     { PT _ (TS _ 42)     }
-  'SQRT_SWAP_DAG' { PT _ (TS _ 43)     }
-  'SQRT_X'        { PT _ (TS _ 44)     }
-  'SQRT_X_DAG'    { PT _ (TS _ 45)     }
-  'SQRT_Y'        { PT _ (TS _ 46)     }
-  'SQRT_Y_DAG'    { PT _ (TS _ 47)     }
-  'SWAP'          { PT _ (TS _ 48)     }
-  'SWAP_THETA'    { PT _ (TS _ 49)     }
-  'S_DAG'         { PT _ (TS _ 50)     }
-  'State'         { PT _ (TS _ 51)     }
-  'T'             { PT _ (TS _ 52)     }
-  'T_DAG'         { PT _ (TS _ 53)     }
-  'U1'            { PT _ (TS _ 54)     }
-  'U2'            { PT _ (TS _ 55)     }
-  'U3'            { PT _ (TS _ 56)     }
-  'Unitary'       { PT _ (TS _ 57)     }
-  'X'             { PT _ (TS _ 58)     }
-  'Y'             { PT _ (TS _ 59)     }
-  'Z'             { PT _ (TS _ 60)     }
-  '['             { PT _ (TS _ 61)     }
-  ']'             { PT _ (TS _ 62)     }
-  'case'          { PT _ (TS _ 63)     }
-  'ctrl'          { PT _ (TS _ 64)     }
-  'else'          { PT _ (TS _ 65)     }
-  'gate'          { PT _ (TS _ 66)     }
-  'if'            { PT _ (TS _ 67)     }
-  'in'            { PT _ (TS _ 68)     }
-  'let'           { PT _ (TS _ 69)     }
-  'of'            { PT _ (TS _ 70)     }
-  'then'          { PT _ (TS _ 71)     }
-  'with'          { PT _ (TS _ 72)     }
-  '{'             { PT _ (TS _ 73)     }
-  '}'             { PT _ (TS _ 74)     }
+  '-'             { PT _ (TS _ 10)     }
+  '->'            { PT _ (TS _ 11)     }
+  '.'             { PT _ (TS _ 12)     }
+  '/'             { PT _ (TS _ 13)     }
+  '::'            { PT _ (TS _ 14)     }
+  ';'             { PT _ (TS _ 15)     }
+  '<-'            { PT _ (TS _ 16)     }
+  '='             { PT _ (TS _ 17)     }
+  '@+'            { PT _ (TS _ 18)     }
+  '@+i'           { PT _ (TS _ 19)     }
+  '@-'            { PT _ (TS _ 20)     }
+  '@-i'           { PT _ (TS _ 21)     }
+  '@0'            { PT _ (TS _ 22)     }
+  '@1'            { PT _ (TS _ 23)     }
+  'Bit'           { PT _ (TS _ 24)     }
+  'FSWAP'         { PT _ (TS _ 25)     }
+  'H'             { PT _ (TS _ 26)     }
+  'ID'            { PT _ (TS _ 27)     }
+  'ISWAP'         { PT _ (TS _ 28)     }
+  'QFT'           { PT _ (TS _ 29)     }
+  'QFT_DAG'       { PT _ (TS _ 30)     }
+  'Qbit'          { PT _ (TS _ 31)     }
+  'ROOT_SWAP'     { PT _ (TS _ 32)     }
+  'ROOT_SWAP_DAG' { PT _ (TS _ 33)     }
+  'ROOT_X'        { PT _ (TS _ 34)     }
+  'ROOT_X_DAG'    { PT _ (TS _ 35)     }
+  'ROOT_Y'        { PT _ (TS _ 36)     }
+  'ROOT_Y_DAG'    { PT _ (TS _ 37)     }
+  'ROOT_Z'        { PT _ (TS _ 38)     }
+  'ROOT_Z_DAG'    { PT _ (TS _ 39)     }
+  'RX'            { PT _ (TS _ 40)     }
+  'RY'            { PT _ (TS _ 41)     }
+  'RZ'            { PT _ (TS _ 42)     }
+  'S'             { PT _ (TS _ 43)     }
+  'SQRT_SWAP'     { PT _ (TS _ 44)     }
+  'SQRT_SWAP_DAG' { PT _ (TS _ 45)     }
+  'SQRT_X'        { PT _ (TS _ 46)     }
+  'SQRT_X_DAG'    { PT _ (TS _ 47)     }
+  'SQRT_Y'        { PT _ (TS _ 48)     }
+  'SQRT_Y_DAG'    { PT _ (TS _ 49)     }
+  'SWAP'          { PT _ (TS _ 50)     }
+  'SWAP_THETA'    { PT _ (TS _ 51)     }
+  'S_DAG'         { PT _ (TS _ 52)     }
+  'State'         { PT _ (TS _ 53)     }
+  'T'             { PT _ (TS _ 54)     }
+  'T_DAG'         { PT _ (TS _ 55)     }
+  'U1'            { PT _ (TS _ 56)     }
+  'U2'            { PT _ (TS _ 57)     }
+  'U3'            { PT _ (TS _ 58)     }
+  'Unitary'       { PT _ (TS _ 59)     }
+  'X'             { PT _ (TS _ 60)     }
+  'Y'             { PT _ (TS _ 61)     }
+  'Z'             { PT _ (TS _ 62)     }
+  '['             { PT _ (TS _ 63)     }
+  ']'             { PT _ (TS _ 64)     }
+  'case'          { PT _ (TS _ 65)     }
+  'ctrl'          { PT _ (TS _ 66)     }
+  'else'          { PT _ (TS _ 67)     }
+  'gate'          { PT _ (TS _ 68)     }
+  'if'            { PT _ (TS _ 69)     }
+  'in'            { PT _ (TS _ 70)     }
+  'let'           { PT _ (TS _ 71)     }
+  'of'            { PT _ (TS _ 72)     }
+  'then'          { PT _ (TS _ 73)     }
+  'with'          { PT _ (TS _ 74)     }
+  '{'             { PT _ (TS _ 75)     }
+  '}'             { PT _ (TS _ 76)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_Var           { PT _ (T_Var _)     }
@@ -321,6 +323,30 @@ ListFunctionDeclaration :: { [Frontend.LambdaQ.Abs.FunctionDeclaration] }
 ListFunctionDeclaration
   : {- empty -} { [] }
   | FunctionDeclaration ListFunctionDeclaration { (:) $1 $2 }
+
+ArithmExpr :: { Frontend.LambdaQ.Abs.ArithmExpr }
+ArithmExpr
+  : ArithmExpr '+' ArithmTerm { Frontend.LambdaQ.Abs.ArithmExprAdd $1 $3 }
+  | ArithmExpr '-' ArithmTerm { Frontend.LambdaQ.Abs.ArithmExprSub $1 $3 }
+  | ArithmTerm { Frontend.LambdaQ.Abs.ArithmExprTerm $1 }
+
+ArithmTerm :: { Frontend.LambdaQ.Abs.ArithmTerm }
+ArithmTerm
+  : ArithmTerm '*' ArithmFactor { Frontend.LambdaQ.Abs.ArithmTermMul $1 $3 }
+  | ArithmTerm '/' ArithmFactor { Frontend.LambdaQ.Abs.ArithmTermDiv $1 $3 }
+  | ArithmFactor { Frontend.LambdaQ.Abs.ArithmTermFactor $1 }
+
+ArithmFactor :: { Frontend.LambdaQ.Abs.ArithmFactor }
+ArithmFactor
+  : Integer { Frontend.LambdaQ.Abs.ArithmFactorInt $1 }
+  | '(' ArithmExpr ')' { Frontend.LambdaQ.Abs.ArithmFactorExpr $2 }
+  | ArithmFactor1 { $1 }
+
+ArithmFactor1 :: { Frontend.LambdaQ.Abs.ArithmFactor }
+ArithmFactor1 : ArithmFactor2 { $1 }
+
+ArithmFactor2 :: { Frontend.LambdaQ.Abs.ArithmFactor }
+ArithmFactor2 : '(' ArithmFactor ')' { $2 }
 
 {
 

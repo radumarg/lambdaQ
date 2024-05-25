@@ -169,3 +169,20 @@ transFunctionType x = case x of
 transFunctionDeclaration :: Frontend.LambdaQ.Abs.FunctionDeclaration -> Result
 transFunctionDeclaration x = case x of
   Frontend.LambdaQ.Abs.FunDecl functiontype functiondefinition -> failure x
+
+transArithmExpr :: Frontend.LambdaQ.Abs.ArithmExpr -> Result
+transArithmExpr x = case x of
+  Frontend.LambdaQ.Abs.ArithmExprAdd arithmexpr arithmterm -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprSub arithmexpr arithmterm -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprTerm arithmterm -> failure x
+
+transArithmTerm :: Frontend.LambdaQ.Abs.ArithmTerm -> Result
+transArithmTerm x = case x of
+  Frontend.LambdaQ.Abs.ArithmTermMul arithmterm arithmfactor -> failure x
+  Frontend.LambdaQ.Abs.ArithmTermDiv arithmterm arithmfactor -> failure x
+  Frontend.LambdaQ.Abs.ArithmTermFactor arithmfactor -> failure x
+
+transArithmFactor :: Frontend.LambdaQ.Abs.ArithmFactor -> Result
+transArithmFactor x = case x of
+  Frontend.LambdaQ.Abs.ArithmFactorInt integer -> failure x
+  Frontend.LambdaQ.Abs.ArithmFactorExpr arithmexpr -> failure x
