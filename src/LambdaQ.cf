@@ -141,7 +141,7 @@ _       . FunctionType  ::= FunctionType ";" ;             -- Semantic dummies: 
 FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;
 separator FunctionDeclaration "" ;
 
--- Integer Numbers
+-- Integer Numbers --
 ArithmExprAdd    . ArithmExpr ::= ArithmExpr "+" ArithmTerm ;
 ArithmExprSub    . ArithmExpr ::= ArithmExpr "-" ArithmTerm ;
 ArithmExprTerm   . ArithmExpr ::= ArithmTerm ;
