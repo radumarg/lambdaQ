@@ -75,6 +75,7 @@ GateQftDag        . Gate ::= "QFT_DAG" Integer  ;                       -- Conju
 
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
+separator nonempty Var "," ;
 
 -- Declaring Control states --
 CtrlBasisState . ControlBasisState ::= "[" BasisState  "]" ;
@@ -97,10 +98,10 @@ separator nonempty Term "," ;
 
 -- Terms --
 TermIfElse           . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLetSingle        . Term1 ::= "let" "{" LetVariable "=" Term "}" "in" Term ;
-TermLetMultiple      . Term1 ::= "let" "{" "(" LetVariable "," [LetVariable] ")" "=" Term "}" "in" Term ;
-TermLetSugarSingle   . Term1 ::=  LetVariable "<-" Term ";" Term ;
-TermLetSugarMultiple . Term1 ::=  LetVariable "," [LetVariable] "<-" Term ";" Term ;
+TermLetSingle        . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
+TermLetMultiple      . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
+TermLetSugarSingle   . Term1 ::=  Var "<-" Term ";" Term ;
+TermLetSugarMultiple . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
 TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
 TermLambda           . Term1 ::= Lambda Var Type "." Term ;
 TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
@@ -117,9 +118,6 @@ TermTuple            . Term3 ::= Tuple ;
 TermBit              . Term3 ::= Bit ;
 TermUnit             . Term3 ::= "()" ;
 coercions Term 3 ;
-
-LetVar . LetVariable ::= Var ;
-separator LetVariable "," ;
 
 -- Case Expressions --
 CaseExp . CaseExpression ::= Term "->" Term ;

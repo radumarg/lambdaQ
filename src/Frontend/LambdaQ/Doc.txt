@@ -126,6 +126,8 @@ All other symbols are terminals.
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
   |  |  **|**  | ``QFT`` //Integer//
   |  |  **|**  | ``QFT_DAG`` //Integer//
+  | //[Var]// | -> | //Var//
+  |  |  **|**  | //Var// ``,`` //[Var]//
   | //ControlBasisState// | -> | ``[`` //BasisState// ``]``
   | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
   | //[BasisState]// | -> | //BasisState//
@@ -140,10 +142,10 @@ All other symbols are terminals.
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
-  |  |  **|**  | ``let`` ``{`` //LetVariable// ``=`` //Term// ``}`` ``in`` //Term//
-  |  |  **|**  | ``let`` ``{`` ``(`` //LetVariable// ``,`` //[LetVariable]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
-  |  |  **|**  | //LetVariable// ``<-`` //Term// ``;`` //Term//
-  |  |  **|**  | //LetVariable// ``,`` //[LetVariable]// ``<-`` //Term// ``;`` //Term//
+  |  |  **|**  | ``let`` ``{`` //Var// ``=`` //Term// ``}`` ``in`` //Term//
+  |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
+  |  |  **|**  | //Var// ``<-`` //Term// ``;`` //Term//
+  |  |  **|**  | //Var// ``,`` //[Var]// ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2// ``$`` //Term1//
@@ -163,10 +165,6 @@ All other symbols are terminals.
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Term// ``)``
   | //Term// | -> | //Term1//
-  | //LetVariable// | -> | //Var//
-  | //[LetVariable]// | -> | **eps**
-  |  |  **|**  | //LetVariable//
-  |  |  **|**  | //LetVariable// ``,`` //[LetVariable]//
   | //CaseExpression// | -> | //Term// ``->`` //Term//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//

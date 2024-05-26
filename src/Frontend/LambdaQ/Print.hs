@@ -213,6 +213,11 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateQft n -> prPrec i 0 (concatD [doc (showString "QFT"), prt 0 n])
     Frontend.LambdaQ.Abs.GateQftDag n -> prPrec i 0 (concatD [doc (showString "QFT_DAG"), prt 0 n])
 
+instance Print [Frontend.LambdaQ.Abs.Var] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+
 instance Print Frontend.LambdaQ.Abs.ControlBasisState where
   prt i = \case
     Frontend.LambdaQ.Abs.CtrlBasisState basisstate -> prPrec i 0 (concatD [doc (showString "["), prt 0 basisstate, doc (showString "]")])
@@ -259,10 +264,10 @@ instance Print [Frontend.LambdaQ.Abs.Term] where
 instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
     Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
-    Frontend.LambdaQ.Abs.TermLetSingle letvariable term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), prt 0 letvariable, doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermLetMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermLetSugarSingle letvariable term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermLetSugarMultiple letvariable letvariables term1 term2 -> prPrec i 1 (concatD [prt 0 letvariable, doc (showString ","), prt 0 letvariables, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
+    Frontend.LambdaQ.Abs.TermLetSingle var term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), prt 0 var, doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
+    Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 var, doc (showString ","), prt 0 vars, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
+    Frontend.LambdaQ.Abs.TermLetSugarSingle var term1 term2 -> prPrec i 1 (concatD [prt 0 var, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
+    Frontend.LambdaQ.Abs.TermLetSugarMultiple var vars term1 term2 -> prPrec i 1 (concatD [prt 0 var, doc (showString ","), prt 0 vars, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
     Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 var, prt 0 type_, doc (showString "."), prt 0 term])
     Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterm, doc (showString "ctrl"), prt 0 controlbasisstate])
@@ -278,15 +283,6 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
-
-instance Print Frontend.LambdaQ.Abs.LetVariable where
-  prt i = \case
-    Frontend.LambdaQ.Abs.LetVar var -> prPrec i 0 (concatD [prt 0 var])
-
-instance Print [Frontend.LambdaQ.Abs.LetVariable] where
-  prt _ [] = concatD []
-  prt _ [x] = concatD [prt 0 x]
-  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

@@ -106,10 +106,10 @@ data ControlTerms = CtrlTerms Term [Term]
 
 data Term
     = TermIfElse Term Term Term
-    | TermLetSingle LetVariable Term Term
-    | TermLetMultiple LetVariable [LetVariable] Term Term
-    | TermLetSugarSingle LetVariable Term Term
-    | TermLetSugarMultiple LetVariable [LetVariable] Term Term
+    | TermLetSingle Var Term Term
+    | TermLetMultiple Var [Var] Term Term
+    | TermLetSugarSingle Var Term Term
+    | TermLetSugarMultiple Var [Var] Term Term
     | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda Var Type Term
     | TermQuantumCtrlGate ControlTerm ControlBasisState
@@ -125,9 +125,6 @@ data Term
     | TermTuple Tuple
     | TermBit Bit
     | TermUnit
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data LetVariable = LetVar Var
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExp Term Term

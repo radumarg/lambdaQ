@@ -126,10 +126,10 @@ transControlTerms x = case x of
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
   Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
-  Frontend.LambdaQ.Abs.TermLetSingle letvariable term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermLetMultiple letvariable letvariables term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermLetSugarSingle letvariable term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermLetSugarMultiple letvariable letvariables term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermLetSingle var term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermLetSugarSingle var term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermLetSugarMultiple var vars term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> failure x
   Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
@@ -145,10 +145,6 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
   Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
-
-transLetVariable :: Frontend.LambdaQ.Abs.LetVariable -> Result
-transLetVariable x = case x of
-  Frontend.LambdaQ.Abs.LetVar var -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

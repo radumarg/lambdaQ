@@ -208,6 +208,9 @@ Gate
   | 'QFT' Integer { Frontend.LambdaQ.Abs.GateQft $2 }
   | 'QFT_DAG' Integer { Frontend.LambdaQ.Abs.GateQftDag $2 }
 
+ListVar :: { [Frontend.LambdaQ.Abs.Var] }
+ListVar : Var { (:[]) $1 } | Var ',' ListVar { (:) $1 $3 }
+
 ControlBasisState :: { Frontend.LambdaQ.Abs.ControlBasisState }
 ControlBasisState
   : '[' BasisState ']' { Frontend.LambdaQ.Abs.CtrlBasisState $2 }
@@ -249,10 +252,10 @@ ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 Term1 :: { Frontend.LambdaQ.Abs.Term }
 Term1
   : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TermIfElse $2 $4 $6 }
-  | 'let' '{' LetVariable '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetSingle $3 $5 $8 }
-  | 'let' '{' '(' LetVariable ',' ListLetVariable ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
-  | LetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
-  | LetVariable ',' ListLetVariable '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
+  | 'let' '{' Var '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetSingle $3 $5 $8 }
+  | 'let' '{' '(' Var ',' ListVar ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
+  | Var '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
+  | Var ',' ListVar '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
@@ -280,15 +283,6 @@ Term3
 
 Term :: { Frontend.LambdaQ.Abs.Term }
 Term : Term1 { $1 }
-
-LetVariable :: { Frontend.LambdaQ.Abs.LetVariable }
-LetVariable : Var { Frontend.LambdaQ.Abs.LetVar $1 }
-
-ListLetVariable :: { [Frontend.LambdaQ.Abs.LetVariable] }
-ListLetVariable
-  : {- empty -} { [] }
-  | LetVariable { (:[]) $1 }
-  | LetVariable ',' ListLetVariable { (:) $1 $3 }
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression

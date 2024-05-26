@@ -254,9 +254,6 @@ toTerm (GeneratedAbstractSyntax.LetVar var) = GeneratedAbstractSyntax.TermVariab
 toVariableName :: GeneratedAbstractSyntax.Var -> String
 toVariableName (GeneratedAbstractSyntax.Var var) = snd var
 
-toLetVariableName :: GeneratedAbstractSyntax.LetVariable -> String
-toLetVariableName (GeneratedAbstractSyntax.LetVar var) = toVariableName var
-
 -- Section: mapping terms --
 
 mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
@@ -266,10 +263,10 @@ mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l
 mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Data.Map.insert (toLetVariableName var) 0 (Data.Map.map succ env)
+  where inEnv = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var letEq letIn) = TermLetSugarSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Data.Map.insert (toLetVariableName var) 0 (Data.Map.map succ env)
+  where inEnv = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x [] letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
   where letEnv = updateEnv x [] env
@@ -309,8 +306,8 @@ mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
 mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 
-updateEnv :: GeneratedAbstractSyntax.LetVariable -> [GeneratedAbstractSyntax.LetVariable] -> Environment -> Environment
-updateEnv x [] env = Data.Map.insert (toLetVariableName x) 0 (Data.Map.map succ env)
+updateEnv :: GeneratedAbstractSyntax.Var -> [GeneratedAbstractSyntax.Var] -> Environment -> Environment
+updateEnv x [] env = Data.Map.insert (toVariableName x) 0 (Data.Map.map succ env)
 updateEnv x (y:ys) env = updateEnv y ys (updateEnv x [] env)
 
 -- Done mapping terms --
