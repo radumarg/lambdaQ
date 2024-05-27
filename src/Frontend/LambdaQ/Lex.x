@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \( \) | \! | \* \* | \* | \+ | \- \> | \( | \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \[ | \] | \{ | \= | \} | \< \- | \; | \. | \$ | \: \: | \- | \/
+@rsyms = \+ | \- | \* | \/ | \( | \) | \- \> | \* \* | \! | \( \) | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \[ | \] | \{ | \= | \} | \< \- | \; | \. | \$ | \: \:
 
 :-
 
@@ -44,6 +44,10 @@ $white+ ;
 -- Symbols
 @rsyms
     { tok (eitherResIdent TV) }
+
+-- token ZeroOrOne
+[0 1]
+    { tok (eitherResIdent T_ZeroOrOne) }
 
 -- token Var
 (\_ | $s)([\' \_]| ($d | $l)) *
@@ -78,6 +82,7 @@ data Tok
   | TV !String                    -- ^ Identifier.
   | TD !String                    -- ^ Float literal.
   | TC !String                    -- ^ Character literal.
+  | T_ZeroOrOne !String
   | T_Var !String
   | T_Lambda !String
   deriving (Eq, Show, Ord)
@@ -142,6 +147,7 @@ tokenText t = case t of
   PT _ (TD s)   -> s
   PT _ (TC s)   -> s
   Err _         -> "#error"
+  PT _ (T_ZeroOrOne s) -> s
   PT _ (T_Var s) -> s
   PT _ (T_Lambda s) -> s
 
@@ -170,7 +176,7 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "ROOT_Z_DAG" 39
+  b "ROOT_Z" 39
     (b "@-" 20
        (b "-" 10
           (b ")" 5
@@ -179,31 +185,32 @@ resWords =
           (b ";" 15
              (b "/" 13 (b "." 12 (b "->" 11 N N) N) (b "::" 14 N N))
              (b "@+" 18 (b "=" 17 (b "<-" 16 N N) N) (b "@+i" 19 N N))))
-       (b "QFT_DAG" 30
+       (b "QFT" 30
           (b "FSWAP" 25
              (b "@1" 23 (b "@0" 22 (b "@-i" 21 N N) N) (b "Bit" 24 N N))
-             (b "ISWAP" 28 (b "ID" 27 (b "H" 26 N N) N) (b "QFT" 29 N N)))
-          (b "ROOT_X_DAG" 35
-             (b "ROOT_SWAP_DAG" 33
-                (b "ROOT_SWAP" 32 (b "Qbit" 31 N N) N) (b "ROOT_X" 34 N N))
-             (b "ROOT_Y_DAG" 37 (b "ROOT_Y" 36 N N) (b "ROOT_Z" 38 N N)))))
-    (b "U3" 58
-       (b "SQRT_Y_DAG" 49
-          (b "SQRT_SWAP" 44
-             (b "RZ" 42 (b "RY" 41 (b "RX" 40 N N) N) (b "S" 43 N N))
-             (b "SQRT_X_DAG" 47
-                (b "SQRT_X" 46 (b "SQRT_SWAP_DAG" 45 N N) N) (b "SQRT_Y" 48 N N)))
-          (b "T" 54
-             (b "S_DAG" 52
-                (b "SWAP_THETA" 51 (b "SWAP" 50 N N) N) (b "State" 53 N N))
-             (b "U1" 56 (b "T_DAG" 55 N N) (b "U2" 57 N N))))
-       (b "gate" 68
-          (b "[" 63
-             (b "Y" 61 (b "X" 60 (b "Unitary" 59 N N) N) (b "Z" 62 N N))
-             (b "ctrl" 66 (b "case" 65 (b "]" 64 N N) N) (b "else" 67 N N)))
-          (b "then" 73
-             (b "let" 71 (b "in" 70 (b "if" 69 N N) N) (b "of" 72 N N))
-             (b "{" 75 (b "with" 74 N N) (b "}" 76 N N)))))
+             (b "ISWAP" 28 (b "ID" 27 (b "H" 26 N N) N) (b "Int" 29 N N)))
+          (b "ROOT_X" 35
+             (b "ROOT_SWAP" 33
+                (b "Qbit" 32 (b "QFT_DAG" 31 N N) N) (b "ROOT_SWAP_DAG" 34 N N))
+             (b "ROOT_Y" 37 (b "ROOT_X_DAG" 36 N N) (b "ROOT_Y_DAG" 38 N N)))))
+    (b "U3" 59
+       (b "SQRT_Y" 49
+          (b "S" 44
+             (b "RY" 42 (b "RX" 41 (b "ROOT_Z_DAG" 40 N N) N) (b "RZ" 43 N N))
+             (b "SQRT_X" 47
+                (b "SQRT_SWAP_DAG" 46 (b "SQRT_SWAP" 45 N N) N)
+                (b "SQRT_X_DAG" 48 N N)))
+          (b "State" 54
+             (b "SWAP_THETA" 52
+                (b "SWAP" 51 (b "SQRT_Y_DAG" 50 N N) N) (b "S_DAG" 53 N N))
+             (b "U1" 57 (b "T_DAG" 56 (b "T" 55 N N) N) (b "U2" 58 N N))))
+       (b "gate" 69
+          (b "[" 64
+             (b "Y" 62 (b "X" 61 (b "Unitary" 60 N N) N) (b "Z" 63 N N))
+             (b "ctrl" 67 (b "case" 66 (b "]" 65 N N) N) (b "else" 68 N N)))
+          (b "then" 74
+             (b "let" 72 (b "in" 71 (b "if" 70 N N) N) (b "of" 73 N N))
+             (b "{" 76 (b "with" 75 N N) (b "}" 77 N N)))))
   where
   b s n = B bs (TS bs n)
     where

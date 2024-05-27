@@ -15,6 +15,10 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
+transZeroOrOne :: Frontend.LambdaQ.Abs.ZeroOrOne -> Result
+transZeroOrOne x = case x of
+  Frontend.LambdaQ.Abs.ZeroOrOne string -> failure x
+
 transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
   Frontend.LambdaQ.Abs.Var string -> failure x
@@ -23,22 +27,31 @@ transLambda :: Frontend.LambdaQ.Abs.Lambda -> Result
 transLambda x = case x of
   Frontend.LambdaQ.Abs.Lambda string -> failure x
 
+transIntegerExpr :: Frontend.LambdaQ.Abs.IntegerExpr -> Result
+transIntegerExpr x = case x of
+  Frontend.LambdaQ.Abs.ArithmExprAdd integerexpr1 integerexpr2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprSub integerexpr1 integerexpr2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprMul integerexpr1 integerexpr2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprDiv integerexpr1 integerexpr2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprInt integer -> failure x
+
 transProgram :: Frontend.LambdaQ.Abs.Program -> Result
 transProgram x = case x of
   Frontend.LambdaQ.Abs.ProgDef functiondeclarations -> failure x
 
 transType :: Frontend.LambdaQ.Abs.Type -> Result
 transType x = case x of
+  Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> failure x
+  Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> failure x
+  Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> failure x
+  Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
+  Frontend.LambdaQ.Abs.TypeNonLinear type_ -> failure x
   Frontend.LambdaQ.Abs.TypeBit -> failure x
+  Frontend.LambdaQ.Abs.TypeInteger -> failure x
   Frontend.LambdaQ.Abs.TypeQbit -> failure x
   Frontend.LambdaQ.Abs.TypeState -> failure x
   Frontend.LambdaQ.Abs.TypeUnitary -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
-  Frontend.LambdaQ.Abs.TypeNonLinear type_ -> failure x
-  Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
-  Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> failure x
-  Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> failure x
-  Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> failure x
 
 transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
@@ -55,7 +68,7 @@ transBasisState x = case x of
 
 transBit :: Frontend.LambdaQ.Abs.Bit -> Result
 transBit x = case x of
-  Frontend.LambdaQ.Abs.BitValue integer -> failure x
+  Frontend.LambdaQ.Abs.BitValue zeroorone -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
@@ -141,6 +154,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
+  Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
   Frontend.LambdaQ.Abs.TermBit bit -> failure x
@@ -165,20 +179,3 @@ transFunctionType x = case x of
 transFunctionDeclaration :: Frontend.LambdaQ.Abs.FunctionDeclaration -> Result
 transFunctionDeclaration x = case x of
   Frontend.LambdaQ.Abs.FunDecl functiontype functiondefinition -> failure x
-
-transArithmExpr :: Frontend.LambdaQ.Abs.ArithmExpr -> Result
-transArithmExpr x = case x of
-  Frontend.LambdaQ.Abs.ArithmExprAdd arithmexpr arithmterm -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprSub arithmexpr arithmterm -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprTerm arithmterm -> failure x
-
-transArithmTerm :: Frontend.LambdaQ.Abs.ArithmTerm -> Result
-transArithmTerm x = case x of
-  Frontend.LambdaQ.Abs.ArithmTermMul arithmterm arithmfactor -> failure x
-  Frontend.LambdaQ.Abs.ArithmTermDiv arithmterm arithmfactor -> failure x
-  Frontend.LambdaQ.Abs.ArithmTermFactor arithmfactor -> failure x
-
-transArithmFactor :: Frontend.LambdaQ.Abs.ArithmFactor -> Result
-transArithmFactor x = case x of
-  Frontend.LambdaQ.Abs.ArithmFactorInt integer -> failure x
-  Frontend.LambdaQ.Abs.ArithmFactorExpr arithmexpr -> failure x

@@ -14,20 +14,29 @@ import qualified Prelude as C
   )
 import qualified Data.String
 
+data IntegerExpr
+    = ArithmExprAdd IntegerExpr IntegerExpr
+    | ArithmExprSub IntegerExpr IntegerExpr
+    | ArithmExprMul IntegerExpr IntegerExpr
+    | ArithmExprDiv IntegerExpr IntegerExpr
+    | ArithmExprInt Integer
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data Program = ProgDef [FunctionDeclaration]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Type
-    = TypeBit
+    = TypeFunction Type Type
+    | TypeSum Type Type
+    | TypeTensorProd Type Type
+    | TypeExp Type Integer
+    | TypeNonLinear Type
+    | TypeBit
+    | TypeInteger
     | TypeQbit
     | TypeState
     | TypeUnitary
     | TypeUnit
-    | TypeNonLinear Type
-    | TypeExp Type Integer
-    | TypeTensorProd Type Type
-    | TypeSum Type Type
-    | TypeFunction Type Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Angle = Angle Double
@@ -42,7 +51,7 @@ data BasisState
     | BasisStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Bit = BitValue Integer
+data Bit = BitValue ZeroOrOne
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
@@ -121,6 +130,7 @@ data Term
     | TermCompose Term Term
     | TermVariable Var
     | TermBasisState BasisState
+    | TermIntegerExpr IntegerExpr
     | TermGate Gate
     | TermTuple Tuple
     | TermBit Bit
@@ -142,21 +152,8 @@ data FunctionType = FunType Var Type
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ArithmExpr
-    = ArithmExprAdd ArithmExpr ArithmTerm
-    | ArithmExprSub ArithmExpr ArithmTerm
-    | ArithmExprTerm ArithmTerm
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data ArithmTerm
-    = ArithmTermMul ArithmTerm ArithmFactor
-    | ArithmTermDiv ArithmTerm ArithmFactor
-    | ArithmTermFactor ArithmFactor
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data ArithmFactor
-    = ArithmFactorInt Integer | ArithmFactorExpr ArithmExpr
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
+newtype ZeroOrOne = ZeroOrOne String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype Var = Var ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)

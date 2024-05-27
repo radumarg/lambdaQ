@@ -137,26 +137,37 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
+instance Print Frontend.LambdaQ.Abs.ZeroOrOne where
+  prt _ (Frontend.LambdaQ.Abs.ZeroOrOne i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
   prt _ (Frontend.LambdaQ.Abs.Lambda i) = doc $ showString i
+instance Print Frontend.LambdaQ.Abs.IntegerExpr where
+  prt i = \case
+    Frontend.LambdaQ.Abs.ArithmExprAdd integerexpr1 integerexpr2 -> prPrec i 0 (concatD [prt 0 integerexpr1, doc (showString "+"), prt 1 integerexpr2])
+    Frontend.LambdaQ.Abs.ArithmExprSub integerexpr1 integerexpr2 -> prPrec i 0 (concatD [prt 0 integerexpr1, doc (showString "-"), prt 1 integerexpr2])
+    Frontend.LambdaQ.Abs.ArithmExprMul integerexpr1 integerexpr2 -> prPrec i 1 (concatD [prt 1 integerexpr1, doc (showString "*"), prt 2 integerexpr2])
+    Frontend.LambdaQ.Abs.ArithmExprDiv integerexpr1 integerexpr2 -> prPrec i 1 (concatD [prt 1 integerexpr1, doc (showString "/"), prt 2 integerexpr2])
+    Frontend.LambdaQ.Abs.ArithmExprInt n -> prPrec i 2 (concatD [prt 0 n])
+
 instance Print Frontend.LambdaQ.Abs.Program where
   prt i = \case
     Frontend.LambdaQ.Abs.ProgDef functiondeclarations -> prPrec i 0 (concatD [prt 0 functiondeclarations])
 
 instance Print Frontend.LambdaQ.Abs.Type where
   prt i = \case
+    Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 0 (concatD [prt 0 type_1, doc (showString "->"), prt 1 type_2])
+    Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 1 (concatD [prt 1 type_1, doc (showString "+"), prt 2 type_2])
+    Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 2 (concatD [prt 2 type_1, doc (showString "*"), prt 3 type_2])
+    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 2 (concatD [prt 2 type_, doc (showString "**"), prt 0 n])
+    Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 3 (concatD [doc (showString "!"), prt 4 type_])
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
+    Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
     Frontend.LambdaQ.Abs.TypeState -> prPrec i 5 (concatD [doc (showString "State")])
     Frontend.LambdaQ.Abs.TypeUnitary -> prPrec i 5 (concatD [doc (showString "Unitary")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
-    Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 4 (concatD [doc (showString "!"), prt 5 type_])
-    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 3 (concatD [prt 4 type_, doc (showString "**"), prt 0 n])
-    Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 3 (concatD [prt 4 type_1, doc (showString "*"), prt 3 type_2])
-    Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 2 (concatD [prt 3 type_1, doc (showString "+"), prt 2 type_2])
-    Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 1 (concatD [prt 2 type_1, doc (showString "->"), prt 1 type_2])
 
 instance Print Frontend.LambdaQ.Abs.Angle where
   prt i = \case
@@ -173,7 +184,7 @@ instance Print Frontend.LambdaQ.Abs.BasisState where
 
 instance Print Frontend.LambdaQ.Abs.Bit where
   prt i = \case
-    Frontend.LambdaQ.Abs.BitValue n -> prPrec i 0 (concatD [prt 0 n])
+    Frontend.LambdaQ.Abs.BitValue zeroorone -> prPrec i 0 (concatD [prt 0 zeroorone])
 
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case
@@ -279,6 +290,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
     Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
+    Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> prPrec i 3 (concatD [prt 0 integerexpr])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
@@ -316,20 +328,3 @@ instance Print Frontend.LambdaQ.Abs.FunctionDeclaration where
 instance Print [Frontend.LambdaQ.Abs.FunctionDeclaration] where
   prt _ [] = concatD []
   prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
-
-instance Print Frontend.LambdaQ.Abs.ArithmExpr where
-  prt i = \case
-    Frontend.LambdaQ.Abs.ArithmExprAdd arithmexpr arithmterm -> prPrec i 0 (concatD [prt 0 arithmexpr, doc (showString "+"), prt 0 arithmterm])
-    Frontend.LambdaQ.Abs.ArithmExprSub arithmexpr arithmterm -> prPrec i 0 (concatD [prt 0 arithmexpr, doc (showString "-"), prt 0 arithmterm])
-    Frontend.LambdaQ.Abs.ArithmExprTerm arithmterm -> prPrec i 0 (concatD [prt 0 arithmterm])
-
-instance Print Frontend.LambdaQ.Abs.ArithmTerm where
-  prt i = \case
-    Frontend.LambdaQ.Abs.ArithmTermMul arithmterm arithmfactor -> prPrec i 0 (concatD [prt 0 arithmterm, doc (showString "*"), prt 0 arithmfactor])
-    Frontend.LambdaQ.Abs.ArithmTermDiv arithmterm arithmfactor -> prPrec i 0 (concatD [prt 0 arithmterm, doc (showString "/"), prt 0 arithmfactor])
-    Frontend.LambdaQ.Abs.ArithmTermFactor arithmfactor -> prPrec i 0 (concatD [prt 0 arithmfactor])
-
-instance Print Frontend.LambdaQ.Abs.ArithmFactor where
-  prt i = \case
-    Frontend.LambdaQ.Abs.ArithmFactorInt n -> prPrec i 0 (concatD [prt 0 n])
-    Frontend.LambdaQ.Abs.ArithmFactorExpr arithmexpr -> prPrec i 0 (concatD [doc (showString "("), prt 0 arithmexpr, doc (showString ")")])

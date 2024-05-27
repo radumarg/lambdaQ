@@ -22,7 +22,7 @@ import Control.Monad      ( when )
 import Frontend.LambdaQ.Abs    ()
 import Frontend.LambdaQ.Layout ( resolveLayout )
 import Frontend.LambdaQ.Lex    ( Token, mkPosToken )
-import Frontend.LambdaQ.Par    ( pProgram, myLexer )
+import Frontend.LambdaQ.Par    ( pIntegerExpr, myLexer )
 import Frontend.LambdaQ.Print  ( Print, printTree )
 import Frontend.LambdaQ.Skel   ()
 
@@ -49,7 +49,7 @@ run v p s =
       putStrLn "\nParse Successful!"
       showTree v tree
   where
-  ts = resolveLayout True $ myLexer s
+  ts = resolveLayout False $ myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
 showTree :: (Show a, Print a) => Int -> a -> IO ()
@@ -72,7 +72,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run 2 pProgram
-    "-s":fs    -> mapM_ (runFile 0 pProgram) fs
-    fs         -> mapM_ (runFile 2 pProgram) fs
+    []         -> getContents >>= run 2 pIntegerExpr
+    "-s":fs    -> mapM_ (runFile 0 pIntegerExpr) fs
+    fs         -> mapM_ (runFile 2 pIntegerExpr) fs
 

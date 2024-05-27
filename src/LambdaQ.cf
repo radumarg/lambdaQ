@@ -1,26 +1,36 @@
 -- Documentation of LBNF Gramar: https://bnfc.readthedocs.io/en/latest/lbnf.html# --
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
-layout toplevel ;
+--layout toplevel ;
 layout "let" ;
 layout stop "in" ;
 
-entrypoints Program;
+-- Integer Numbers --
+ArithmExprAdd . IntegerExpr  ::= IntegerExpr "+" IntegerExpr1 ;
+ArithmExprSub . IntegerExpr  ::= IntegerExpr "-" IntegerExpr1 ;
+ArithmExprMul . IntegerExpr1 ::= IntegerExpr1 "*" IntegerExpr2 ;
+ArithmExprDiv . IntegerExpr1 ::= IntegerExpr1 "/" IntegerExpr2 ;
+ArithmExprInt . IntegerExpr2 ::= Integer ;
+--ArithmExprPar . IntegerExpr2 ::= "(" IntegerExpr ")" ;
+coercions IntegerExpr 2 ;
+
+--entrypoints Program;
 
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
+TypeFunction   . Type  ::= Type "->" Type1 ;     -- right-associative
+TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- right-associative
+TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- right-associative
+TypeExp        . Type2  ::= Type2 "**" Integer ;
+TypeNonLinear  . Type3  ::= "!" Type4 ;
 TypeBit        . Type5  ::= "Bit" ;
+TypeInteger    . Type5  ::= "Int" ;
 TypeQbit       . Type5  ::= "Qbit" ;
 TypeState      . Type5  ::= "State" ;
 TypeUnitary    . Type5  ::= "Unitary" ;
 TypeUnit       . Type5  ::= "()" ;
-TypeNonLinear  . Type4  ::= "!" Type5 ;
-TypeExp        . Type3  ::= Type4 "**" Integer ;
-TypeTensorProd . Type3  ::= Type4 "*" Type3 ;      -- right-associative
-TypeSum        . Type2  ::= Type3 "+" Type2 ;      -- right-associative
-TypeFunction   . Type1  ::= Type2 "->" Type1 ;     -- right-associative
 coercions Type 5 ;
 
 -- Angle is a fraction of 2π --
@@ -35,7 +45,8 @@ BasisStatePlusI  . BasisState ::= "@+i" ;
 BasisStateMinusI . BasisState ::= "@-i" ;
 
 --- Bits ---
-BitValue . Bit ::= Integer;
+token ZeroOrOne ('0' | '1') ;
+BitValue . Bit ::= ZeroOrOne ;
 
 GateH             . Gate ::= "H" ;                                      -- Hadamard Gate
 GateX             . Gate ::= "X"  ;                                     -- Pauli X Gate
@@ -113,6 +124,7 @@ TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermVariable         . Term3 ::= Var ;
 TermBasisState       . Term3 ::= BasisState ;
+TermIntegerExpr      . Term3 ::= IntegerExpr ;
 TermGate             . Term3 ::= "gate" Gate ;
 TermTuple            . Term3 ::= Tuple ;
 TermBit              . Term3 ::= Bit ;
@@ -139,22 +151,9 @@ _       . FunctionType  ::= FunctionType ";" ;             -- Semantic dummies: 
 FunDecl . FunctionDeclaration ::= FunctionType ";" FunctionDefinition ";" ;
 separator FunctionDeclaration "" ;
 
--- Integer Numbers --
-ArithmExprAdd    . ArithmExpr ::= ArithmExpr "+" ArithmTerm ;
-ArithmExprSub    . ArithmExpr ::= ArithmExpr "-" ArithmTerm ;
-ArithmExprTerm   . ArithmExpr ::= ArithmTerm ;
-
-ArithmTermMul    . ArithmTerm ::= ArithmTerm "*" ArithmFactor ;
-ArithmTermDiv    . ArithmTerm ::= ArithmTerm "/" ArithmFactor ;
-ArithmTermFactor . ArithmTerm ::= ArithmFactor ;
-
-ArithmFactorInt  . ArithmFactor ::= Integer ;
-ArithmFactorExpr . ArithmFactor ::= "(" ArithmExpr ")" ;
-
-coercions ArithmFactor 2 ;
-
 -- Format for specifying comments --
 comment "--" ; 
 comment "{-" "-}" ;
+
 
 

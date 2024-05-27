@@ -23,6 +23,10 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
+
+ZeroOrOne literals are recognized by the regular expression
+`````["01"]`````
+
 Var literals are recognized by the regular expression
 `````('_' | lower) (["'_"] | digit | letter)*`````
 
@@ -35,27 +39,27 @@ The set of reserved words is the set of terminals appearing in the grammar. Thos
 
 The reserved words used in LambdaQ are the following:
   | ``Bit`` | ``FSWAP`` | ``H`` | ``ID``
-  | ``ISWAP`` | ``QFT`` | ``QFT_DAG`` | ``Qbit``
-  | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG`` | ``ROOT_X`` | ``ROOT_X_DAG``
-  | ``ROOT_Y`` | ``ROOT_Y_DAG`` | ``ROOT_Z`` | ``ROOT_Z_DAG``
-  | ``RX`` | ``RY`` | ``RZ`` | ``S``
-  | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG`` | ``SQRT_X`` | ``SQRT_X_DAG``
-  | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP`` | ``SWAP_THETA``
-  | ``S_DAG`` | ``State`` | ``T`` | ``T_DAG``
-  | ``U1`` | ``U2`` | ``U3`` | ``Unitary``
-  | ``X`` | ``Y`` | ``Z`` | ``case``
-  | ``ctrl`` | ``else`` | ``gate`` | ``if``
-  | ``in`` | ``let`` | ``of`` | ``then``
-  | ``with`` |  |  |
+  | ``ISWAP`` | ``Int`` | ``QFT`` | ``QFT_DAG``
+  | ``Qbit`` | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG`` | ``ROOT_X``
+  | ``ROOT_X_DAG`` | ``ROOT_Y`` | ``ROOT_Y_DAG`` | ``ROOT_Z``
+  | ``ROOT_Z_DAG`` | ``RX`` | ``RY`` | ``RZ``
+  | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG`` | ``SQRT_X``
+  | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP``
+  | ``SWAP_THETA`` | ``S_DAG`` | ``State`` | ``T``
+  | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
+  | ``Unitary`` | ``X`` | ``Y`` | ``Z``
+  | ``case`` | ``ctrl`` | ``else`` | ``gate``
+  | ``if`` | ``in`` | ``let`` | ``of``
+  | ``then`` | ``with`` |  |
 
 The symbols used in LambdaQ are the following:
-  | () | ! | ** | *
-  | + | -> | ( | )
-  | @0 | @1 | @+ | @-
-  | @+i | @-i | , | [
-  | ] | { | = | }
-  | <- | ; | . | $
-  | :: | - | / |
+  | + | - | * | /
+  | ( | ) | -> | **
+  | ! | () | @0 | @1
+  | @+ | @- | @+i | @-i
+  | , | [ | ] | {
+  | = | } | <- | ;
+  | . | $ | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -66,23 +70,32 @@ The symbols -> (production),  **|**  (union)
 and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
+  | //IntegerExpr// | -> | //IntegerExpr// ``+`` //IntegerExpr1//
+  |  |  **|**  | //IntegerExpr// ``-`` //IntegerExpr1//
+  |  |  **|**  | //IntegerExpr1//
+  | //IntegerExpr1// | -> | //IntegerExpr1// ``*`` //IntegerExpr2//
+  |  |  **|**  | //IntegerExpr1// ``/`` //IntegerExpr2//
+  |  |  **|**  | //IntegerExpr2//
+  | //IntegerExpr2// | -> | //Integer//
+  |  |  **|**  | ``(`` //IntegerExpr// ``)``
   | //Program// | -> | //[FunctionDeclaration]//
+  | //Type// | -> | //Type// ``->`` //Type1//
+  |  |  **|**  | //Type1//
+  | //Type1// | -> | //Type1// ``+`` //Type2//
+  |  |  **|**  | //Type2//
+  | //Type2// | -> | //Type2// ``*`` //Type3//
+  |  |  **|**  | //Type2// ``**`` //Integer//
+  |  |  **|**  | //Type3//
+  | //Type3// | -> | ``!`` //Type4//
+  |  |  **|**  | //Type4//
   | //Type5// | -> | ``Bit``
+  |  |  **|**  | ``Int``
   |  |  **|**  | ``Qbit``
   |  |  **|**  | ``State``
   |  |  **|**  | ``Unitary``
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Type// ``)``
-  | //Type4// | -> | ``!`` //Type5//
-  |  |  **|**  | //Type5//
-  | //Type3// | -> | //Type4// ``**`` //Integer//
-  |  |  **|**  | //Type4// ``*`` //Type3//
-  |  |  **|**  | //Type4//
-  | //Type2// | -> | //Type3// ``+`` //Type2//
-  |  |  **|**  | //Type3//
-  | //Type1// | -> | //Type2// ``->`` //Type1//
-  |  |  **|**  | //Type2//
-  | //Type// | -> | //Type1//
+  | //Type4// | -> | //Type5//
   | //Angle// | -> | //Double//
   | //BasisState// | -> | ``@0``
   |  |  **|**  | ``@1``
@@ -90,7 +103,7 @@ All other symbols are terminals.
   |  |  **|**  | ``@-``
   |  |  **|**  | ``@+i``
   |  |  **|**  | ``@-i``
-  | //Bit// | -> | //Integer//
+  | //Bit// | -> | //ZeroOrOne//
   | //Gate// | -> | ``H``
   |  |  **|**  | ``X``
   |  |  **|**  | ``Y``
@@ -159,6 +172,7 @@ All other symbols are terminals.
   |  |  **|**  | //Term3//
   | //Term3// | -> | //Var//
   |  |  **|**  | //BasisState//
+  |  |  **|**  | //IntegerExpr//
   |  |  **|**  | ``gate`` //Gate//
   |  |  **|**  | //Tuple//
   |  |  **|**  | //Bit//
@@ -178,17 +192,6 @@ All other symbols are terminals.
   | //FunctionDeclaration// | -> | //FunctionType// ``;`` //FunctionDefinition// ``;``
   | //[FunctionDeclaration]// | -> | **eps**
   |  |  **|**  | //FunctionDeclaration// //[FunctionDeclaration]//
-  | //ArithmExpr// | -> | //ArithmExpr// ``+`` //ArithmTerm//
-  |  |  **|**  | //ArithmExpr// ``-`` //ArithmTerm//
-  |  |  **|**  | //ArithmTerm//
-  | //ArithmTerm// | -> | //ArithmTerm// ``*`` //ArithmFactor//
-  |  |  **|**  | //ArithmTerm// ``/`` //ArithmFactor//
-  |  |  **|**  | //ArithmFactor//
-  | //ArithmFactor// | -> | //Integer//
-  |  |  **|**  | ``(`` //ArithmExpr// ``)``
-  |  |  **|**  | //ArithmFactor1//
-  | //ArithmFactor1// | -> | //ArithmFactor2//
-  | //ArithmFactor2// | -> | ``(`` //ArithmFactor// ``)``
 
 
 
