@@ -49,7 +49,7 @@ data BasisState
     | BasisStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Bit = BitValue ZeroOrOne
+data Bit = BitValue BitVariable
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Gate
@@ -135,7 +135,7 @@ data Term
     | TermUnit
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data CaseExpression = CaseExp Term Term
+data CaseExpression = CaseExpr Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Arg = FunArg Var
@@ -150,7 +150,7 @@ data FunctionType = FunType Var Type
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-newtype ZeroOrOne = ZeroOrOne String
+newtype BitVariable = BitVariable String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype Var = Var ((C.Int, C.Int), String)

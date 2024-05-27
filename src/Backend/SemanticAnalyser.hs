@@ -137,8 +137,6 @@ testNumberOfFunArgsAndGetErrors (fun:funs)  errorMessages =
       getNumberOfTypes (GeneratedAbstractSyntax.TypeNonLinear t) = getNumberOfTypes t
       getNumberOfTypes GeneratedAbstractSyntax.TypeBit = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeQbit = 1
-      getNumberOfTypes GeneratedAbstractSyntax.TypeState = 1
-      getNumberOfTypes GeneratedAbstractSyntax.TypeUnitary = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeUnit = 1
 
 testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]

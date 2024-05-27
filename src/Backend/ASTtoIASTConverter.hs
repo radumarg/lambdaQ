@@ -171,9 +171,9 @@ mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
 
 mapBit :: GeneratedAbstractSyntax.Bit -> Bit
-mapBit (GeneratedAbstractSyntax.BitValue 0) = BitZero
-mapBit (GeneratedAbstractSyntax.BitValue 1) = BitOne
-mapBit _ = undefined -- -- should not happen, TODO: add test for bit values in semantic analysis
+mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "0")) = BitZero
+mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "1")) = BitOne
+mapBit _ = undefined
 
 mapGate :: GeneratedAbstractSyntax.Gate -> Gate
 mapGate g = case g of
@@ -243,9 +243,6 @@ mapVariable :: GeneratedAbstractSyntax.Var -> Var
 mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
 
 type Environment = Data.Map.Map String Integer
-
-toTerm :: GeneratedAbstractSyntax.LetVariable -> GeneratedAbstractSyntax.Term
-toTerm (GeneratedAbstractSyntax.LetVar var) = GeneratedAbstractSyntax.TermVariable var
 
 toVariableName :: GeneratedAbstractSyntax.Var -> String
 toVariableName (GeneratedAbstractSyntax.Var var) = snd var

@@ -137,8 +137,8 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print Frontend.LambdaQ.Abs.ZeroOrOne where
-  prt _ (Frontend.LambdaQ.Abs.ZeroOrOne i) = doc $ showString i
+instance Print Frontend.LambdaQ.Abs.BitVariable where
+  prt _ (Frontend.LambdaQ.Abs.BitVariable i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
@@ -160,7 +160,7 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 0 (concatD [prt 0 type_1, doc (showString "->"), prt 1 type_2])
     Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 1 (concatD [prt 1 type_1, doc (showString "+"), prt 2 type_2])
     Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 2 (concatD [prt 2 type_1, doc (showString "*"), prt 3 type_2])
-    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 2 (concatD [prt 2 type_, doc (showString "**"), prt 0 n])
+    Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 3 (concatD [prt 4 type_, doc (showString "**"), prt 0 n])
     Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 3 (concatD [doc (showString "!"), prt 4 type_])
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
@@ -182,7 +182,7 @@ instance Print Frontend.LambdaQ.Abs.BasisState where
 
 instance Print Frontend.LambdaQ.Abs.Bit where
   prt i = \case
-    Frontend.LambdaQ.Abs.BitValue zeroorone -> prPrec i 0 (concatD [prt 0 zeroorone])
+    Frontend.LambdaQ.Abs.BitValue bitvariable -> prPrec i 0 (concatD [prt 0 bitvariable])
 
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case
@@ -296,7 +296,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case
-    Frontend.LambdaQ.Abs.CaseExp term1 term2 -> prPrec i 0 (concatD [prt 0 term1, doc (showString "->"), prt 0 term2])
+    Frontend.LambdaQ.Abs.CaseExpr term1 term2 -> prPrec i 0 (concatD [prt 0 term1, doc (showString "->"), prt 0 term2])
 
 instance Print [Frontend.LambdaQ.Abs.CaseExpression] where
   prt _ [] = concatD []

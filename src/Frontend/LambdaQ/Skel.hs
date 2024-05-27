@@ -15,9 +15,9 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transZeroOrOne :: Frontend.LambdaQ.Abs.ZeroOrOne -> Result
-transZeroOrOne x = case x of
-  Frontend.LambdaQ.Abs.ZeroOrOne string -> failure x
+transBitVariable :: Frontend.LambdaQ.Abs.BitVariable -> Result
+transBitVariable x = case x of
+  Frontend.LambdaQ.Abs.BitVariable string -> failure x
 
 transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
@@ -66,7 +66,7 @@ transBasisState x = case x of
 
 transBit :: Frontend.LambdaQ.Abs.Bit -> Result
 transBit x = case x of
-  Frontend.LambdaQ.Abs.BitValue zeroorone -> failure x
+  Frontend.LambdaQ.Abs.BitValue bitvariable -> failure x
 
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
@@ -160,7 +160,7 @@ transTerm x = case x of
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of
-  Frontend.LambdaQ.Abs.CaseExp term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.CaseExpr term1 term2 -> failure x
 
 transArg :: Frontend.LambdaQ.Abs.Arg -> Result
 transArg x = case x of

@@ -24,7 +24,7 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
-ZeroOrOne literals are recognized by the regular expression
+BitVariable literals are recognized by the regular expression
 `````["01"]`````
 
 Var literals are recognized by the regular expression
@@ -83,9 +83,9 @@ All other symbols are terminals.
   | //Type1// | -> | //Type1// ``+`` //Type2//
   |  |  **|**  | //Type2//
   | //Type2// | -> | //Type2// ``*`` //Type3//
-  |  |  **|**  | //Type2// ``**`` //Integer//
   |  |  **|**  | //Type3//
-  | //Type3// | -> | ``!`` //Type4//
+  | //Type3// | -> | //Type4// ``**`` //Integer//
+  |  |  **|**  | ``!`` //Type4//
   |  |  **|**  | //Type4//
   | //Type5// | -> | ``Bit``
   |  |  **|**  | ``Int``
@@ -100,7 +100,7 @@ All other symbols are terminals.
   |  |  **|**  | ``@-``
   |  |  **|**  | ``@+i``
   |  |  **|**  | ``@-i``
-  | //Bit// | -> | //ZeroOrOne//
+  | //Bit// | -> | //BitVariable//
   | //Gate// | -> | ``H``
   |  |  **|**  | ``X``
   |  |  **|**  | ``Y``

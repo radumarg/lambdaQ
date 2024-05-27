@@ -14,16 +14,16 @@ ArithmExprInt . IntegerExpr2 ::= Integer ;
 --ArithmExprPar . IntegerExpr2 ::= "(" IntegerExpr ")" ;
 coercions IntegerExpr 2 ;
 
---entrypoints Program;
+entrypoints Program;
 
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Types --
-TypeFunction   . Type  ::= Type "->" Type1 ;     -- right-associative
+TypeFunction   . Type  ::= Type "->" Type1 ;       -- right-associative
 TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- right-associative
 TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- right-associative
-TypeExp        . Type2  ::= Type2 "**" Integer ;
+TypeExp        . Type3  ::= Type4 "**" Integer ;
 TypeNonLinear  . Type3  ::= "!" Type4 ;
 TypeBit        . Type5  ::= "Bit" ;
 TypeInteger    . Type5  ::= "Int" ;
@@ -43,44 +43,44 @@ BasisStatePlusI  . BasisState ::= "@+i" ;
 BasisStateMinusI . BasisState ::= "@-i" ;
 
 --- Bits ---
-token ZeroOrOne ('0' | '1') ;
-BitValue . Bit ::= ZeroOrOne ;
+token BitVariable ('0' | '1') ;
+BitValue . Bit ::= BitVariable ;
 
 GateH             . Gate ::= "H" ;                                      -- Hadamard Gate
-GateX             . Gate ::= "X"  ;                                     -- Pauli X Gate
-GateY             . Gate ::= "Y"  ;                                     -- Pauli Y Gate
-GateZ             . Gate ::= "Z"  ;                                     -- Pauli Z Gate
-GateID            . Gate ::= "ID"  ;                                    -- Identity Gate
-GateXRoot         . Gate ::= "ROOT_X" Integer  ;                        -- Root of Pauli X gate (root is specified as k in 1/2^k)
-GateXRootDag      . Gate ::= "ROOT_X_DAG" Integer  ;                    -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
-GateYRoot         . Gate ::= "ROOT_Y" Integer  ;                        -- Root of Pauli Y gate (root is specified as k in 1/2^k)
-GateYRootDag      . Gate ::= "ROOT_Y_DAG" Integer  ;                    -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
-GateZRoot         . Gate ::= "ROOT_Z" Integer  ;                        -- Root of Pauli Z gate (root is specified as k in 1/2^k)
-GateZRootDag      . Gate ::= "ROOT_Z_DAG" Integer  ;                    -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
-GateS             . Gate ::= "S"  ;                                     -- S gate: sqrt of Z
-GateSDag          . Gate ::= "S_DAG"  ;                                 -- Conjugate of S gate
-GateT             . Gate ::= "T"  ;                                     -- T Gate: sqrt of S
-GateTDag          . Gate ::= "T_DAG"  ;                                 -- Conjugate of T gate
-GateSqrtX         . Gate ::= "SQRT_X"  ;                                -- V gate: sqrt of X
-GateSqrtXDag      . Gate ::= "SQRT_X_DAG"  ;                            -- Conjugate of V gate
-GateSqrtY         . Gate ::= "SQRT_Y"  ;                                -- h gate: sqrt of Y
-GateSqrtYDag      . Gate ::= "SQRT_Y_DAG"  ;                            -- Conjugate of h gate
-GateRxTheta       . Gate ::= "RX" Angle  ;                              -- Single parametric rotation around X axis on the Bloch sphere
-GateRyTheta       . Gate ::= "RY" Angle  ;                              -- Single parametric rotation around Y axis on the Bloch sphere
-GateRzTheta       . Gate ::= "RZ" Angle  ;                              -- Single parametric rotation around Z axis on the Bloch sphere
-GateU1            . Gate ::= "U1" Angle  ;                              -- One parametric generic gate
-GateU2            . Gate ::= "U2" "(" Angle "," Angle ")"  ;            -- Two parametric generic gate
+GateX             . Gate ::= "X" ;                                      -- Pauli X Gate
+GateY             . Gate ::= "Y" ;                                      -- Pauli Y Gate
+GateZ             . Gate ::= "Z" ;                                      -- Pauli Z Gate
+GateID            . Gate ::= "ID" ;                                     -- Identity Gate
+GateXRoot         . Gate ::= "ROOT_X" Integer ;                         -- Root of Pauli X gate (root is specified as k in 1/2^k)
+GateXRootDag      . Gate ::= "ROOT_X_DAG" Integer ;                     -- Conjugate of Root of Pauli X gate (root is specified as k in 1/2^k)
+GateYRoot         . Gate ::= "ROOT_Y" Integer ;                         -- Root of Pauli Y gate (root is specified as k in 1/2^k)
+GateYRootDag      . Gate ::= "ROOT_Y_DAG" Integer ;                     -- Conjugate of Root of Pauli Y gate (root is specified as k in 1/2^k)
+GateZRoot         . Gate ::= "ROOT_Z" Integer ;                         -- Root of Pauli Z gate (root is specified as k in 1/2^k)
+GateZRootDag      . Gate ::= "ROOT_Z_DAG" Integer ;                     -- Conjugate of Root of Pauli Z gate (root is specified as k in 1/2^k)
+GateS             . Gate ::= "S" ;                                      -- S gate: sqrt of Z
+GateSDag          . Gate ::= "S_DAG" ;                                  -- Conjugate of S gate
+GateT             . Gate ::= "T" ;                                      -- T Gate: sqrt of S
+GateTDag          . Gate ::= "T_DAG" ;                                  -- Conjugate of T gate
+GateSqrtX         . Gate ::= "SQRT_X" ;                                 -- V gate: sqrt of X
+GateSqrtXDag      . Gate ::= "SQRT_X_DAG" ;                             -- Conjugate of V gate
+GateSqrtY         . Gate ::= "SQRT_Y" ;                                 -- h gate: sqrt of Y
+GateSqrtYDag      . Gate ::= "SQRT_Y_DAG" ;                             -- Conjugate of h gate
+GateRxTheta       . Gate ::= "RX" Angle ;                               -- Single parametric rotation around X axis on the Bloch sphere
+GateRyTheta       . Gate ::= "RY" Angle ;                               -- Single parametric rotation around Y axis on the Bloch sphere
+GateRzTheta       . Gate ::= "RZ" Angle ;                               -- Single parametric rotation around Z axis on the Bloch sphere
+GateU1            . Gate ::= "U1" Angle ;                               -- One parametric generic gate
+GateU2            . Gate ::= "U2" "(" Angle "," Angle ")" ;             -- Two parametric generic gate
 GateU3            . Gate ::= "U3" "(" Angle "," Angle "," Angle ")" ;   -- Thee parametric generic gate
-GateSwp           . Gate ::= "SWAP"  ;                                  -- Swap gate
-GateSqrtSwp       . Gate ::= "SQRT_SWAP"  ;                             -- sqrt of Swap gate
-GateSqrtSwpDag    . Gate ::= "SQRT_SWAP_DAG"  ;                         -- Conjugate of root of Swap gate
-GateISwp          . Gate ::= "ISWAP"  ;                                 -- ISwap gate
-GateFSwp          . Gate ::= "FSWAP"  ;                                 -- FSwap gate
+GateSwp           . Gate ::= "SWAP" ;                                   -- Swap gate
+GateSqrtSwp       . Gate ::= "SQRT_SWAP" ;                              -- sqrt of Swap gate
+GateSqrtSwpDag    . Gate ::= "SQRT_SWAP_DAG" ;                          -- Conjugate of root of Swap gate
+GateISwp          . Gate ::= "ISWAP" ;                                  -- ISwap gate
+GateFSwp          . Gate ::= "FSWAP" ;                                  -- FSwap gate
 GateSwpTheta      . Gate ::= "SWAP_THETA" Angle ;                       -- Swap theta gate
 GateSwpRt         . Gate ::= "ROOT_SWAP" Integer ;                      -- Root of Swap gate (root is specified as k in 1/2^k)
-GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer  ;                 -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
-GateQft           . Gate ::= "QFT" Integer  ;                           -- Quantum Fourier Transform
-GateQftDag        . Gate ::= "QFT_DAG" Integer  ;                       -- Conjugate of Quantum Fourier Transform
+GateSwpRtDag      . Gate ::= "ROOT_SWAP_DAG" Integer ;                  -- Conjugate of Root of Swap gate (root is specified as k in 1/2^k)
+GateQft           . Gate ::= "QFT" Integer ;                            -- Quantum Fourier Transform
+GateQftDag        . Gate ::= "QFT_DAG" Integer ;                        -- Conjugate of Quantum Fourier Transform
 
 -- Names for Variables --
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
@@ -130,7 +130,7 @@ TermUnit             . Term3 ::= "()" ;
 coercions Term 3 ;
 
 -- Case Expressions --
-CaseExp . CaseExpression ::= Term "->" Term ;
+CaseExpr . CaseExpression ::= Term "->" Term ;
 separator nonempty CaseExpression " " ;
 
 -- Function Arguments --

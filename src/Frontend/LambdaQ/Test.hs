@@ -2,7 +2,7 @@
 
 -- | Program to test parser.
 
-module Main where
+module Frontend.LambdaQ.Test where
 
 import Prelude
   ( ($), (.)
@@ -22,7 +22,7 @@ import Control.Monad      ( when )
 import Frontend.LambdaQ.Abs    ()
 import Frontend.LambdaQ.Layout ( resolveLayout )
 import Frontend.LambdaQ.Lex    ( Token, mkPosToken )
-import Frontend.LambdaQ.Par    ( pIntegerExpr, myLexer )
+import Frontend.LambdaQ.Par    ( pProgram, myLexer )
 import Frontend.LambdaQ.Print  ( Print, printTree )
 import Frontend.LambdaQ.Skel   ()
 
@@ -72,7 +72,7 @@ main = do
   args <- getArgs
   case args of
     ["--help"] -> usage
-    []         -> getContents >>= run 2 pIntegerExpr
-    "-s":fs    -> mapM_ (runFile 0 pIntegerExpr) fs
-    fs         -> mapM_ (runFile 2 pIntegerExpr) fs
+    []         -> getContents >>= run 2 pProgram
+    "-s":fs    -> mapM_ (runFile 0 pProgram) fs
+    fs         -> mapM_ (runFile 2 pProgram) fs
 

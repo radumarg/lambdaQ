@@ -70,7 +70,7 @@ spec =  do
       it "returns no error" $ do
         testProgram "test/programs/good/example10-shorAlgorithm.lq" `shouldReturn` "OK"
 
-      context "when provided with a valid QFT program" $ do
+    context "when provided with a valid QFT program" $ do
       it "returns no error" $ do
         testProgram "test/programs/good/example11-qft.lq" `shouldReturn` "OK"
 
