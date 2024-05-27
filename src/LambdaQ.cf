@@ -28,8 +28,6 @@ TypeNonLinear  . Type3  ::= "!" Type4 ;
 TypeBit        . Type5  ::= "Bit" ;
 TypeInteger    . Type5  ::= "Int" ;
 TypeQbit       . Type5  ::= "Qbit" ;
-TypeState      . Type5  ::= "State" ;
-TypeUnitary    . Type5  ::= "Unitary" ;
 TypeUnit       . Type5  ::= "()" ;
 coercions Type 5 ;
 

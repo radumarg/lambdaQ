@@ -165,8 +165,6 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
-    Frontend.LambdaQ.Abs.TypeState -> prPrec i 5 (concatD [doc (showString "State")])
-    Frontend.LambdaQ.Abs.TypeUnitary -> prPrec i 5 (concatD [doc (showString "Unitary")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
 
 instance Print Frontend.LambdaQ.Abs.Angle where

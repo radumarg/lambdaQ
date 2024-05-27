@@ -23,8 +23,6 @@ import qualified Data.Map
 data Type =
    TypeBit             |
    TypeQbit            |
-   TypeState           |
-   TypeUnitary         |
    TypeNonLinear Type  |
    TypeUnit            |
    Type :->: Type      |
@@ -146,8 +144,6 @@ type Program = [Function]
 mapType :: GeneratedAbstractSyntax.Type -> Type
 mapType GeneratedAbstractSyntax.TypeBit   = TypeBit
 mapType GeneratedAbstractSyntax.TypeQbit  = TypeQbit
-mapType GeneratedAbstractSyntax.TypeState  = TypeState
-mapType GeneratedAbstractSyntax.TypeUnitary  = TypeUnitary
 mapType GeneratedAbstractSyntax.TypeUnit  = TypeUnit
 mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
 mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r

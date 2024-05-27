@@ -148,30 +148,28 @@ import Frontend.LambdaQ.Lex
   'SWAP'          { PT _ (TS _ 51)        }
   'SWAP_THETA'    { PT _ (TS _ 52)        }
   'S_DAG'         { PT _ (TS _ 53)        }
-  'State'         { PT _ (TS _ 54)        }
-  'T'             { PT _ (TS _ 55)        }
-  'T_DAG'         { PT _ (TS _ 56)        }
-  'U1'            { PT _ (TS _ 57)        }
-  'U2'            { PT _ (TS _ 58)        }
-  'U3'            { PT _ (TS _ 59)        }
-  'Unitary'       { PT _ (TS _ 60)        }
-  'X'             { PT _ (TS _ 61)        }
-  'Y'             { PT _ (TS _ 62)        }
-  'Z'             { PT _ (TS _ 63)        }
-  '['             { PT _ (TS _ 64)        }
-  ']'             { PT _ (TS _ 65)        }
-  'case'          { PT _ (TS _ 66)        }
-  'ctrl'          { PT _ (TS _ 67)        }
-  'else'          { PT _ (TS _ 68)        }
-  'gate'          { PT _ (TS _ 69)        }
-  'if'            { PT _ (TS _ 70)        }
-  'in'            { PT _ (TS _ 71)        }
-  'let'           { PT _ (TS _ 72)        }
-  'of'            { PT _ (TS _ 73)        }
-  'then'          { PT _ (TS _ 74)        }
-  'with'          { PT _ (TS _ 75)        }
-  '{'             { PT _ (TS _ 76)        }
-  '}'             { PT _ (TS _ 77)        }
+  'T'             { PT _ (TS _ 54)        }
+  'T_DAG'         { PT _ (TS _ 55)        }
+  'U1'            { PT _ (TS _ 56)        }
+  'U2'            { PT _ (TS _ 57)        }
+  'U3'            { PT _ (TS _ 58)        }
+  'X'             { PT _ (TS _ 59)        }
+  'Y'             { PT _ (TS _ 60)        }
+  'Z'             { PT _ (TS _ 61)        }
+  '['             { PT _ (TS _ 62)        }
+  ']'             { PT _ (TS _ 63)        }
+  'case'          { PT _ (TS _ 64)        }
+  'ctrl'          { PT _ (TS _ 65)        }
+  'else'          { PT _ (TS _ 66)        }
+  'gate'          { PT _ (TS _ 67)        }
+  'if'            { PT _ (TS _ 68)        }
+  'in'            { PT _ (TS _ 69)        }
+  'let'           { PT _ (TS _ 70)        }
+  'of'            { PT _ (TS _ 71)        }
+  'then'          { PT _ (TS _ 72)        }
+  'with'          { PT _ (TS _ 73)        }
+  '{'             { PT _ (TS _ 74)        }
+  '}'             { PT _ (TS _ 75)        }
   L_doubl         { PT _ (TD $$)          }
   L_integ         { PT _ (TI $$)          }
   L_ZeroOrOne     { PT _ (T_ZeroOrOne $$) }
@@ -242,8 +240,6 @@ Type5
   : 'Bit' { Frontend.LambdaQ.Abs.TypeBit }
   | 'Int' { Frontend.LambdaQ.Abs.TypeInteger }
   | 'Qbit' { Frontend.LambdaQ.Abs.TypeQbit }
-  | 'State' { Frontend.LambdaQ.Abs.TypeState }
-  | 'Unitary' { Frontend.LambdaQ.Abs.TypeUnitary }
   | '()' { Frontend.LambdaQ.Abs.TypeUnit }
   | '(' Type ')' { $2 }
 

@@ -34,8 +34,6 @@ data Type
     | TypeBit
     | TypeInteger
     | TypeQbit
-    | TypeState
-    | TypeUnitary
     | TypeUnit
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

@@ -45,12 +45,11 @@ The reserved words used in LambdaQ are the following:
   | ``ROOT_Z_DAG`` | ``RX`` | ``RY`` | ``RZ``
   | ``S`` | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG`` | ``SQRT_X``
   | ``SQRT_X_DAG`` | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP``
-  | ``SWAP_THETA`` | ``S_DAG`` | ``State`` | ``T``
-  | ``T_DAG`` | ``U1`` | ``U2`` | ``U3``
-  | ``Unitary`` | ``X`` | ``Y`` | ``Z``
-  | ``case`` | ``ctrl`` | ``else`` | ``gate``
-  | ``if`` | ``in`` | ``let`` | ``of``
-  | ``then`` | ``with`` |  |
+  | ``SWAP_THETA`` | ``S_DAG`` | ``T`` | ``T_DAG``
+  | ``U1`` | ``U2`` | ``U3`` | ``X``
+  | ``Y`` | ``Z`` | ``case`` | ``ctrl``
+  | ``else`` | ``gate`` | ``if`` | ``in``
+  | ``let`` | ``of`` | ``then`` | ``with``
 
 The symbols used in LambdaQ are the following:
   | + | - | * | /
@@ -91,8 +90,6 @@ All other symbols are terminals.
   | //Type5// | -> | ``Bit``
   |  |  **|**  | ``Int``
   |  |  **|**  | ``Qbit``
-  |  |  **|**  | ``State``
-  |  |  **|**  | ``Unitary``
   |  |  **|**  | ``()``
   |  |  **|**  | ``(`` //Type// ``)``
   | //Type4// | -> | //Type5//
