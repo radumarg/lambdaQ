@@ -39,7 +39,7 @@ layoutStopWords = [TokSymbol "in" 69]
 layoutOpen, layoutClose, layoutSep :: [TokSymbol]
 layoutOpen  = List.nub $ mapMaybe (delimOpen  . snd) layoutWords
 layoutClose = List.nub $ mapMaybe (delimClose . snd) layoutWords
-layoutSep   = List.nub $ map (delimSep . snd) layoutWords
+layoutSep   = List.nub $ TokSymbol ";" 15 : map (delimSep . snd) layoutWords
 
 parenOpen, parenClose :: [TokSymbol]
 parenOpen  =
@@ -72,8 +72,11 @@ resolveLayout
   :: Bool      -- ^ Whether to use top-level layout.
   -> [Token]   -- ^ Token stream before layout resolution.
   -> [Token]   -- ^ Token stream after layout resolution.
-resolveLayout _topLayout = res Nothing [Explicit]
+resolveLayout topLayout =
+  res Nothing [if topLayout then Implicit topDelim Definitive 1 else Explicit]
   where
+  topDelim :: LayoutDelimiters
+  topDelim = LayoutDelimiters (TokSymbol ";" 15) Nothing Nothing
 
   res :: Maybe Token -- ^ The previous token, if any.
       -> [Block]     -- ^ A stack of layout blocks.

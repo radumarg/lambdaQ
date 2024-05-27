@@ -49,7 +49,7 @@ run v p s =
       putStrLn "\nParse Successful!"
       showTree v tree
   where
-  ts = resolveLayout False $ myLexer s
+  ts = resolveLayout True $ myLexer s
   showPosToken ((l,c),t) = concat [ show l, ":", show c, "\t", show t ]
 
 showTree :: (Show a, Print a) => Int -> a -> IO ()

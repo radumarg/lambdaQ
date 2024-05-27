@@ -1,7 +1,7 @@
 -- Documentation of LBNF Gramar: https://bnfc.readthedocs.io/en/latest/lbnf.html# --
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
---layout toplevel ;
+layout toplevel ;
 layout "let" ;
 layout stop "in" ;
 
