@@ -31,10 +31,15 @@ data Type
     | TypeTensorProd Type Type
     | TypeExp Type Integer
     | TypeNonLinear Type
+    | TypeBool
     | TypeBit
     | TypeInteger
     | TypeQbit
     | TypeUnit
+    | TypeList Type
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data BoolValue = BoolValueTrue | BoolValueFalse
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Angle = Angle Double
@@ -131,8 +136,14 @@ data Term
     | TermIntegerExpr IntegerExpr
     | TermGate Gate
     | TermTuple Tuple
+    | TermBoolean BoolValue
     | TermBit Bit
     | TermUnit
+    | TermList List
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data List
+    = TermListNil | TermListSingle Term | TermListMultiple Term [Term]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExpr Term Term

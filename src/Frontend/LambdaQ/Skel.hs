@@ -46,10 +46,17 @@ transType x = case x of
   Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> failure x
   Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
   Frontend.LambdaQ.Abs.TypeNonLinear type_ -> failure x
+  Frontend.LambdaQ.Abs.TypeBool -> failure x
   Frontend.LambdaQ.Abs.TypeBit -> failure x
   Frontend.LambdaQ.Abs.TypeInteger -> failure x
   Frontend.LambdaQ.Abs.TypeQbit -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
+  Frontend.LambdaQ.Abs.TypeList type_ -> failure x
+
+transBoolValue :: Frontend.LambdaQ.Abs.BoolValue -> Result
+transBoolValue x = case x of
+  Frontend.LambdaQ.Abs.BoolValueTrue -> failure x
+  Frontend.LambdaQ.Abs.BoolValueFalse -> failure x
 
 transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
@@ -155,8 +162,16 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
+  Frontend.LambdaQ.Abs.TermBoolean boolvalue -> failure x
   Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
+  Frontend.LambdaQ.Abs.TermList list -> failure x
+
+transList :: Frontend.LambdaQ.Abs.List -> Result
+transList x = case x of
+  Frontend.LambdaQ.Abs.TermListNil -> failure x
+  Frontend.LambdaQ.Abs.TermListSingle term -> failure x
+  Frontend.LambdaQ.Abs.TermListMultiple term terms -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

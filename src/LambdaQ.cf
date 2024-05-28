@@ -11,7 +11,6 @@ ArithmExprSub . IntegerExpr  ::= IntegerExpr "-" IntegerExpr1 ;
 ArithmExprMul . IntegerExpr1 ::= IntegerExpr1 "*" IntegerExpr2 ;
 ArithmExprDiv . IntegerExpr1 ::= IntegerExpr1 "/" IntegerExpr2 ;
 ArithmExprInt . IntegerExpr2 ::= Integer ;
---ArithmExprPar . IntegerExpr2 ::= "(" IntegerExpr ")" ;
 coercions IntegerExpr 2 ;
 
 entrypoints Program;
@@ -25,11 +24,17 @@ TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- right-associative
 TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- right-associative
 TypeExp        . Type3  ::= Type4 "**" Integer ;
 TypeNonLinear  . Type3  ::= "!" Type4 ;
+TypeBool       . Type5  ::= "Bool" ;
 TypeBit        . Type5  ::= "Bit" ;
 TypeInteger    . Type5  ::= "Int" ;
 TypeQbit       . Type5  ::= "Qbit" ;
 TypeUnit       . Type5  ::= "()" ;
+TypeList       . Type5  ::= "[" Type "]" ; 
 coercions Type 5 ;
+
+-- Boolean Values --
+BoolValueTrue  . BoolValue ::= "True" ;
+BoolValueFalse . BoolValue ::= "False" ;
 
 -- Angle is a fraction of 2π --
 Angle . Angle ::= Double ;
@@ -125,9 +130,16 @@ TermBasisState       . Term3 ::= BasisState ;
 TermIntegerExpr      . Term3 ::= IntegerExpr ;
 TermGate             . Term3 ::= "gate" Gate ;
 TermTuple            . Term3 ::= Tuple ;
+TermBoolean          . Term3 ::= BoolValue;
 TermBit              . Term3 ::= Bit ;
 TermUnit             . Term3 ::= "()" ;
+TermList             . Term3 ::= List ;
 coercions Term 3 ;
+
+-- Polymorphic Lists --
+TermListNil          . List ::= "[]" ;
+TermListSingle       . List ::= "[" Term "]" ;
+TermListMultiple     . List ::= "[" Term "," [Term] "]" ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term "->" Term ;

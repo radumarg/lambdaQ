@@ -162,10 +162,17 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 2 (concatD [prt 2 type_1, doc (showString "*"), prt 3 type_2])
     Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 3 (concatD [prt 4 type_, doc (showString "**"), prt 0 n])
     Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 3 (concatD [doc (showString "!"), prt 4 type_])
+    Frontend.LambdaQ.Abs.TypeBool -> prPrec i 5 (concatD [doc (showString "Bool")])
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
+    Frontend.LambdaQ.Abs.TypeList type_ -> prPrec i 5 (concatD [doc (showString "["), prt 0 type_, doc (showString "]")])
+
+instance Print Frontend.LambdaQ.Abs.BoolValue where
+  prt i = \case
+    Frontend.LambdaQ.Abs.BoolValueTrue -> prPrec i 0 (concatD [doc (showString "True")])
+    Frontend.LambdaQ.Abs.BoolValueFalse -> prPrec i 0 (concatD [doc (showString "False")])
 
 instance Print Frontend.LambdaQ.Abs.Angle where
   prt i = \case
@@ -291,8 +298,16 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> prPrec i 3 (concatD [prt 0 integerexpr])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
+    Frontend.LambdaQ.Abs.TermBoolean boolvalue -> prPrec i 3 (concatD [prt 0 boolvalue])
     Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
+    Frontend.LambdaQ.Abs.TermList list -> prPrec i 3 (concatD [prt 0 list])
+
+instance Print Frontend.LambdaQ.Abs.List where
+  prt i = \case
+    Frontend.LambdaQ.Abs.TermListNil -> prPrec i 0 (concatD [doc (showString "[]")])
+    Frontend.LambdaQ.Abs.TermListSingle term -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
+    Frontend.LambdaQ.Abs.TermListMultiple term terms -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case
