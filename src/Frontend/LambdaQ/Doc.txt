@@ -59,7 +59,8 @@ The symbols used in LambdaQ are the following:
   | @0 | @1 | @+ | @-
   | @+i | @-i | , | {
   | = | } | <- | ;
-  | . | $ | [] | ::
+  | . | $ | [] | :
+  | :: |  |  |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -173,19 +174,21 @@ All other symbols are terminals.
   |  |  **|**  | //Term2// ``.`` //Term3//
   |  |  **|**  | //Term3//
   | //Term3// | -> | //Var//
+  |  |  **|**  | ``()``
   |  |  **|**  | //BasisState//
   |  |  **|**  | //IntegerExpr//
   |  |  **|**  | ``gate`` //Gate//
   |  |  **|**  | //Tuple//
   |  |  **|**  | //BoolValue//
   |  |  **|**  | //Bit//
-  |  |  **|**  | ``()``
   |  |  **|**  | //List//
-  |  |  **|**  | ``(`` //Term// ``)``
+  |  |  **|**  | //Term4//
   | //Term// | -> | //Term1//
+  | //Term4// | -> | ``(`` //Term// ``)``
   | //List// | -> | ``[]``
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``
+  |  |  **|**  | //Term4// ``:`` //List//
   | //CaseExpression// | -> | //Term// ``->`` //Term//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//

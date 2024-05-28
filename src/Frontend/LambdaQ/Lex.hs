@@ -55,10 +55,10 @@ alex_accept = listArray (0 :: Int, 46)
   , AlexAccNone
   , AlexAccNone
   , AlexAccSkip
+  , AlexAcc 14
   , AlexAcc 13
   , AlexAcc 12
   , AlexAcc 11
-  , AlexAccNone
   , AlexAcc 10
   , AlexAcc 9
   , AlexAcc 8
@@ -99,8 +99,9 @@ alex_accept = listArray (0 :: Int, 46)
   , AlexAcc 0
   ]
 
-alex_actions = array (0 :: Int, 14)
-  [ (13,alex_action_3)
+alex_actions = array (0 :: Int, 15)
+  [ (14,alex_action_3)
+  , (13,alex_action_3)
   , (12,alex_action_3)
   , (11,alex_action_3)
   , (10,alex_action_3)
@@ -223,42 +224,42 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "ROOT_Y_DAG" 40
-    (b "@-" 20
-       (b "-" 10
-          (b ")" 5
-             (b "(" 3 (b "$" 2 (b "!" 1 N N) N) (b "()" 4 N N))
-             (b "+" 8 (b "**" 7 (b "*" 6 N N) N) (b "," 9 N N)))
-          (b ";" 15
-             (b "/" 13 (b "." 12 (b "->" 11 N N) N) (b "::" 14 N N))
-             (b "@+" 18 (b "=" 17 (b "<-" 16 N N) N) (b "@+i" 19 N N))))
-       (b "ISWAP" 30
-          (b "Bool" 25
-             (b "@1" 23 (b "@0" 22 (b "@-i" 21 N N) N) (b "Bit" 24 N N))
-             (b "H" 28 (b "False" 27 (b "FSWAP" 26 N N) N) (b "ID" 29 N N)))
-          (b "ROOT_SWAP" 35
-             (b "QFT_DAG" 33 (b "QFT" 32 (b "Int" 31 N N) N) (b "Qbit" 34 N N))
-             (b "ROOT_X_DAG" 38
-                (b "ROOT_X" 37 (b "ROOT_SWAP_DAG" 36 N N) N)
-                (b "ROOT_Y" 39 N N)))))
-    (b "U2" 60
-       (b "SQRT_X_DAG" 50
-          (b "RZ" 45
-             (b "RX" 43
-                (b "ROOT_Z_DAG" 42 (b "ROOT_Z" 41 N N) N) (b "RY" 44 N N))
-             (b "SQRT_SWAP_DAG" 48
-                (b "SQRT_SWAP" 47 (b "S" 46 N N) N) (b "SQRT_X" 49 N N)))
-          (b "S_DAG" 55
-             (b "SWAP" 53
-                (b "SQRT_Y_DAG" 52 (b "SQRT_Y" 51 N N) N) (b "SWAP_THETA" 54 N N))
-             (b "True" 58 (b "T_DAG" 57 (b "T" 56 N N) N) (b "U1" 59 N N))))
-       (b "else" 70
-          (b "[" 65
-             (b "Y" 63 (b "X" 62 (b "U3" 61 N N) N) (b "Z" 64 N N))
-             (b "case" 68 (b "]" 67 (b "[]" 66 N N) N) (b "ctrl" 69 N N)))
-          (b "of" 75
-             (b "in" 73 (b "if" 72 (b "gate" 71 N N) N) (b "let" 74 N N))
-             (b "{" 78 (b "with" 77 (b "then" 76 N N) N) (b "}" 79 N N)))))
+  b "ROOT_Y_DAG" 41
+    (b "@-" 21
+       (b "->" 11
+          (b "*" 6
+             (b "(" 3 (b "$" 2 (b "!" 1 N N) N) (b ")" 5 (b "()" 4 N N) N))
+             (b "," 9 (b "+" 8 (b "**" 7 N N) N) (b "-" 10 N N)))
+          (b ";" 16
+             (b ":" 14 (b "/" 13 (b "." 12 N N) N) (b "::" 15 N N))
+             (b "@+" 19 (b "=" 18 (b "<-" 17 N N) N) (b "@+i" 20 N N))))
+       (b "ISWAP" 31
+          (b "Bool" 26
+             (b "@1" 24 (b "@0" 23 (b "@-i" 22 N N) N) (b "Bit" 25 N N))
+             (b "H" 29 (b "False" 28 (b "FSWAP" 27 N N) N) (b "ID" 30 N N)))
+          (b "ROOT_SWAP" 36
+             (b "QFT_DAG" 34 (b "QFT" 33 (b "Int" 32 N N) N) (b "Qbit" 35 N N))
+             (b "ROOT_X_DAG" 39
+                (b "ROOT_X" 38 (b "ROOT_SWAP_DAG" 37 N N) N)
+                (b "ROOT_Y" 40 N N)))))
+    (b "U2" 61
+       (b "SQRT_X_DAG" 51
+          (b "RZ" 46
+             (b "RX" 44
+                (b "ROOT_Z_DAG" 43 (b "ROOT_Z" 42 N N) N) (b "RY" 45 N N))
+             (b "SQRT_SWAP_DAG" 49
+                (b "SQRT_SWAP" 48 (b "S" 47 N N) N) (b "SQRT_X" 50 N N)))
+          (b "S_DAG" 56
+             (b "SWAP" 54
+                (b "SQRT_Y_DAG" 53 (b "SQRT_Y" 52 N N) N) (b "SWAP_THETA" 55 N N))
+             (b "True" 59 (b "T_DAG" 58 (b "T" 57 N N) N) (b "U1" 60 N N))))
+       (b "else" 71
+          (b "[" 66
+             (b "Y" 64 (b "X" 63 (b "U3" 62 N N) N) (b "Z" 65 N N))
+             (b "case" 69 (b "]" 68 (b "[]" 67 N N) N) (b "ctrl" 70 N N)))
+          (b "of" 76
+             (b "in" 74 (b "if" 73 (b "gate" 72 N N) N) (b "let" 75 N N))
+             (b "{" 79 (b "with" 78 (b "then" 77 N N) N) (b "}" 80 N N)))))
   where
   b s n = B bs (TS bs n)
     where

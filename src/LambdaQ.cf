@@ -126,20 +126,21 @@ TermApply            . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermVariable         . Term3 ::= Var ;
+TermUnit             . Term3 ::= "()" ;
 TermBasisState       . Term3 ::= BasisState ;
 TermIntegerExpr      . Term3 ::= IntegerExpr ;
 TermGate             . Term3 ::= "gate" Gate ;
 TermTuple            . Term3 ::= Tuple ;
 TermBoolean          . Term3 ::= BoolValue;
 TermBit              . Term3 ::= Bit ;
-TermUnit             . Term3 ::= "()" ;
 TermList             . Term3 ::= List ;
-coercions Term 3 ;
+coercions Term 4 ;
 
 -- Polymorphic Lists --
 TermListNil          . List ::= "[]" ;
 TermListSingle       . List ::= "[" Term "]" ;
 TermListMultiple     . List ::= "[" Term "," [Term] "]" ;
+TermListCons         . List ::= Term4 ":" List ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term "->" Term ;

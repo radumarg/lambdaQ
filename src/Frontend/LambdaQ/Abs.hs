@@ -132,18 +132,21 @@ data Term
     | TermDollar Term Term
     | TermCompose Term Term
     | TermVariable Var
+    | TermUnit
     | TermBasisState BasisState
     | TermIntegerExpr IntegerExpr
     | TermGate Gate
     | TermTuple Tuple
     | TermBoolean BoolValue
     | TermBit Bit
-    | TermUnit
     | TermList List
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data List
-    = TermListNil | TermListSingle Term | TermListMultiple Term [Term]
+    = TermListNil
+    | TermListSingle Term
+    | TermListMultiple Term [Term]
+    | TermListCons Term List
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExpr Term Term

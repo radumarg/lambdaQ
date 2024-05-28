@@ -158,13 +158,13 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
+  Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
   Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
   Frontend.LambdaQ.Abs.TermBoolean boolvalue -> failure x
   Frontend.LambdaQ.Abs.TermBit bit -> failure x
-  Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
 
 transList :: Frontend.LambdaQ.Abs.List -> Result
@@ -172,6 +172,7 @@ transList x = case x of
   Frontend.LambdaQ.Abs.TermListNil -> failure x
   Frontend.LambdaQ.Abs.TermListSingle term -> failure x
   Frontend.LambdaQ.Abs.TermListMultiple term terms -> failure x
+  Frontend.LambdaQ.Abs.TermListCons term list -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

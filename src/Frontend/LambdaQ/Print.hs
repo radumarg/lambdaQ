@@ -294,13 +294,13 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
+    Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
     Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> prPrec i 3 (concatD [prt 0 integerexpr])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermBoolean boolvalue -> prPrec i 3 (concatD [prt 0 boolvalue])
     Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
-    Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TermList list -> prPrec i 3 (concatD [prt 0 list])
 
 instance Print Frontend.LambdaQ.Abs.List where
@@ -308,6 +308,7 @@ instance Print Frontend.LambdaQ.Abs.List where
     Frontend.LambdaQ.Abs.TermListNil -> prPrec i 0 (concatD [doc (showString "[]")])
     Frontend.LambdaQ.Abs.TermListSingle term -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
     Frontend.LambdaQ.Abs.TermListMultiple term terms -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
+    Frontend.LambdaQ.Abs.TermListCons term list -> prPrec i 0 (concatD [prt 4 term, doc (showString ":"), prt 0 list])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case
