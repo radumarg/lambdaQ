@@ -14,15 +14,31 @@ import qualified Prelude as C
   )
 import qualified Data.String
 
-data IntegerExpr
-    = ArithmExprAdd IntegerExpr IntegerExpr
-    | ArithmExprSub IntegerExpr IntegerExpr
-    | ArithmExprMul IntegerExpr IntegerExpr
-    | ArithmExprDiv IntegerExpr IntegerExpr
+data Program = ProgDef [FunctionDeclaration]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data IntegerExpression
+    = ArithmExprAdd IntegerExpression IntegerExpression
+    | ArithmExprSub IntegerExpression IntegerExpression
+    | ArithmExprMul IntegerExpression IntegerExpression
+    | ArithmExprDiv IntegerExpression IntegerExpression
     | ArithmExprInt Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Program = ProgDef [FunctionDeclaration]
+data BoolValue = BoolValueTrue | BoolValueFalse
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data BoolExpression
+    = BoolExpressionAnd BoolExpression BoolExpression
+    | BoolExpressionOr BoolExpression BoolExpression
+    | BoolExpressionNot BoolExpression
+    | BoolExpressionEq BoolExpression BoolExpression
+    | BoolExpressionDiff BoolExpression BoolExpression
+    | BoolExpressionGt IntegerExpression IntegerExpression
+    | BoolExpressionGe IntegerExpression IntegerExpression
+    | BoolExpressionLt IntegerExpression IntegerExpression
+    | BoolExpressionLe IntegerExpression IntegerExpression
+    | BoolExpressionVal BoolValue
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Type
@@ -39,10 +55,7 @@ data Type
     | TypeList Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data BoolValue = BoolValueTrue | BoolValueFalse
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-data Angle = Angle Double
+data Angle = AngleValue Double
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data BasisState
@@ -128,16 +141,16 @@ data Term
     | TermQuantumCtrlsGate ControlTerms ControlBasisStates
     | TermClassicCtrlGate ControlTerm ControlBit
     | TermClassicCtrlsGate ControlTerms ControlBits
-    | TermApply Term Term
     | TermDollar Term Term
     | TermCompose Term Term
+    | TermApply Term Term
     | TermVariable Var
     | TermUnit
     | TermBasisState BasisState
-    | TermIntegerExpr IntegerExpr
+    | TermBoolExpression BoolExpression
+    | TermIntegerExpression IntegerExpression
     | TermGate Gate
     | TermTuple Tuple
-    | TermBoolean BoolValue
     | TermBit Bit
     | TermList List
   deriving (C.Eq, C.Ord, C.Show, C.Read)

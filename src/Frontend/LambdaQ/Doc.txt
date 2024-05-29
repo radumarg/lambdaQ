@@ -50,11 +50,13 @@ The reserved words used in LambdaQ are the following:
   | ``U2`` | ``U3`` | ``X`` | ``Y``
   | ``Z`` | ``case`` | ``ctrl`` | ``else``
   | ``gate`` | ``if`` | ``in`` | ``let``
-  | ``of`` | ``then`` | ``with`` |
+  | ``not`` | ``of`` | ``then`` | ``with``
 
 The symbols used in LambdaQ are the following:
   | + | - | * | /
-  | ( | ) | -> | **
+  | ( | ) | && | ||
+  | == | /= | > | >=
+  | < | <= | -> | **
   | ! | () | [ | ]
   | @0 | @1 | @+ | @-
   | @+i | @-i | , | {
@@ -71,15 +73,30 @@ The symbols -> (production),  **|**  (union)
 and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
-  | //IntegerExpr// | -> | //IntegerExpr// ``+`` //IntegerExpr1//
-  |  |  **|**  | //IntegerExpr// ``-`` //IntegerExpr1//
-  |  |  **|**  | //IntegerExpr1//
-  | //IntegerExpr1// | -> | //IntegerExpr1// ``*`` //IntegerExpr2//
-  |  |  **|**  | //IntegerExpr1// ``/`` //IntegerExpr2//
-  |  |  **|**  | //IntegerExpr2//
-  | //IntegerExpr2// | -> | //Integer//
-  |  |  **|**  | ``(`` //IntegerExpr// ``)``
   | //Program// | -> | //[FunctionDeclaration]//
+  | //IntegerExpression// | -> | //IntegerExpression// ``+`` //IntegerExpression1//
+  |  |  **|**  | //IntegerExpression// ``-`` //IntegerExpression1//
+  |  |  **|**  | //IntegerExpression1//
+  | //IntegerExpression1// | -> | //IntegerExpression1// ``*`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression1// ``/`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2//
+  | //IntegerExpression2// | -> | //Integer//
+  |  |  **|**  | ``(`` //IntegerExpression// ``)``
+  | //BoolValue// | -> | ``True``
+  |  |  **|**  | ``False``
+  | //BoolExpression// | -> | //BoolExpression// ``&&`` //BoolExpression1//
+  |  |  **|**  | //BoolExpression// ``||`` //BoolExpression1//
+  |  |  **|**  | ``not`` //BoolExpression1//
+  |  |  **|**  | //BoolExpression1//
+  | //BoolExpression1// | -> | //BoolExpression1// ``==`` //BoolExpression2//
+  |  |  **|**  | //BoolExpression1// ``/=`` //BoolExpression2//
+  |  |  **|**  | //BoolExpression2//
+  | //BoolExpression2// | -> | //IntegerExpression2// ``>`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2// ``>=`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2// ``<`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2// ``<=`` //IntegerExpression2//
+  |  |  **|**  | //BoolValue//
+  |  |  **|**  | ``(`` //BoolExpression// ``)``
   | //Type// | -> | //Type// ``->`` //Type1//
   |  |  **|**  | //Type1//
   | //Type1// | -> | //Type1// ``+`` //Type2//
@@ -97,8 +114,6 @@ All other symbols are terminals.
   |  |  **|**  | ``[`` //Type// ``]``
   |  |  **|**  | ``(`` //Type// ``)``
   | //Type4// | -> | //Type5//
-  | //BoolValue// | -> | ``True``
-  |  |  **|**  | ``False``
   | //Angle// | -> | //Double//
   | //BasisState// | -> | ``@0``
   |  |  **|**  | ``@1``
@@ -170,16 +185,16 @@ All other symbols are terminals.
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
   |  |  **|**  | ``with`` //ControlTerm// ``ctrl`` //ControlBit//
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
-  |  |  **|**  | //Term2// //Term3//
-  |  |  **|**  | //Term2// ``.`` //Term3//
   |  |  **|**  | //Term3//
-  | //Term3// | -> | //Var//
+  | //Term3// | -> | //Term3// ``.`` //Term4//
+  |  |  **|**  | //Term3// //Term4//
+  |  |  **|**  | //Var//
   |  |  **|**  | ``()``
   |  |  **|**  | //BasisState//
-  |  |  **|**  | //IntegerExpr//
+  |  |  **|**  | //BoolExpression//
+  |  |  **|**  | //IntegerExpression//
   |  |  **|**  | ``gate`` //Gate//
   |  |  **|**  | //Tuple//
-  |  |  **|**  | //BoolValue//
   |  |  **|**  | //Bit//
   |  |  **|**  | //List//
   |  |  **|**  | //Term4//
@@ -189,7 +204,7 @@ All other symbols are terminals.
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``
   |  |  **|**  | //Term4// ``:`` //List//
-  | //CaseExpression// | -> | //Term// ``->`` //Term//
+  | //CaseExpression// | -> | //Term2// ``->`` //Term2//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//
   | //Arg// | -> | //Var//

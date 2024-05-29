@@ -168,7 +168,7 @@ mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term [terms]) = CtrlTerms
 mapControlTerms _ _ = undefined
 
 mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
-mapAngle (GeneratedAbstractSyntax.Angle value) = Angle value
+mapAngle (GeneratedAbstractSyntax.AngleValue value) = Angle value
 
 mapBit :: GeneratedAbstractSyntax.Bit -> Bit
 mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "0")) = BitZero

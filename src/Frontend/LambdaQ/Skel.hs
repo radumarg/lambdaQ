@@ -27,17 +27,35 @@ transLambda :: Frontend.LambdaQ.Abs.Lambda -> Result
 transLambda x = case x of
   Frontend.LambdaQ.Abs.Lambda string -> failure x
 
-transIntegerExpr :: Frontend.LambdaQ.Abs.IntegerExpr -> Result
-transIntegerExpr x = case x of
-  Frontend.LambdaQ.Abs.ArithmExprAdd integerexpr1 integerexpr2 -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprSub integerexpr1 integerexpr2 -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprMul integerexpr1 integerexpr2 -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprDiv integerexpr1 integerexpr2 -> failure x
-  Frontend.LambdaQ.Abs.ArithmExprInt integer -> failure x
-
 transProgram :: Frontend.LambdaQ.Abs.Program -> Result
 transProgram x = case x of
   Frontend.LambdaQ.Abs.ProgDef functiondeclarations -> failure x
+
+transIntegerExpression :: Frontend.LambdaQ.Abs.IntegerExpression -> Result
+transIntegerExpression x = case x of
+  Frontend.LambdaQ.Abs.ArithmExprAdd integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprSub integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprMul integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprDiv integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.ArithmExprInt integer -> failure x
+
+transBoolValue :: Frontend.LambdaQ.Abs.BoolValue -> Result
+transBoolValue x = case x of
+  Frontend.LambdaQ.Abs.BoolValueTrue -> failure x
+  Frontend.LambdaQ.Abs.BoolValueFalse -> failure x
+
+transBoolExpression :: Frontend.LambdaQ.Abs.BoolExpression -> Result
+transBoolExpression x = case x of
+  Frontend.LambdaQ.Abs.BoolExpressionAnd boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionOr boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionNot boolexpression -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionEq boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionDiff boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionGt integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionGe integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionLt integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionLe integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionVal boolvalue -> failure x
 
 transType :: Frontend.LambdaQ.Abs.Type -> Result
 transType x = case x of
@@ -53,14 +71,9 @@ transType x = case x of
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
   Frontend.LambdaQ.Abs.TypeList type_ -> failure x
 
-transBoolValue :: Frontend.LambdaQ.Abs.BoolValue -> Result
-transBoolValue x = case x of
-  Frontend.LambdaQ.Abs.BoolValueTrue -> failure x
-  Frontend.LambdaQ.Abs.BoolValueFalse -> failure x
-
 transAngle :: Frontend.LambdaQ.Abs.Angle -> Result
 transAngle x = case x of
-  Frontend.LambdaQ.Abs.Angle double -> failure x
+  Frontend.LambdaQ.Abs.AngleValue double -> failure x
 
 transBasisState :: Frontend.LambdaQ.Abs.BasisState -> Result
 transBasisState x = case x of
@@ -154,16 +167,16 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> failure x
   Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
   Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> failure x
-  Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
-  Frontend.LambdaQ.Abs.TermIntegerExpr integerexpr -> failure x
+  Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> failure x
+  Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
-  Frontend.LambdaQ.Abs.TermBoolean boolvalue -> failure x
   Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
 

@@ -5,21 +5,38 @@ layout toplevel ;
 layout "let" ;
 layout stop "in" ;
 
--- Integer Numbers --
-ArithmExprAdd . IntegerExpr  ::= IntegerExpr "+" IntegerExpr1 ;
-ArithmExprSub . IntegerExpr  ::= IntegerExpr "-" IntegerExpr1 ;
-ArithmExprMul . IntegerExpr1 ::= IntegerExpr1 "*" IntegerExpr2 ;
-ArithmExprDiv . IntegerExpr1 ::= IntegerExpr1 "/" IntegerExpr2 ;
-ArithmExprInt . IntegerExpr2 ::= Integer ;
-coercions IntegerExpr 2 ;
-
 entrypoints Program;
 
 -- A program is a list of functions --
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
+-- Integer Arithmetic --
+ArithmExprAdd . IntegerExpression  ::= IntegerExpression "+" IntegerExpression1 ;
+ArithmExprSub . IntegerExpression  ::= IntegerExpression "-" IntegerExpression1 ;
+ArithmExprMul . IntegerExpression1 ::= IntegerExpression1 "*" IntegerExpression2 ;
+ArithmExprDiv . IntegerExpression1 ::= IntegerExpression1 "/" IntegerExpression2 ;
+ArithmExprInt . IntegerExpression2 ::= Integer ;
+coercions IntegerExpression 2 ;
+
+-- Boolean Values --
+BoolValueTrue  . BoolValue ::= "True" ;
+BoolValueFalse . BoolValue ::= "False" ;
+
+-- Boolean Expressions --
+BoolExpressionAnd   . BoolExpression  ::= BoolExpression "&&" BoolExpression1 ;
+BoolExpressionOr    . BoolExpression  ::= BoolExpression "||" BoolExpression1 ;
+BoolExpressionNot   . BoolExpression  ::= "not" BoolExpression1 ;
+BoolExpressionEq    . BoolExpression1 ::= BoolExpression1 "==" BoolExpression2 ;
+BoolExpressionDiff  . BoolExpression1 ::= BoolExpression1 "/=" BoolExpression2 ;
+BoolExpressionGt    . BoolExpression2 ::= IntegerExpression2 ">" IntegerExpression2 ;
+BoolExpressionGe    . BoolExpression2 ::= IntegerExpression2 ">=" IntegerExpression2 ;
+BoolExpressionLt    . BoolExpression2 ::= IntegerExpression2 "<" IntegerExpression2 ;
+BoolExpressionLe    . BoolExpression2 ::= IntegerExpression2 "<=" IntegerExpression2 ;
+BoolExpressionVal   . BoolExpression2 ::= BoolValue ;
+coercions BoolExpression 2 ;
+
 -- Types --
-TypeFunction   . Type  ::= Type "->" Type1 ;       -- right-associative
+TypeFunction   . Type   ::= Type "->" Type1 ;      -- right-associative
 TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- right-associative
 TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- right-associative
 TypeExp        . Type3  ::= Type4 "**" Integer ;
@@ -32,12 +49,8 @@ TypeUnit       . Type5  ::= "()" ;
 TypeList       . Type5  ::= "[" Type "]" ; 
 coercions Type 5 ;
 
--- Boolean Values --
-BoolValueTrue  . BoolValue ::= "True" ;
-BoolValueFalse . BoolValue ::= "False" ;
-
 -- Angle is a fraction of 2π --
-Angle . Angle ::= Double ;
+AngleValue . Angle ::= Double ;
 
 -- Basis States --
 BasisStateZero   . BasisState ::= "@0" ;
@@ -111,29 +124,29 @@ CtrlTerms . ControlTerms ::= "[" Term "," [Term] "]" ;
 separator nonempty Term "," ;
 
 -- Terms --
-TermIfElse           . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLetSingle        . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
-TermLetMultiple      . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
-TermLetSugarSingle   . Term1 ::=  Var "<-" Term ";" Term ;
-TermLetSugarMultiple . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
-TermCase             . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
-TermLambda           . Term1 ::= Lambda Var Type "." Term ;
-TermQuantumCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
-TermQuantumCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
-TermClassicCtrlGate  . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
-TermClassicCtrlsGate . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
-TermApply            . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TermDollar           . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
-TermCompose          . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
-TermVariable         . Term3 ::= Var ;
-TermUnit             . Term3 ::= "()" ;
-TermBasisState       . Term3 ::= BasisState ;
-TermIntegerExpr      . Term3 ::= IntegerExpr ;
-TermGate             . Term3 ::= "gate" Gate ;
-TermTuple            . Term3 ::= Tuple ;
-TermBoolean          . Term3 ::= BoolValue;
-TermBit              . Term3 ::= Bit ;
-TermList             . Term3 ::= List ;
+TermIfElse            . Term1 ::= "if" Term "then" Term "else" Term ;
+TermLetSingle         . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
+TermLetMultiple       . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
+TermLetSugarSingle    . Term1 ::=  Var "<-" Term ";" Term ;
+TermLetSugarMultiple  . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
+TermCase              . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
+TermLambda            . Term1 ::= Lambda Var Type "." Term ;
+TermQuantumCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
+TermQuantumCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
+TermClassicCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
+TermClassicCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
+TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+TermCompose           . Term3 ::= Term3 "." Term4 ;  -- left-associative  --
+TermApply             . Term3 ::= Term3 Term4 ;      -- left-associative  --
+TermVariable          . Term3 ::= Var ;
+TermUnit              . Term3 ::= "()" ;
+TermBasisState        . Term3 ::= BasisState ;
+TermBoolExpression    . Term3 ::= BoolExpression ;
+TermIntegerExpression . Term3 ::= IntegerExpression ;
+TermGate              . Term3 ::= "gate" Gate ;
+TermTuple             . Term3 ::= Tuple ;
+TermBit               . Term3 ::= Bit ;
+TermList              . Term3 ::= List ;
 coercions Term 4 ;
 
 -- Polymorphic Lists --
@@ -143,7 +156,7 @@ TermListMultiple     . List ::= "[" Term "," [Term] "]" ;
 TermListCons         . List ::= Term4 ":" List ;
 
 -- Case Expressions --
-CaseExpr . CaseExpression ::= Term "->" Term ;
+CaseExpr . CaseExpression ::= Term2 "->" Term2 ;
 separator nonempty CaseExpression " " ;
 
 -- Function Arguments --
