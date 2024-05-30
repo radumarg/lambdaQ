@@ -161,8 +161,8 @@ ListNil               . List ::= "[]" ;
 ListSingle            . List ::= "[" Term "]" ;
 ListMultiple          . List ::= "[" Term "," [Term] "]" ;
 ListCons              . List ::= Term4 ":" List ;
-ListExpressionAdd     . List  ::= List "++" List ;
-ListExpressionMember  . List  ::= List "!!" Integer ;
+ListExpressionAdd     . List ::= List "++" List ;
+ListExpressionMember  . List ::= List "!!" Integer ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term2 "->" Term2 ;
