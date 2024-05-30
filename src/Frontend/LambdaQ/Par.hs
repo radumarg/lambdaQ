@@ -1752,7 +1752,7 @@ happyReduction_139 happy_x_3
 	 =  case happyOut43 happy_x_1 of { (HappyWrap43 happy_var_1) -> 
 	case happyOut43 happy_x_3 of { (HappyWrap43 happy_var_3) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.ListAnd happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.ListExpressionAdd happy_var_1 happy_var_3
 	)}}
 
 happyReduce_140 = happySpecReduce_3  39# happyReduction_140
@@ -1762,7 +1762,7 @@ happyReduction_140 happy_x_3
 	 =  case happyOut43 happy_x_1 of { (HappyWrap43 happy_var_1) -> 
 	case happyOut5 happy_x_3 of { (HappyWrap5 happy_var_3) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.ListMember happy_var_1 happy_var_3
+		 (Frontend.LambdaQ.Abs.ListExpressionMember happy_var_1 happy_var_3
 	)}}
 
 happyReduce_141 = happySpecReduce_3  40# happyReduction_141

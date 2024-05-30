@@ -157,12 +157,12 @@ coercions Term 4 ;
 -- TermApply             . Term3 ::= Term3 Term4 ;      -- left-associative  --
 
 -- Polymorphic Lists --
-ListNil      . List ::= "[]" ;
-ListSingle   . List ::= "[" Term "]" ;
-ListMultiple . List ::= "[" Term "," [Term] "]" ;
-ListCons     . List ::= Term4 ":" List ;
-ListAnd      . List  ::= List "++" List ;
-ListMember   . List  ::= List "!!" Integer ;
+ListNil               . List ::= "[]" ;
+ListSingle            . List ::= "[" Term "]" ;
+ListMultiple          . List ::= "[" Term "," [Term] "]" ;
+ListCons              . List ::= Term4 ":" List ;
+ListExpressionAdd     . List  ::= List "++" List ;
+ListExpressionMember  . List  ::= List "!!" Integer ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term2 "->" Term2 ;

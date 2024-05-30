@@ -162,8 +162,8 @@ data List
     | ListSingle Term
     | ListMultiple Term [Term]
     | ListCons Term List
-    | ListAnd List List
-    | ListMember List Integer
+    | ListExpressionAdd List List
+    | ListExpressionMember List Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExpr Term Term
