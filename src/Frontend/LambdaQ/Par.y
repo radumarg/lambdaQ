@@ -361,9 +361,18 @@ List
   : '[]' { Frontend.LambdaQ.Abs.ListNil }
   | '[' Term ']' { Frontend.LambdaQ.Abs.ListSingle $2 }
   | '[' Term ',' ListTerm ']' { Frontend.LambdaQ.Abs.ListMultiple $2 $4 }
-  | Term4 ':' List { Frontend.LambdaQ.Abs.ListCons $1 $3 }
-  | List '++' List { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
-  | List '!!' Integer { Frontend.LambdaQ.Abs.ListExpressionMember $1 $3 }
+  | List1 { $1 }
+
+List1 :: { Frontend.LambdaQ.Abs.List }
+List1
+  : List '++' List { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
+  | List2 { $1 }
+
+List2 :: { Frontend.LambdaQ.Abs.List }
+List2
+  : Term4 ':' List1 { Frontend.LambdaQ.Abs.ListCons $1 $3 }
+  | List1 '!!' Integer { Frontend.LambdaQ.Abs.ListExpressionMember $1 $3 }
+  | '(' List ')' { $2 }
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression

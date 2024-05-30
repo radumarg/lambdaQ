@@ -323,9 +323,9 @@ instance Print Frontend.LambdaQ.Abs.List where
     Frontend.LambdaQ.Abs.ListNil -> prPrec i 0 (concatD [doc (showString "[]")])
     Frontend.LambdaQ.Abs.ListSingle term -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
     Frontend.LambdaQ.Abs.ListMultiple term terms -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
-    Frontend.LambdaQ.Abs.ListCons term list -> prPrec i 0 (concatD [prt 4 term, doc (showString ":"), prt 0 list])
-    Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> prPrec i 0 (concatD [prt 0 list1, doc (showString "++"), prt 0 list2])
-    Frontend.LambdaQ.Abs.ListExpressionMember list n -> prPrec i 0 (concatD [prt 0 list, doc (showString "!!"), prt 0 n])
+    Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> prPrec i 1 (concatD [prt 0 list1, doc (showString "++"), prt 0 list2])
+    Frontend.LambdaQ.Abs.ListCons term list -> prPrec i 2 (concatD [prt 4 term, doc (showString ":"), prt 1 list])
+    Frontend.LambdaQ.Abs.ListExpressionMember list n -> prPrec i 2 (concatD [prt 1 list, doc (showString "!!"), prt 0 n])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

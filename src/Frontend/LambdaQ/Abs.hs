@@ -161,8 +161,8 @@ data List
     = ListNil
     | ListSingle Term
     | ListMultiple Term [Term]
-    | ListCons Term List
     | ListExpressionAdd List List
+    | ListCons Term List
     | ListExpressionMember List Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

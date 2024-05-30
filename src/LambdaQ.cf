@@ -160,9 +160,10 @@ coercions Term 4 ;
 ListNil               . List ::= "[]" ;
 ListSingle            . List ::= "[" Term "]" ;
 ListMultiple          . List ::= "[" Term "," [Term] "]" ;
-ListCons              . List ::= Term4 ":" List ;
-ListExpressionAdd     . List ::= List "++" List ;
-ListExpressionMember  . List ::= List "!!" Integer ;
+ListExpressionAdd     . List1 ::= List "++" List ;
+ListCons              . List2 ::= Term4 ":" List1 ;
+ListExpressionMember  . List2 ::= List1 "!!" Integer ;
+coercions List 2 ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term2 "->" Term2 ;
