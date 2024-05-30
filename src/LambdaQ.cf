@@ -23,16 +23,18 @@ BoolValueTrue  . BoolValue ::= "True" ;
 BoolValueFalse . BoolValue ::= "False" ;
 
 -- Boolean Expressions --
-BoolExpressionAnd   . BoolExpression  ::= BoolExpression "&&" BoolExpression1 ;
-BoolExpressionOr    . BoolExpression  ::= BoolExpression "||" BoolExpression1 ;
-BoolExpressionNot   . BoolExpression  ::= "not" BoolExpression1 ;
-BoolExpressionEq    . BoolExpression1 ::= BoolExpression1 "==" BoolExpression2 ;
-BoolExpressionDiff  . BoolExpression1 ::= BoolExpression1 "/=" BoolExpression2 ;
-BoolExpressionGt    . BoolExpression2 ::= IntegerExpression2 ">" IntegerExpression2 ;
-BoolExpressionGe    . BoolExpression2 ::= IntegerExpression2 ">=" IntegerExpression2 ;
-BoolExpressionLt    . BoolExpression2 ::= IntegerExpression2 "<" IntegerExpression2 ;
-BoolExpressionLe    . BoolExpression2 ::= IntegerExpression2 "<=" IntegerExpression2 ;
-BoolExpressionVal   . BoolExpression2 ::= BoolValue ;
+BoolExpressionAnd     . BoolExpression  ::= BoolExpression "&&" BoolExpression1 ;
+BoolExpressionOr      . BoolExpression  ::= BoolExpression "||" BoolExpression1 ;
+BoolExpressionNot     . BoolExpression  ::= "not" BoolExpression1 ;
+BoolExpressionEq      . BoolExpression1 ::= BoolExpression1 "==" BoolExpression2 ;
+BoolExpressionDif     . BoolExpression1 ::= BoolExpression1 "/=" BoolExpression2 ;
+BoolExpressionEqInt   . BoolExpression2 ::= IntegerExpression2 "==" IntegerExpression2 ;
+BoolExpressionDifInt  . BoolExpression2 ::= IntegerExpression2 "/=" IntegerExpression2 ;
+BoolExpressionGt      . BoolExpression2 ::= IntegerExpression2 ">" IntegerExpression2 ;
+BoolExpressionGe      . BoolExpression2 ::= IntegerExpression2 ">=" IntegerExpression2 ;
+BoolExpressionLt      . BoolExpression2 ::= IntegerExpression2 "<" IntegerExpression2 ;
+BoolExpressionLe      . BoolExpression2 ::= IntegerExpression2 "<=" IntegerExpression2 ;
+BoolExpressionVal     . BoolExpression2 ::= BoolValue ;
 coercions BoolExpression 2 ;
 
 -- Types --
@@ -118,6 +120,7 @@ token Lambda '\\' ;
 
 -- Declaring Tuples --
 Tupl . Tuple ::= "(" Term "," [Term] ")" ;
+
 -- Declaring Controls --
 CtrlTerm . ControlTerm ::= "[" Term "]" ;
 CtrlTerms . ControlTerms ::= "[" Term "," [Term] "]" ;
@@ -136,8 +139,8 @@ TermQuantumCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates 
 TermClassicCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
 TermClassicCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
 TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
-TermCompose           . Term3 ::= Term3 "." Term4 ;  -- left-associative  --
-TermApply             . Term3 ::= Term3 Term4 ;      -- left-associative  --
+TermApply             . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermCompose           . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermVariable          . Term3 ::= Var ;
 TermUnit              . Term3 ::= "()" ;
 TermBasisState        . Term3 ::= BasisState ;
@@ -148,6 +151,10 @@ TermTuple             . Term3 ::= Tuple ;
 TermBit               . Term3 ::= Bit ;
 TermList              . Term3 ::= List ;
 coercions Term 4 ;
+
+-- TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
+-- TermCompose           . Term3 ::= Term3 "." Term4 ;  -- left-associative  --
+-- TermApply             . Term3 ::= Term3 Term4 ;      -- left-associative  --
 
 -- Polymorphic Lists --
 TermListNil          . List ::= "[]" ;

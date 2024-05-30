@@ -91,7 +91,9 @@ All other symbols are terminals.
   | //BoolExpression1// | -> | //BoolExpression1// ``==`` //BoolExpression2//
   |  |  **|**  | //BoolExpression1// ``/=`` //BoolExpression2//
   |  |  **|**  | //BoolExpression2//
-  | //BoolExpression2// | -> | //IntegerExpression2// ``>`` //IntegerExpression2//
+  | //BoolExpression2// | -> | //IntegerExpression2// ``==`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2// ``/=`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression2// ``>`` //IntegerExpression2//
   |  |  **|**  | //IntegerExpression2// ``>=`` //IntegerExpression2//
   |  |  **|**  | //IntegerExpression2// ``<`` //IntegerExpression2//
   |  |  **|**  | //IntegerExpression2// ``<=`` //IntegerExpression2//
@@ -185,10 +187,10 @@ All other symbols are terminals.
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
   |  |  **|**  | ``with`` //ControlTerm// ``ctrl`` //ControlBit//
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
+  |  |  **|**  | //Term2// //Term3//
+  |  |  **|**  | //Term2// ``.`` //Term3//
   |  |  **|**  | //Term3//
-  | //Term3// | -> | //Term3// ``.`` //Term4//
-  |  |  **|**  | //Term3// //Term4//
-  |  |  **|**  | //Var//
+  | //Term3// | -> | //Var//
   |  |  **|**  | ``()``
   |  |  **|**  | //BasisState//
   |  |  **|**  | //BoolExpression//

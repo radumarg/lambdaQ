@@ -33,7 +33,9 @@ data BoolExpression
     | BoolExpressionOr BoolExpression BoolExpression
     | BoolExpressionNot BoolExpression
     | BoolExpressionEq BoolExpression BoolExpression
-    | BoolExpressionDiff BoolExpression BoolExpression
+    | BoolExpressionDif BoolExpression BoolExpression
+    | BoolExpressionEqInt IntegerExpression IntegerExpression
+    | BoolExpressionDifInt IntegerExpression IntegerExpression
     | BoolExpressionGt IntegerExpression IntegerExpression
     | BoolExpressionGe IntegerExpression IntegerExpression
     | BoolExpressionLt IntegerExpression IntegerExpression
@@ -142,8 +144,8 @@ data Term
     | TermClassicCtrlGate ControlTerm ControlBit
     | TermClassicCtrlsGate ControlTerms ControlBits
     | TermDollar Term Term
-    | TermCompose Term Term
     | TermApply Term Term
+    | TermCompose Term Term
     | TermVariable Var
     | TermUnit
     | TermBasisState BasisState

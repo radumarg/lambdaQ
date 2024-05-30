@@ -50,7 +50,9 @@ transBoolExpression x = case x of
   Frontend.LambdaQ.Abs.BoolExpressionOr boolexpression1 boolexpression2 -> failure x
   Frontend.LambdaQ.Abs.BoolExpressionNot boolexpression -> failure x
   Frontend.LambdaQ.Abs.BoolExpressionEq boolexpression1 boolexpression2 -> failure x
-  Frontend.LambdaQ.Abs.BoolExpressionDiff boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionDif boolexpression1 boolexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionEqInt integerexpression1 integerexpression2 -> failure x
+  Frontend.LambdaQ.Abs.BoolExpressionDifInt integerexpression1 integerexpression2 -> failure x
   Frontend.LambdaQ.Abs.BoolExpressionGt integerexpression1 integerexpression2 -> failure x
   Frontend.LambdaQ.Abs.BoolExpressionGe integerexpression1 integerexpression2 -> failure x
   Frontend.LambdaQ.Abs.BoolExpressionLt integerexpression1 integerexpression2 -> failure x
@@ -168,8 +170,8 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
   Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> failure x
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x

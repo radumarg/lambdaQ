@@ -171,12 +171,14 @@ BoolExpression
 BoolExpression1 :: { Frontend.LambdaQ.Abs.BoolExpression }
 BoolExpression1
   : BoolExpression1 '==' BoolExpression2 { Frontend.LambdaQ.Abs.BoolExpressionEq $1 $3 }
-  | BoolExpression1 '/=' BoolExpression2 { Frontend.LambdaQ.Abs.BoolExpressionDiff $1 $3 }
+  | BoolExpression1 '/=' BoolExpression2 { Frontend.LambdaQ.Abs.BoolExpressionDif $1 $3 }
   | BoolExpression2 { $1 }
 
 BoolExpression2 :: { Frontend.LambdaQ.Abs.BoolExpression }
 BoolExpression2
-  : IntegerExpression2 '>' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionGt $1 $3 }
+  : IntegerExpression2 '==' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionEqInt $1 $3 }
+  | IntegerExpression2 '/=' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionDifInt $1 $3 }
+  | IntegerExpression2 '>' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionGt $1 $3 }
   | IntegerExpression2 '>=' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionGe $1 $3 }
   | IntegerExpression2 '<' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionLt $1 $3 }
   | IntegerExpression2 '<=' IntegerExpression2 { Frontend.LambdaQ.Abs.BoolExpressionLe $1 $3 }
@@ -329,13 +331,13 @@ Term2
   | 'with' ControlTerms 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumCtrlsGate $2 $4 }
   | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermClassicCtrlGate $2 $4 }
   | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicCtrlsGate $2 $4 }
+  | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
+  | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
   | Term3 { $1 }
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
 Term3
-  : Term3 '.' Term4 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
-  | Term3 Term4 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
-  | Var { Frontend.LambdaQ.Abs.TermVariable $1 }
+  : Var { Frontend.LambdaQ.Abs.TermVariable $1 }
   | '()' { Frontend.LambdaQ.Abs.TermUnit }
   | BasisState { Frontend.LambdaQ.Abs.TermBasisState $1 }
   | BoolExpression { Frontend.LambdaQ.Abs.TermBoolExpression $1 }
