@@ -158,10 +158,12 @@ data Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data List
-    = TermListNil
-    | TermListSingle Term
-    | TermListMultiple Term [Term]
-    | TermListCons Term List
+    = ListNil
+    | ListSingle Term
+    | ListMultiple Term [Term]
+    | ListCons Term List
+    | ListAnd List List
+    | ListMember List Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExpr Term Term

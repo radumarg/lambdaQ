@@ -184,10 +184,12 @@ transTerm x = case x of
 
 transList :: Frontend.LambdaQ.Abs.List -> Result
 transList x = case x of
-  Frontend.LambdaQ.Abs.TermListNil -> failure x
-  Frontend.LambdaQ.Abs.TermListSingle term -> failure x
-  Frontend.LambdaQ.Abs.TermListMultiple term terms -> failure x
-  Frontend.LambdaQ.Abs.TermListCons term list -> failure x
+  Frontend.LambdaQ.Abs.ListNil -> failure x
+  Frontend.LambdaQ.Abs.ListSingle term -> failure x
+  Frontend.LambdaQ.Abs.ListMultiple term terms -> failure x
+  Frontend.LambdaQ.Abs.ListCons term list -> failure x
+  Frontend.LambdaQ.Abs.ListAnd list1 list2 -> failure x
+  Frontend.LambdaQ.Abs.ListMember list integer -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of

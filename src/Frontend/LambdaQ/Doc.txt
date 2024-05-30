@@ -62,7 +62,7 @@ The symbols used in LambdaQ are the following:
   | @+i | @-i | , | {
   | = | } | <- | ;
   | . | $ | [] | :
-  | :: |  |  |
+  | ++ | !! | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -206,6 +206,8 @@ All other symbols are terminals.
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``
   |  |  **|**  | //Term4// ``:`` //List//
+  |  |  **|**  | //List// ``++`` //List//
+  |  |  **|**  | //List// ``!!`` //Integer//
   | //CaseExpression// | -> | //Term2// ``->`` //Term2//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//
