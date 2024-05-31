@@ -294,6 +294,7 @@ instance Print [Frontend.LambdaQ.Abs.Term] where
 
 instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
+    Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 0 (concatD [prt 1 term1, doc (showString "$"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> prPrec i 1 (concatD [doc (showString "if"), prt 0 term1, doc (showString "then"), prt 0 term2, doc (showString "else"), prt 0 term3])
     Frontend.LambdaQ.Abs.TermLetSingle var term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), prt 0 var, doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 var, doc (showString ","), prt 0 vars, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
@@ -305,7 +306,6 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterms, doc (showString "ctrl"), prt 0 controlbasisstates])
     Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterm, doc (showString "ctrl"), prt 0 controlbit])
     Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterms, doc (showString "ctrl"), prt 0 controlbits])
-    Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 1 (concatD [prt 2 term1, doc (showString "$"), prt 1 term2])
     Frontend.LambdaQ.Abs.TermApply term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
@@ -323,7 +323,7 @@ instance Print Frontend.LambdaQ.Abs.List where
     Frontend.LambdaQ.Abs.ListNil -> prPrec i 0 (concatD [doc (showString "[]")])
     Frontend.LambdaQ.Abs.ListSingle term -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
     Frontend.LambdaQ.Abs.ListMultiple term terms -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
-    Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> prPrec i 1 (concatD [prt 0 list1, doc (showString "++"), prt 0 list2])
+    Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> prPrec i 0 (concatD [prt 0 list1, doc (showString "++"), prt 1 list2])
     Frontend.LambdaQ.Abs.ListCons term list -> prPrec i 2 (concatD [prt 4 term, doc (showString ":"), prt 1 list])
     Frontend.LambdaQ.Abs.ListExpressionMember list n -> prPrec i 2 (concatD [prt 1 list, doc (showString "!!"), prt 0 n])
 

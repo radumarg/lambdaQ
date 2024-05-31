@@ -127,6 +127,7 @@ CtrlTerms . ControlTerms ::= "[" Term "," [Term] "]" ;
 separator nonempty Term "," ;
 
 -- Terms --
+TermDollar            . Term  ::= Term1 "$" Term ;  -- right-associative --
 TermIfElse            . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLetSingle         . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple       . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
@@ -138,7 +139,6 @@ TermQuantumCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
 TermQuantumCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
 TermClassicCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
 TermClassicCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
-TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
 TermApply             . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermCompose           . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermVariable          . Term3 ::= Var ;
@@ -160,7 +160,7 @@ coercions Term 4 ;
 ListNil               . List ::= "[]" ;
 ListSingle            . List ::= "[" Term "]" ;
 ListMultiple          . List ::= "[" Term "," [Term] "]" ;
-ListExpressionAdd     . List1 ::= List "++" List ;
+ListExpressionAdd     . List ::= List "++" List1 ;
 ListCons              . List2 ::= Term4 ":" List1 ;
 ListExpressionMember  . List2 ::= List1 "!!" Integer ;
 coercions List 2 ;

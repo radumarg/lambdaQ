@@ -1,0 +1,3 @@
+fun :: Bit
+fun = a $ (if c then t else f) 
+

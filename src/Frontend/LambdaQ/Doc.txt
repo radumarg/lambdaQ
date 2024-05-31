@@ -59,9 +59,9 @@ The symbols used in LambdaQ are the following:
   | < | <= | -> | **
   | ! | () | [ | ]
   | @0 | @1 | @+ | @-
-  | @+i | @-i | , | {
-  | = | } | <- | ;
-  | . | $ | [] | ++
+  | @+i | @-i | , | $
+  | { | = | } | <-
+  | ; | . | [] | ++
   | : | !! | :: |
 
 ===Comments===
@@ -174,6 +174,8 @@ All other symbols are terminals.
   | //ControlTerms// | -> | ``[`` //Term// ``,`` //[Term]// ``]``
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
+  | //Term// | -> | //Term1// ``$`` //Term//
+  |  |  **|**  | //Term1//
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
   |  |  **|**  | ``let`` ``{`` //Var// ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
@@ -181,7 +183,6 @@ All other symbols are terminals.
   |  |  **|**  | //Var// ``,`` //[Var]// ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
-  |  |  **|**  | //Term2// ``$`` //Term1//
   |  |  **|**  | //Term2//
   | //Term2// | -> | ``with`` //ControlTerm// ``ctrl`` //ControlBasisState//
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
@@ -200,17 +201,16 @@ All other symbols are terminals.
   |  |  **|**  | //Bit//
   |  |  **|**  | //List//
   |  |  **|**  | //Term4//
-  | //Term// | -> | //Term1//
   | //Term4// | -> | ``(`` //Term// ``)``
   | //List// | -> | ``[]``
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``
+  |  |  **|**  | //List// ``++`` //List1//
   |  |  **|**  | //List1//
-  | //List1// | -> | //List// ``++`` //List//
-  |  |  **|**  | //List2//
   | //List2// | -> | //Term4// ``:`` //List1//
   |  |  **|**  | //List1// ``!!`` //Integer//
   |  |  **|**  | ``(`` //List// ``)``
+  | //List1// | -> | //List2//
   | //CaseExpression// | -> | //Term2// ``->`` //Term2//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//

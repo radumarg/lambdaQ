@@ -315,6 +315,11 @@ ControlTerms
 ListTerm :: { [Frontend.LambdaQ.Abs.Term] }
 ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 
+Term :: { Frontend.LambdaQ.Abs.Term }
+Term
+  : Term1 '$' Term { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
+  | Term1 { $1 }
+
 Term1 :: { Frontend.LambdaQ.Abs.Term }
 Term1
   : 'if' Term 'then' Term 'else' Term { Frontend.LambdaQ.Abs.TermIfElse $2 $4 $6 }
@@ -324,7 +329,6 @@ Term1
   | Var ',' ListVar '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
   | 'case' Term 'of' CaseExpression ListCaseExpression { Frontend.LambdaQ.Abs.TermCase $2 $4 $5 }
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
-  | Term2 '$' Term1 { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
   | Term2 { $1 }
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }
@@ -350,9 +354,6 @@ Term3
   | List { Frontend.LambdaQ.Abs.TermList $1 }
   | Term4 { $1 }
 
-Term :: { Frontend.LambdaQ.Abs.Term }
-Term : Term1 { $1 }
-
 Term4 :: { Frontend.LambdaQ.Abs.Term }
 Term4 : '(' Term ')' { $2 }
 
@@ -361,18 +362,17 @@ List
   : '[]' { Frontend.LambdaQ.Abs.ListNil }
   | '[' Term ']' { Frontend.LambdaQ.Abs.ListSingle $2 }
   | '[' Term ',' ListTerm ']' { Frontend.LambdaQ.Abs.ListMultiple $2 $4 }
+  | List '++' List1 { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
   | List1 { $1 }
-
-List1 :: { Frontend.LambdaQ.Abs.List }
-List1
-  : List '++' List { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
-  | List2 { $1 }
 
 List2 :: { Frontend.LambdaQ.Abs.List }
 List2
   : Term4 ':' List1 { Frontend.LambdaQ.Abs.ListCons $1 $3 }
   | List1 '!!' Integer { Frontend.LambdaQ.Abs.ListExpressionMember $1 $3 }
   | '(' List ')' { $2 }
+
+List1 :: { Frontend.LambdaQ.Abs.List }
+List1 : List2 { $1 }
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression

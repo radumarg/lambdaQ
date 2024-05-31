@@ -132,7 +132,8 @@ data ControlTerms = CtrlTerms Term [Term]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Term
-    = TermIfElse Term Term Term
+    = TermDollar Term Term
+    | TermIfElse Term Term Term
     | TermLetSingle Var Term Term
     | TermLetMultiple Var [Var] Term Term
     | TermLetSugarSingle Var Term Term
@@ -143,7 +144,6 @@ data Term
     | TermQuantumCtrlsGate ControlTerms ControlBasisStates
     | TermClassicCtrlGate ControlTerm ControlBit
     | TermClassicCtrlsGate ControlTerms ControlBits
-    | TermDollar Term Term
     | TermApply Term Term
     | TermCompose Term Term
     | TermVariable Var

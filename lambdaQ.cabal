@@ -168,6 +168,7 @@ test-suite lambdaQ-test
   other-modules:
       Backend.ASTtoIASTConverterSpec
       Backend.SemanticAnalyserSpec
+      Frontend.ParserSpec
       Paths_lambdaQ
   hs-source-dirs:
       test
