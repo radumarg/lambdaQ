@@ -116,10 +116,10 @@ data ControlBasisState = CtrlBasisState BasisState
 data ControlBasisStates = CtrlBasisStates BasisState [BasisState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBit = CtrlBit Integer
+data ControlBit = CtrlBit BitVariable
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBits = CtrlBits Integer [Integer]
+data ControlBits = CtrlBits BitVariable [BitVariable]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Tuple = Tupl Term [Term]

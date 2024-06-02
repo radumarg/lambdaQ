@@ -8,7 +8,6 @@ state 136 contains 1 shift/reduce conflicts.
 state 137 contains 1 shift/reduce conflicts.
 state 139 contains 1 shift/reduce conflicts.
 state 187 contains 1 shift/reduce conflicts.
-state 278 contains 17 shift/reduce conflicts.
 
 -----------------------------------------------------------------------------
 Grammar
@@ -111,10 +110,10 @@ Grammar
 	ControlBasisStates -> '[' BasisState ',' ListBasisState ']'   (95)
 	ListBasisState -> BasisState                       (96)
 	ListBasisState -> BasisState ',' ListBasisState    (97)
-	ControlBit -> '[' Integer ']'                      (98)
-	ControlBits -> '[' Integer ',' ListInteger ']'     (99)
-	ListInteger -> Integer                             (100)
-	ListInteger -> Integer ',' ListInteger             (101)
+	ControlBit -> '[' BitVariable ']'                  (98)
+	ControlBits -> '[' BitVariable ',' ListBitVariable ']'   (99)
+	ListBitVariable -> BitVariable                     (100)
+	ListBitVariable -> BitVariable ',' ListBitVariable   (101)
 	Tuple -> '(' Term ',' ListTerm ')'                 (102)
 	ControlTerm -> '[' Term ']'                        (103)
 	ControlTerms -> '[' Term ',' ListTerm ']'          (104)
@@ -157,7 +156,7 @@ Grammar
 	List2 -> List1 '!!' Integer                        (141)
 	List2 -> '(' List ')'                              (142)
 	List1 -> List2                                     (143)
-	CaseExpression -> Term2 '->' Term2                 (144)
+	CaseExpression -> Term3 '->' Term3                 (144)
 	ListCaseExpression -> CaseExpression               (145)
 	ListCaseExpression -> CaseExpression ListCaseExpression   (146)
 	Arg -> Var                                         (147)
@@ -304,7 +303,7 @@ Non-terminals
 	ListBasisState  rules 96, 97
 	ControlBit      rule  98
 	ControlBits     rule  99
-	ListInteger     rules 100, 101
+	ListBitVariable rules 100, 101
 	Tuple           rule  102
 	ControlTerm     rule  103
 	ControlTerms    rule  104
@@ -377,7 +376,6 @@ State 2
 	'not'          reduce using rule 1
 	'of'           reduce using rule 1
 	'then'         reduce using rule 1
-	'with'         reduce using rule 1
 	'}'            reduce using rule 1
 	L_integ        reduce using rule 1
 	L_BitVariable  reduce using rule 1
@@ -461,7 +459,6 @@ State 8
 	'not'          reduce using rule 4
 	'of'           reduce using rule 4
 	'then'         reduce using rule 4
-	'with'         reduce using rule 4
 	'}'            reduce using rule 4
 	L_integ        reduce using rule 4
 	L_BitVariable  reduce using rule 4
@@ -951,7 +948,6 @@ State 43
 	'not'          reduce using rule 2
 	'of'           reduce using rule 2
 	'then'         reduce using rule 2
-	'with'         reduce using rule 2
 	'||'           reduce using rule 2
 	'}'            reduce using rule 2
 	L_integ        reduce using rule 2
@@ -1083,7 +1079,6 @@ State 48
 	'not'          reduce using rule 13
 	'of'           reduce using rule 13
 	'then'         reduce using rule 13
-	'with'         reduce using rule 13
 	'||'           reduce using rule 13
 	'}'            reduce using rule 13
 	L_integ        reduce using rule 13
@@ -1119,7 +1114,6 @@ State 49
 	'not'          reduce using rule 56
 	'of'           reduce using rule 56
 	'then'         reduce using rule 56
-	'with'         reduce using rule 56
 	'}'            reduce using rule 56
 	L_integ        reduce using rule 56
 	L_BitVariable  reduce using rule 56
@@ -1204,7 +1198,6 @@ State 52
 	'not'          reduce using rule 128
 	'of'           reduce using rule 128
 	'then'         reduce using rule 128
-	'with'         reduce using rule 128
 	'}'            reduce using rule 128
 	L_integ        reduce using rule 128
 	L_BitVariable  reduce using rule 128
@@ -1245,7 +1238,6 @@ State 53
 	'not'          reduce using rule 9
 	'of'           reduce using rule 9
 	'then'         reduce using rule 9
-	'with'         reduce using rule 9
 	'}'            reduce using rule 9
 	L_integ        reduce using rule 9
 	L_BitVariable  reduce using rule 9
@@ -1296,7 +1288,6 @@ State 54
 	'not'          reduce using rule 12
 	'of'           reduce using rule 12
 	'then'         reduce using rule 12
-	'with'         reduce using rule 12
 	'}'            reduce using rule 12
 	L_integ        reduce using rule 12
 	L_BitVariable  reduce using rule 12
@@ -1334,7 +1325,6 @@ State 55
 	'not'          reduce using rule 30
 	'of'           reduce using rule 30
 	'then'         reduce using rule 30
-	'with'         reduce using rule 30
 	'||'           reduce using rule 30
 	'}'            reduce using rule 30
 	L_integ        reduce using rule 30
@@ -1373,7 +1363,6 @@ State 56
 	'not'          reduce using rule 127
 	'of'           reduce using rule 127
 	'then'         reduce using rule 127
-	'with'         reduce using rule 127
 	'||'           shift, and enter state 150
 	'}'            reduce using rule 127
 	L_integ        reduce using rule 127
@@ -1414,7 +1403,6 @@ State 57
 	'not'          reduce using rule 20
 	'of'           reduce using rule 20
 	'then'         reduce using rule 20
-	'with'         reduce using rule 20
 	'||'           reduce using rule 20
 	'}'            reduce using rule 20
 	L_integ        reduce using rule 20
@@ -1453,7 +1441,6 @@ State 58
 	'not'          reduce using rule 23
 	'of'           reduce using rule 23
 	'then'         reduce using rule 23
-	'with'         reduce using rule 23
 	'||'           reduce using rule 23
 	'}'            reduce using rule 23
 	L_integ        reduce using rule 23
@@ -1489,7 +1476,6 @@ State 59
 	'not'          reduce using rule 126
 	'of'           reduce using rule 126
 	'then'         reduce using rule 126
-	'with'         reduce using rule 126
 	'}'            reduce using rule 126
 	L_integ        reduce using rule 126
 	L_BitVariable  reduce using rule 126
@@ -1524,7 +1510,6 @@ State 60
 	'not'          reduce using rule 131
 	'of'           reduce using rule 131
 	'then'         reduce using rule 131
-	'with'         reduce using rule 131
 	'}'            reduce using rule 131
 	L_integ        reduce using rule 131
 	L_BitVariable  reduce using rule 131
@@ -1559,7 +1544,6 @@ State 61
 	'not'          reduce using rule 130
 	'of'           reduce using rule 130
 	'then'         reduce using rule 130
-	'with'         reduce using rule 130
 	'}'            reduce using rule 130
 	L_integ        reduce using rule 130
 	L_BitVariable  reduce using rule 130
@@ -1653,7 +1637,6 @@ State 65
 	'()'           reduce using rule 123
 	')'            reduce using rule 123
 	','            reduce using rule 123
-	'->'           reduce using rule 123
 	'.'            reduce using rule 123
 	';'            reduce using rule 123
 	'@+'           reduce using rule 123
@@ -1672,7 +1655,6 @@ State 65
 	'not'          reduce using rule 123
 	'of'           reduce using rule 123
 	'then'         reduce using rule 123
-	'with'         reduce using rule 123
 	'}'            reduce using rule 123
 	L_integ        reduce using rule 123
 	L_BitVariable  reduce using rule 123
@@ -1709,7 +1691,6 @@ State 66
 	'not'          reduce using rule 133
 	'of'           reduce using rule 133
 	'then'         reduce using rule 133
-	'with'         reduce using rule 133
 	'}'            reduce using rule 133
 	L_integ        reduce using rule 133
 	L_BitVariable  reduce using rule 133
@@ -1746,7 +1727,6 @@ State 67
 	'not'          reduce using rule 132
 	'of'           reduce using rule 132
 	'then'         reduce using rule 132
-	'with'         reduce using rule 132
 	'}'            reduce using rule 132
 	L_integ        reduce using rule 132
 	L_BitVariable  reduce using rule 132
@@ -1783,7 +1763,6 @@ State 68
 	'not'          reduce using rule 143
 	'of'           reduce using rule 143
 	'then'         reduce using rule 143
-	'with'         reduce using rule 143
 	'}'            reduce using rule 143
 	L_integ        reduce using rule 143
 	L_BitVariable  reduce using rule 143
@@ -1821,7 +1800,6 @@ State 69
 	'not'          reduce using rule 139
 	'of'           reduce using rule 139
 	'then'         reduce using rule 139
-	'with'         reduce using rule 139
 	'}'            reduce using rule 139
 	L_integ        reduce using rule 139
 	L_BitVariable  reduce using rule 139
@@ -1910,7 +1888,6 @@ State 71
 	'not'          reduce using rule 125
 	'of'           reduce using rule 125
 	'then'         reduce using rule 125
-	'with'         reduce using rule 125
 	'}'            reduce using rule 125
 	L_integ        reduce using rule 125
 	L_BitVariable  reduce using rule 125
@@ -1945,7 +1922,6 @@ State 72
 	'not'          reduce using rule 52
 	'of'           reduce using rule 52
 	'then'         reduce using rule 52
-	'with'         reduce using rule 52
 	'}'            reduce using rule 52
 	L_integ        reduce using rule 52
 	L_BitVariable  reduce using rule 52
@@ -1980,7 +1956,6 @@ State 73
 	'not'          reduce using rule 54
 	'of'           reduce using rule 54
 	'then'         reduce using rule 54
-	'with'         reduce using rule 54
 	'}'            reduce using rule 54
 	L_integ        reduce using rule 54
 	L_BitVariable  reduce using rule 54
@@ -2015,7 +1990,6 @@ State 74
 	'not'          reduce using rule 53
 	'of'           reduce using rule 53
 	'then'         reduce using rule 53
-	'with'         reduce using rule 53
 	'}'            reduce using rule 53
 	L_integ        reduce using rule 53
 	L_BitVariable  reduce using rule 53
@@ -2050,7 +2024,6 @@ State 75
 	'not'          reduce using rule 55
 	'of'           reduce using rule 55
 	'then'         reduce using rule 55
-	'with'         reduce using rule 55
 	'}'            reduce using rule 55
 	L_integ        reduce using rule 55
 	L_BitVariable  reduce using rule 55
@@ -2085,7 +2058,6 @@ State 76
 	'not'          reduce using rule 50
 	'of'           reduce using rule 50
 	'then'         reduce using rule 50
-	'with'         reduce using rule 50
 	'}'            reduce using rule 50
 	L_integ        reduce using rule 50
 	L_BitVariable  reduce using rule 50
@@ -2120,7 +2092,6 @@ State 77
 	'not'          reduce using rule 51
 	'of'           reduce using rule 51
 	'then'         reduce using rule 51
-	'with'         reduce using rule 51
 	'}'            reduce using rule 51
 	L_integ        reduce using rule 51
 	L_BitVariable  reduce using rule 51
@@ -2158,7 +2129,6 @@ State 78
 	'not'          reduce using rule 16
 	'of'           reduce using rule 16
 	'then'         reduce using rule 16
-	'with'         reduce using rule 16
 	'||'           reduce using rule 16
 	'}'            reduce using rule 16
 	L_integ        reduce using rule 16
@@ -2197,7 +2167,6 @@ State 79
 	'not'          reduce using rule 15
 	'of'           reduce using rule 15
 	'then'         reduce using rule 15
-	'with'         reduce using rule 15
 	'||'           reduce using rule 15
 	'}'            reduce using rule 15
 	L_integ        reduce using rule 15
@@ -2285,7 +2254,6 @@ State 81
 	'not'          reduce using rule 135
 	'of'           reduce using rule 135
 	'then'         reduce using rule 135
-	'with'         reduce using rule 135
 	'}'            reduce using rule 135
 	L_integ        reduce using rule 135
 	L_BitVariable  reduce using rule 135
@@ -2497,7 +2465,6 @@ State 88
 	'not'          reduce using rule 3
 	'of'           reduce using rule 3
 	'then'         reduce using rule 3
-	'with'         reduce using rule 3
 	'}'            reduce using rule 3
 	L_integ        reduce using rule 3
 	L_BitVariable  reduce using rule 3
@@ -2628,7 +2595,6 @@ State 94
 	'not'          reduce using rule 19
 	'of'           reduce using rule 19
 	'then'         reduce using rule 19
-	'with'         reduce using rule 19
 	'||'           reduce using rule 19
 	'}'            reduce using rule 19
 	L_integ        reduce using rule 19
@@ -2701,7 +2667,6 @@ State 98
 	'not'          reduce using rule 129
 	'of'           reduce using rule 129
 	'then'         reduce using rule 129
-	'with'         reduce using rule 129
 	'}'            reduce using rule 129
 	L_integ        reduce using rule 129
 	L_BitVariable  reduce using rule 129
@@ -2736,7 +2701,6 @@ State 99
 	'not'          reduce using rule 86
 	'of'           reduce using rule 86
 	'then'         reduce using rule 86
-	'with'         reduce using rule 86
 	'}'            reduce using rule 86
 	L_integ        reduce using rule 86
 	L_BitVariable  reduce using rule 86
@@ -2771,7 +2735,6 @@ State 100
 	'not'          reduce using rule 57
 	'of'           reduce using rule 57
 	'then'         reduce using rule 57
-	'with'         reduce using rule 57
 	'}'            reduce using rule 57
 	L_integ        reduce using rule 57
 	L_BitVariable  reduce using rule 57
@@ -2806,7 +2769,6 @@ State 101
 	'not'          reduce using rule 61
 	'of'           reduce using rule 61
 	'then'         reduce using rule 61
-	'with'         reduce using rule 61
 	'}'            reduce using rule 61
 	L_integ        reduce using rule 61
 	L_BitVariable  reduce using rule 61
@@ -2841,7 +2803,6 @@ State 102
 	'not'          reduce using rule 85
 	'of'           reduce using rule 85
 	'then'         reduce using rule 85
-	'with'         reduce using rule 85
 	'}'            reduce using rule 85
 	L_integ        reduce using rule 85
 	L_BitVariable  reduce using rule 85
@@ -2983,7 +2944,6 @@ State 116
 	'not'          reduce using rule 68
 	'of'           reduce using rule 68
 	'then'         reduce using rule 68
-	'with'         reduce using rule 68
 	'}'            reduce using rule 68
 	L_integ        reduce using rule 68
 	L_BitVariable  reduce using rule 68
@@ -3018,7 +2978,6 @@ State 117
 	'not'          reduce using rule 83
 	'of'           reduce using rule 83
 	'then'         reduce using rule 83
-	'with'         reduce using rule 83
 	'}'            reduce using rule 83
 	L_integ        reduce using rule 83
 	L_BitVariable  reduce using rule 83
@@ -3053,7 +3012,6 @@ State 118
 	'not'          reduce using rule 84
 	'of'           reduce using rule 84
 	'then'         reduce using rule 84
-	'with'         reduce using rule 84
 	'}'            reduce using rule 84
 	L_integ        reduce using rule 84
 	L_BitVariable  reduce using rule 84
@@ -3088,7 +3046,6 @@ State 119
 	'not'          reduce using rule 72
 	'of'           reduce using rule 72
 	'then'         reduce using rule 72
-	'with'         reduce using rule 72
 	'}'            reduce using rule 72
 	L_integ        reduce using rule 72
 	L_BitVariable  reduce using rule 72
@@ -3123,7 +3080,6 @@ State 120
 	'not'          reduce using rule 73
 	'of'           reduce using rule 73
 	'then'         reduce using rule 73
-	'with'         reduce using rule 73
 	'}'            reduce using rule 73
 	L_integ        reduce using rule 73
 	L_BitVariable  reduce using rule 73
@@ -3158,7 +3114,6 @@ State 121
 	'not'          reduce using rule 74
 	'of'           reduce using rule 74
 	'then'         reduce using rule 74
-	'with'         reduce using rule 74
 	'}'            reduce using rule 74
 	L_integ        reduce using rule 74
 	L_BitVariable  reduce using rule 74
@@ -3193,7 +3148,6 @@ State 122
 	'not'          reduce using rule 75
 	'of'           reduce using rule 75
 	'then'         reduce using rule 75
-	'with'         reduce using rule 75
 	'}'            reduce using rule 75
 	L_integ        reduce using rule 75
 	L_BitVariable  reduce using rule 75
@@ -3228,7 +3182,6 @@ State 123
 	'not'          reduce using rule 82
 	'of'           reduce using rule 82
 	'then'         reduce using rule 82
-	'with'         reduce using rule 82
 	'}'            reduce using rule 82
 	L_integ        reduce using rule 82
 	L_BitVariable  reduce using rule 82
@@ -3272,7 +3225,6 @@ State 125
 	'not'          reduce using rule 69
 	'of'           reduce using rule 69
 	'then'         reduce using rule 69
-	'with'         reduce using rule 69
 	'}'            reduce using rule 69
 	L_integ        reduce using rule 69
 	L_BitVariable  reduce using rule 69
@@ -3307,7 +3259,6 @@ State 126
 	'not'          reduce using rule 70
 	'of'           reduce using rule 70
 	'then'         reduce using rule 70
-	'with'         reduce using rule 70
 	'}'            reduce using rule 70
 	L_integ        reduce using rule 70
 	L_BitVariable  reduce using rule 70
@@ -3342,7 +3293,6 @@ State 127
 	'not'          reduce using rule 71
 	'of'           reduce using rule 71
 	'then'         reduce using rule 71
-	'with'         reduce using rule 71
 	'}'            reduce using rule 71
 	L_integ        reduce using rule 71
 	L_BitVariable  reduce using rule 71
@@ -3400,7 +3350,6 @@ State 131
 	'not'          reduce using rule 58
 	'of'           reduce using rule 58
 	'then'         reduce using rule 58
-	'with'         reduce using rule 58
 	'}'            reduce using rule 58
 	L_integ        reduce using rule 58
 	L_BitVariable  reduce using rule 58
@@ -3435,7 +3384,6 @@ State 132
 	'not'          reduce using rule 59
 	'of'           reduce using rule 59
 	'then'         reduce using rule 59
-	'with'         reduce using rule 59
 	'}'            reduce using rule 59
 	L_integ        reduce using rule 59
 	L_BitVariable  reduce using rule 59
@@ -3470,7 +3418,6 @@ State 133
 	'not'          reduce using rule 60
 	'of'           reduce using rule 60
 	'then'         reduce using rule 60
-	'with'         reduce using rule 60
 	'}'            reduce using rule 60
 	L_integ        reduce using rule 60
 	L_BitVariable  reduce using rule 60
@@ -3658,7 +3605,6 @@ State 143
 	'not'          reduce using rule 124
 	'of'           reduce using rule 124
 	'then'         reduce using rule 124
-	'with'         reduce using rule 124
 	'}'            reduce using rule 124
 	L_integ        reduce using rule 124
 	L_BitVariable  reduce using rule 124
@@ -3674,7 +3620,6 @@ State 144
 	'()'           reduce using rule 121
 	')'            reduce using rule 121
 	','            reduce using rule 121
-	'->'           reduce using rule 121
 	'.'            reduce using rule 121
 	';'            reduce using rule 121
 	'@+'           reduce using rule 121
@@ -3693,7 +3638,6 @@ State 144
 	'not'          reduce using rule 121
 	'of'           reduce using rule 121
 	'then'         reduce using rule 121
-	'with'         reduce using rule 121
 	'}'            reduce using rule 121
 	L_integ        reduce using rule 121
 	L_BitVariable  reduce using rule 121
@@ -4097,7 +4041,6 @@ State 168
 	'not'          reduce using rule 8
 	'of'           reduce using rule 8
 	'then'         reduce using rule 8
-	'with'         reduce using rule 8
 	'}'            reduce using rule 8
 	L_integ        reduce using rule 8
 	L_BitVariable  reduce using rule 8
@@ -4136,7 +4079,6 @@ State 169
 	'not'          reduce using rule 12
 	'of'           reduce using rule 12
 	'then'         reduce using rule 12
-	'with'         reduce using rule 12
 	'}'            reduce using rule 12
 	L_integ        reduce using rule 12
 	L_BitVariable  reduce using rule 12
@@ -4189,7 +4131,6 @@ State 171
 	'not'          reduce using rule 7
 	'of'           reduce using rule 7
 	'then'         reduce using rule 7
-	'with'         reduce using rule 7
 	'}'            reduce using rule 7
 	L_integ        reduce using rule 7
 	L_BitVariable  reduce using rule 7
@@ -4228,7 +4169,6 @@ State 172
 	'not'          reduce using rule 11
 	'of'           reduce using rule 11
 	'then'         reduce using rule 11
-	'with'         reduce using rule 11
 	'}'            reduce using rule 11
 	L_integ        reduce using rule 11
 	L_BitVariable  reduce using rule 11
@@ -4267,7 +4207,6 @@ State 173
 	'not'          reduce using rule 10
 	'of'           reduce using rule 10
 	'then'         reduce using rule 10
-	'with'         reduce using rule 10
 	'}'            reduce using rule 10
 	L_integ        reduce using rule 10
 	L_BitVariable  reduce using rule 10
@@ -4305,7 +4244,6 @@ State 174
 	'not'          reduce using rule 27
 	'of'           reduce using rule 27
 	'then'         reduce using rule 27
-	'with'         reduce using rule 27
 	'||'           reduce using rule 27
 	'}'            reduce using rule 27
 	L_integ        reduce using rule 27
@@ -4344,7 +4282,6 @@ State 175
 	'not'          reduce using rule 26
 	'of'           reduce using rule 26
 	'then'         reduce using rule 26
-	'with'         reduce using rule 26
 	'||'           reduce using rule 26
 	'}'            reduce using rule 26
 	L_integ        reduce using rule 26
@@ -4383,7 +4320,6 @@ State 176
 	'not'          reduce using rule 24
 	'of'           reduce using rule 24
 	'then'         reduce using rule 24
-	'with'         reduce using rule 24
 	'||'           reduce using rule 24
 	'}'            reduce using rule 24
 	L_integ        reduce using rule 24
@@ -4422,7 +4358,6 @@ State 177
 	'not'          reduce using rule 29
 	'of'           reduce using rule 29
 	'then'         reduce using rule 29
-	'with'         reduce using rule 29
 	'||'           reduce using rule 29
 	'}'            reduce using rule 29
 	L_integ        reduce using rule 29
@@ -4461,7 +4396,6 @@ State 178
 	'not'          reduce using rule 28
 	'of'           reduce using rule 28
 	'then'         reduce using rule 28
-	'with'         reduce using rule 28
 	'||'           reduce using rule 28
 	'}'            reduce using rule 28
 	L_integ        reduce using rule 28
@@ -4500,7 +4434,6 @@ State 179
 	'not'          reduce using rule 25
 	'of'           reduce using rule 25
 	'then'         reduce using rule 25
-	'with'         reduce using rule 25
 	'||'           reduce using rule 25
 	'}'            reduce using rule 25
 	L_integ        reduce using rule 25
@@ -4541,7 +4474,6 @@ State 180
 	'not'          reduce using rule 18
 	'of'           reduce using rule 18
 	'then'         reduce using rule 18
-	'with'         reduce using rule 18
 	'||'           reduce using rule 18
 	'}'            reduce using rule 18
 	L_integ        reduce using rule 18
@@ -4582,7 +4514,6 @@ State 181
 	'not'          reduce using rule 17
 	'of'           reduce using rule 17
 	'then'         reduce using rule 17
-	'with'         reduce using rule 17
 	'||'           reduce using rule 17
 	'}'            reduce using rule 17
 	L_integ        reduce using rule 17
@@ -4621,7 +4552,6 @@ State 182
 	'not'          reduce using rule 21
 	'of'           reduce using rule 21
 	'then'         reduce using rule 21
-	'with'         reduce using rule 21
 	'||'           reduce using rule 21
 	'}'            reduce using rule 21
 	L_integ        reduce using rule 21
@@ -4660,7 +4590,6 @@ State 183
 	'not'          reduce using rule 22
 	'of'           reduce using rule 22
 	'then'         reduce using rule 22
-	'with'         reduce using rule 22
 	'||'           reduce using rule 22
 	'}'            reduce using rule 22
 	L_integ        reduce using rule 22
@@ -4692,7 +4621,6 @@ State 185
 	'()'           reduce using rule 122
 	')'            reduce using rule 122
 	','            reduce using rule 122
-	'->'           reduce using rule 122
 	'.'            reduce using rule 122
 	';'            reduce using rule 122
 	'@+'           reduce using rule 122
@@ -4711,7 +4639,6 @@ State 185
 	'not'          reduce using rule 122
 	'of'           reduce using rule 122
 	'then'         reduce using rule 122
-	'with'         reduce using rule 122
 	'}'            reduce using rule 122
 	L_integ        reduce using rule 122
 	L_BitVariable  reduce using rule 122
@@ -4758,7 +4685,6 @@ State 187
 	'not'          reduce using rule 140
 	'of'           reduce using rule 140
 	'then'         reduce using rule 140
-	'with'         reduce using rule 140
 	'}'            reduce using rule 140
 	L_integ        reduce using rule 140
 	L_BitVariable  reduce using rule 140
@@ -4847,7 +4773,6 @@ State 189
 	'not'          reduce using rule 138
 	'of'           reduce using rule 138
 	'then'         reduce using rule 138
-	'with'         reduce using rule 138
 	'}'            reduce using rule 138
 	L_integ        reduce using rule 138
 	L_BitVariable  reduce using rule 138
@@ -4884,7 +4809,6 @@ State 190
 	'not'          reduce using rule 141
 	'of'           reduce using rule 141
 	'then'         reduce using rule 141
-	'with'         reduce using rule 141
 	'}'            reduce using rule 141
 	L_integ        reduce using rule 141
 	L_BitVariable  reduce using rule 141
@@ -4921,7 +4845,6 @@ State 191
 	'not'          reduce using rule 142
 	'of'           reduce using rule 142
 	'then'         reduce using rule 142
-	'with'         reduce using rule 142
 	'}'            reduce using rule 142
 	L_integ        reduce using rule 142
 	L_BitVariable  reduce using rule 142
@@ -4957,7 +4880,6 @@ State 192
 	'not'          reduce using rule 134
 	'of'           reduce using rule 134
 	'then'         reduce using rule 134
-	'with'         reduce using rule 134
 	'}'            reduce using rule 134
 	L_integ        reduce using rule 134
 	L_BitVariable  reduce using rule 134
@@ -5046,7 +4968,6 @@ State 194
 	'not'          reduce using rule 31
 	'of'           reduce using rule 31
 	'then'         reduce using rule 31
-	'with'         reduce using rule 31
 	'||'           reduce using rule 31
 	'}'            reduce using rule 31
 	L_integ        reduce using rule 31
@@ -5093,7 +5014,6 @@ State 195
 	'not'          reduce using rule 14
 	'of'           reduce using rule 14
 	'then'         reduce using rule 14
-	'with'         reduce using rule 14
 	'||'           reduce using rule 14
 	'}'            reduce using rule 14
 	L_integ        reduce using rule 14
@@ -5181,7 +5101,6 @@ State 197
 	'not'          reduce using rule 136
 	'of'           reduce using rule 136
 	'then'         reduce using rule 136
-	'with'         reduce using rule 136
 	'}'            reduce using rule 136
 	L_integ        reduce using rule 136
 	L_BitVariable  reduce using rule 136
@@ -5206,7 +5125,6 @@ State 198
 	'[]'           shift, and enter state 81
 	'gate'         shift, and enter state 83
 	'not'          shift, and enter state 86
-	'with'         shift, and enter state 87
 	L_integ        shift, and enter state 43
 	L_BitVariable  shift, and enter state 88
 	L_Var          shift, and enter state 8
@@ -5224,8 +5142,7 @@ State 198
 	BasisState     goto state 59
 	Bit            goto state 60
 	Tuple          goto state 61
-	Term2          goto state 238
-	Term3          goto state 65
+	Term3          goto state 238
 	Term4          goto state 66
 	List           goto state 67
 	List2          goto state 68
@@ -5278,7 +5195,6 @@ State 201
 	'not'          reduce using rule 49
 	'of'           reduce using rule 49
 	'then'         reduce using rule 49
-	'with'         reduce using rule 49
 	'}'            reduce using rule 49
 	L_integ        reduce using rule 49
 	L_BitVariable  reduce using rule 49
@@ -5313,7 +5229,6 @@ State 202
 	'not'          reduce using rule 79
 	'of'           reduce using rule 79
 	'then'         reduce using rule 79
-	'with'         reduce using rule 79
 	'}'            reduce using rule 79
 	L_integ        reduce using rule 79
 	L_BitVariable  reduce using rule 79
@@ -5348,7 +5263,6 @@ State 203
 	'not'          reduce using rule 87
 	'of'           reduce using rule 87
 	'then'         reduce using rule 87
-	'with'         reduce using rule 87
 	'}'            reduce using rule 87
 	L_integ        reduce using rule 87
 	L_BitVariable  reduce using rule 87
@@ -5383,7 +5297,6 @@ State 204
 	'not'          reduce using rule 78
 	'of'           reduce using rule 78
 	'then'         reduce using rule 78
-	'with'         reduce using rule 78
 	'}'            reduce using rule 78
 	L_integ        reduce using rule 78
 	L_BitVariable  reduce using rule 78
@@ -5418,7 +5331,6 @@ State 205
 	'not'          reduce using rule 77
 	'of'           reduce using rule 77
 	'then'         reduce using rule 77
-	'with'         reduce using rule 77
 	'}'            reduce using rule 77
 	L_integ        reduce using rule 77
 	L_BitVariable  reduce using rule 77
@@ -5453,7 +5365,6 @@ State 206
 	'not'          reduce using rule 76
 	'of'           reduce using rule 76
 	'then'         reduce using rule 76
-	'with'         reduce using rule 76
 	'}'            reduce using rule 76
 	L_integ        reduce using rule 76
 	L_BitVariable  reduce using rule 76
@@ -5488,7 +5399,6 @@ State 207
 	'not'          reduce using rule 67
 	'of'           reduce using rule 67
 	'then'         reduce using rule 67
-	'with'         reduce using rule 67
 	'}'            reduce using rule 67
 	L_integ        reduce using rule 67
 	L_BitVariable  reduce using rule 67
@@ -5523,7 +5433,6 @@ State 208
 	'not'          reduce using rule 66
 	'of'           reduce using rule 66
 	'then'         reduce using rule 66
-	'with'         reduce using rule 66
 	'}'            reduce using rule 66
 	L_integ        reduce using rule 66
 	L_BitVariable  reduce using rule 66
@@ -5558,7 +5467,6 @@ State 209
 	'not'          reduce using rule 65
 	'of'           reduce using rule 65
 	'then'         reduce using rule 65
-	'with'         reduce using rule 65
 	'}'            reduce using rule 65
 	L_integ        reduce using rule 65
 	L_BitVariable  reduce using rule 65
@@ -5593,7 +5501,6 @@ State 210
 	'not'          reduce using rule 64
 	'of'           reduce using rule 64
 	'then'         reduce using rule 64
-	'with'         reduce using rule 64
 	'}'            reduce using rule 64
 	L_integ        reduce using rule 64
 	L_BitVariable  reduce using rule 64
@@ -5628,7 +5535,6 @@ State 211
 	'not'          reduce using rule 63
 	'of'           reduce using rule 63
 	'then'         reduce using rule 63
-	'with'         reduce using rule 63
 	'}'            reduce using rule 63
 	L_integ        reduce using rule 63
 	L_BitVariable  reduce using rule 63
@@ -5663,7 +5569,6 @@ State 212
 	'not'          reduce using rule 62
 	'of'           reduce using rule 62
 	'then'         reduce using rule 62
-	'with'         reduce using rule 62
 	'}'            reduce using rule 62
 	L_integ        reduce using rule 62
 	L_BitVariable  reduce using rule 62
@@ -5698,7 +5603,6 @@ State 213
 	'not'          reduce using rule 89
 	'of'           reduce using rule 89
 	'then'         reduce using rule 89
-	'with'         reduce using rule 89
 	'}'            reduce using rule 89
 	L_integ        reduce using rule 89
 	L_BitVariable  reduce using rule 89
@@ -5733,7 +5637,6 @@ State 214
 	'not'          reduce using rule 88
 	'of'           reduce using rule 88
 	'then'         reduce using rule 88
-	'with'         reduce using rule 88
 	'}'            reduce using rule 88
 	L_integ        reduce using rule 88
 	L_BitVariable  reduce using rule 88
@@ -5768,7 +5671,6 @@ State 215
 	'not'          reduce using rule 91
 	'of'           reduce using rule 91
 	'then'         reduce using rule 91
-	'with'         reduce using rule 91
 	'}'            reduce using rule 91
 	L_integ        reduce using rule 91
 	L_BitVariable  reduce using rule 91
@@ -5803,7 +5705,6 @@ State 216
 	'not'          reduce using rule 90
 	'of'           reduce using rule 90
 	'then'         reduce using rule 90
-	'with'         reduce using rule 90
 	'}'            reduce using rule 90
 	L_integ        reduce using rule 90
 	L_BitVariable  reduce using rule 90
@@ -5935,7 +5836,6 @@ State 225
 	'()'           reduce using rule 117
 	')'            reduce using rule 117
 	','            reduce using rule 117
-	'->'           reduce using rule 117
 	'.'            reduce using rule 117
 	';'            reduce using rule 117
 	'@+'           reduce using rule 117
@@ -5954,7 +5854,6 @@ State 225
 	'not'          reduce using rule 117
 	'of'           reduce using rule 117
 	'then'         reduce using rule 117
-	'with'         reduce using rule 117
 	'}'            reduce using rule 117
 	L_integ        reduce using rule 117
 	L_BitVariable  reduce using rule 117
@@ -5970,7 +5869,6 @@ State 226
 	'()'           reduce using rule 119
 	')'            reduce using rule 119
 	','            reduce using rule 119
-	'->'           reduce using rule 119
 	'.'            reduce using rule 119
 	';'            reduce using rule 119
 	'@+'           reduce using rule 119
@@ -5989,7 +5887,6 @@ State 226
 	'not'          reduce using rule 119
 	'of'           reduce using rule 119
 	'then'         reduce using rule 119
-	'with'         reduce using rule 119
 	'}'            reduce using rule 119
 	L_integ        reduce using rule 119
 	L_BitVariable  reduce using rule 119
@@ -5999,7 +5896,7 @@ State 226
 State 227
 
 	ControlBasisState -> '[' . BasisState ']'           (rule 94)
-	ControlBit -> '[' . Integer ']'                     (rule 98)
+	ControlBit -> '[' . BitVariable ']'                 (rule 98)
 
 	'@+'           shift, and enter state 72
 	'@+i'          shift, and enter state 73
@@ -6007,9 +5904,9 @@ State 227
 	'@-i'          shift, and enter state 75
 	'@0'           shift, and enter state 76
 	'@1'           shift, and enter state 77
-	L_integ        shift, and enter state 43
+	L_BitVariable  shift, and enter state 88
 
-	Integer        goto state 266
+	BitVariable    goto state 266
 	BasisState     goto state 267
 
 State 228
@@ -6021,7 +5918,6 @@ State 228
 	'()'           reduce using rule 118
 	')'            reduce using rule 118
 	','            reduce using rule 118
-	'->'           reduce using rule 118
 	'.'            reduce using rule 118
 	';'            reduce using rule 118
 	'@+'           reduce using rule 118
@@ -6040,7 +5936,6 @@ State 228
 	'not'          reduce using rule 118
 	'of'           reduce using rule 118
 	'then'         reduce using rule 118
-	'with'         reduce using rule 118
 	'}'            reduce using rule 118
 	L_integ        reduce using rule 118
 	L_BitVariable  reduce using rule 118
@@ -6056,7 +5951,6 @@ State 229
 	'()'           reduce using rule 120
 	')'            reduce using rule 120
 	','            reduce using rule 120
-	'->'           reduce using rule 120
 	'.'            reduce using rule 120
 	';'            reduce using rule 120
 	'@+'           reduce using rule 120
@@ -6075,7 +5969,6 @@ State 229
 	'not'          reduce using rule 120
 	'of'           reduce using rule 120
 	'then'         reduce using rule 120
-	'with'         reduce using rule 120
 	'}'            reduce using rule 120
 	L_integ        reduce using rule 120
 	L_BitVariable  reduce using rule 120
@@ -6085,7 +5978,7 @@ State 229
 State 230
 
 	ControlBasisStates -> '[' . BasisState ',' ListBasisState ']'    (rule 95)
-	ControlBits -> '[' . Integer ',' ListInteger ']'    (rule 99)
+	ControlBits -> '[' . BitVariable ',' ListBitVariable ']'    (rule 99)
 
 	'@+'           shift, and enter state 72
 	'@+i'          shift, and enter state 73
@@ -6093,9 +5986,9 @@ State 230
 	'@-i'          shift, and enter state 75
 	'@0'           shift, and enter state 76
 	'@1'           shift, and enter state 77
-	L_integ        shift, and enter state 43
+	L_BitVariable  shift, and enter state 88
 
-	Integer        goto state 264
+	BitVariable    goto state 264
 	BasisState     goto state 265
 
 State 231
@@ -6236,48 +6129,10 @@ State 237
 
 State 238
 
-	Term2 -> Term2 . Term3                              (rule 121)
-	Term2 -> Term2 . '.' Term3                          (rule 122)
-	CaseExpression -> Term2 . '->' Term2                (rule 144)
+	CaseExpression -> Term3 . '->' Term3                (rule 144)
 
-	'('            shift, and enter state 70
-	'()'           shift, and enter state 71
 	'->'           shift, and enter state 257
-	'.'            shift, and enter state 145
-	'@+'           shift, and enter state 72
-	'@+i'          shift, and enter state 73
-	'@-'           shift, and enter state 74
-	'@-i'          shift, and enter state 75
-	'@0'           shift, and enter state 76
-	'@1'           shift, and enter state 77
-	'False'        shift, and enter state 78
-	'True'         shift, and enter state 79
-	'['            shift, and enter state 80
-	'[]'           shift, and enter state 81
-	'gate'         shift, and enter state 83
-	'not'          shift, and enter state 86
-	L_integ        shift, and enter state 43
-	L_BitVariable  shift, and enter state 88
-	L_Var          shift, and enter state 8
 
-	Integer        goto state 48
-	BitVariable    goto state 49
-	Var            goto state 143
-	IntegerExpressiongoto state 52
-	IntegerExpression1goto state 53
-	IntegerExpression2goto state 54
-	BoolValue      goto state 55
-	BoolExpression goto state 56
-	BoolExpression1goto state 57
-	BoolExpression2goto state 58
-	BasisState     goto state 59
-	Bit            goto state 60
-	Tuple          goto state 61
-	Term3          goto state 144
-	Term4          goto state 66
-	List           goto state 67
-	List2          goto state 68
-	List1          goto state 69
 
 State 239
 
@@ -6297,7 +6152,6 @@ State 239
 	'[]'           shift, and enter state 81
 	'gate'         shift, and enter state 83
 	'not'          shift, and enter state 86
-	'with'         shift, and enter state 87
 	L_integ        shift, and enter state 43
 	L_BitVariable  shift, and enter state 88
 	L_Var          shift, and enter state 8
@@ -6315,8 +6169,7 @@ State 239
 	BasisState     goto state 59
 	Bit            goto state 60
 	Tuple          goto state 61
-	Term2          goto state 238
-	Term3          goto state 65
+	Term3          goto state 238
 	Term4          goto state 66
 	List           goto state 67
 	List2          goto state 68
@@ -6587,7 +6440,6 @@ State 252
 	'not'          reduce using rule 102
 	'of'           reduce using rule 102
 	'then'         reduce using rule 102
-	'with'         reduce using rule 102
 	'}'            reduce using rule 102
 	L_integ        reduce using rule 102
 	L_BitVariable  reduce using rule 102
@@ -6674,7 +6526,6 @@ State 254
 	'not'          reduce using rule 137
 	'of'           reduce using rule 137
 	'then'         reduce using rule 137
-	'with'         reduce using rule 137
 	'}'            reduce using rule 137
 	L_integ        reduce using rule 137
 	L_BitVariable  reduce using rule 137
@@ -6708,7 +6559,6 @@ State 255
 	'not'          shift, and enter state 86
 	'of'           reduce using rule 145
 	'then'         reduce using rule 145
-	'with'         shift, and enter state 87
 	'}'            reduce using rule 145
 	L_integ        shift, and enter state 43
 	L_BitVariable  shift, and enter state 88
@@ -6727,8 +6577,7 @@ State 255
 	BasisState     goto state 59
 	Bit            goto state 60
 	Tuple          goto state 61
-	Term2          goto state 238
-	Term3          goto state 65
+	Term3          goto state 238
 	Term4          goto state 66
 	List           goto state 67
 	List2          goto state 68
@@ -6753,7 +6602,7 @@ State 256
 
 State 257
 
-	CaseExpression -> Term2 '->' . Term2                (rule 144)
+	CaseExpression -> Term3 '->' . Term3                (rule 144)
 
 	'('            shift, and enter state 70
 	'()'           shift, and enter state 71
@@ -6769,7 +6618,6 @@ State 257
 	'[]'           shift, and enter state 81
 	'gate'         shift, and enter state 83
 	'not'          shift, and enter state 86
-	'with'         shift, and enter state 87
 	L_integ        shift, and enter state 43
 	L_BitVariable  shift, and enter state 88
 	L_Var          shift, and enter state 8
@@ -6787,8 +6635,7 @@ State 257
 	BasisState     goto state 59
 	Bit            goto state 60
 	Tuple          goto state 61
-	Term2          goto state 278
-	Term3          goto state 65
+	Term3          goto state 278
 	Term4          goto state 66
 	List           goto state 67
 	List2          goto state 68
@@ -6887,7 +6734,7 @@ State 263
 
 State 264
 
-	ControlBits -> '[' Integer . ',' ListInteger ']'    (rule 99)
+	ControlBits -> '[' BitVariable . ',' ListBitVariable ']'    (rule 99)
 
 	','            shift, and enter state 271
 
@@ -6901,7 +6748,7 @@ State 265
 
 State 266
 
-	ControlBit -> '[' Integer . ']'                     (rule 98)
+	ControlBit -> '[' BitVariable . ']'                 (rule 98)
 
 	']'            shift, and enter state 269
 
@@ -6922,7 +6769,6 @@ State 268
 	'()'           reduce using rule 94
 	')'            reduce using rule 94
 	','            reduce using rule 94
-	'->'           reduce using rule 94
 	'.'            reduce using rule 94
 	';'            reduce using rule 94
 	'@+'           reduce using rule 94
@@ -6941,7 +6787,6 @@ State 268
 	'not'          reduce using rule 94
 	'of'           reduce using rule 94
 	'then'         reduce using rule 94
-	'with'         reduce using rule 94
 	'}'            reduce using rule 94
 	L_integ        reduce using rule 94
 	L_BitVariable  reduce using rule 94
@@ -6950,14 +6795,13 @@ State 268
 
 State 269
 
-	ControlBit -> '[' Integer ']' .                     (rule 98)
+	ControlBit -> '[' BitVariable ']' .                 (rule 98)
 
 	'$'            reduce using rule 98
 	'('            reduce using rule 98
 	'()'           reduce using rule 98
 	')'            reduce using rule 98
 	','            reduce using rule 98
-	'->'           reduce using rule 98
 	'.'            reduce using rule 98
 	';'            reduce using rule 98
 	'@+'           reduce using rule 98
@@ -6976,7 +6820,6 @@ State 269
 	'not'          reduce using rule 98
 	'of'           reduce using rule 98
 	'then'         reduce using rule 98
-	'with'         reduce using rule 98
 	'}'            reduce using rule 98
 	L_integ        reduce using rule 98
 	L_BitVariable  reduce using rule 98
@@ -6999,12 +6842,12 @@ State 270
 
 State 271
 
-	ControlBits -> '[' Integer ',' . ListInteger ']'    (rule 99)
+	ControlBits -> '[' BitVariable ',' . ListBitVariable ']'    (rule 99)
 
-	L_integ        shift, and enter state 43
+	L_BitVariable  shift, and enter state 88
 
-	Integer        goto state 287
-	ListInteger    goto state 288
+	BitVariable    goto state 287
+	ListBitVariablegoto state 288
 
 State 272
 
@@ -7058,91 +6901,35 @@ State 277
 
 State 278
 
-	Term2 -> Term2 . Term3                              (rule 121)
-	Term2 -> Term2 . '.' Term3                          (rule 122)
-	CaseExpression -> Term2 '->' Term2 .                (rule 144)
+	CaseExpression -> Term3 '->' Term3 .                (rule 144)
 
 	'$'            reduce using rule 144
-	'('            shift, and enter state 70
-			(reduce using rule 144)
-
-	'()'           shift, and enter state 71
-			(reduce using rule 144)
-
+	'('            reduce using rule 144
+	'()'           reduce using rule 144
 	')'            reduce using rule 144
 	','            reduce using rule 144
-	'.'            shift, and enter state 145
 	';'            reduce using rule 144
-	'@+'           shift, and enter state 72
-			(reduce using rule 144)
-
-	'@+i'          shift, and enter state 73
-			(reduce using rule 144)
-
-	'@-'           shift, and enter state 74
-			(reduce using rule 144)
-
-	'@-i'          shift, and enter state 75
-			(reduce using rule 144)
-
-	'@0'           shift, and enter state 76
-			(reduce using rule 144)
-
-	'@1'           shift, and enter state 77
-			(reduce using rule 144)
-
-	'False'        shift, and enter state 78
-			(reduce using rule 144)
-
-	'True'         shift, and enter state 79
-			(reduce using rule 144)
-
-	'['            shift, and enter state 80
-			(reduce using rule 144)
-
-	'[]'           shift, and enter state 81
-			(reduce using rule 144)
-
+	'@+'           reduce using rule 144
+	'@+i'          reduce using rule 144
+	'@-'           reduce using rule 144
+	'@-i'          reduce using rule 144
+	'@0'           reduce using rule 144
+	'@1'           reduce using rule 144
+	'False'        reduce using rule 144
+	'True'         reduce using rule 144
+	'['            reduce using rule 144
+	'[]'           reduce using rule 144
 	']'            reduce using rule 144
 	'else'         reduce using rule 144
-	'gate'         shift, and enter state 83
-			(reduce using rule 144)
-
-	'not'          shift, and enter state 86
-			(reduce using rule 144)
-
+	'gate'         reduce using rule 144
+	'not'          reduce using rule 144
 	'of'           reduce using rule 144
 	'then'         reduce using rule 144
-	'with'         reduce using rule 144
 	'}'            reduce using rule 144
-	L_integ        shift, and enter state 43
-			(reduce using rule 144)
+	L_integ        reduce using rule 144
+	L_BitVariable  reduce using rule 144
+	L_Var          reduce using rule 144
 
-	L_BitVariable  shift, and enter state 88
-			(reduce using rule 144)
-
-	L_Var          shift, and enter state 8
-			(reduce using rule 144)
-
-
-	Integer        goto state 48
-	BitVariable    goto state 49
-	Var            goto state 143
-	IntegerExpressiongoto state 52
-	IntegerExpression1goto state 53
-	IntegerExpression2goto state 54
-	BoolValue      goto state 55
-	BoolExpression goto state 56
-	BoolExpression1goto state 57
-	BoolExpression2goto state 58
-	BasisState     goto state 59
-	Bit            goto state 60
-	Tuple          goto state 61
-	Term3          goto state 144
-	Term4          goto state 66
-	List           goto state 67
-	List2          goto state 68
-	List1          goto state 69
 
 State 279
 
@@ -7269,7 +7056,6 @@ State 284
 	'not'          reduce using rule 80
 	'of'           reduce using rule 80
 	'then'         reduce using rule 80
-	'with'         reduce using rule 80
 	'}'            reduce using rule 80
 	L_integ        reduce using rule 80
 	L_BitVariable  reduce using rule 80
@@ -7335,8 +7121,8 @@ State 286
 
 State 287
 
-	ListInteger -> Integer .                            (rule 100)
-	ListInteger -> Integer . ',' ListInteger            (rule 101)
+	ListBitVariable -> BitVariable .                    (rule 100)
+	ListBitVariable -> BitVariable . ',' ListBitVariable    (rule 101)
 
 	','            shift, and enter state 294
 	']'            reduce using rule 100
@@ -7344,7 +7130,7 @@ State 287
 
 State 288
 
-	ControlBits -> '[' Integer ',' ListInteger . ']'    (rule 99)
+	ControlBits -> '[' BitVariable ',' ListBitVariable . ']'    (rule 99)
 
 	']'            shift, and enter state 293
 
@@ -7374,7 +7160,6 @@ State 291
 	'()'           reduce using rule 95
 	')'            reduce using rule 95
 	','            reduce using rule 95
-	'->'           reduce using rule 95
 	'.'            reduce using rule 95
 	';'            reduce using rule 95
 	'@+'           reduce using rule 95
@@ -7393,7 +7178,6 @@ State 291
 	'not'          reduce using rule 95
 	'of'           reduce using rule 95
 	'then'         reduce using rule 95
-	'with'         reduce using rule 95
 	'}'            reduce using rule 95
 	L_integ        reduce using rule 95
 	L_BitVariable  reduce using rule 95
@@ -7416,14 +7200,13 @@ State 292
 
 State 293
 
-	ControlBits -> '[' Integer ',' ListInteger ']' .    (rule 99)
+	ControlBits -> '[' BitVariable ',' ListBitVariable ']' .    (rule 99)
 
 	'$'            reduce using rule 99
 	'('            reduce using rule 99
 	'()'           reduce using rule 99
 	')'            reduce using rule 99
 	','            reduce using rule 99
-	'->'           reduce using rule 99
 	'.'            reduce using rule 99
 	';'            reduce using rule 99
 	'@+'           reduce using rule 99
@@ -7442,7 +7225,6 @@ State 293
 	'not'          reduce using rule 99
 	'of'           reduce using rule 99
 	'then'         reduce using rule 99
-	'with'         reduce using rule 99
 	'}'            reduce using rule 99
 	L_integ        reduce using rule 99
 	L_BitVariable  reduce using rule 99
@@ -7451,12 +7233,12 @@ State 293
 
 State 294
 
-	ListInteger -> Integer ',' . ListInteger            (rule 101)
+	ListBitVariable -> BitVariable ',' . ListBitVariable    (rule 101)
 
-	L_integ        shift, and enter state 43
+	L_BitVariable  shift, and enter state 88
 
-	Integer        goto state 287
-	ListInteger    goto state 300
+	BitVariable    goto state 287
+	ListBitVariablegoto state 300
 
 State 295
 
@@ -7558,7 +7340,6 @@ State 298
 	'not'          reduce using rule 81
 	'of'           reduce using rule 81
 	'then'         reduce using rule 81
-	'with'         reduce using rule 81
 	'}'            reduce using rule 81
 	L_integ        reduce using rule 81
 	L_BitVariable  reduce using rule 81
@@ -7574,7 +7355,7 @@ State 299
 
 State 300
 
-	ListInteger -> Integer ',' ListInteger .            (rule 101)
+	ListBitVariable -> BitVariable ',' ListBitVariable .    (rule 101)
 
 	']'            reduce using rule 101
 

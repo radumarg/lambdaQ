@@ -291,15 +291,17 @@ ListBasisState
   | BasisState ',' ListBasisState { (:) $1 $3 }
 
 ControlBit :: { Frontend.LambdaQ.Abs.ControlBit }
-ControlBit : '[' Integer ']' { Frontend.LambdaQ.Abs.CtrlBit $2 }
+ControlBit
+  : '[' BitVariable ']' { Frontend.LambdaQ.Abs.CtrlBit $2 }
 
 ControlBits :: { Frontend.LambdaQ.Abs.ControlBits }
 ControlBits
-  : '[' Integer ',' ListInteger ']' { Frontend.LambdaQ.Abs.CtrlBits $2 $4 }
+  : '[' BitVariable ',' ListBitVariable ']' { Frontend.LambdaQ.Abs.CtrlBits $2 $4 }
 
-ListInteger :: { [Integer] }
-ListInteger
-  : Integer { (:[]) $1 } | Integer ',' ListInteger { (:) $1 $3 }
+ListBitVariable :: { [Frontend.LambdaQ.Abs.BitVariable] }
+ListBitVariable
+  : BitVariable { (:[]) $1 }
+  | BitVariable ',' ListBitVariable { (:) $1 $3 }
 
 Tuple :: { Frontend.LambdaQ.Abs.Tuple }
 Tuple
@@ -376,7 +378,7 @@ List1 : List2 { $1 }
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression
-  : Term2 '->' Term2 { Frontend.LambdaQ.Abs.CaseExpr $1 $3 }
+  : Term3 '->' Term3 { Frontend.LambdaQ.Abs.CaseExpr $1 $3 }
 
 ListCaseExpression :: { [Frontend.LambdaQ.Abs.CaseExpression] }
 ListCaseExpression

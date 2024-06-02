@@ -108,8 +108,8 @@ data Term =
     TermGate Gate                                 |
     TermQuantumCtrlGate Term BasisState           |
     TermQuantumCtrlsGate [Term] [BasisState]      |
-    TermClassicCtrlGate Term Integer              |
-    TermClassicCtrlsGate [Term] [Integer]         |
+    TermClassicCtrlGate Term Bit                  |
+    TermClassicCtrlsGate [Term] [Bit]             |
     TermApply Term Term                           |
     TermDollar Term Term                          |
     TermCompose Term Term                         |
@@ -275,10 +275,11 @@ mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSynta
     TermQuantumCtrlGate (mapTerm env term) (mapBasisState basisState)
 mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBasisStates basisState basisStates)) =
     TermQuantumCtrlsGate (mapTerm env term : map (mapTerm env) terms) (mapBasisState basisState : map mapBasisState basisStates)
-mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit ctrlBit)) =
-    TermClassicCtrlGate (mapTerm env term) ctrlBit
-mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits ctrlBit ctrlBits)) =
-    TermClassicCtrlsGate (mapTerm env term : map (mapTerm env) terms) (ctrlBit : ctrlBits)
+-- TODO: fix
+-- mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit ctrlBit)) =
+--     TermClassicCtrlGate (mapTerm env term) ctrlBit
+-- mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits ctrlBit ctrlBits)) =
+--     TermClassicCtrlsGate (mapTerm env term : map (mapTerm env) terms) (ctrlBit : ctrlBits)
 
 mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)

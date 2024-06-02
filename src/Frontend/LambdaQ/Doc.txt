@@ -165,10 +165,10 @@ All other symbols are terminals.
   | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
   | //[BasisState]// | -> | //BasisState//
   |  |  **|**  | //BasisState// ``,`` //[BasisState]//
-  | //ControlBit// | -> | ``[`` //Integer// ``]``
-  | //ControlBits// | -> | ``[`` //Integer// ``,`` //[Integer]// ``]``
-  | //[Integer]// | -> | //Integer//
-  |  |  **|**  | //Integer// ``,`` //[Integer]//
+  | //ControlBit// | -> | ``[`` //BitVariable// ``]``
+  | //ControlBits// | -> | ``[`` //BitVariable// ``,`` //[BitVariable]// ``]``
+  | //[BitVariable]// | -> | //BitVariable//
+  |  |  **|**  | //BitVariable// ``,`` //[BitVariable]//
   | //Tuple// | -> | ``(`` //Term// ``,`` //[Term]// ``)``
   | //ControlTerm// | -> | ``[`` //Term// ``]``
   | //ControlTerms// | -> | ``[`` //Term// ``,`` //[Term]// ``]``
@@ -211,7 +211,7 @@ All other symbols are terminals.
   |  |  **|**  | //List1// ``!!`` //Integer//
   |  |  **|**  | ``(`` //List// ``)``
   | //List1// | -> | //List2//
-  | //CaseExpression// | -> | //Term2// ``->`` //Term2//
+  | //CaseExpression// | -> | //Term3// ``->`` //Term3//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//
   | //Arg// | -> | //Var//

@@ -152,14 +152,63 @@ spec =  do
     Test.Hspec.context "when provided with a program containing '$' operator and a case term" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_stronger_than_dollar_1.lq"
-        --result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ var1, var2 <- term; term'" `isInfixOf` trimNewLines str)
-        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ case term of a -> b c -> d" `isInfixOf` trimNewLines str)
 
     Test.Hspec.context "when provided with a program containing '$' operator and a case term" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_stronger_than_dollar_2.lq"
-        --result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term; term' $ a" `isInfixOf` trimNewLines str)
-        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case term of a -> b c -> d $ a" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a lambda term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_stronger_than_dollar_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ \\ var Bit . term" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a lambda term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_stronger_than_dollar_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . term $ a" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a single qubit quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/single_quantum_ctrl_stronger_than_dollar_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ with [q0] ctrl [@1]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a single qubit quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/single_quantum_ctrl_stronger_than_dollar_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0] ctrl [@1] $ a" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a multiple qubits quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/multiple_quantum_ctrls_stronger_than_dollar_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "a $ with [q0, q1] ctrl [@1, @1]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a multiple qubits quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/multiple_quantum_ctrls_stronger_than_dollar_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0, q1] ctrl [@1, @1] $ a" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a single qubit quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/single_classic_ctrl_stronger_than_dollar_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ with [q0] ctrl [1]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a single qubit quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/single_classic_ctrl_stronger_than_dollar_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0] ctrl [1] $ a" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a multiple qubits quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/multiple_classic_ctrls_stronger_than_dollar_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "a $ with [q0, q1] ctrl [1, 1]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing '$' operator and a multiple qubits quantum controll term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/multiple_classic_ctrls_stronger_than_dollar_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0, q1] ctrl [1, 1] $ a" `isInfixOf` trimNewLines str)
+
 
     -- print (trimNewLines result)
     -- Test.Hspec.context "when provided with a program containing '$' operator and term application" $ do

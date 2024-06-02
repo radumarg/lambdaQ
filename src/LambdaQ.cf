@@ -38,9 +38,9 @@ BoolExpressionVal     . BoolExpression2 ::= BoolValue ;
 coercions BoolExpression 2 ;
 
 -- Types --
-TypeFunction   . Type   ::= Type "->" Type1 ;      -- right-associative
-TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- right-associative
-TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- right-associative
+TypeFunction   . Type   ::= Type "->" Type1 ;      -- left-associative
+TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- left-associative
+TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- left-associative
 TypeExp        . Type3  ::= Type4 "**" Integer ;
 TypeNonLinear  . Type3  ::= "!" Type4 ;
 TypeBool       . Type5  ::= "Bool" ;
@@ -111,9 +111,9 @@ CtrlBasisState . ControlBasisState ::= "[" BasisState  "]" ;
 CtrlBasisStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
 separator nonempty BasisState "," ;
 
-CtrlBit . ControlBit   ::= "[" Integer "]" ;
-CtrlBits . ControlBits ::= "[" Integer "," [Integer] "]" ;
-separator nonempty Integer "," ;
+CtrlBit . ControlBit   ::= "[" BitVariable "]" ;
+CtrlBits . ControlBits ::= "[" BitVariable "," [BitVariable] "]" ;
+separator nonempty BitVariable "," ;
 
 -- Lambda token --
 token Lambda '\\' ;
@@ -166,7 +166,7 @@ ListExpressionMember  . List2 ::= List1 "!!" Integer ;
 coercions List 2 ;
 
 -- Case Expressions --
-CaseExpr . CaseExpression ::= Term2 "->" Term2 ;
+CaseExpr . CaseExpression ::= Term3 "->" Term3 ;
 separator nonempty CaseExpression " " ;
 
 -- Function Arguments --

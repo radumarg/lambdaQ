@@ -138,11 +138,11 @@ transControlBasisStates x = case x of
 
 transControlBit :: Frontend.LambdaQ.Abs.ControlBit -> Result
 transControlBit x = case x of
-  Frontend.LambdaQ.Abs.CtrlBit integer -> failure x
+  Frontend.LambdaQ.Abs.CtrlBit bitvariable -> failure x
 
 transControlBits :: Frontend.LambdaQ.Abs.ControlBits -> Result
 transControlBits x = case x of
-  Frontend.LambdaQ.Abs.CtrlBits integer integers -> failure x
+  Frontend.LambdaQ.Abs.CtrlBits bitvariable bitvariables -> failure x
 
 transTuple :: Frontend.LambdaQ.Abs.Tuple -> Result
 transTuple x = case x of

@@ -1,0 +1,4 @@
+-- TODO: remove paranthesis in qubits
+fun :: Bit
+fun = a $ (with [ (q0), (q1) ] ctrl [ @1, @1 ])
+
