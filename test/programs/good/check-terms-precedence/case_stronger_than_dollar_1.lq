@@ -1,0 +1,4 @@
+fun :: Bit
+fun = a $ case term of a -> b ((c) -> (d))
+
+
