@@ -1,0 +1,6 @@
+-- TODO: remove tuple fix
+fun :: Bit
+fun = (a $ b) x : [y, z]
+
+
+

@@ -45,10 +45,6 @@ $white+ ;
 @rsyms
     { tok (eitherResIdent TV) }
 
--- token BitVariable
-[0 1]
-    { tok (eitherResIdent T_BitVariable) }
-
 -- token Var
 (\_ | $s)([\' \_]| ($d | $l)) *
     { tok (eitherResIdent T_Var) }
@@ -82,7 +78,6 @@ data Tok
   | TV !String                    -- ^ Identifier.
   | TD !String                    -- ^ Float literal.
   | TC !String                    -- ^ Character literal.
-  | T_BitVariable !String
   | T_Var !String
   | T_Lambda !String
   deriving (Eq, Show, Ord)
@@ -147,7 +142,6 @@ tokenText t = case t of
   PT _ (TD s)   -> s
   PT _ (TC s)   -> s
   Err _         -> "#error"
-  PT _ (T_BitVariable s) -> s
   PT _ (T_Var s) -> s
   PT _ (T_Lambda s) -> s
 

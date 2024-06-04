@@ -137,8 +137,6 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
-instance Print Frontend.LambdaQ.Abs.BitVariable where
-  prt _ (Frontend.LambdaQ.Abs.BitVariable i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
@@ -202,10 +200,6 @@ instance Print Frontend.LambdaQ.Abs.BasisState where
     Frontend.LambdaQ.Abs.BasisStatePlusI -> prPrec i 0 (concatD [doc (showString "@+i")])
     Frontend.LambdaQ.Abs.BasisStateMinusI -> prPrec i 0 (concatD [doc (showString "@-i")])
 
-instance Print Frontend.LambdaQ.Abs.Bit where
-  prt i = \case
-    Frontend.LambdaQ.Abs.BitValue bitvariable -> prPrec i 0 (concatD [prt 0 bitvariable])
-
 instance Print Frontend.LambdaQ.Abs.Gate where
   prt i = \case
     Frontend.LambdaQ.Abs.GateH -> prPrec i 0 (concatD [doc (showString "H")])
@@ -264,13 +258,13 @@ instance Print [Frontend.LambdaQ.Abs.BasisState] where
 
 instance Print Frontend.LambdaQ.Abs.ControlBit where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlBit bitvariable -> prPrec i 0 (concatD [doc (showString "["), prt 0 bitvariable, doc (showString "]")])
+    Frontend.LambdaQ.Abs.CtrlBit n -> prPrec i 0 (concatD [doc (showString "["), prt 0 n, doc (showString "]")])
 
 instance Print Frontend.LambdaQ.Abs.ControlBits where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlBits bitvariable bitvariables -> prPrec i 0 (concatD [doc (showString "["), prt 0 bitvariable, doc (showString ","), prt 0 bitvariables, doc (showString "]")])
+    Frontend.LambdaQ.Abs.CtrlBits n ns -> prPrec i 0 (concatD [doc (showString "["), prt 0 n, doc (showString ","), prt 0 ns, doc (showString "]")])
 
-instance Print [Frontend.LambdaQ.Abs.BitVariable] where
+instance Print [Integer] where
   prt _ [] = concatD []
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
@@ -315,7 +309,6 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> prPrec i 3 (concatD [prt 0 integerexpression])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
-    Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermList list -> prPrec i 3 (concatD [prt 0 list])
 
 instance Print Frontend.LambdaQ.Abs.List where

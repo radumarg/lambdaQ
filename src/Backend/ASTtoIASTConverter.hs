@@ -170,10 +170,10 @@ mapControlTerms _ _ = undefined
 mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.AngleValue value) = Angle value
 
-mapBit :: GeneratedAbstractSyntax.Bit -> Bit
-mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "0")) = BitZero
-mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "1")) = BitOne
-mapBit _ = undefined
+-- mapBit :: GeneratedAbstractSyntax.Bit -> Bit
+-- mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "0")) = BitZero
+-- mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "1")) = BitOne
+-- mapBit _ = undefined
 
 mapGate :: GeneratedAbstractSyntax.Gate -> Gate
 mapGate g = case g of
@@ -297,7 +297,7 @@ mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (ma
 
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
 mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
-mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
+-- mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 
 updateEnv :: GeneratedAbstractSyntax.Var -> [GeneratedAbstractSyntax.Var] -> Environment -> Environment

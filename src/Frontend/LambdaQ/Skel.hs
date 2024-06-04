@@ -15,10 +15,6 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
-transBitVariable :: Frontend.LambdaQ.Abs.BitVariable -> Result
-transBitVariable x = case x of
-  Frontend.LambdaQ.Abs.BitVariable string -> failure x
-
 transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
   Frontend.LambdaQ.Abs.Var string -> failure x
@@ -86,10 +82,6 @@ transBasisState x = case x of
   Frontend.LambdaQ.Abs.BasisStatePlusI -> failure x
   Frontend.LambdaQ.Abs.BasisStateMinusI -> failure x
 
-transBit :: Frontend.LambdaQ.Abs.Bit -> Result
-transBit x = case x of
-  Frontend.LambdaQ.Abs.BitValue bitvariable -> failure x
-
 transGate :: Frontend.LambdaQ.Abs.Gate -> Result
 transGate x = case x of
   Frontend.LambdaQ.Abs.GateH -> failure x
@@ -138,11 +130,11 @@ transControlBasisStates x = case x of
 
 transControlBit :: Frontend.LambdaQ.Abs.ControlBit -> Result
 transControlBit x = case x of
-  Frontend.LambdaQ.Abs.CtrlBit bitvariable -> failure x
+  Frontend.LambdaQ.Abs.CtrlBit integer -> failure x
 
 transControlBits :: Frontend.LambdaQ.Abs.ControlBits -> Result
 transControlBits x = case x of
-  Frontend.LambdaQ.Abs.CtrlBits bitvariable bitvariables -> failure x
+  Frontend.LambdaQ.Abs.CtrlBits integer integers -> failure x
 
 transTuple :: Frontend.LambdaQ.Abs.Tuple -> Result
 transTuple x = case x of
@@ -179,7 +171,6 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
-  Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
 
 transList :: Frontend.LambdaQ.Abs.List -> Result

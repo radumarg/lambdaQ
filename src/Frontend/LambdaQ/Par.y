@@ -23,102 +23,101 @@ import Frontend.LambdaQ.Lex
 %monad { Err } { (>>=) } { return }
 %tokentype {Token}
 %token
-  '!'             { PT _ (TS _ 1)           }
-  '!!'            { PT _ (TS _ 2)           }
-  '$'             { PT _ (TS _ 3)           }
-  '&&'            { PT _ (TS _ 4)           }
-  '('             { PT _ (TS _ 5)           }
-  '()'            { PT _ (TS _ 6)           }
-  ')'             { PT _ (TS _ 7)           }
-  '*'             { PT _ (TS _ 8)           }
-  '**'            { PT _ (TS _ 9)           }
-  '+'             { PT _ (TS _ 10)          }
-  '++'            { PT _ (TS _ 11)          }
-  ','             { PT _ (TS _ 12)          }
-  '-'             { PT _ (TS _ 13)          }
-  '->'            { PT _ (TS _ 14)          }
-  '.'             { PT _ (TS _ 15)          }
-  '/'             { PT _ (TS _ 16)          }
-  '/='            { PT _ (TS _ 17)          }
-  ':'             { PT _ (TS _ 18)          }
-  '::'            { PT _ (TS _ 19)          }
-  ';'             { PT _ (TS _ 20)          }
-  '<'             { PT _ (TS _ 21)          }
-  '<-'            { PT _ (TS _ 22)          }
-  '<='            { PT _ (TS _ 23)          }
-  '='             { PT _ (TS _ 24)          }
-  '=='            { PT _ (TS _ 25)          }
-  '>'             { PT _ (TS _ 26)          }
-  '>='            { PT _ (TS _ 27)          }
-  '@+'            { PT _ (TS _ 28)          }
-  '@+i'           { PT _ (TS _ 29)          }
-  '@-'            { PT _ (TS _ 30)          }
-  '@-i'           { PT _ (TS _ 31)          }
-  '@0'            { PT _ (TS _ 32)          }
-  '@1'            { PT _ (TS _ 33)          }
-  'Bit'           { PT _ (TS _ 34)          }
-  'Bool'          { PT _ (TS _ 35)          }
-  'FSWAP'         { PT _ (TS _ 36)          }
-  'False'         { PT _ (TS _ 37)          }
-  'H'             { PT _ (TS _ 38)          }
-  'ID'            { PT _ (TS _ 39)          }
-  'ISWAP'         { PT _ (TS _ 40)          }
-  'Int'           { PT _ (TS _ 41)          }
-  'QFT'           { PT _ (TS _ 42)          }
-  'QFT_DAG'       { PT _ (TS _ 43)          }
-  'Qbit'          { PT _ (TS _ 44)          }
-  'ROOT_SWAP'     { PT _ (TS _ 45)          }
-  'ROOT_SWAP_DAG' { PT _ (TS _ 46)          }
-  'ROOT_X'        { PT _ (TS _ 47)          }
-  'ROOT_X_DAG'    { PT _ (TS _ 48)          }
-  'ROOT_Y'        { PT _ (TS _ 49)          }
-  'ROOT_Y_DAG'    { PT _ (TS _ 50)          }
-  'ROOT_Z'        { PT _ (TS _ 51)          }
-  'ROOT_Z_DAG'    { PT _ (TS _ 52)          }
-  'RX'            { PT _ (TS _ 53)          }
-  'RY'            { PT _ (TS _ 54)          }
-  'RZ'            { PT _ (TS _ 55)          }
-  'S'             { PT _ (TS _ 56)          }
-  'SQRT_SWAP'     { PT _ (TS _ 57)          }
-  'SQRT_SWAP_DAG' { PT _ (TS _ 58)          }
-  'SQRT_X'        { PT _ (TS _ 59)          }
-  'SQRT_X_DAG'    { PT _ (TS _ 60)          }
-  'SQRT_Y'        { PT _ (TS _ 61)          }
-  'SQRT_Y_DAG'    { PT _ (TS _ 62)          }
-  'SWAP'          { PT _ (TS _ 63)          }
-  'SWAP_THETA'    { PT _ (TS _ 64)          }
-  'S_DAG'         { PT _ (TS _ 65)          }
-  'T'             { PT _ (TS _ 66)          }
-  'T_DAG'         { PT _ (TS _ 67)          }
-  'True'          { PT _ (TS _ 68)          }
-  'U1'            { PT _ (TS _ 69)          }
-  'U2'            { PT _ (TS _ 70)          }
-  'U3'            { PT _ (TS _ 71)          }
-  'X'             { PT _ (TS _ 72)          }
-  'Y'             { PT _ (TS _ 73)          }
-  'Z'             { PT _ (TS _ 74)          }
-  '['             { PT _ (TS _ 75)          }
-  '[]'            { PT _ (TS _ 76)          }
-  ']'             { PT _ (TS _ 77)          }
-  'case'          { PT _ (TS _ 78)          }
-  'ctrl'          { PT _ (TS _ 79)          }
-  'else'          { PT _ (TS _ 80)          }
-  'gate'          { PT _ (TS _ 81)          }
-  'if'            { PT _ (TS _ 82)          }
-  'in'            { PT _ (TS _ 83)          }
-  'let'           { PT _ (TS _ 84)          }
-  'not'           { PT _ (TS _ 85)          }
-  'of'            { PT _ (TS _ 86)          }
-  'then'          { PT _ (TS _ 87)          }
-  'with'          { PT _ (TS _ 88)          }
-  '{'             { PT _ (TS _ 89)          }
-  '||'            { PT _ (TS _ 90)          }
-  '}'             { PT _ (TS _ 91)          }
-  L_doubl         { PT _ (TD $$)            }
-  L_integ         { PT _ (TI $$)            }
-  L_BitVariable   { PT _ (T_BitVariable $$) }
-  L_Var           { PT _ (T_Var _)          }
-  L_Lambda        { PT _ (T_Lambda $$)      }
+  '!'             { PT _ (TS _ 1)      }
+  '!!'            { PT _ (TS _ 2)      }
+  '$'             { PT _ (TS _ 3)      }
+  '&&'            { PT _ (TS _ 4)      }
+  '('             { PT _ (TS _ 5)      }
+  '()'            { PT _ (TS _ 6)      }
+  ')'             { PT _ (TS _ 7)      }
+  '*'             { PT _ (TS _ 8)      }
+  '**'            { PT _ (TS _ 9)      }
+  '+'             { PT _ (TS _ 10)     }
+  '++'            { PT _ (TS _ 11)     }
+  ','             { PT _ (TS _ 12)     }
+  '-'             { PT _ (TS _ 13)     }
+  '->'            { PT _ (TS _ 14)     }
+  '.'             { PT _ (TS _ 15)     }
+  '/'             { PT _ (TS _ 16)     }
+  '/='            { PT _ (TS _ 17)     }
+  ':'             { PT _ (TS _ 18)     }
+  '::'            { PT _ (TS _ 19)     }
+  ';'             { PT _ (TS _ 20)     }
+  '<'             { PT _ (TS _ 21)     }
+  '<-'            { PT _ (TS _ 22)     }
+  '<='            { PT _ (TS _ 23)     }
+  '='             { PT _ (TS _ 24)     }
+  '=='            { PT _ (TS _ 25)     }
+  '>'             { PT _ (TS _ 26)     }
+  '>='            { PT _ (TS _ 27)     }
+  '@+'            { PT _ (TS _ 28)     }
+  '@+i'           { PT _ (TS _ 29)     }
+  '@-'            { PT _ (TS _ 30)     }
+  '@-i'           { PT _ (TS _ 31)     }
+  '@0'            { PT _ (TS _ 32)     }
+  '@1'            { PT _ (TS _ 33)     }
+  'Bit'           { PT _ (TS _ 34)     }
+  'Bool'          { PT _ (TS _ 35)     }
+  'FSWAP'         { PT _ (TS _ 36)     }
+  'False'         { PT _ (TS _ 37)     }
+  'H'             { PT _ (TS _ 38)     }
+  'ID'            { PT _ (TS _ 39)     }
+  'ISWAP'         { PT _ (TS _ 40)     }
+  'Int'           { PT _ (TS _ 41)     }
+  'QFT'           { PT _ (TS _ 42)     }
+  'QFT_DAG'       { PT _ (TS _ 43)     }
+  'Qbit'          { PT _ (TS _ 44)     }
+  'ROOT_SWAP'     { PT _ (TS _ 45)     }
+  'ROOT_SWAP_DAG' { PT _ (TS _ 46)     }
+  'ROOT_X'        { PT _ (TS _ 47)     }
+  'ROOT_X_DAG'    { PT _ (TS _ 48)     }
+  'ROOT_Y'        { PT _ (TS _ 49)     }
+  'ROOT_Y_DAG'    { PT _ (TS _ 50)     }
+  'ROOT_Z'        { PT _ (TS _ 51)     }
+  'ROOT_Z_DAG'    { PT _ (TS _ 52)     }
+  'RX'            { PT _ (TS _ 53)     }
+  'RY'            { PT _ (TS _ 54)     }
+  'RZ'            { PT _ (TS _ 55)     }
+  'S'             { PT _ (TS _ 56)     }
+  'SQRT_SWAP'     { PT _ (TS _ 57)     }
+  'SQRT_SWAP_DAG' { PT _ (TS _ 58)     }
+  'SQRT_X'        { PT _ (TS _ 59)     }
+  'SQRT_X_DAG'    { PT _ (TS _ 60)     }
+  'SQRT_Y'        { PT _ (TS _ 61)     }
+  'SQRT_Y_DAG'    { PT _ (TS _ 62)     }
+  'SWAP'          { PT _ (TS _ 63)     }
+  'SWAP_THETA'    { PT _ (TS _ 64)     }
+  'S_DAG'         { PT _ (TS _ 65)     }
+  'T'             { PT _ (TS _ 66)     }
+  'T_DAG'         { PT _ (TS _ 67)     }
+  'True'          { PT _ (TS _ 68)     }
+  'U1'            { PT _ (TS _ 69)     }
+  'U2'            { PT _ (TS _ 70)     }
+  'U3'            { PT _ (TS _ 71)     }
+  'X'             { PT _ (TS _ 72)     }
+  'Y'             { PT _ (TS _ 73)     }
+  'Z'             { PT _ (TS _ 74)     }
+  '['             { PT _ (TS _ 75)     }
+  '[]'            { PT _ (TS _ 76)     }
+  ']'             { PT _ (TS _ 77)     }
+  'case'          { PT _ (TS _ 78)     }
+  'ctrl'          { PT _ (TS _ 79)     }
+  'else'          { PT _ (TS _ 80)     }
+  'gate'          { PT _ (TS _ 81)     }
+  'if'            { PT _ (TS _ 82)     }
+  'in'            { PT _ (TS _ 83)     }
+  'let'           { PT _ (TS _ 84)     }
+  'not'           { PT _ (TS _ 85)     }
+  'of'            { PT _ (TS _ 86)     }
+  'then'          { PT _ (TS _ 87)     }
+  'with'          { PT _ (TS _ 88)     }
+  '{'             { PT _ (TS _ 89)     }
+  '||'            { PT _ (TS _ 90)     }
+  '}'             { PT _ (TS _ 91)     }
+  L_doubl         { PT _ (TD $$)       }
+  L_integ         { PT _ (TI $$)       }
+  L_Var           { PT _ (T_Var _)     }
+  L_Lambda        { PT _ (T_Lambda $$) }
 
 %%
 
@@ -127,9 +126,6 @@ Double   : L_doubl  { (read $1) :: Double }
 
 Integer :: { Integer }
 Integer  : L_integ  { (read $1) :: Integer }
-
-BitVariable :: { Frontend.LambdaQ.Abs.BitVariable }
-BitVariable  : L_BitVariable { Frontend.LambdaQ.Abs.BitVariable $1 }
 
 Var :: { Frontend.LambdaQ.Abs.Var }
 Var  : L_Var { Frontend.LambdaQ.Abs.Var (mkPosToken $1) }
@@ -233,9 +229,6 @@ BasisState
   | '@+i' { Frontend.LambdaQ.Abs.BasisStatePlusI }
   | '@-i' { Frontend.LambdaQ.Abs.BasisStateMinusI }
 
-Bit :: { Frontend.LambdaQ.Abs.Bit }
-Bit : BitVariable { Frontend.LambdaQ.Abs.BitValue $1 }
-
 Gate :: { Frontend.LambdaQ.Abs.Gate }
 Gate
   : 'H' { Frontend.LambdaQ.Abs.GateH }
@@ -291,17 +284,15 @@ ListBasisState
   | BasisState ',' ListBasisState { (:) $1 $3 }
 
 ControlBit :: { Frontend.LambdaQ.Abs.ControlBit }
-ControlBit
-  : '[' BitVariable ']' { Frontend.LambdaQ.Abs.CtrlBit $2 }
+ControlBit : '[' Integer ']' { Frontend.LambdaQ.Abs.CtrlBit $2 }
 
 ControlBits :: { Frontend.LambdaQ.Abs.ControlBits }
 ControlBits
-  : '[' BitVariable ',' ListBitVariable ']' { Frontend.LambdaQ.Abs.CtrlBits $2 $4 }
+  : '[' Integer ',' ListInteger ']' { Frontend.LambdaQ.Abs.CtrlBits $2 $4 }
 
-ListBitVariable :: { [Frontend.LambdaQ.Abs.BitVariable] }
-ListBitVariable
-  : BitVariable { (:[]) $1 }
-  | BitVariable ',' ListBitVariable { (:) $1 $3 }
+ListInteger :: { [Integer] }
+ListInteger
+  : Integer { (:[]) $1 } | Integer ',' ListInteger { (:) $1 $3 }
 
 Tuple :: { Frontend.LambdaQ.Abs.Tuple }
 Tuple
@@ -352,7 +343,6 @@ Term3
   | IntegerExpression { Frontend.LambdaQ.Abs.TermIntegerExpression $1 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
   | Tuple { Frontend.LambdaQ.Abs.TermTuple $1 }
-  | Bit { Frontend.LambdaQ.Abs.TermBit $1 }
   | List { Frontend.LambdaQ.Abs.TermList $1 }
   | Term4 { $1 }
 

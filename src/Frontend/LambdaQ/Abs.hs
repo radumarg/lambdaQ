@@ -69,9 +69,6 @@ data BasisState
     | BasisStateMinusI
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Bit = BitValue BitVariable
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
 data Gate
     = GateH
     | GateX
@@ -116,10 +113,10 @@ data ControlBasisState = CtrlBasisState BasisState
 data ControlBasisStates = CtrlBasisStates BasisState [BasisState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBit = CtrlBit BitVariable
+data ControlBit = CtrlBit Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBits = CtrlBits BitVariable [BitVariable]
+data ControlBits = CtrlBits Integer [Integer]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data Tuple = Tupl Term [Term]
@@ -153,7 +150,6 @@ data Term
     | TermIntegerExpression IntegerExpression
     | TermGate Gate
     | TermTuple Tuple
-    | TermBit Bit
     | TermList List
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
@@ -180,9 +176,6 @@ data FunctionType = FunType Var Type
 
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
   deriving (C.Eq, C.Ord, C.Show, C.Read)
-
-newtype BitVariable = BitVariable String
-  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype Var = Var ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
