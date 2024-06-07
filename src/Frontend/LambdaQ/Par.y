@@ -116,6 +116,7 @@ import Frontend.LambdaQ.Lex
   '}'             { PT _ (TS _ 91)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
+  L_GateVar       { PT _ (T_GateVar _) }
   L_Var           { PT _ (T_Var _)     }
   L_Lambda        { PT _ (T_Lambda $$) }
 
@@ -126,6 +127,9 @@ Double   : L_doubl  { (read $1) :: Double }
 
 Integer :: { Integer }
 Integer  : L_integ  { (read $1) :: Integer }
+
+GateVar :: { Frontend.LambdaQ.Abs.GateVar }
+GateVar  : L_GateVar { Frontend.LambdaQ.Abs.GateVar (mkPosToken $1) }
 
 Var :: { Frontend.LambdaQ.Abs.Var }
 Var  : L_Var { Frontend.LambdaQ.Abs.Var (mkPosToken $1) }
@@ -266,6 +270,11 @@ Gate
   | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }
   | 'QFT' Integer { Frontend.LambdaQ.Abs.GateQft $2 }
   | 'QFT_DAG' Integer { Frontend.LambdaQ.Abs.GateQftDag $2 }
+  | GateVar '(' Angle ',' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateUknown3Angle $1 $3 $5 $7 }
+  | GateVar '(' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateUknown2Angle $1 $3 $5 }
+  | GateVar Angle { Frontend.LambdaQ.Abs.GateUknown1Angle $1 $2 }
+  | GateVar Integer { Frontend.LambdaQ.Abs.GateUknownInt $1 $2 }
+  | GateVar { Frontend.LambdaQ.Abs.GateUnknownSimple $1 }
 
 ListVar :: { [Frontend.LambdaQ.Abs.Var] }
 ListVar : Var { (:[]) $1 } | Var ',' ListVar { (:) $1 $3 }
@@ -332,6 +341,7 @@ Term2
   | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicCtrlsGate $2 $4 }
   | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
   | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
+  | Var ',' ListVar { Frontend.LambdaQ.Abs.TermVariables $1 $3 }
   | Term3 { $1 }
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
@@ -347,24 +357,22 @@ Term3
   | Term4 { $1 }
 
 Term4 :: { Frontend.LambdaQ.Abs.Term }
-Term4 : '(' Term ')' { $2 }
+Term4
+  : List '!!' Integer { Frontend.LambdaQ.Abs.TermListElement $1 $3 }
+  | '(' Term ')' { $2 }
 
-List :: { Frontend.LambdaQ.Abs.List }
-List
+List1 :: { Frontend.LambdaQ.Abs.List }
+List1
   : '[]' { Frontend.LambdaQ.Abs.ListNil }
   | '[' Term ']' { Frontend.LambdaQ.Abs.ListSingle $2 }
   | '[' Term ',' ListTerm ']' { Frontend.LambdaQ.Abs.ListMultiple $2 $4 }
-  | List '++' List1 { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
-  | List1 { $1 }
-
-List2 :: { Frontend.LambdaQ.Abs.List }
-List2
-  : Term4 ':' List1 { Frontend.LambdaQ.Abs.ListCons $1 $3 }
-  | List1 '!!' Integer { Frontend.LambdaQ.Abs.ListExpressionMember $1 $3 }
   | '(' List ')' { $2 }
 
-List1 :: { Frontend.LambdaQ.Abs.List }
-List1 : List2 { $1 }
+List :: { Frontend.LambdaQ.Abs.List }
+List
+  : List '++' List1 { Frontend.LambdaQ.Abs.ListExpressionAdd $1 $3 }
+  | Term3 ':' List1 { Frontend.LambdaQ.Abs.ListCons $1 $3 }
+  | List1 { $1 }
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression

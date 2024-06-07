@@ -23,6 +23,10 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
+
+GateVar literals are recognized by the regular expression
+`````upper ('_' | digit | letter)*`````
+
 Var literals are recognized by the regular expression
 `````('_' | lower) (["'_"] | digit | letter)*`````
 
@@ -57,8 +61,8 @@ The symbols used in LambdaQ are the following:
   | @0 | @1 | @+ | @-
   | @+i | @-i | , | $
   | { | = | } | <-
-  | ; | . | [] | ++
-  | : | !! | :: |
+  | ; | . | !! | []
+  | ++ | : | :: |
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -154,6 +158,11 @@ All other symbols are terminals.
   |  |  **|**  | ``ROOT_SWAP_DAG`` //Integer//
   |  |  **|**  | ``QFT`` //Integer//
   |  |  **|**  | ``QFT_DAG`` //Integer//
+  |  |  **|**  | //GateVar// ``(`` //Angle// ``,`` //Angle// ``,`` //Angle// ``)``
+  |  |  **|**  | //GateVar// ``(`` //Angle// ``,`` //Angle// ``)``
+  |  |  **|**  | //GateVar// //Angle//
+  |  |  **|**  | //GateVar// //Integer//
+  |  |  **|**  | //GateVar//
   | //[Var]// | -> | //Var//
   |  |  **|**  | //Var// ``,`` //[Var]//
   | //ControlBasisState// | -> | ``[`` //BasisState// ``]``
@@ -185,6 +194,7 @@ All other symbols are terminals.
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
   |  |  **|**  | //Term2// //Term3//
   |  |  **|**  | //Term2// ``.`` //Term3//
+  |  |  **|**  | //Var// ``,`` //[Var]//
   |  |  **|**  | //Term3//
   | //Term3// | -> | //Var//
   |  |  **|**  | ``()``
@@ -195,16 +205,15 @@ All other symbols are terminals.
   |  |  **|**  | //Tuple//
   |  |  **|**  | //List//
   |  |  **|**  | //Term4//
-  | //Term4// | -> | ``(`` //Term// ``)``
-  | //List// | -> | ``[]``
+  | //Term4// | -> | //List// ``!!`` //Integer//
+  |  |  **|**  | ``(`` //Term// ``)``
+  | //List1// | -> | ``[]``
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``
-  |  |  **|**  | //List// ``++`` //List1//
-  |  |  **|**  | //List1//
-  | //List2// | -> | //Term4// ``:`` //List1//
-  |  |  **|**  | //List1// ``!!`` //Integer//
   |  |  **|**  | ``(`` //List// ``)``
-  | //List1// | -> | //List2//
+  | //List// | -> | //List// ``++`` //List1//
+  |  |  **|**  | //Term3// ``:`` //List1//
+  |  |  **|**  | //List1//
   | //CaseExpression// | -> | //Term3// ``->`` //Term3//
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//

@@ -28,7 +28,7 @@ $u = [. \n]          -- universal: any character
 
 -- Symbols and non-identifier-like reserved words
 
-@rsyms = \+ | \- | \* | \/ | \( | \) | \& \& | \| \| | \= \= | \/ \= | \> | \> \= | \< | \< \= | \- \> | \* \* | \! | \( \) | \[ | \] | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \$ | \{ | \= | \} | \< \- | \; | \. | \[ \] | \+ \+ | \: | \! \! | \: \:
+@rsyms = \+ | \- | \* | \/ | \( | \) | \& \& | \| \| | \= \= | \/ \= | \> | \> \= | \< | \< \= | \- \> | \* \* | \! | \( \) | \[ | \] | \@ "0" | \@ "1" | \@ \+ | \@ \- | \@ \+ "i" | \@ \- "i" | \, | \$ | \{ | \= | \} | \< \- | \; | \. | \! \! | \[ \] | \+ \+ | \: | \: \:
 
 :-
 
@@ -44,6 +44,10 @@ $white+ ;
 -- Symbols
 @rsyms
     { tok (eitherResIdent TV) }
+
+-- token GateVar
+$c (\_ | ($d | $l)) *
+    { tok (eitherResIdent T_GateVar) }
 
 -- token Var
 (\_ | $s)([\' \_]| ($d | $l)) *
@@ -78,6 +82,7 @@ data Tok
   | TV !String                    -- ^ Identifier.
   | TD !String                    -- ^ Float literal.
   | TC !String                    -- ^ Character literal.
+  | T_GateVar !String
   | T_Var !String
   | T_Lambda !String
   deriving (Eq, Show, Ord)
@@ -142,6 +147,7 @@ tokenText t = case t of
   PT _ (TD s)   -> s
   PT _ (TC s)   -> s
   Err _         -> "#error"
+  PT _ (T_GateVar s) -> s
   PT _ (T_Var s) -> s
   PT _ (T_Lambda s) -> s
 

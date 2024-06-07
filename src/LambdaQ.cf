@@ -145,6 +145,7 @@ TermClassicCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
 TermClassicCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
 TermApply             . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermCompose           . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermVariables         . Term2 ::= Var "," [Var] ;
 TermVariable          . Term3 ::= Var ;
 TermUnit              . Term3 ::= "()" ;
 TermBasisState        . Term3 ::= BasisState ;
@@ -165,8 +166,8 @@ ListNil               . List1 ::= "[]" ;
 ListSingle            . List1 ::= "[" Term "]" ;
 ListMultiple          . List1 ::= "[" Term "," [Term] "]" ;
 ListExpressionAdd     . List ::= List "++" List1 ;
-ListCons              . List ::= Term4 ":" List1 ;
-coercions List 2 ;
+ListCons              . List ::= Term3 ":" List1 ;
+coercions List 1 ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term3 "->" Term3 ;

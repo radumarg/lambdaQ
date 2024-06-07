@@ -105,6 +105,11 @@ data Gate
     | GateSwpRtDag Integer
     | GateQft Integer
     | GateQftDag Integer
+    | GateUknown3Angle GateVar Angle Angle Angle
+    | GateUknown2Angle GateVar Angle Angle
+    | GateUknown1Angle GateVar Angle
+    | GateUknownInt GateVar Integer
+    | GateUnknownSimple GateVar
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlBasisState = CtrlBasisState BasisState
@@ -143,6 +148,7 @@ data Term
     | TermClassicCtrlsGate ControlTerms ControlBits
     | TermApply Term Term
     | TermCompose Term Term
+    | TermVariables Var [Var]
     | TermVariable Var
     | TermUnit
     | TermBasisState BasisState
@@ -151,6 +157,7 @@ data Term
     | TermGate Gate
     | TermTuple Tuple
     | TermList List
+    | TermListElement List Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data List
@@ -159,7 +166,6 @@ data List
     | ListMultiple Term [Term]
     | ListExpressionAdd List List
     | ListCons Term List
-    | ListExpressionMember List Integer
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data CaseExpression = CaseExpr Term Term
@@ -175,6 +181,9 @@ data FunctionType = FunType Var Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data FunctionDeclaration = FunDecl FunctionType FunctionDefinition
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+newtype GateVar = GateVar ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 newtype Var = Var ((C.Int, C.Int), String)
@@ -197,6 +206,9 @@ pattern BNFC'Position line col = C.Just (line, col)
 
 class HasPosition a where
   hasPosition :: a -> BNFC'Position
+
+instance HasPosition GateVar where
+  hasPosition (GateVar (p, _)) = C.Just p
 
 instance HasPosition Var where
   hasPosition (Var (p, _)) = C.Just p

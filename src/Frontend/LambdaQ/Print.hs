@@ -137,6 +137,8 @@ instance Print Integer where
 instance Print Double where
   prt _ x = doc (shows x)
 
+instance Print Frontend.LambdaQ.Abs.GateVar where
+  prt _ (Frontend.LambdaQ.Abs.GateVar (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
@@ -237,6 +239,11 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateSwpRtDag n -> prPrec i 0 (concatD [doc (showString "ROOT_SWAP_DAG"), prt 0 n])
     Frontend.LambdaQ.Abs.GateQft n -> prPrec i 0 (concatD [doc (showString "QFT"), prt 0 n])
     Frontend.LambdaQ.Abs.GateQftDag n -> prPrec i 0 (concatD [doc (showString "QFT_DAG"), prt 0 n])
+    Frontend.LambdaQ.Abs.GateUknown3Angle gatevar angle1 angle2 angle3 -> prPrec i 0 (concatD [prt 0 gatevar, doc (showString "("), prt 0 angle1, doc (showString ","), prt 0 angle2, doc (showString ","), prt 0 angle3, doc (showString ")")])
+    Frontend.LambdaQ.Abs.GateUknown2Angle gatevar angle1 angle2 -> prPrec i 0 (concatD [prt 0 gatevar, doc (showString "("), prt 0 angle1, doc (showString ","), prt 0 angle2, doc (showString ")")])
+    Frontend.LambdaQ.Abs.GateUknown1Angle gatevar angle -> prPrec i 0 (concatD [prt 0 gatevar, prt 0 angle])
+    Frontend.LambdaQ.Abs.GateUknownInt gatevar n -> prPrec i 0 (concatD [prt 0 gatevar, prt 0 n])
+    Frontend.LambdaQ.Abs.GateUnknownSimple gatevar -> prPrec i 0 (concatD [prt 0 gatevar])
 
 instance Print [Frontend.LambdaQ.Abs.Var] where
   prt _ [] = concatD []
@@ -302,6 +309,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> prPrec i 2 (concatD [doc (showString "with"), prt 0 controlterms, doc (showString "ctrl"), prt 0 controlbits])
     Frontend.LambdaQ.Abs.TermApply term1 term2 -> prPrec i 2 (concatD [prt 2 term1, prt 3 term2])
     Frontend.LambdaQ.Abs.TermCompose term1 term2 -> prPrec i 2 (concatD [prt 2 term1, doc (showString "."), prt 3 term2])
+    Frontend.LambdaQ.Abs.TermVariables var vars -> prPrec i 2 (concatD [prt 0 var, doc (showString ","), prt 0 vars])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
@@ -310,15 +318,15 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
     Frontend.LambdaQ.Abs.TermTuple tuple -> prPrec i 3 (concatD [prt 0 tuple])
     Frontend.LambdaQ.Abs.TermList list -> prPrec i 3 (concatD [prt 0 list])
+    Frontend.LambdaQ.Abs.TermListElement list n -> prPrec i 4 (concatD [prt 0 list, doc (showString "!!"), prt 0 n])
 
 instance Print Frontend.LambdaQ.Abs.List where
   prt i = \case
-    Frontend.LambdaQ.Abs.ListNil -> prPrec i 0 (concatD [doc (showString "[]")])
-    Frontend.LambdaQ.Abs.ListSingle term -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
-    Frontend.LambdaQ.Abs.ListMultiple term terms -> prPrec i 0 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
+    Frontend.LambdaQ.Abs.ListNil -> prPrec i 1 (concatD [doc (showString "[]")])
+    Frontend.LambdaQ.Abs.ListSingle term -> prPrec i 1 (concatD [doc (showString "["), prt 0 term, doc (showString "]")])
+    Frontend.LambdaQ.Abs.ListMultiple term terms -> prPrec i 1 (concatD [doc (showString "["), prt 0 term, doc (showString ","), prt 0 terms, doc (showString "]")])
     Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> prPrec i 0 (concatD [prt 0 list1, doc (showString "++"), prt 1 list2])
-    Frontend.LambdaQ.Abs.ListCons term list -> prPrec i 2 (concatD [prt 4 term, doc (showString ":"), prt 1 list])
-    Frontend.LambdaQ.Abs.ListExpressionMember list n -> prPrec i 2 (concatD [prt 1 list, doc (showString "!!"), prt 0 n])
+    Frontend.LambdaQ.Abs.ListCons term list -> prPrec i 0 (concatD [prt 3 term, doc (showString ":"), prt 1 list])
 
 instance Print Frontend.LambdaQ.Abs.CaseExpression where
   prt i = \case

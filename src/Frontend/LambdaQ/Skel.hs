@@ -15,6 +15,10 @@ type Result = Err String
 failure :: Show a => a -> Result
 failure x = Left $ "Undefined case: " ++ show x
 
+transGateVar :: Frontend.LambdaQ.Abs.GateVar -> Result
+transGateVar x = case x of
+  Frontend.LambdaQ.Abs.GateVar string -> failure x
+
 transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
   Frontend.LambdaQ.Abs.Var string -> failure x
@@ -119,6 +123,11 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x
   Frontend.LambdaQ.Abs.GateQft integer -> failure x
   Frontend.LambdaQ.Abs.GateQftDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateUknown3Angle gatevar angle1 angle2 angle3 -> failure x
+  Frontend.LambdaQ.Abs.GateUknown2Angle gatevar angle1 angle2 -> failure x
+  Frontend.LambdaQ.Abs.GateUknown1Angle gatevar angle -> failure x
+  Frontend.LambdaQ.Abs.GateUknownInt gatevar integer -> failure x
+  Frontend.LambdaQ.Abs.GateUnknownSimple gatevar -> failure x
 
 transControlBasisState :: Frontend.LambdaQ.Abs.ControlBasisState -> Result
 transControlBasisState x = case x of
@@ -164,6 +173,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> failure x
   Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermVariables var vars -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
@@ -172,6 +182,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
+  Frontend.LambdaQ.Abs.TermListElement list integer -> failure x
 
 transList :: Frontend.LambdaQ.Abs.List -> Result
 transList x = case x of
@@ -180,7 +191,6 @@ transList x = case x of
   Frontend.LambdaQ.Abs.ListMultiple term terms -> failure x
   Frontend.LambdaQ.Abs.ListExpressionAdd list1 list2 -> failure x
   Frontend.LambdaQ.Abs.ListCons term list -> failure x
-  Frontend.LambdaQ.Abs.ListExpressionMember list integer -> failure x
 
 transCaseExpression :: Frontend.LambdaQ.Abs.CaseExpression -> Result
 transCaseExpression x = case x of
