@@ -3,6 +3,6 @@ fun = q1, q2, q3, q4 <- (gate H new @0, gate H new @0, gate H new @0, gate H new
       b1 <- measr q1;
       b2 <- measr q2;
       b3 <- measr q3;
-      measr (with [ (b1), (b2), (b3) ] ctrl [ 0, 0, 1 ] gate Y q2) --TODO: fix grammar and remove paranthesis
-                                                                   --TODO: how will select qubit to apply measure gate
+      measr (with [ b1, b2, b3 ] ctrl [ 0, 0, 1 ] gate Y q2) 
+      --TODO: how will select qubit to apply measure gate
 

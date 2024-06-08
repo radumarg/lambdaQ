@@ -145,10 +145,6 @@ transControlBits :: Frontend.LambdaQ.Abs.ControlBits -> Result
 transControlBits x = case x of
   Frontend.LambdaQ.Abs.CtrlBits integer integers -> failure x
 
-transTuple :: Frontend.LambdaQ.Abs.Tuple -> Result
-transTuple x = case x of
-  Frontend.LambdaQ.Abs.Tupl term terms -> failure x
-
 transControlTerm :: Frontend.LambdaQ.Abs.ControlTerm -> Result
 transControlTerm x = case x of
   Frontend.LambdaQ.Abs.CtrlTerm term -> failure x
@@ -157,9 +153,35 @@ transControlTerms :: Frontend.LambdaQ.Abs.ControlTerms -> Result
 transControlTerms x = case x of
   Frontend.LambdaQ.Abs.CtrlTerms term terms -> failure x
 
+transControlVar :: Frontend.LambdaQ.Abs.ControlVar -> Result
+transControlVar x = case x of
+  Frontend.LambdaQ.Abs.CtrlVar var -> failure x
+
+transControlVars :: Frontend.LambdaQ.Abs.ControlVars -> Result
+transControlVars x = case x of
+  Frontend.LambdaQ.Abs.CtrlVars var vars -> failure x
+
 transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
-  Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermListElement list integer -> failure x
+  Frontend.LambdaQ.Abs.TermUnit -> failure x
+  Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
+  Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> failure x
+  Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x
+  Frontend.LambdaQ.Abs.TermGate gate -> failure x
+  Frontend.LambdaQ.Abs.TermList list -> failure x
+  Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
+  Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate controlterms controlbasisstates -> failure x
+  Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate controlvars controlbasisstates -> failure x
+  Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
+  Frontend.LambdaQ.Abs.TermClassicTCtrlsGate controlterms controlbits -> failure x
+  Frontend.LambdaQ.Abs.TermClassicVCtrlsGate controlvars controlbits -> failure x
+  Frontend.LambdaQ.Abs.TermVariable var -> failure x
+  Frontend.LambdaQ.Abs.TermTupleOfTerms term terms -> failure x
+  Frontend.LambdaQ.Abs.TermTupleOfVars var vars -> failure x
+  Frontend.LambdaQ.Abs.TermVariableList var vars -> failure x
+  Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
   Frontend.LambdaQ.Abs.TermLetSingle var term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> failure x
@@ -167,22 +189,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermLetSugarMultiple var vars term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> failure x
-  Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
-  Frontend.LambdaQ.Abs.TermQuantumCtrlsGate controlterms controlbasisstates -> failure x
-  Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
-  Frontend.LambdaQ.Abs.TermClassicCtrlsGate controlterms controlbits -> failure x
-  Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermVariables var vars -> failure x
-  Frontend.LambdaQ.Abs.TermVariable var -> failure x
-  Frontend.LambdaQ.Abs.TermUnit -> failure x
-  Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
-  Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> failure x
-  Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x
-  Frontend.LambdaQ.Abs.TermGate gate -> failure x
-  Frontend.LambdaQ.Abs.TermTuple tuple -> failure x
-  Frontend.LambdaQ.Abs.TermList list -> failure x
-  Frontend.LambdaQ.Abs.TermListElement list integer -> failure x
+  Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
 
 transList :: Frontend.LambdaQ.Abs.List -> Result
 transList x = case x of

@@ -194,7 +194,7 @@ spec =  do
     --     result <- testProgramAndShowResults "test/programs/code-fragments/program_fragment_13.lq"
     --     result `shouldSatisfy` (\str -> "Function fun (2,1) TypeBit" `isInfixOf` str)
     --     result `shouldSatisfy` (\str -> "TermLetMultiple (TermTuple (TermApply (TermNew (2,27)) (TermBasisState BasisStateOne)) (TermTuple (TermApply (TermNew (2,35)) (TermBasisState BasisStateZero))" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "TermApply (TermNew (2,43)) (TermBasisState BasisStateOne)))) (TermApply (TermMeasure (3,7)) (TermApply (TermApply (TermQuantumCtrlsGate TermBoundVariable 2,TermBoundVariable 1 BasisStateOne,BasisStatePlusI) (TermGate GateX)) (TermBoundVariable 0)))" `isInfixOf` str)
+    --     result `shouldSatisfy` (\str -> "TermApply (TermNew (2,43)) (TermBasisState BasisStateOne)))) (TermApply (TermMeasure (3,7)) (TermApply (TermApply (TermQuantumTCtrlsGate TermBoundVariable 2,TermBoundVariable 1 BasisStateOne,BasisStatePlusI) (TermGate GateX)) (TermBoundVariable 0)))" `isInfixOf` str)
 
     -- context "when provided with a small program fragment(14)" $ do
     --   it "returns a syntax tree processed in the intermediate syntax tree format" $ do
@@ -203,7 +203,7 @@ spec =  do
     --     result `shouldSatisfy` (\str -> "TermLetSugarMultiple" `isInfixOf` str)
     --     result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermNew (2,26)) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermNew (2,34)) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermNew (2,42)) (TermBasisState BasisStateZero)) (TermApply (TermNew (2,50)) (TermBasisState BasisStateZero))" `isInfixOf` str)
     --     result `shouldSatisfy` (\str -> "TermApply (TermMeasure (3,7))" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "TermApply (TermApply (TermQuantumCtrlsGate TermBoundVariable 3,TermBoundVariable 1,TermBoundVariable 0 BasisStateOne,BasisStateOne,BasisStateOne) (TermGate GateY)) (TermBoundVariable 2)" `isInfixOf` str)
+    --     result `shouldSatisfy` (\str -> "TermApply (TermApply (TermQuantumTCtrlsGate TermBoundVariable 3,TermBoundVariable 1,TermBoundVariable 0 BasisStateOne,BasisStateOne,BasisStateOne) (TermGate GateY)) (TermBoundVariable 2)" `isInfixOf` str)
 
     -- context "when provided with a small program fragment(15)" $ do
     --   it "returns a syntax tree processed in the intermediate syntax tree format" $ do
@@ -327,7 +327,7 @@ spec =  do
     --     result `shouldSatisfy` (\str -> "Function fun (2,1) TypeBit" `isInfixOf` str)
     --     result `shouldSatisfy` (\str -> "TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,33))) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,48))) (TermBasisState BasisStateZero)) (TermTuple (TermApply (TermApply (TermGate GateH) (TermNew (2,63))) (TermBasisState BasisStateZero)) (TermApply (TermApply (TermGate GateH) (TermNew (2,78))) (TermBasisState BasisStateZero)))" `isInfixOf` str)
     --     result `shouldSatisfy` (\str -> "TermLetSugarSingle (TermApply (TermMeasure (3,13)) (TermBoundVariable 3)) (TermLetSugarSingle (TermApply (TermMeasure (4,13)) (TermBoundVariable 3)) (TermLetSugarSingle (TermApply (TermMeasure (5,13)) (TermBoundVariable 3))" `isInfixOf` str)
-    --     result `shouldSatisfy` (\str -> "TermApply (TermMeasure (6,7)) (TermApply (TermApply (TermClassicCtrlsGate TermBoundVariable 2,TermBoundVariable 1,TermBoundVariable 0 0,0,1) (TermGate GateY)) (TermBoundVariable 5))" `isInfixOf` str)
+    --     result `shouldSatisfy` (\str -> "TermApply (TermMeasure (6,7)) (TermApply (TermApply (TermClassicTCtrlsGate TermBoundVariable 2,TermBoundVariable 1,TermBoundVariable 0 0,0,1) (TermGate GateY)) (TermBoundVariable 5))" `isInfixOf` str)
 
     -- context "when provided with a small program fragment(30)" $ do
     --   it "returns a syntax tree processed in the intermediate syntax tree format" $ do

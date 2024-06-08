@@ -124,17 +124,38 @@ data ControlBit = CtrlBit Integer
 data ControlBits = CtrlBits Integer [Integer]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data Tuple = Tupl Term [Term]
-  deriving (C.Eq, C.Ord, C.Show, C.Read)
-
 data ControlTerm = CtrlTerm Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlTerms = CtrlTerms Term [Term]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
+data ControlVar = CtrlVar Var
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+data ControlVars = CtrlVars Var [Var]
+  deriving (C.Eq, C.Ord, C.Show, C.Read)
+
 data Term
-    = TermDollar Term Term
+    = TermListElement List Integer
+    | TermUnit
+    | TermBasisState BasisState
+    | TermBoolExpression BoolExpression
+    | TermIntegerExpression IntegerExpression
+    | TermGate Gate
+    | TermList List
+    | TermQuantumCtrlGate ControlTerm ControlBasisState
+    | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
+    | TermQuantumVCtrlsGate ControlVars ControlBasisStates
+    | TermClassicCtrlGate ControlTerm ControlBit
+    | TermClassicTCtrlsGate ControlTerms ControlBits
+    | TermClassicVCtrlsGate ControlVars ControlBits
+    | TermVariable Var
+    | TermTupleOfTerms Term [Term]
+    | TermTupleOfVars Var [Var]
+    | TermVariableList Var [Var]
+    | TermApply Term Term
+    | TermCompose Term Term
     | TermIfElse Term Term Term
     | TermLetSingle Var Term Term
     | TermLetMultiple Var [Var] Term Term
@@ -142,22 +163,7 @@ data Term
     | TermLetSugarMultiple Var [Var] Term Term
     | TermCase Term CaseExpression [CaseExpression]
     | TermLambda Lambda Var Type Term
-    | TermQuantumCtrlGate ControlTerm ControlBasisState
-    | TermQuantumCtrlsGate ControlTerms ControlBasisStates
-    | TermClassicCtrlGate ControlTerm ControlBit
-    | TermClassicCtrlsGate ControlTerms ControlBits
-    | TermApply Term Term
-    | TermCompose Term Term
-    | TermVariables Var [Var]
-    | TermVariable Var
-    | TermUnit
-    | TermBasisState BasisState
-    | TermBoolExpression BoolExpression
-    | TermIntegerExpression IntegerExpression
-    | TermGate Gate
-    | TermTuple Tuple
-    | TermList List
-    | TermListElement List Integer
+    | TermDollar Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data List

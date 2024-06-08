@@ -4,15 +4,15 @@ someState = gate U3 (0.1, 0.2, 0.3) (new @0)
 bellState :: Qbit * Qbit -> Qbit * Qbit
 bellState qAlice qBob = qAlice <- gate H qAlice;
                         qAlice, qBob <- with [ qAlice ] ctrl [ @1 ] gate X qBob;
-                        ((qAlice), (qBob)) -- TODO: fix grammar and remove paranthesis
+                        (qAlice, qBob)
 
 -- the: Qbit * Qbit * Qbit type declaration is the same with: Qbit ** 3
 prepare :: Qbit ** 3 -> Qbit ** 3 
 prepare qubits = qAncilla, qAlice, qBob <- qubits;
-                 qAlice, qBob <- bellState ((qAlice), (qBob)); -- TODO: fix grammar and remove paranthesis
+                 qAlice, qBob <- bellState (qAlice, qBob);
                  qAncilla, qAlice <- with [ qAncilla ] ctrl [ @1 ] gate X qAlice;
                  qAncilla <- gate H qAncilla;
-                 ((qAncilla), (qAlice), (qBob)) -- TODO: fix grammar and remove paranthesis
+                 (qAncilla, qAlice, qBob)
 
 execute :: Qbit * Qbit * Qbit -> Qbit
 execute qubits = let (qAncilla, qAlice, qBob) = qubits in
@@ -23,7 +23,7 @@ execute qubits = let (qAncilla, qAlice, qBob) = qubits in
                    (if bitAlice then gate X qBob else gate ID qBob)
 
 teleport :: Qbit -> Qbit
-teleport q = execute . prepare ((new @0), (q), (new @0)) -- TODO: fix grammar and remove paranthesis
+teleport q = execute . prepare (new @0, q, new @0)
 
 -- testing the teleport result --
 main :: !Bit

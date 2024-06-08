@@ -273,13 +273,13 @@ mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple x (y:ys) letEq letIn) 
 
 mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBasisState basisState)) =
     TermQuantumCtrlGate (mapTerm env term) (mapBasisState basisState)
-mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBasisStates basisState basisStates)) =
+mapTerm env (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBasisStates basisState basisStates)) =
     TermQuantumCtrlsGate (mapTerm env term : map (mapTerm env) terms) (mapBasisState basisState : map mapBasisState basisStates)
 -- TODO: fix
 -- mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit ctrlBit)) =
 --     TermClassicCtrlGate (mapTerm env term) ctrlBit
--- mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits ctrlBit ctrlBits)) =
---     TermClassicCtrlsGate (mapTerm env term : map (mapTerm env) terms) (ctrlBit : ctrlBits)
+-- mapTerm env (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits ctrlBit ctrlBits)) =
+--     TermClassicTCtrlsGate (mapTerm env term : map (mapTerm env) terms) (ctrlBit : ctrlBits)
 
 mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
 mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
@@ -290,7 +290,7 @@ mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup va
   where
     varName = toVariableName var
 
-mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
+--mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
 
 mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
   where envUpdated = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)

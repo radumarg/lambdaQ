@@ -59,9 +59,9 @@ The symbols used in LambdaQ are the following:
   | < | <= | -> | **
   | ! | () | [ | ]
   | @0 | @1 | @+ | @-
-  | @+i | @-i | , | $
-  | { | = | } | <-
-  | ; | . | !! | []
+  | @+i | @-i | , | !!
+  | . | { | = | }
+  | <- | ; | $ | []
   | ++ | : | :: |
 
 ===Comments===
@@ -173,13 +173,34 @@ All other symbols are terminals.
   | //ControlBits// | -> | ``[`` //Integer// ``,`` //[Integer]// ``]``
   | //[Integer]// | -> | //Integer//
   |  |  **|**  | //Integer// ``,`` //[Integer]//
-  | //Tuple// | -> | ``(`` //Term// ``,`` //[Term]// ``)``
   | //ControlTerm// | -> | ``[`` //Term// ``]``
   | //ControlTerms// | -> | ``[`` //Term// ``,`` //[Term]// ``]``
+  | //ControlVar// | -> | ``[`` //Var// ``]``
+  | //ControlVars// | -> | ``[`` //Var// ``,`` //[Var]// ``]``
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
-  | //Term// | -> | //Term1// ``$`` //Term//
-  |  |  **|**  | //Term1//
+  | //Term4// | -> | //List// ``!!`` //Integer//
+  |  |  **|**  | ``(`` //Term// ``)``
+  | //Term3// | -> | ``()``
+  |  |  **|**  | //BasisState//
+  |  |  **|**  | //BoolExpression//
+  |  |  **|**  | //IntegerExpression//
+  |  |  **|**  | ``gate`` //Gate//
+  |  |  **|**  | //List//
+  |  |  **|**  | //Var//
+  |  |  **|**  | ``(`` //Term// ``,`` //[Term]// ``)``
+  |  |  **|**  | ``(`` //Var// ``,`` //[Var]// ``)``
+  |  |  **|**  | //Term4//
+  | //Term2// | -> | ``with`` //ControlTerm// ``ctrl`` //ControlBasisState//
+  |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
+  |  |  **|**  | ``with`` //ControlVars// ``ctrl`` //ControlBasisStates//
+  |  |  **|**  | ``with`` //ControlTerm// ``ctrl`` //ControlBit//
+  |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
+  |  |  **|**  | ``with`` //ControlVars// ``ctrl`` //ControlBits//
+  |  |  **|**  | //Var// ``,`` //[Var]//
+  |  |  **|**  | //Term2// //Term3//
+  |  |  **|**  | //Term2// ``.`` //Term3//
+  |  |  **|**  | //Term3//
   | //Term1// | -> | ``if`` //Term// ``then`` //Term// ``else`` //Term//
   |  |  **|**  | ``let`` ``{`` //Var// ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
@@ -188,25 +209,8 @@ All other symbols are terminals.
   |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2//
-  | //Term2// | -> | ``with`` //ControlTerm// ``ctrl`` //ControlBasisState//
-  |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
-  |  |  **|**  | ``with`` //ControlTerm// ``ctrl`` //ControlBit//
-  |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
-  |  |  **|**  | //Term2// //Term3//
-  |  |  **|**  | //Term2// ``.`` //Term3//
-  |  |  **|**  | //Var// ``,`` //[Var]//
-  |  |  **|**  | //Term3//
-  | //Term3// | -> | //Var//
-  |  |  **|**  | ``()``
-  |  |  **|**  | //BasisState//
-  |  |  **|**  | //BoolExpression//
-  |  |  **|**  | //IntegerExpression//
-  |  |  **|**  | ``gate`` //Gate//
-  |  |  **|**  | //Tuple//
-  |  |  **|**  | //List//
-  |  |  **|**  | //Term4//
-  | //Term4// | -> | //List// ``!!`` //Integer//
-  |  |  **|**  | ``(`` //Term// ``)``
+  | //Term// | -> | //Term1// ``$`` //Term//
+  |  |  **|**  | //Term1//
   | //List1// | -> | ``[]``
   |  |  **|**  | ``[`` //Term// ``]``
   |  |  **|**  | ``[`` //Term// ``,`` //[Term]// ``]``

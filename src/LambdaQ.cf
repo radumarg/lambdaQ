@@ -122,39 +122,41 @@ separator nonempty Integer "," ;
 -- Lambda token --
 token Lambda '\\' ;
 
--- Declaring Tuples --
-Tupl . Tuple ::= "(" Term "," [Term] ")" ;
-
 -- Declaring Controls --
-CtrlTerm . ControlTerm ::= "[" Term "]" ;
+CtrlTerm  . ControlTerm ::= "[" Term "]" ;
 CtrlTerms . ControlTerms ::= "[" Term "," [Term] "]" ;
+CtrlVar   . ControlVar ::= "[" Var "]" ;
+CtrlVars  . ControlVars ::= "[" Var "," [Var] "]" ;
 separator nonempty Term "," ;
 
 -- Terms --
-TermDollar            . Term  ::= Term1 "$" Term ;  -- right-associative --
-TermIfElse            . Term1 ::= "if" Term "then" Term "else" Term ;
-TermLetSingle         . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
-TermLetMultiple       . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
-TermLetSugarSingle    . Term1 ::=  Var "<-" Term ";" Term ;
-TermLetSugarMultiple  . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
-TermCase              . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
-TermLambda            . Term1 ::= Lambda Var Type "." Term ;
-TermQuantumCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
-TermQuantumCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
-TermClassicCtrlGate   . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
-TermClassicCtrlsGate  . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
-TermApply             . Term2 ::= Term2 Term3 ;      -- left-associative  --
-TermCompose           . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
-TermVariables         . Term2 ::= Var "," [Var] ;
-TermVariable          . Term3 ::= Var ;
-TermUnit              . Term3 ::= "()" ;
-TermBasisState        . Term3 ::= BasisState ;
-TermBoolExpression    . Term3 ::= BoolExpression ;
-TermIntegerExpression . Term3 ::= IntegerExpression ;
-TermGate              . Term3 ::= "gate" Gate ;
-TermTuple             . Term3 ::= Tuple ;
-TermList              . Term3 ::= List ;
-TermListElement       . Term4 ::= List "!!" Integer ;
+TermListElement           . Term4 ::= List "!!" Integer ;
+TermUnit                  . Term3 ::= "()" ;
+TermBasisState            . Term3 ::= BasisState ;
+TermBoolExpression        . Term3 ::= BoolExpression ;
+TermIntegerExpression     . Term3 ::= IntegerExpression ;
+TermGate                  . Term3 ::= "gate" Gate ;
+TermList                  . Term3 ::= List ;
+TermQuantumCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
+TermQuantumTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
+TermQuantumVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBasisStates ;
+TermClassicCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
+TermClassicTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
+TermClassicVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBits ;
+TermVariable              . Term3 ::= Var ;
+TermTupleOfTerms          . Term3 ::= "(" Term "," [Term] ")"  ;
+TermTupleOfVars           . Term3 ::= "(" Var "," [Var] ")"  ;
+TermVariableList          . Term2 ::= Var "," [Var] ;
+TermApply                 . Term2 ::= Term2 Term3 ;      -- left-associative  --
+TermCompose               . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermIfElse                . Term1 ::= "if" Term "then" Term "else" Term ;
+TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
+TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
+TermLetSugarSingle        . Term1 ::=  Var "<-" Term ";" Term ;
+TermLetSugarMultiple      . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
+TermCase                  . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
+TermLambda                . Term1 ::= Lambda Var Type "." Term ;
+TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --
 coercions Term 4 ;
 
 -- TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --

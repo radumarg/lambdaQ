@@ -303,10 +303,6 @@ ListInteger :: { [Integer] }
 ListInteger
   : Integer { (:[]) $1 } | Integer ',' ListInteger { (:) $1 $3 }
 
-Tuple :: { Frontend.LambdaQ.Abs.Tuple }
-Tuple
-  : '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.Tupl $2 $4 }
-
 ControlTerm :: { Frontend.LambdaQ.Abs.ControlTerm }
 ControlTerm : '[' Term ']' { Frontend.LambdaQ.Abs.CtrlTerm $2 }
 
@@ -314,13 +310,46 @@ ControlTerms :: { Frontend.LambdaQ.Abs.ControlTerms }
 ControlTerms
   : '[' Term ',' ListTerm ']' { Frontend.LambdaQ.Abs.CtrlTerms $2 $4 }
 
+ControlVar :: { Frontend.LambdaQ.Abs.ControlVar }
+ControlVar : '[' Var ']' { Frontend.LambdaQ.Abs.CtrlVar $2 }
+
+ControlVars :: { Frontend.LambdaQ.Abs.ControlVars }
+ControlVars
+  : '[' Var ',' ListVar ']' { Frontend.LambdaQ.Abs.CtrlVars $2 $4 }
+
 ListTerm :: { [Frontend.LambdaQ.Abs.Term] }
 ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 
-Term :: { Frontend.LambdaQ.Abs.Term }
-Term
-  : Term1 '$' Term { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
-  | Term1 { $1 }
+Term4 :: { Frontend.LambdaQ.Abs.Term }
+Term4
+  : List '!!' Integer { Frontend.LambdaQ.Abs.TermListElement $1 $3 }
+  | '(' Term ')' { $2 }
+
+Term3 :: { Frontend.LambdaQ.Abs.Term }
+Term3
+  : '()' { Frontend.LambdaQ.Abs.TermUnit }
+  | BasisState { Frontend.LambdaQ.Abs.TermBasisState $1 }
+  | BoolExpression { Frontend.LambdaQ.Abs.TermBoolExpression $1 }
+  | IntegerExpression { Frontend.LambdaQ.Abs.TermIntegerExpression $1 }
+  | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
+  | List { Frontend.LambdaQ.Abs.TermList $1 }
+  | Var { Frontend.LambdaQ.Abs.TermVariable $1 }
+  | '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.TermTupleOfTerms $2 $4 }
+  | '(' Var ',' ListVar ')' { Frontend.LambdaQ.Abs.TermTupleOfVars $2 $4 }
+  | Term4 { $1 }
+
+Term2 :: { Frontend.LambdaQ.Abs.Term }
+Term2
+  : 'with' ControlTerm 'ctrl' ControlBasisState { Frontend.LambdaQ.Abs.TermQuantumCtrlGate $2 $4 }
+  | 'with' ControlTerms 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate $2 $4 }
+  | 'with' ControlVars 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate $2 $4 }
+  | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermClassicCtrlGate $2 $4 }
+  | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicTCtrlsGate $2 $4 }
+  | 'with' ControlVars 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicVCtrlsGate $2 $4 }
+  | Var ',' ListVar { Frontend.LambdaQ.Abs.TermVariableList $1 $3 }
+  | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
+  | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
+  | Term3 { $1 }
 
 Term1 :: { Frontend.LambdaQ.Abs.Term }
 Term1
@@ -333,33 +362,10 @@ Term1
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 { $1 }
 
-Term2 :: { Frontend.LambdaQ.Abs.Term }
-Term2
-  : 'with' ControlTerm 'ctrl' ControlBasisState { Frontend.LambdaQ.Abs.TermQuantumCtrlGate $2 $4 }
-  | 'with' ControlTerms 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumCtrlsGate $2 $4 }
-  | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermClassicCtrlGate $2 $4 }
-  | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicCtrlsGate $2 $4 }
-  | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
-  | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
-  | Var ',' ListVar { Frontend.LambdaQ.Abs.TermVariables $1 $3 }
-  | Term3 { $1 }
-
-Term3 :: { Frontend.LambdaQ.Abs.Term }
-Term3
-  : Var { Frontend.LambdaQ.Abs.TermVariable $1 }
-  | '()' { Frontend.LambdaQ.Abs.TermUnit }
-  | BasisState { Frontend.LambdaQ.Abs.TermBasisState $1 }
-  | BoolExpression { Frontend.LambdaQ.Abs.TermBoolExpression $1 }
-  | IntegerExpression { Frontend.LambdaQ.Abs.TermIntegerExpression $1 }
-  | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
-  | Tuple { Frontend.LambdaQ.Abs.TermTuple $1 }
-  | List { Frontend.LambdaQ.Abs.TermList $1 }
-  | Term4 { $1 }
-
-Term4 :: { Frontend.LambdaQ.Abs.Term }
-Term4
-  : List '!!' Integer { Frontend.LambdaQ.Abs.TermListElement $1 $3 }
-  | '(' Term ')' { $2 }
+Term :: { Frontend.LambdaQ.Abs.Term }
+Term
+  : Term1 '$' Term { Frontend.LambdaQ.Abs.TermDollar $1 $3 }
+  | Term1 { $1 }
 
 List1 :: { Frontend.LambdaQ.Abs.List }
 List1

@@ -233,7 +233,7 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
     collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlsGate controlTerms _) notDistinctQubits = 
+    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumTCtrlsGate controlTerms _) notDistinctQubits = 
       if distinct then notDistinctQubits else notDistinctQubits ++ [" and "] ++ termVariables
       where
         distinct = length termVariables == length (uniquify termVariables)
@@ -253,11 +253,11 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
     collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlsGate _ _) notDistinctQubits = notDistinctQubits
+    collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctQubits = notDistinctQubits
     collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermTuple _) notDistinctQubits = notDistinctQubits
+    --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctQubits = notDistinctQubits
     --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctQubits = notDistinctQubits
     collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctQubits = notDistinctQubits
 
@@ -266,7 +266,7 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
     collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlsGate controlTerms _) notDistinctBits = 
+    collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate controlTerms _) notDistinctBits = 
       if distinct then notDistinctBits else notDistinctBits ++ [" and "] ++ termVariables
       where
         distinct = length termVariables == length (uniquify termVariables)
@@ -285,12 +285,12 @@ getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistin
     collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
     collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlsGate _ _) notDistinctBits = notDistinctBits
+    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctBits = notDistinctBits
     collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermTuple _) notDistinctBits = notDistinctBits
+    --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctBits = notDistinctBits
     --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctBits = notDistinctBits
     collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctBits = notDistinctBits
 
@@ -311,7 +311,7 @@ getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = colle
       where
         controlQubit = getQubit ctrlTerm
         termQubit = getQubit term
-    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQubits
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQubits
       = duplicatedQubits ++ [q | q <- controlQubits, q == termQubit]
       where
         controlQubits = getQubit ctrlTerm : map getQubit ctrlTerms
@@ -320,13 +320,13 @@ getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = colle
     collectDuplicated (GeneratedAbstractSyntax.TermDollar t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
     collectDuplicated (GeneratedAbstractSyntax.TermCompose t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
     collectDuplicated (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermQuantumCtrlsGate _ _) duplicatedQubits = duplicatedQubits
+    collectDuplicated (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermClassicCtrlsGate _ _) duplicatedQubits = duplicatedQubits
+    collectDuplicated (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermVariable _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermBasisState _) duplicatedQubits = duplicatedQubits
     collectDuplicated (GeneratedAbstractSyntax.TermGate _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermTuple _) duplicatedQubits = duplicatedQubits
+    --collectDuplicated (GeneratedAbstractSyntax. _) duplicatedQubits = duplicatedQubits
     --collectDuplicated (GeneratedAbstractSyntax.TermBit _) duplicatedQubits = duplicatedQubits
     collectDuplicated GeneratedAbstractSyntax.TermUnit duplicatedQubits = duplicatedQubits
 

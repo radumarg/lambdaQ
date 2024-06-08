@@ -10,7 +10,7 @@ main = q1, q2, q3 <- fun1;
        b2 <- measr q2;
        b3 <- fun2 0;
        b4 <- measr q3;
-       ((b1), (b2), (b3), b4) --TODO fix grammar and remove paranthesis
+       (b1, b2, b3, b4)
 
 
 

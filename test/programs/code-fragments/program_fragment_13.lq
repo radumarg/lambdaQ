@@ -1,5 +1,5 @@
 fun :: Bit
 fun = let (q1, q2, q3) = (new @1, new @0, new @1) in
-      measr (with [ (q1), (q2) ] ctrl [ @1, @+i ] gate X q3) --TODO: fix grammar and remove paranthesis
+      measr (with [ q1, q2 ] ctrl [ @1, @+i ] gate X q3)
                                                              -- TODO: how will select qubit where measure function will be applied
 
