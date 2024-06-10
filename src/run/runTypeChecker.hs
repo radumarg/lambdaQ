@@ -2,7 +2,7 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import Backend.ASTtoIASTConverter (Program)
+import Frontend.ASTtoIASTConverter (Program)
 import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast, typeCheck)
 
 runTypeChecker :: FilePath -> Exec Program

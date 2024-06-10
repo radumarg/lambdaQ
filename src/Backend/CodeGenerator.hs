@@ -3,7 +3,7 @@
 
 module Backend.CodeGenerator (CodeGenerationError, runCodeGenerator) where
 
-import Backend.ASTtoIASTConverter (Program, mapProgram)
+import Frontend.ASTtoIASTConverter (Program, mapProgram)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 
 -- not all code errors can be caught during semantic analysis and type checking

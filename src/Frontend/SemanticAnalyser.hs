@@ -1,4 +1,4 @@
-module Backend.SemanticAnalyser (
+module Frontend.SemanticAnalyser (
   SemanticError,
   runSemanticAnalyser
 ) where

@@ -18,9 +18,9 @@ import Control.Monad.Except
 import Control.Exception (try)
 
 import Common ( ErrorMessage )
-import Backend.ASTtoIASTConverter (Program, runAstToIastConverter)
-import Backend.SemanticAnalyser (runSemanticAnalyser)
-import Backend.TypeChecker (runTypeChecker)
+import Frontend.ASTtoIASTConverter (Program, runAstToIastConverter)
+import Frontend.SemanticAnalyser (runSemanticAnalyser)
+import Frontend.TypeChecker (runTypeChecker)
 import Backend.CodeGenerator (runCodeGenerator)
 import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import Frontend.LambdaQ.Layout ( resolveLayout )

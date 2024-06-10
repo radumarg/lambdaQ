@@ -25,12 +25,10 @@ source-repository head
 
 library
   exposed-modules:
-      Backend.ASTtoIASTConverter
       Backend.CodeGenerator
-      Backend.SemanticAnalyser
-      Backend.TypeChecker
       Common
       CompilationEngine
+      Frontend.ASTtoIASTConverter
       Frontend.LambdaQ.Abs
       Frontend.LambdaQ.ErrM
       Frontend.LambdaQ.Layout
@@ -39,6 +37,8 @@ library
       Frontend.LambdaQ.Print
       Frontend.LambdaQ.Skel
       Frontend.LambdaQ.Test
+      Frontend.SemanticAnalyser
+      Frontend.TypeChecker
   other-modules:
       Paths_lambdaQ
   hs-source-dirs:
@@ -166,9 +166,9 @@ test-suite lambdaQ-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Backend.ASTtoIASTConverterSpec
-      Backend.SemanticAnalyserSpec
+      Frontend.ASTtoIASTConverterSpec
       Frontend.ParserSpec
+      Frontend.SemanticAnalyserSpec
       Paths_lambdaQ
   hs-source-dirs:
       test

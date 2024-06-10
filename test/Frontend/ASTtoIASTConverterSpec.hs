@@ -1,12 +1,12 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Backend.ASTtoIASTConverterSpec (spec) where
+module Frontend.ASTtoIASTConverterSpec (spec) where
 
 import Data.List (isInfixOf)
 import Test.Hspec
 import Control.Monad.Except (runExceptT)
 
-import Backend.ASTtoIASTConverter (Program)
+import Frontend.ASTtoIASTConverter (Program)
 import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast)
 
 -- import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax

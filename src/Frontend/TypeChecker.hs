@@ -8,7 +8,7 @@
 {-# OPTIONS_GHC -Wno-unused-top-binds #-}
 
 
-module Backend.TypeChecker
+module Frontend.TypeChecker
   (
     TypeError,
     runTypeChecker,
@@ -24,7 +24,7 @@ import Data.Maybe (mapMaybe)
 import Data.Map (Map, lookup)
 import Data.Set (Set, member, insert)
 
-import Backend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..))
+import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..))
 
 
 data TypeError

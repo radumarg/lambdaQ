@@ -1,6 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 
-module Backend.SemanticAnalyserSpec (spec) where
+module Frontend.SemanticAnalyserSpec (spec) where
 
 import Data.List (isInfixOf)
 import Test.Hspec
