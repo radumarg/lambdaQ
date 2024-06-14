@@ -2,7 +2,7 @@
 -- Generating a language frontend using the BNF Converter: http://bnfc.digitalgrammars.com/ --
 
 layout toplevel ;
-layout "let" ;
+layout "let", "of" ;
 layout stop "in" ;
 
 entrypoints Program;
@@ -63,7 +63,7 @@ BasisStatePlusI  . BasisState ::= "@+i" ;
 BasisStateMinusI . BasisState ::= "@-i" ;
 
 -- Matches other possible gate names, the unknown gate error will be raised during semantic analysis stage --
-position token GateVar ((upper) (letter | digit | '_' )*) ;
+position token GateVar ((upper) (upper | digit | '_' )*) ;
 
 GateH             . Gate ::= "H" ;                                       -- Hadamard Gate
 GateX             . Gate ::= "X" ;                                       -- Pauli X Gate
@@ -154,7 +154,7 @@ TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
 TermLetSugarSingle        . Term1 ::=  Var "<-" Term ";" Term ;
 TermLetSugarMultiple      . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
-TermCase                  . Term1 ::= "case" Term "of" CaseExpression [CaseExpression] ;
+TermCase                  . Term1 ::= "case" Term "of" "{" [CaseExpression] "}" ;
 TermLambda                . Term1 ::= Lambda Var Type "." Term ;
 TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --
 coercions Term 4 ;
@@ -173,7 +173,8 @@ coercions List 1 ;
 
 -- Case Expressions --
 CaseExpr . CaseExpression ::= Term3 "->" Term3 ;
-separator nonempty CaseExpression " " ;
+_        . CaseExpression ::= CaseExpression ";" ;         -- Semantic dummies: parser accepts extra semicolons
+separator nonempty CaseExpression "" ;
 
 -- Function Arguments --
 FunArg . Arg ::= Var ;

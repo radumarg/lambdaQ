@@ -323,7 +323,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> prPrec i 1 (concatD [doc (showString "let"), doc (showString "{"), doc (showString "("), prt 0 var, doc (showString ","), prt 0 vars, doc (showString ")"), doc (showString "="), prt 0 term1, doc (showString "}"), doc (showString "in"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarSingle var term1 term2 -> prPrec i 1 (concatD [prt 0 var, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
     Frontend.LambdaQ.Abs.TermLetSugarMultiple var vars term1 term2 -> prPrec i 1 (concatD [prt 0 var, doc (showString ","), prt 0 vars, doc (showString "<-"), prt 0 term1, doc (showString ";"), prt 0 term2])
-    Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), prt 0 caseexpression, prt 0 caseexpressions])
+    Frontend.LambdaQ.Abs.TermCase term caseexpressions -> prPrec i 1 (concatD [doc (showString "case"), prt 0 term, doc (showString "of"), doc (showString "{"), prt 0 caseexpressions, doc (showString "}")])
     Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> prPrec i 1 (concatD [prt 0 lambda, prt 0 var, prt 0 type_, doc (showString "."), prt 0 term])
     Frontend.LambdaQ.Abs.TermDollar term1 term2 -> prPrec i 0 (concatD [prt 1 term1, doc (showString "$"), prt 0 term2])
 
@@ -341,8 +341,8 @@ instance Print Frontend.LambdaQ.Abs.CaseExpression where
 
 instance Print [Frontend.LambdaQ.Abs.CaseExpression] where
   prt _ [] = concatD []
-  prt _ [x] = concatD [prt 0 x, doc (showString " ")]
-  prt _ (x:xs) = concatD [prt 0 x, doc (showString " "), prt 0 xs]
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, prt 0 xs]
 
 instance Print Frontend.LambdaQ.Abs.Arg where
   prt i = \case

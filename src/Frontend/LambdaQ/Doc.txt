@@ -25,7 +25,7 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 GateVar literals are recognized by the regular expression
-`````upper ('_' | digit | letter)*`````
+`````upper ('_' | digit | upper)*`````
 
 Var literals are recognized by the regular expression
 `````('_' | lower) (["'_"] | digit | letter)*`````
@@ -206,7 +206,7 @@ All other symbols are terminals.
   |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | //Var// ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | //Var// ``,`` //[Var]// ``<-`` //Term// ``;`` //Term//
-  |  |  **|**  | ``case`` //Term// ``of`` //CaseExpression// //[CaseExpression]//
+  |  |  **|**  | ``case`` //Term// ``of`` ``{`` //[CaseExpression]// ``}``
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2//
   | //Term// | -> | //Term1// ``$`` //Term//
@@ -219,6 +219,7 @@ All other symbols are terminals.
   |  |  **|**  | //Term3// ``:`` //List1//
   |  |  **|**  | //List1//
   | //CaseExpression// | -> | //Term3// ``->`` //Term3//
+  |  |  **|**  | //CaseExpression// ``;``
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//
   | //Arg// | -> | //Var//

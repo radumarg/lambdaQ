@@ -46,7 +46,7 @@ $white+ ;
     { tok (eitherResIdent TV) }
 
 -- token GateVar
-$c (\_ | ($d | $l)) *
+$c (\_ | ($d | $c)) *
     { tok (eitherResIdent T_GateVar) }
 
 -- token Var

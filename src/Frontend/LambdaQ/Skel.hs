@@ -187,7 +187,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetSugarSingle var term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetSugarMultiple var vars term1 term2 -> failure x
-  Frontend.LambdaQ.Abs.TermCase term caseexpression caseexpressions -> failure x
+  Frontend.LambdaQ.Abs.TermCase term caseexpressions -> failure x
   Frontend.LambdaQ.Abs.TermLambda lambda var type_ term -> failure x
   Frontend.LambdaQ.Abs.TermDollar term1 term2 -> failure x
 

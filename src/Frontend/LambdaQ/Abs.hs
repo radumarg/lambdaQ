@@ -161,7 +161,7 @@ data Term
     | TermLetMultiple Var [Var] Term Term
     | TermLetSugarSingle Var Term Term
     | TermLetSugarMultiple Var [Var] Term Term
-    | TermCase Term CaseExpression [CaseExpression]
+    | TermCase Term [CaseExpression]
     | TermLambda Lambda Var Type Term
     | TermDollar Term Term
   deriving (C.Eq, C.Ord, C.Show, C.Read)
