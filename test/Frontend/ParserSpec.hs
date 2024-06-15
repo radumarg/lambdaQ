@@ -152,12 +152,12 @@ spec =  do
     Test.Hspec.context "when provided with a program containing '$' operator and a case term" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_stronger_than_dollar_1.lq"
-        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ case term of a -> b c -> d" `isInfixOf` trimNewLines str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = a $ case term of { a -> b c -> d }" `isInfixOf` trimNewLines str)
 
     Test.Hspec.context "when provided with a program containing '$' operator and a case term" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_stronger_than_dollar_2.lq"
-        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case term of a -> b c -> d $ a" `isInfixOf` trimNewLines str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case term of { a -> b c -> d } $ a;" `isInfixOf` trimNewLines str)
 
     Test.Hspec.context "when provided with a program containing '$' operator and a lambda term" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
@@ -357,17 +357,32 @@ spec =  do
     Test.Hspec.context "when provided with a program containing a lambda expressions followed by case" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_case_associate_to_the_right.lq"
-        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . case term of a -> b c -> d" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . case term of { a -> b c -> d }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expressions followed by lambda" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_lambda.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case term of { a -> b c -> \\ var Bit . d }" `isInfixOf` trimNewLines str)
 
     Test.Hspec.context "when provided with a program containing a lambda expressions followed by a let sugar multiple expression" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_let_sugar_multiple_associate_to_the_right.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . var1, var2 <- term; term'" `isInfixOf` trimNewLines str)
 
+    Test.Hspec.context "when provided with a program containing a a let sugar multiple expression followed by lambdas" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_lambda.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- \\ var Bit . a; \\ var Bit . b" `isInfixOf` trimNewLines str)
+
     Test.Hspec.context "when provided with a program containing a lambda expressions followed by a let sugar single expression" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_let_sugar_single_associate_to_the_right.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . var1 <- term; term'" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let sugar single expression followed by lambdas" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_single_followed_by_lambda.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- \\ var Bit . a; \\ var Bit . b" `isInfixOf` trimNewLines str)
 
     Test.Hspec.context "when provided with a program containing a lambda expressions followed by a let multiple expression" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
@@ -379,9 +394,29 @@ spec =  do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_let_sugar_single_associate_to_the_right.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . var1 <- term; term'" `isInfixOf` trimNewLines str)
 
-    Test.Hspec.context "when provided with a program containing a lambda expressions followed by a if expression" $ do
+    Test.Hspec.context "when provided with a program containing a let single expression followed by a lambda expressions" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_single_followed_by_labmdas.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { term = \\ var Bit . a } in \\ var Bit . b;" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expressions followed by an if expression" $ do
       Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_if_else_associate_to_the_right.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . if c then t else f" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing an if expression followed by lambda expressions" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_lambdas.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = if c then \\ var Bit . b else \\ var Bit . d" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expressions followed by function composition expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_function_composition.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . term1 . term2" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expressions followed by function application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_term_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . term1 term2" `isInfixOf` str)
 
     -- print (trimNewLines result)

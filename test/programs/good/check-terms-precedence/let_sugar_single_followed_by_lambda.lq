@@ -1,0 +1,4 @@
+fun :: Bit
+fun = var1 <- (\ var Bit . a); (\ var Bit . b)
+
+

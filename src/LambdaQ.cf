@@ -172,7 +172,7 @@ ListCons              . List ::= Term3 ":" List1 ;
 coercions List 1 ;
 
 -- Case Expressions --
-CaseExpr . CaseExpression ::= Term3 "->" Term3 ;
+CaseExpr . CaseExpression ::= Term "->" Term;
 _        . CaseExpression ::= CaseExpression ";" ;         -- Semantic dummies: parser accepts extra semicolons
 separator nonempty CaseExpression "" ;
 

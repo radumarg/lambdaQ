@@ -218,7 +218,7 @@ All other symbols are terminals.
   | //List// | -> | //List// ``++`` //List1//
   |  |  **|**  | //Term3// ``:`` //List1//
   |  |  **|**  | //List1//
-  | //CaseExpression// | -> | //Term3// ``->`` //Term3//
+  | //CaseExpression// | -> | //Term// ``->`` //Term//
   |  |  **|**  | //CaseExpression// ``;``
   | //[CaseExpression]// | -> | //CaseExpression//
   |  |  **|**  | //CaseExpression// //[CaseExpression]//

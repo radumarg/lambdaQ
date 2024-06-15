@@ -1,0 +1,5 @@
+fun :: Bit; 
+fun = case term of 
+  a -> b
+  c -> (\var Bit . d)
+

@@ -1,0 +1,4 @@
+fun :: Bit
+fun = let term = (\ var Bit . a) in (\ var Bit . b)
+
+

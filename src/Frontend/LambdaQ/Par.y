@@ -382,7 +382,7 @@ List
 
 CaseExpression :: { Frontend.LambdaQ.Abs.CaseExpression }
 CaseExpression
-  : Term3 '->' Term3 { Frontend.LambdaQ.Abs.CaseExpr $1 $3 }
+  : Term '->' Term { Frontend.LambdaQ.Abs.CaseExpr $1 $3 }
   | CaseExpression ';' { $1 }
 
 ListCaseExpression :: { [Frontend.LambdaQ.Abs.CaseExpression] }

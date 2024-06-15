@@ -144,15 +144,15 @@ data Term
     | TermIntegerExpression IntegerExpression
     | TermGate Gate
     | TermList List
+    | TermVariable Var
+    | TermTupleOfTerms Term [Term]
+    | TermTupleOfVars Var [Var]
     | TermQuantumCtrlGate ControlTerm ControlBasisState
     | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
     | TermQuantumVCtrlsGate ControlVars ControlBasisStates
     | TermClassicCtrlGate ControlTerm ControlBit
     | TermClassicTCtrlsGate ControlTerms ControlBits
     | TermClassicVCtrlsGate ControlVars ControlBits
-    | TermVariable Var
-    | TermTupleOfTerms Term [Term]
-    | TermTupleOfVars Var [Var]
     | TermVariableList Var [Var]
     | TermApply Term Term
     | TermCompose Term Term

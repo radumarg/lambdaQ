@@ -170,15 +170,15 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
+  Frontend.LambdaQ.Abs.TermVariable var -> failure x
+  Frontend.LambdaQ.Abs.TermTupleOfTerms term terms -> failure x
+  Frontend.LambdaQ.Abs.TermTupleOfVars var vars -> failure x
   Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
   Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate controlterms controlbasisstates -> failure x
   Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate controlvars controlbasisstates -> failure x
   Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
   Frontend.LambdaQ.Abs.TermClassicTCtrlsGate controlterms controlbits -> failure x
   Frontend.LambdaQ.Abs.TermClassicVCtrlsGate controlvars controlbits -> failure x
-  Frontend.LambdaQ.Abs.TermVariable var -> failure x
-  Frontend.LambdaQ.Abs.TermTupleOfTerms term terms -> failure x
-  Frontend.LambdaQ.Abs.TermTupleOfVars var vars -> failure x
   Frontend.LambdaQ.Abs.TermVariableList var vars -> failure x
   Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
