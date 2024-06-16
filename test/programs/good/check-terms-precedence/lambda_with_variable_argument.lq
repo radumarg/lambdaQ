@@ -1,0 +1,2 @@
+fun :: Bit
+fun = \ var Bit . v

@@ -1,0 +1,2 @@
+fun :: Bit
+fun = \var Bit . (with [ q0 ] ctrl [ @+ ] gate H)

@@ -419,4 +419,94 @@ spec =  do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_followed_by_term_application.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . term1 term2" `isInfixOf` str)
 
+    Test.Hspec.context "when provided with a program containing by function application follwowed by a lambda expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_application_followed_by_lambda_expression.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term (\\ var Bit . term1 term2)" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with variable list argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_variable_list_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . v1, v2" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with multiple controls argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_multiple_controls_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . with [q0, q1] ctrl [@+, @-] gate H" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with multiple classicaly controlled argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_multiple_classically_controlled_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . with [q0, q1] ctrl [0, 1] gate H" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with single control argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_single_control_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . with [q0] ctrl [@+] gate H" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with single classicaly controlled argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_single_classically_controlled_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . with [q0] ctrl [0] gate H" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with tuple of variables argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_tuple_of_variables_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . (v1, v2)" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with tuple of terms argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_tuple_of_terms_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . (t1 t2, t)" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with variable argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_variable_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . v" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with list argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_list1_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . []" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with list argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_list2_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . [v]" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with list argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_list3_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . [v1, v2]" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with gate argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_gate_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . gate H" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with integer argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_integer_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . 1 + 2" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with boolean expression argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_boolean_expression_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . True || False" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with unit argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_unit_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . ()" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with basis state argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_basis_state_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . @0" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with a program containing a lambda expression with list element argument" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_list_element_argument.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . [v1, v2] !! 2" `isInfixOf` str)
+
     -- print (trimNewLines result)
