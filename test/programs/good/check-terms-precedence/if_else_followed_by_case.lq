@@ -1,0 +1,5 @@
+fun :: Bit
+fun = if t then a else case x of  
+   a1 -> a2 
+   b1 -> b2
+

@@ -18,7 +18,8 @@ data Program = ProgDef [FunctionDeclaration]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data IntegerExpression
-    = ArithmExprAdd IntegerExpression IntegerExpression
+    = ArithmExprMinus IntegerExpression
+    | ArithmExprAdd IntegerExpression IntegerExpression
     | ArithmExprSub IntegerExpression IntegerExpression
     | ArithmExprMul IntegerExpression IntegerExpression
     | ArithmExprDiv IntegerExpression IntegerExpression

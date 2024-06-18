@@ -11,12 +11,13 @@ entrypoints Program;
 ProgDef .  Program ::= [FunctionDeclaration] ;
 
 -- Integer Arithmetic --
-ArithmExprAdd . IntegerExpression  ::= IntegerExpression "+" IntegerExpression1 ;
-ArithmExprSub . IntegerExpression  ::= IntegerExpression "-" IntegerExpression1 ;
-ArithmExprMul . IntegerExpression1 ::= IntegerExpression1 "*" IntegerExpression2 ;
-ArithmExprDiv . IntegerExpression1 ::= IntegerExpression1 "/" IntegerExpression2 ;
-ArithmExprInt . IntegerExpression2 ::= Integer ;
-coercions IntegerExpression 2 ;
+ArithmExprMinus . IntegerExpression1 ::= "-" IntegerExpression ;
+ArithmExprAdd   . IntegerExpression1 ::= IntegerExpression1 "+" IntegerExpression2 ;
+ArithmExprSub   . IntegerExpression1 ::= IntegerExpression1 "-" IntegerExpression2 ;
+ArithmExprMul   . IntegerExpression2 ::= IntegerExpression2 "*" IntegerExpression3 ;
+ArithmExprDiv   . IntegerExpression2 ::= IntegerExpression2 "/" IntegerExpression3 ;
+ArithmExprInt   . IntegerExpression3 ::= Integer ;
+coercions IntegerExpression 3 ;
 
 -- Boolean Values --
 BoolValueTrue  . BoolValue ::= "True" ;
@@ -136,7 +137,7 @@ TermBasisState            . Term3 ::= BasisState ;
 TermBoolExpression        . Term3 ::= BoolExpression ;
 TermIntegerExpression     . Term3 ::= IntegerExpression ;
 TermGate                  . Term3 ::= "gate" Gate ;
-TermList                  . Term3 ::= List ;
+TermList                  . Term4 ::= List ;
 TermVariable              . Term3 ::= Var ;
 TermTupleOfTerms          . Term3 ::= "(" Term "," [Term] ")"  ;
 TermTupleOfVars           . Term3 ::= "(" Var "," [Var] ")"  ;

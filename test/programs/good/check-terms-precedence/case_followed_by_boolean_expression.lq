@@ -1,0 +1,4 @@
+fun :: Bit
+fun = case x of  
+   a1 -> a2 
+   b1 -> 2 > 3

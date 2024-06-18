@@ -141,22 +141,26 @@ Program :: { Frontend.LambdaQ.Abs.Program }
 Program
   : ListFunctionDeclaration { Frontend.LambdaQ.Abs.ProgDef $1 }
 
-IntegerExpression :: { Frontend.LambdaQ.Abs.IntegerExpression }
-IntegerExpression
-  : IntegerExpression '+' IntegerExpression1 { Frontend.LambdaQ.Abs.ArithmExprAdd $1 $3 }
-  | IntegerExpression '-' IntegerExpression1 { Frontend.LambdaQ.Abs.ArithmExprSub $1 $3 }
-  | IntegerExpression1 { $1 }
-
 IntegerExpression1 :: { Frontend.LambdaQ.Abs.IntegerExpression }
 IntegerExpression1
-  : IntegerExpression1 '*' IntegerExpression2 { Frontend.LambdaQ.Abs.ArithmExprMul $1 $3 }
-  | IntegerExpression1 '/' IntegerExpression2 { Frontend.LambdaQ.Abs.ArithmExprDiv $1 $3 }
+  : '-' IntegerExpression { Frontend.LambdaQ.Abs.ArithmExprMinus $2 }
+  | IntegerExpression1 '+' IntegerExpression2 { Frontend.LambdaQ.Abs.ArithmExprAdd $1 $3 }
+  | IntegerExpression1 '-' IntegerExpression2 { Frontend.LambdaQ.Abs.ArithmExprSub $1 $3 }
   | IntegerExpression2 { $1 }
 
 IntegerExpression2 :: { Frontend.LambdaQ.Abs.IntegerExpression }
 IntegerExpression2
+  : IntegerExpression2 '*' IntegerExpression3 { Frontend.LambdaQ.Abs.ArithmExprMul $1 $3 }
+  | IntegerExpression2 '/' IntegerExpression3 { Frontend.LambdaQ.Abs.ArithmExprDiv $1 $3 }
+  | IntegerExpression3 { $1 }
+
+IntegerExpression3 :: { Frontend.LambdaQ.Abs.IntegerExpression }
+IntegerExpression3
   : Integer { Frontend.LambdaQ.Abs.ArithmExprInt $1 }
   | '(' IntegerExpression ')' { $2 }
+
+IntegerExpression :: { Frontend.LambdaQ.Abs.IntegerExpression }
+IntegerExpression : IntegerExpression1 { $1 }
 
 BoolValue :: { Frontend.LambdaQ.Abs.BoolValue }
 BoolValue
@@ -323,6 +327,7 @@ ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 Term4 :: { Frontend.LambdaQ.Abs.Term }
 Term4
   : List '!!' Integer { Frontend.LambdaQ.Abs.TermListElement $1 $3 }
+  | List { Frontend.LambdaQ.Abs.TermList $1 }
   | '(' Term ')' { $2 }
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
@@ -332,7 +337,6 @@ Term3
   | BoolExpression { Frontend.LambdaQ.Abs.TermBoolExpression $1 }
   | IntegerExpression { Frontend.LambdaQ.Abs.TermIntegerExpression $1 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
-  | List { Frontend.LambdaQ.Abs.TermList $1 }
   | Var { Frontend.LambdaQ.Abs.TermVariable $1 }
   | '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.TermTupleOfTerms $2 $4 }
   | '(' Var ',' ListVar ')' { Frontend.LambdaQ.Abs.TermTupleOfVars $2 $4 }

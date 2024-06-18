@@ -53,7 +53,7 @@ The reserved words used in LambdaQ are the following:
   | ``not`` | ``of`` | ``then`` | ``with``
 
 The symbols used in LambdaQ are the following:
-  | + | - | * | /
+  | - | + | * | /
   | ( | ) | && | ||
   | == | /= | > | >=
   | < | <= | -> | **
@@ -74,14 +74,16 @@ and **eps** (empty rule) belong to the BNF notation.
 All other symbols are terminals.
 
   | //Program// | -> | //[FunctionDeclaration]//
-  | //IntegerExpression// | -> | //IntegerExpression// ``+`` //IntegerExpression1//
-  |  |  **|**  | //IntegerExpression// ``-`` //IntegerExpression1//
-  |  |  **|**  | //IntegerExpression1//
-  | //IntegerExpression1// | -> | //IntegerExpression1// ``*`` //IntegerExpression2//
-  |  |  **|**  | //IntegerExpression1// ``/`` //IntegerExpression2//
+  | //IntegerExpression1// | -> | ``-`` //IntegerExpression//
+  |  |  **|**  | //IntegerExpression1// ``+`` //IntegerExpression2//
+  |  |  **|**  | //IntegerExpression1// ``-`` //IntegerExpression2//
   |  |  **|**  | //IntegerExpression2//
-  | //IntegerExpression2// | -> | //Integer//
+  | //IntegerExpression2// | -> | //IntegerExpression2// ``*`` //IntegerExpression3//
+  |  |  **|**  | //IntegerExpression2// ``/`` //IntegerExpression3//
+  |  |  **|**  | //IntegerExpression3//
+  | //IntegerExpression3// | -> | //Integer//
   |  |  **|**  | ``(`` //IntegerExpression// ``)``
+  | //IntegerExpression// | -> | //IntegerExpression1//
   | //BoolValue// | -> | ``True``
   |  |  **|**  | ``False``
   | //BoolExpression// | -> | //BoolExpression// ``&&`` //BoolExpression1//
@@ -180,13 +182,13 @@ All other symbols are terminals.
   | //[Term]// | -> | //Term//
   |  |  **|**  | //Term// ``,`` //[Term]//
   | //Term4// | -> | //List// ``!!`` //Integer//
+  |  |  **|**  | //List//
   |  |  **|**  | ``(`` //Term// ``)``
   | //Term3// | -> | ``()``
   |  |  **|**  | //BasisState//
   |  |  **|**  | //BoolExpression//
   |  |  **|**  | //IntegerExpression//
   |  |  **|**  | ``gate`` //Gate//
-  |  |  **|**  | //List//
   |  |  **|**  | //Var//
   |  |  **|**  | ``(`` //Term// ``,`` //[Term]// ``)``
   |  |  **|**  | ``(`` //Var// ``,`` //[Var]// ``)``

@@ -149,11 +149,12 @@ instance Print Frontend.LambdaQ.Abs.Program where
 
 instance Print Frontend.LambdaQ.Abs.IntegerExpression where
   prt i = \case
-    Frontend.LambdaQ.Abs.ArithmExprAdd integerexpression1 integerexpression2 -> prPrec i 0 (concatD [prt 0 integerexpression1, doc (showString "+"), prt 1 integerexpression2])
-    Frontend.LambdaQ.Abs.ArithmExprSub integerexpression1 integerexpression2 -> prPrec i 0 (concatD [prt 0 integerexpression1, doc (showString "-"), prt 1 integerexpression2])
-    Frontend.LambdaQ.Abs.ArithmExprMul integerexpression1 integerexpression2 -> prPrec i 1 (concatD [prt 1 integerexpression1, doc (showString "*"), prt 2 integerexpression2])
-    Frontend.LambdaQ.Abs.ArithmExprDiv integerexpression1 integerexpression2 -> prPrec i 1 (concatD [prt 1 integerexpression1, doc (showString "/"), prt 2 integerexpression2])
-    Frontend.LambdaQ.Abs.ArithmExprInt n -> prPrec i 2 (concatD [prt 0 n])
+    Frontend.LambdaQ.Abs.ArithmExprMinus integerexpression -> prPrec i 1 (concatD [doc (showString "-"), prt 0 integerexpression])
+    Frontend.LambdaQ.Abs.ArithmExprAdd integerexpression1 integerexpression2 -> prPrec i 1 (concatD [prt 1 integerexpression1, doc (showString "+"), prt 2 integerexpression2])
+    Frontend.LambdaQ.Abs.ArithmExprSub integerexpression1 integerexpression2 -> prPrec i 1 (concatD [prt 1 integerexpression1, doc (showString "-"), prt 2 integerexpression2])
+    Frontend.LambdaQ.Abs.ArithmExprMul integerexpression1 integerexpression2 -> prPrec i 2 (concatD [prt 2 integerexpression1, doc (showString "*"), prt 3 integerexpression2])
+    Frontend.LambdaQ.Abs.ArithmExprDiv integerexpression1 integerexpression2 -> prPrec i 2 (concatD [prt 2 integerexpression1, doc (showString "/"), prt 3 integerexpression2])
+    Frontend.LambdaQ.Abs.ArithmExprInt n -> prPrec i 3 (concatD [prt 0 n])
 
 instance Print Frontend.LambdaQ.Abs.BoolValue where
   prt i = \case
@@ -305,7 +306,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
     Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> prPrec i 3 (concatD [prt 0 boolexpression])
     Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> prPrec i 3 (concatD [prt 0 integerexpression])
     Frontend.LambdaQ.Abs.TermGate gate -> prPrec i 3 (concatD [doc (showString "gate"), prt 0 gate])
-    Frontend.LambdaQ.Abs.TermList list -> prPrec i 3 (concatD [prt 0 list])
+    Frontend.LambdaQ.Abs.TermList list -> prPrec i 4 (concatD [prt 0 list])
     Frontend.LambdaQ.Abs.TermVariable var -> prPrec i 3 (concatD [prt 0 var])
     Frontend.LambdaQ.Abs.TermTupleOfTerms term terms -> prPrec i 3 (concatD [doc (showString "("), prt 0 term, doc (showString ","), prt 0 terms, doc (showString ")")])
     Frontend.LambdaQ.Abs.TermTupleOfVars var vars -> prPrec i 3 (concatD [doc (showString "("), prt 0 var, doc (showString ","), prt 0 vars, doc (showString ")")])

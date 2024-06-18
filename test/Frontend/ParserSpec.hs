@@ -509,4 +509,258 @@ spec =  do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/lambda_with_list_element_argument.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = \\ var Bit . [v1, v2] !! 2" `isInfixOf` str)
 
-    -- print (trimNewLines result)
+    Test.Hspec.context "when provided with a program containing two chained case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/two_chained_case_expressions.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> case y of { c1 -> c2 c3 -> c4 } }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by a let sugar multiple expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_let_sugar_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> var1, var2 <- term; term' }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let sugar multiple expression followed by a case" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term; case x of { a1 -> a2 b1 -> b2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by a let sugar single expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_let_sugar_single.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> var <- term; term' }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let sugar single expression followed by a case" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_single_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var <- term; case x of { a1 -> a2 b1 -> b2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by an if else expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_if_else.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> if t then a else b }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by an if else expression followed by a case" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "if t then a else case x of { a1 -> a2 b1 -> b2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by function composition" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_function_composition.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> f1 . f2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by an if else expression followed by a case" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/function_composition_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = f . (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by term application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_term_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> t1 t2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by a term application expression followed by a case" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_application_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by variable list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_variable_list.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> v1, v2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by a variable list followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_list_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = v1, v2 (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by variable tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_variable_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> (v1, v2) }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by a variable tuple followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_tuple_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (v1, v2) (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by term tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_term_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> (t1 t2, t3)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing by a term tuple followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_tuple_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (t1 t2, t3) (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by classic gate controlled by vars" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_classic_ctrl_gate_controlled_by_vars.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [q0, q1] ctrl [1, 1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing classic gate controlled by vars followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_classic_vars_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0, q1] ctrl [1, 1] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by classic gate controlled by terms" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_classic_ctrl_gate_controlled_by_terms.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [t1 t2, t3] ctrl [1, 1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing classic gate controlled by terms followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_classic_terms_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [1, 1] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by classic gate controlled by term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_classic_ctrl_gate_controlled_by_term.lq"
+        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [t] ctrl [1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing classic gate controlled by term followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_classic_ctrl_term_followed_by_case.lq"
+        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [1] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by quantum gate controlled by vars" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_quantum_ctrl_gate_controlled_by_vars.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [q0, q1] ctrl [@1, @1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing quantum gate controlled by vars followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_quantum_vars_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [q0, q1] ctrl [@1, @1] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by quantum gate controlled by terms" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_quantum_ctrl_gate_controlled_by_terms.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [t1 t2, t3] ctrl [@1, @1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing quantum gate controlled by terms followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_quantum_terms_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [@1, @1] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by quantum gate controlled by term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_quantum_ctrl_gate_controlled_by_term.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> with [t] ctrl [@1] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing quantum gate controlled by term followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_controlled_by_quantum_ctrl_term_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [@+] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_term.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> b2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a term followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+    
+    Test.Hspec.context "when provided with a program containing a case expression followed by list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_list1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> [] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_list2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> [x] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_list3.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> [x, y] }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_followed_by_case1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_followed_by_case2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_followed_by_case3.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x, y] (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)   
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by gate" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_gate1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> gate H }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by gate" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_gate2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (case x of { a1 -> a2 b1 -> b2 } ) gate H" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a gate followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = gate H (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by integer expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_integer_expression.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> 2 - 3 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a integer expression followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/integer_expression_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = 3 * 7 (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by boolean expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_boolean_expression.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> 2 > 3 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a boolean expression followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/boolean_expression_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = 3 < 7 (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by basis state" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_basis_state.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> @-i }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a basis state followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/basis_state_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = @+i (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by unit" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_unit.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> () }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a unit followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/unit_followed_by_case.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = () (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a case expression followed by list element" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/case_followed_by_list_element.lq"
+        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = case x of { a1 -> a2 b1 -> [] !! 2 }" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list element followed by a case expression" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_element_followed_by_case.lq"
+        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x] !! 1 (case x of { a1 -> a2 b1 -> b2 } )" `isInfixOf` trimNewLines str)
+
+    --print (trimNewLines result)

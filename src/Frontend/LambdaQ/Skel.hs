@@ -33,6 +33,7 @@ transProgram x = case x of
 
 transIntegerExpression :: Frontend.LambdaQ.Abs.IntegerExpression -> Result
 transIntegerExpression x = case x of
+  Frontend.LambdaQ.Abs.ArithmExprMinus integerexpression -> failure x
   Frontend.LambdaQ.Abs.ArithmExprAdd integerexpression1 integerexpression2 -> failure x
   Frontend.LambdaQ.Abs.ArithmExprSub integerexpression1 integerexpression2 -> failure x
   Frontend.LambdaQ.Abs.ArithmExprMul integerexpression1 integerexpression2 -> failure x
