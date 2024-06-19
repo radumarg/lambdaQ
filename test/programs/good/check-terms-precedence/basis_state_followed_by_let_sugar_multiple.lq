@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = @+i (var1 <- term1 ; term2)

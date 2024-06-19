@@ -153,8 +153,8 @@ TermCompose               . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermIfElse                . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
-TermLetSugarSingle        . Term1 ::=  Var "<-" Term ";" Term ;
-TermLetSugarMultiple      . Term1 ::=  Var "," [Var] "<-" Term ";" Term ;
+TermLetSugarSingle        . Term1 ::= Var "<-" Term ";" Term ;
+TermLetSugarMultiple      . Term1 ::= Var "," [Var] "<-" Term ";" Term ;
 TermCase                  . Term1 ::= "case" Term "of" "{" [CaseExpression] "}" ;
 TermLambda                . Term1 ::= Lambda Var Type "." Term ;
 TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --

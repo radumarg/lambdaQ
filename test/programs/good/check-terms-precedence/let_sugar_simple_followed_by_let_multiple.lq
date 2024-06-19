@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = var1 <- term1 ; (let (var2, var3) = term2 in term3)

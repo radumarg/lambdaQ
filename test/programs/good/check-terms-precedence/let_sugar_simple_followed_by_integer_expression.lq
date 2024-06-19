@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = var1 <- term1 ; 8 / 2
