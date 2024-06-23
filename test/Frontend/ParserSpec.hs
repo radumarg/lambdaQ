@@ -1206,5 +1206,443 @@ spec =  do
         result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_term_followed_by_let_sugar_multiple.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [@0] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
 
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by let multiple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_associativity.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = let { (v, v') = t } in t' } in let { (var3, var4) = term2 } in term" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by let simple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_associativity.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var1 = let { v = t } in t' } in let { var2 = term2 } in term" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by let simple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = let { v = t } in t' } in let { var3 = term3 } in term" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by let multiple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = let { (v, v') = t } in t' } in let { (var3, var4) = term2 } in term" `isInfixOf` trimNewLines str)
+
+
+
+
+
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by if else" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_if_else.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in if term then a else b" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by if else" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_if_else.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in if term then a else b" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a if else followed by let multiple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_let_multiple1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = if term then a else let { (var1, var2) = term1 } in term2" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a if else followed by let multiple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_let_sugar_multiple2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = if term then var1, var2 <- term1; term2 else b" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a if else followed by let simple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_let_single1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = if term then a else let { var = term } in term'" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a if else followed by let simple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/if_else_followed_by_let_single2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = if term then let { var = term } in term' else b" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by function application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_function_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in term2 . term3" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by function application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_function_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in term2 . term3" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a function application followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/function_application_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term . (let { var = term } in term')" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a function application followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/function_application_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term . (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by term application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_term_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in term2 term3" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by term application" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_term_application.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in term2 term3" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a term application followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_application_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term (let { var = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a term application followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_application_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = term (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by variable list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_variable_list.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in v1, v2" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by variable list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_variable_list.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in v1, v2" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable list followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_list_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = v1, v2 (let { var = term } in term')" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable list followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_list_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = v1, v2 (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by variable tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_variable_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in (v1, v2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by variable tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_variable_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in (v1, v2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable tuple followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_tuple_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (v1, v2) (let { var = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable tuple followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_tuple_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (v1, v2) (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by term tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_term_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in (t1 t2, t3)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by term tuple" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_term_tuple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in (t1 t2, t3)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a term tuple followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_tuple_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (t1 t2, t3) (let { var = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a term tuple followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/term_tuple_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = (t1 t2, t3) (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by variable" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_variable.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in var'" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by variable" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_variable.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in var" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var (let { var = term } in term')" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a variable followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/variable_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_list.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in [x, y]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by list" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_list.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in [x, y]" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x, y] (let { var = term } in term')" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a list followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x, y] (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by gate" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_simple_followed_by_gate.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { var = term } in gate H" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let multiple term followed by gate" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_multiple_followed_by_gate.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = let { (var1, var2) = term1 } in gate H" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a gate followed let simple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_followed_by_let_simple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = gate H (let { var = term } in term')" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a gate followed let multiple term" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/gate_followed_by_let_multiple.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = gate H (let { (var1, var2) = term1 } in term2)" `isInfixOf` trimNewLines str)
+
+    Test.Hspec.context "when provided with a program containing a let simple term followed by unit" $ do
+      Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+        result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_by_unit.lq"
+        print (trimNewLines result)
+        result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; ()" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by unit" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_unit.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; ()" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a unit followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/unit_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = () (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a unit followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/unit_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = () (var1, var2 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by list element" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_by_list_element.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; [x] !! 1" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by list element" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_list_element.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; [] !! 0" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a list element followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_element_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = [] !! 3 (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a list element followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/list_element_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = [x, y] !! 2 (var1, var2 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by basis state" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_by_basis_state.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; @-" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by basis state" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_basis_state.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; @+" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a basis state followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/basis_state_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun :: Qbit; fun = @-i (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a basis state followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/basis_state_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = @+i (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by boolean expression" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_by_boolean_expression.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; 2 /= 3" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by boolean expression" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_boolean_expression.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; 2 == 3" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a boolean expression followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/boolean_expression_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = 2 <= 3 (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a boolean expression followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/boolean_expression_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = 3 >= 2 (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by integer expression" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_by_integer_expression.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; 8 / 2" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by integer expression" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_integer_expression.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; 2 + 3" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a integer expression followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/integer_expression_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = 2 * 3 (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a integer expression followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/integer_expression_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = 3 - 2 (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by classic controlled gate with variables" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_classic_controlled_gate_with_vars.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [v1, v2] ctrl [1, 1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by classic controlled gate with variables" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_classic_controlled_gate_with_vars.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> " fun = var1, var2 <- term1; with [v1, v2] ctrl [1, 1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with variables followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_vars_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [v1, v2] ctrl [1, 1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with variables followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_vars_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [v1, v2] ctrl [1, 1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by classic controlled gate with terms" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_classic_controlled_gate_with_terms.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [t1 t2, t3] ctrl [1, 1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by classic controlled gate with terms" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_classic_controlled_gate_with_terms.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; with [t1 t2, t3] ctrl [1, 1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with terms followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_terms_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [1, 1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with terms followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_terms_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [1, 1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by classic controlled gate with single term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_classic_controlled_gate_with_term.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [t] ctrl [0] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by classic controlled gate with single term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_classic_controlled_gate_with_term.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; with [t] ctrl [0] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with single term followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_term_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a classic controlled gate with single term followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/classic_controlled_gate_with_term_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [0] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by quantum controlled gate with variables" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_quantum_controlled_gate_with_vars.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [v1, v2] ctrl [@1, @1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by quantum controlled gate with variables" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_quantum_controlled_gate_with_vars.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> " fun = var1, var2 <- term1; with [v1, v2] ctrl [@1, @1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with variables followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_vars_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [v1, v2] ctrl [@1, @1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with variables followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_vars_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [v1, v2] ctrl [@1, @1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by quantum controlled gate with terms" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_quantum_controlled_gate_with_terms.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [t1 t2, t3] ctrl [@1, @1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by quantum controlled gate with terms" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_quantum_controlled_gate_with_terms.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; with [t1 t2, t3] ctrl [@1, @1] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with terms followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_terms_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [@1, @1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with terms followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_terms_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t1 t2, t3] ctrl [@1, @1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let simple term followed by quantum controlled gate with single term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_simple_followed_quantum_controlled_gate_with_term.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1 <- term1; with [t] ctrl [@0] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a let multiple term followed by quantum controlled gate with single term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/let_sugar_multiple_followed_by_quantum_controlled_gate_with_term.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = var1, var2 <- term1; with [t] ctrl [@0] gate H" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with single term followed let simple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_term_followed_by_let_sugar_simple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [@1] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+    -- Test.Hspec.context "when provided with a program containing a quantum controlled gate with single term followed let multiple term" $ do
+    --   Test.Hspec.it "returns a parsed abstract syntax tree with redundant paranthesis removed" $ do
+    --     result <- testParserReturnsTree "test/programs/good/check-terms-precedence/quantum_controlled_gate_with_term_followed_by_let_sugar_multiple.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "fun = with [t] ctrl [@0] gate H (var1 <- term1; term2)" `isInfixOf` trimNewLines str)
+
+
+    -- let (var1, var2) = term1 in
 
     --print (trimNewLines result)

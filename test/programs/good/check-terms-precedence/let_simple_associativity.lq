@@ -1,0 +1,5 @@
+fun :: Bit
+fun = let var1 = let v = t in t' 
+      in let var2 = term2 
+      in term
+

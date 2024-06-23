@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = gate H (let (var1, var2) = term1 in term2) 

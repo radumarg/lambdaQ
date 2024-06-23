@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = [x, y] (let var = term in term')
