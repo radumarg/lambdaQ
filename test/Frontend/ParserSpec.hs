@@ -2,10 +2,10 @@
 
 module Frontend.ParserSpec (spec) where
 
-import Test.Hspec
-    ( context, describe, it, shouldReturn, shouldSatisfy, Spec )
 import Control.Monad.Except (runExceptT)
 import Data.List (isInfixOf)
+import Test.Hspec
+    ( context, describe, it, shouldReturn, shouldSatisfy, Spec )
 
 import CompilationEngine (Exec, readFileContents, parseProgram)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax

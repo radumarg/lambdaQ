@@ -36,22 +36,22 @@ data CompilationError =
 
 instance Show CompilationError where
   show (ParseError e) =
-    "parse error:\n" ++ show e
+    "Parse error:\n" ++ show e
 
   show (SemanticError e) =
-    "semantic error:\n" ++ show e
+    "Semantic error:\n" ++ show e
 
   show (SyntaxTreeConversionError e) =
-    "syntax tree conversion error:\n" ++ show e
+    "Syntax tree conversion error:\n" ++ show e
 
   show (TypeCheckError e) =
-    "type error:\n" ++ show e
+    "Type error:\n" ++ show e
 
   show (CodeGenerationError e) =
-    "code generation error " ++ show e
+    "Code generation error:\n" ++ show e
 
   show (FileDoesNotExist file) =
-    "file not found: " ++ show file
+    "File not found: " ++ show file
 
 -- ExceptT monad transformer can be used to 
 -- add error handling to another monad

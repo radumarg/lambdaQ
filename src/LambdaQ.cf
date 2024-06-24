@@ -160,10 +160,6 @@ TermLambda                . Term1 ::= Lambda Var Type "." Term ;
 TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --
 coercions Term 4 ;
 
--- TermDollar            . Term1 ::= Term2 "$" Term1 ;  -- right-associative --
--- TermCompose           . Term3 ::= Term3 "." Term4 ;  -- left-associative  --
--- TermApply             . Term3 ::= Term3 Term4 ;      -- left-associative  --
-
 -- Polymorphic Lists --
 ListNil               . List1 ::= "[]" ;
 ListSingle            . List1 ::= "[" Term "]" ;
