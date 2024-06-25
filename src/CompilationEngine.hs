@@ -36,19 +36,19 @@ data CompilationError =
 
 instance Show CompilationError where
   show (ParseError e) =
-    "Parse error:\n" ++ show e
+    "Parse error: " ++ e
 
   show (SemanticError e) =
-    "Semantic error:\n" ++ show e
+    "Semantic error(s):\n" ++ e
 
   show (SyntaxTreeConversionError e) =
-    "Syntax tree conversion error:\n" ++ show e
+    "Syntax tree conversion error(s):\n" ++ e
 
   show (TypeCheckError e) =
-    "Type error:\n" ++ show e
+    "Type error(s):\n" ++ e
 
   show (CodeGenerationError e) =
-    "Code generation error:\n" ++ show e
+    "Code generation error(s):\n" ++ e
 
   show (FileDoesNotExist file) =
     "File not found: " ++ show file
