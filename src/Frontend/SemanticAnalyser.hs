@@ -75,25 +75,25 @@ gateNamesAreValid functions = if null allErrors then Right () else Left allError
 controlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 controlQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ testQubitsAreDistinctAndGetErrors functions []
+    allErrors = unlines $ verifyControlQubitsAreDistinct functions []
 
 -- test for controlBitsNotDistinct --
 controlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 controlBitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ testBitsAreDistinctAndGetErrors functions []
+    allErrors = unlines $ verifyControlBitsAreDistinct functions []
 
 -- test for ControlAndTargetQubitsNotDistinct --
 controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 controlAndTargetQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ testCtrlAndTgtQubitsAreDistinctAndGetErrors functions []
+    allErrors = unlines $ verifyControlAndTargetQubitsAreDistinct functions []
 
 -- test for UnknownGates --
 caseTermsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 caseTermsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ testCaseTermsAndGetErrors functions []
+    allErrors = unlines $ verifyCaseTerms functions []
 
 -- test semantic conditions --
 
@@ -166,44 +166,44 @@ testGateNamesAndGetErrors (fun:funs)  errorMessages =
       newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gates named: " ++ unlines unknownGates
       funInfo = getFunctionNameAndPosition fun
 
-testCaseTermsAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testCaseTermsAndGetErrors [] errorMessages = reverse errorMessages
-testCaseTermsAndGetErrors (fun:funs)  errorMessages = undefined
+verifyCaseTerms :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyCaseTerms [] errorMessages = reverse errorMessages
+verifyCaseTerms (fun:funs)  errorMessages = undefined
 
-testQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testQubitsAreDistinctAndGetErrors [] errorMessages = reverse errorMessages
-testQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
+verifyControlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlQubitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlQubitsAreDistinct (fun:funs) errorMessages =
   if null incorrectQubits
     then
-      testQubitsAreDistinctAndGetErrors funs errorMessages
+      verifyControlQubitsAreDistinct funs errorMessages
     else
-      testQubitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+      verifyControlQubitsAreDistinct funs (newErrorMessage : errorMessages)
     where
       incorrectQubits = getNotDistinctQubits fun []
       newErrorMessage = "  " ++ show (ControlQbitsNotDistinct funInfo) ++ " for the following qubits: " ++ format incorrectQubits
       funInfo = getFunctionNameAndPosition fun
 
-testBitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testBitsAreDistinctAndGetErrors [] errorMessages = reverse errorMessages
-testBitsAreDistinctAndGetErrors (fun:funs) errorMessages =
+verifyControlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlBitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlBitsAreDistinct (fun:funs) errorMessages =
   if null incorrectBits
     then
-      testBitsAreDistinctAndGetErrors funs errorMessages
+      verifyControlBitsAreDistinct funs errorMessages
     else
-      testBitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+      verifyControlBitsAreDistinct funs (newErrorMessage : errorMessages)
     where
       incorrectBits = getNotDistinctBits fun []
       newErrorMessage = "  " ++ show (ControlBitsNotDistinct funInfo) ++ " for the following bits: " ++ format incorrectBits
       funInfo = getFunctionNameAndPosition fun
 
-testCtrlAndTgtQubitsAreDistinctAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testCtrlAndTgtQubitsAreDistinctAndGetErrors [] errorMessages = reverse errorMessages
-testCtrlAndTgtQubitsAreDistinctAndGetErrors (fun:funs) errorMessages =
+verifyControlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlAndTargetQubitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlAndTargetQubitsAreDistinct (fun:funs) errorMessages =
   if null duplicatedQubits
     then
-      testCtrlAndTgtQubitsAreDistinctAndGetErrors funs errorMessages
+      verifyControlAndTargetQubitsAreDistinct funs errorMessages
     else
-      testCtrlAndTgtQubitsAreDistinctAndGetErrors funs (newErrorMessage : errorMessages)
+      verifyControlAndTargetQubitsAreDistinct funs (newErrorMessage : errorMessages)
     where
       duplicatedQubits =  getDuplicatedCtrlAndTgtQubits fun []
       newErrorMessage = "  " ++ show (ControlAndTargetQubitsNotDistinct funInfo) ++ " for qubits identified with names: " ++ unlines duplicatedQubits
