@@ -1,0 +1,5 @@
+fun :: [Qbit] -> Bit
+fun list arg  = 1
+
+main :: Bit
+main = other

@@ -1,0 +1,5 @@
+fun :: [Qbit] ** 3 -> Bit
+fun q1 q2 q3 arg  = 1
+
+main :: Bit
+main = other

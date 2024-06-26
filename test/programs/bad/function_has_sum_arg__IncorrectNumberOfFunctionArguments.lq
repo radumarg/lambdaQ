@@ -1,0 +1,5 @@
+fun :: ([Qbit] + [Qbit]) -> Bit
+fun sum arg  = 1
+
+main :: Bit
+main = other

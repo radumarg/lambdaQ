@@ -109,30 +109,85 @@ spec =  do
 
     context "when provided with a coinflip program where number of function arguments is correct" $ do
       it "returns an error" $ do
-        testSemanticAnalyser "test/programs/bad/example00-CoinFlip__CorrectNumberOfFunctionArguments_1.lq" `Test.Hspec.shouldReturn` "OK"
+        testSemanticAnalyser "test/programs/good/example00-CoinFlip__NoArgsLessThanMaxFunctionArgs.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- EXPECT SOME ERRORS: FUNCTION NAME AND FUNCTION ARGUMENTS IS NOT CORRECT  --
 
-    context "when provided with a coinflip program where number of function arguments is incorrect" $ do
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_unit_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_bit_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_qubit_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_integer_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_integer_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_boolean_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_list_arg__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    -- TODO: fix
+    -- context "when provided with a program where number of function arguments is incorrect" $ do
+    --   it "returns an error" $ do
+    --     result <- testSemanticAnalyser "test/programs/bad/function_has_sum_arg__IncorrectNumberOfFunctionArguments.lq"
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/function_has_exponential_args__IncorrectNumberOfFunctionArguments.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 4 arguments but expects as most 3" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_1.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_2.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 9 and column: 1, the function has 3 arguments but expects as most 0" `isInfixOf` str)
+
+    context "when provided with a program where number of function arguments is incorrect" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_3.lq"
         putStrLn result
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'other' at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'main' at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
-
-    -- context "when provided with a coinflip program where number of function arguments is incorrect" $ do
-    --   it "returns an error" $ do
-    --     result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_2.lq"
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'main' at line: 9 and column: 1, the function has 3 arguments but expects as most 0" `isInfixOf` str)
-
-    -- context "when provided with a coinflip program where number of function arguments is incorrect" $ do
-    --   it "returns an error" $ do
-    --     result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_3.lq"
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'other'' at line: 10 and column: 1, the function has 6 arguments but expects as most 4" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'main' at line: 13 and column: 1, the function has 5 arguments but expects as most 4" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL QUBITS ARE NOT DISTINCT  --
 

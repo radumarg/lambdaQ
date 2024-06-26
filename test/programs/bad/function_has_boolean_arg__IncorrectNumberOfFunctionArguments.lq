@@ -1,0 +1,5 @@
+fun :: Bool -> Bit
+fun bool arg  = 1
+
+main :: Bit
+main = other
