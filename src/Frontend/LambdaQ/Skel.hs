@@ -63,7 +63,6 @@ transBoolExpression x = case x of
 transType :: Frontend.LambdaQ.Abs.Type -> Result
 transType x = case x of
   Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> failure x
-  Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> failure x
   Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> failure x
   Frontend.LambdaQ.Abs.TypeExp type_ integer -> failure x
   Frontend.LambdaQ.Abs.TypeNonLinear type_ -> failure x

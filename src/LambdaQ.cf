@@ -40,7 +40,6 @@ coercions BoolExpression 2 ;
 
 -- Types --
 TypeFunction   . Type   ::= Type "->" Type1 ;      -- left-associative
-TypeSum        . Type1  ::= Type1 "+" Type2 ;      -- left-associative TODO: what do I do with sum types? How should terms be defined? Also remember to fix test in SemanticAnalyser
 TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- left-associative
 TypeExp        . Type3  ::= Type4 "**" Integer ;
 TypeNonLinear  . Type3  ::= "!" Type4 ;

@@ -46,7 +46,6 @@ data BoolExpression
 
 data Type
     = TypeFunction Type Type
-    | TypeSum Type Type
     | TypeTensorProd Type Type
     | TypeExp Type Integer
     | TypeNonLinear Type

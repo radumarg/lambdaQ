@@ -184,19 +184,19 @@ spec =  do
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_3.lq"
-        putStrLn result
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL QUBITS ARE NOT DISTINCT  --
 
-    -- context "when provided with a four qubit adder program where controls qubits are not distinct" $ do
-    --   it "returns an error" $ do
-    --     result <- testSemanticAnalyser "test/programs/bad/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'carry' at line: 8 and column: 1" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubits: q1,q1, and ,q3,q3" `isInfixOf` str)
+    context "when provided with a four qubit adder program where controls qubits are not distinct" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
+        putStrLn result
+        --result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
+        --result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'carry' at line: 8 and column: 1" `isInfixOf` str)
+        --result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubits: q1,q1, and ,q3,q3" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL BITS ARE NOT DISTINCT  --
 

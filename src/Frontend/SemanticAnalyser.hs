@@ -34,13 +34,13 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err1 = toString $ functionNamesAreUnique functions
     err2 = toString $ functionNameInTypeMatchesDefinition functions
     err3 = toString $ functionsHaveCorrectNumberOfArguments functions
-    --err4 = toString $ controlQubitsAreDistinct functions
+    err4 = toString $ controlQubitsAreDistinct functions
     --err5 = toString $ controlBitsAreDistinct functions
     --err6 = toString $ controlAndTargetQubitsAreDistinct functions
     --err7 = toString $ gateNamesAreValid functions
     --err8 = toString $ caseTermsAreDistinct functions
     --err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 + err8
-    err = err1 ++ err2 ++ err3
+    err = err1 ++ err2 ++ err3 ++ err4
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
@@ -142,7 +142,6 @@ verifyNumberOfFunctionArguments (fun:funs)  errorMessages =
       getMaxArgs typ = getNumberOfTypes typ - 1
       getNumberOfTypes :: GeneratedAbstractSyntax.Type -> Integer
       getNumberOfTypes (GeneratedAbstractSyntax.TypeFunction t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
-      getNumberOfTypes (GeneratedAbstractSyntax.TypeSum t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
       getNumberOfTypes (GeneratedAbstractSyntax.TypeTensorProd t1 t2) = getNumberOfTypes t1 + getNumberOfTypes t2
       getNumberOfTypes (GeneratedAbstractSyntax.TypeExp t i) = getNumberOfTypes t * i
       getNumberOfTypes (GeneratedAbstractSyntax.TypeNonLinear t) = getNumberOfTypes t
@@ -260,24 +259,57 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
         getQubitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
         getQubitFromControlTerm term = qubit
           where (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, qubit))) = term
-    collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t []
-    collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctQubits = notDistinctQubits
-    collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctQubits = notDistinctQubits
-    --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctQubits = notDistinctQubits
-    --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctQubits = notDistinctQubits
     collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctQubits = notDistinctQubits
+    collectNotDistinct _ _ = undefined
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctQubits = 
+    --   notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQubits = notDistinctQubits
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQubits = notDistinctQubits
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) notDistinctQubits = notDistinctQubits
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctQubits = notDistinctQubits
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctQubits = notDistinctQubits
+    -- collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctQubits = notDistinctQubits
+    -- --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctQubits = notDistinctQubits
+    -- --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctQubits = notDistinctQubits
+    
+
+
+    -- = TermListElement List Integer
+    -- | TermUnit
+    -- | TermBasisState BasisState
+    -- | TermBoolExpression BoolExpression
+    -- | TermIntegerExpression IntegerExpression
+    -- | TermGate Gate
+    -- | TermList List
+    -- | TermVariable Var
+    -- | TermTupleOfTerms Term [Term]
+    -- | TermTupleOfVars Var [Var]
+    -- | TermQuantumCtrlGate ControlTerm ControlBasisState
+    -- | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
+    -- | TermQuantumVCtrlsGate ControlVars ControlBasisStates
+    -- | TermClassicCtrlGate ControlTerm ControlBit
+    -- | TermClassicTCtrlsGate ControlTerms ControlBits
+    -- | TermClassicVCtrlsGate ControlVars ControlBits
+    -- | TermVariableList Var [Var]
+    -- | TermApply Term Term
+    -- | TermCompose Term Term
+    -- | TermIfElse Term Term Term
+    -- | TermLetSingle Var Term Term
+    -- | TermLetMultiple Var [Var] Term Term
+    -- | TermLetSugarSingle Var Term Term
+    -- | TermLetSugarMultiple Var [Var] Term Term
+    -- | TermCase Term [CaseExpression]
+    -- | TermLambda Lambda Var Type Term
+    -- | TermDollar Term Term
+
 
 getNotDistinctBits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
 getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistinct fbody

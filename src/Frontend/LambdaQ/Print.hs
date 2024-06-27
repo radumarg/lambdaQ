@@ -179,7 +179,6 @@ instance Print Frontend.LambdaQ.Abs.BoolExpression where
 instance Print Frontend.LambdaQ.Abs.Type where
   prt i = \case
     Frontend.LambdaQ.Abs.TypeFunction type_1 type_2 -> prPrec i 0 (concatD [prt 0 type_1, doc (showString "->"), prt 1 type_2])
-    Frontend.LambdaQ.Abs.TypeSum type_1 type_2 -> prPrec i 1 (concatD [prt 1 type_1, doc (showString "+"), prt 2 type_2])
     Frontend.LambdaQ.Abs.TypeTensorProd type_1 type_2 -> prPrec i 2 (concatD [prt 2 type_1, doc (showString "*"), prt 3 type_2])
     Frontend.LambdaQ.Abs.TypeExp type_ n -> prPrec i 3 (concatD [prt 4 type_, doc (showString "**"), prt 0 n])
     Frontend.LambdaQ.Abs.TypeNonLinear type_ -> prPrec i 3 (concatD [doc (showString "!"), prt 4 type_])

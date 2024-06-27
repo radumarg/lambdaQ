@@ -27,12 +27,10 @@ data Type =
    TypeUnit            |
    Type :->: Type      |
    Type :*: Type       |
-   Type :+: Type       |
    Type :**: Integer
   deriving (Eq, Ord, Read, Show)
 
 infixr 1 :->:
-infixr 2 :+:
 infixr 3 :*:
 infixr 4 :**:
 
@@ -147,7 +145,6 @@ mapType GeneratedAbstractSyntax.TypeQbit  = TypeQbit
 mapType GeneratedAbstractSyntax.TypeUnit  = TypeUnit
 mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
 mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r
-mapType (GeneratedAbstractSyntax.TypeSum l r) = mapType l :+: mapType r
 mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = mapType l :*: mapType r
 mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
 

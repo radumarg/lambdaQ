@@ -229,13 +229,11 @@ largestCommonSubtype t1 t2 (line, col, fname) = Control.Monad.Except.throwError 
 
 isSubtype :: Type -> Type -> Bool
 isSubtype (TypeNonLinear t1 :*: t2) (t1' :*: t2') = isSubtype (TypeNonLinear t1) t1' && isSubtype (TypeNonLinear t2) t2'
-isSubtype (TypeNonLinear t1 :+: t2) (t1' :+: t2') = isSubtype (TypeNonLinear t1) t1' && isSubtype (TypeNonLinear t2) t2'
 isSubtype (TypeNonLinear t1) (TypeNonLinear t2) = isSubtype (TypeNonLinear t1) t2
 isSubtype (TypeNonLinear t1) t2 = isSubtype t1 t2
 isSubtype (t1 :->: t2) (t1' :->: t2') = isSubtype t1 t1' && isSubtype t2 t2'
 isSubtype (t1 :*: t2) (t1' :*: t2') = isSubtype t1 t1' && isSubtype t2 t2'
 isSubtype (t1 :**: i) (t1' :**: j) = isSubtype t1 t1' && i == j
-isSubtype (t1 :+: t2) (t1' :+: t2') = isSubtype t1 t1' && isSubtype t2 t2'
 isSubtype t1 t2  = t1 == t2
 
 inferGateType :: Gate -> Type
@@ -257,7 +255,6 @@ inferGateType gate
           _ -> 1
 
 pullOutBangs :: Type -> Type
-pullOutBangs (TypeNonLinear l :+: TypeNonLinear r) = TypeNonLinear (pullOutBangs (l :+: r))
 pullOutBangs (TypeNonLinear l :*: TypeNonLinear r) = TypeNonLinear (pullOutBangs (l :*: r))
 pullOutBangs (TypeNonLinear t :**: n) = TypeNonLinear (pullOutBangs (t :**: n))
 pullOutBangs t = t

@@ -196,11 +196,6 @@ Type
   : Type '->' Type1 { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
   | Type1 { $1 }
 
-Type1 :: { Frontend.LambdaQ.Abs.Type }
-Type1
-  : Type1 '+' Type2 { Frontend.LambdaQ.Abs.TypeSum $1 $3 }
-  | Type2 { $1 }
-
 Type2 :: { Frontend.LambdaQ.Abs.Type }
 Type2
   : Type2 '*' Type3 { Frontend.LambdaQ.Abs.TypeTensorProd $1 $3 }
@@ -221,6 +216,9 @@ Type5
   | '()' { Frontend.LambdaQ.Abs.TypeUnit }
   | '[' Type ']' { Frontend.LambdaQ.Abs.TypeList $2 }
   | '(' Type ')' { $2 }
+
+Type1 :: { Frontend.LambdaQ.Abs.Type }
+Type1 : Type2 { $1 }
 
 Type4 :: { Frontend.LambdaQ.Abs.Type }
 Type4 : Type5 { $1 }

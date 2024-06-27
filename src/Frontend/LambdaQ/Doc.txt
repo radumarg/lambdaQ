@@ -103,8 +103,6 @@ All other symbols are terminals.
   |  |  **|**  | ``(`` //BoolExpression// ``)``
   | //Type// | -> | //Type// ``->`` //Type1//
   |  |  **|**  | //Type1//
-  | //Type1// | -> | //Type1// ``+`` //Type2//
-  |  |  **|**  | //Type2//
   | //Type2// | -> | //Type2// ``*`` //Type3//
   |  |  **|**  | //Type3//
   | //Type3// | -> | //Type4// ``**`` //Integer//
@@ -117,6 +115,7 @@ All other symbols are terminals.
   |  |  **|**  | ``()``
   |  |  **|**  | ``[`` //Type// ``]``
   |  |  **|**  | ``(`` //Type// ``)``
+  | //Type1// | -> | //Type2//
   | //Type4// | -> | //Type5//
   | //Angle// | -> | //Double//
   | //BasisState// | -> | ``@0``
