@@ -1,0 +1,2 @@
+fun :: Qbit
+fun = with [ v1, v2 ] ctrl [ @1, @1 ] gate H (let var = term1 in term2)
