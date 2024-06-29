@@ -13,9 +13,10 @@ data SemanticError =
     TooManyFunctionArguments String                   |  -- number of function arguments for a function exceeds the number of arguments in signature
     ControlQbitsNotDistinct String                    |  -- control qubits for controlled gates are not distinct
     ControlBitsNotDistinct String                     |  -- control bits for classically controlled gates are not distinct
-    ControlAndTargetQubitsNotDistinct String          |  -- for a controlled gate the control and target qubits are not distinct
+    ControlAndTargetQbitsNotDistinct String          |  -- for a controlled gate the control and target qubits are not distinct
     UnknownGate String                                |  -- gate names should be recognized as belonging to the set of supported gates
     CaseTermsNotDistinct String                          -- case terms should be distinct
+
 
 instance Show SemanticError where
     show (DuplicatedFunctionName err) = "Function name is not unique: " ++ err
@@ -23,9 +24,10 @@ instance Show SemanticError where
     show (TooManyFunctionArguments err) = "Number of function arguments exceeds the number of arguments in signature: " ++ err
     show (ControlQbitsNotDistinct err) = "The control qubits for controlled gate(s) are not distinct: " ++ err
     show (ControlBitsNotDistinct err) = "The control bits for classical controlled gate(s) are not distinct: " ++ err
-    show (ControlAndTargetQubitsNotDistinct err) = "The control and target qubits are not distinct: " ++ err
+    show (ControlAndTargetQbitsNotDistinct err) = "The control and target qubits are not distinct: " ++ err
     show (UnknownGate err) = "This gate is not supported: " ++ err
     show (CaseTermsNotDistinct err) = "Some case terms are duplicated: " ++ err
+
 
 runSemanticAnalyser :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
 runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
@@ -34,9 +36,9 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err1 = toString $ functionNamesAreUnique functions
     err2 = toString $ functionNameInTypeMatchesDefinition functions
     err3 = toString $ functionsHaveCorrectNumberOfArguments functions
-    err4 = toString $ controlQubitsAreDistinct functions
+    err4 = toString $ controlQbitsAreDistinct functions
     --err5 = toString $ controlBitsAreDistinct functions
-    --err6 = toString $ controlAndTargetQubitsAreDistinct functions
+    --err6 = toString $ controlAndTargetQbitsAreDistinct functions
     --err7 = toString $ gateNamesAreValid functions
     --err8 = toString $ caseTermsAreDistinct functions
     --err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 + err8
@@ -44,6 +46,7 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
+
 
 -- test function names are uniquely defined --
 functionNamesAreUnique :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -53,11 +56,13 @@ functionNamesAreUnique functions = if null allErrors then Right () else Left all
     predicate function = length (filter (== getFunctionName function) functionNames) == 1
     functionNames = map getFunctionName functions
 
+
 -- test function name in type declaration matches function name in definition --
 functionNameInTypeMatchesDefinition :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 functionNameInTypeMatchesDefinition functions = if null allErrors then Right () else Left allErrors
   where
     allErrors = unlines $ verifyFunctionsNames functions []
+
 
 -- test for TooManyFunctionArguments --
 functionsHaveCorrectNumberOfArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -65,17 +70,20 @@ functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right (
   where
     allErrors = unlines $ verifyNumberOfFunctionArguments functions []
 
+
 -- test for UnknownGates --
 gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 gateNamesAreValid functions = if null allErrors then Right () else Left allErrors
   where
     allErrors = unlines $ testGateNamesAndGetErrors functions []
 
+
 -- test for ControlQbitsNotDistinct --
-controlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
+controlQbitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+controlQbitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyControlQubitsAreDistinct functions []
+    allErrors = unlines $ verifyControlQbitsAreDistinct functions []
+
 
 -- test for controlBitsNotDistinct --
 controlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -83,11 +91,13 @@ controlBitsAreDistinct functions = if null allErrors then Right () else Left all
   where
     allErrors = unlines $ verifyControlBitsAreDistinct functions []
 
--- test for ControlAndTargetQubitsNotDistinct --
-controlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-controlAndTargetQubitsAreDistinct functions = if null allErrors then Right () else Left allErrors
+
+-- test for ControlAndTargetQbitsNotDistinct --
+controlAndTargetQbitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+controlAndTargetQbitsAreDistinct functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyControlAndTargetQubitsAreDistinct functions []
+    allErrors = unlines $ verifyControlAndTargetQbitsAreDistinct functions []
+
 
 -- test for UnknownGates --
 caseTermsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -95,7 +105,9 @@ caseTermsAreDistinct functions = if null allErrors then Right () else Left allEr
   where
     allErrors = unlines $ verifyCaseTerms functions []
 
+
 -- test semantic conditions --
+
 
 getDuplicatedFunctionNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
 getDuplicatedFunctionNames [] _  errorMessages = reverse errorMessages
@@ -109,6 +121,7 @@ getDuplicatedFunctionNames (fun:funs) predicate errorMessages =
       newErrorMessage = "  " ++ show (DuplicatedFunctionName funInfo)
       funInfo = getFunctionNameAndPosition fun
 
+
 verifyFunctionsNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 verifyFunctionsNames [] errorMessages = reverse errorMessages
 verifyFunctionsNames (fun:funs)  errorMessages =
@@ -120,6 +133,7 @@ verifyFunctionsNames (fun:funs)  errorMessages =
     where
       newErrorMessage = "  " ++ show (MismatchedFunctionNameInTypeAndDeclaration funInfo)
       funInfo = getFunctionNameAndPosition fun
+
 
 verifyNumberOfFunctionArguments :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 verifyNumberOfFunctionArguments [] errorMessages = reverse errorMessages
@@ -152,6 +166,53 @@ verifyNumberOfFunctionArguments (fun:funs)  errorMessages =
       getNumberOfTypes GeneratedAbstractSyntax.TypeQbit = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeUnit = 1
 
+
+verifyControlQbitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlQbitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlQbitsAreDistinct (fun:funs) errorMessages =
+  if null duplicatedQbits
+    then
+      verifyControlQbitsAreDistinct funs errorMessages
+    else
+      verifyControlQbitsAreDistinct funs (newErrorMessage : errorMessages)
+    where
+      duplicatedQbits = collectNotDistinctQbits fbody ""
+      (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
+      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
+      newErrorMessage = "  " ++ show (ControlQbitsNotDistinct funInfo) ++ " for the following qubits: " ++ duplicatedQbits
+      funInfo = getFunctionNameAndPosition fun
+
+
+verifyControlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlBitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlBitsAreDistinct (fun:funs) errorMessages =
+  if null duplicatedBits
+    then
+      verifyControlBitsAreDistinct funs errorMessages
+    else
+      verifyControlBitsAreDistinct funs (newErrorMessage : errorMessages)
+    where
+      duplicatedBits = collectNotDistinctBits fbody ""
+      (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
+      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
+      newErrorMessage = "  " ++ show (ControlBitsNotDistinct funInfo) ++ " for the following bits: " ++ duplicatedBits
+      funInfo = getFunctionNameAndPosition fun
+
+
+verifyControlAndTargetQbitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyControlAndTargetQbitsAreDistinct [] errorMessages = reverse errorMessages
+verifyControlAndTargetQbitsAreDistinct (fun:funs) errorMessages =
+  if null duplicatedQbits
+    then
+      verifyControlAndTargetQbitsAreDistinct funs errorMessages
+    else
+      verifyControlAndTargetQbitsAreDistinct funs (newErrorMessage : errorMessages)
+    where
+      duplicatedQbits =  getDuplicatedCtrlAndTgtQbits fun []
+      newErrorMessage = "  " ++ show (ControlAndTargetQbitsNotDistinct funInfo) ++ " for qubits identified with names: " ++ unlines duplicatedQbits
+      funInfo = getFunctionNameAndPosition fun
+
+
 testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 testGateNamesAndGetErrors [] errorMessages = reverse errorMessages
 testGateNamesAndGetErrors (fun:funs)  errorMessages =
@@ -165,63 +226,25 @@ testGateNamesAndGetErrors (fun:funs)  errorMessages =
       newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gates named: " ++ unlines unknownGates
       funInfo = getFunctionNameAndPosition fun
 
+
 verifyCaseTerms :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 verifyCaseTerms [] errorMessages = reverse errorMessages
 verifyCaseTerms (fun:funs)  errorMessages = undefined
 
-verifyControlQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-verifyControlQubitsAreDistinct [] errorMessages = reverse errorMessages
-verifyControlQubitsAreDistinct (fun:funs) errorMessages =
-  if null incorrectQubits
-    then
-      verifyControlQubitsAreDistinct funs errorMessages
-    else
-      verifyControlQubitsAreDistinct funs (newErrorMessage : errorMessages)
-    where
-      incorrectQubits = getNotDistinctQubits fun []
-      newErrorMessage = "  " ++ show (ControlQbitsNotDistinct funInfo) ++ " for the following qubits: " ++ format incorrectQubits
-      funInfo = getFunctionNameAndPosition fun
-
-verifyControlBitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-verifyControlBitsAreDistinct [] errorMessages = reverse errorMessages
-verifyControlBitsAreDistinct (fun:funs) errorMessages =
-  if null incorrectBits
-    then
-      verifyControlBitsAreDistinct funs errorMessages
-    else
-      verifyControlBitsAreDistinct funs (newErrorMessage : errorMessages)
-    where
-      incorrectBits = getNotDistinctBits fun []
-      newErrorMessage = "  " ++ show (ControlBitsNotDistinct funInfo) ++ " for the following bits: " ++ format incorrectBits
-      funInfo = getFunctionNameAndPosition fun
-
-verifyControlAndTargetQubitsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-verifyControlAndTargetQubitsAreDistinct [] errorMessages = reverse errorMessages
-verifyControlAndTargetQubitsAreDistinct (fun:funs) errorMessages =
-  if null duplicatedQubits
-    then
-      verifyControlAndTargetQubitsAreDistinct funs errorMessages
-    else
-      verifyControlAndTargetQubitsAreDistinct funs (newErrorMessage : errorMessages)
-    where
-      duplicatedQubits =  getDuplicatedCtrlAndTgtQubits fun []
-      newErrorMessage = "  " ++ show (ControlAndTargetQubitsNotDistinct funInfo) ++ " for qubits identified with names: " ++ unlines duplicatedQubits
-      funInfo = getFunctionNameAndPosition fun
 
 -- some helper functions --
+
 
 uniquify :: Ord a => [a] -> [a]
 uniquify lst = toList $ fromList lst
 
--- This sucks and is incomplete, I should learn some Haskell
-format :: [String] -> String
-format items = filter (`notElem` "[]\"") (show (drop 1 items))
 
 getFunctionName :: GeneratedAbstractSyntax.FunctionDeclaration -> String
 getFunctionName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) _ _) = funDef
     ((_, _), fname) = fvar
+
 
 getFunctionNameAndPosition :: GeneratedAbstractSyntax.FunctionDeclaration -> String
 getFunctionNameAndPosition (GeneratedAbstractSyntax.FunDecl _ funDef) =
@@ -230,6 +253,7 @@ getFunctionNameAndPosition (GeneratedAbstractSyntax.FunDecl _ funDef) =
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) _ _) = funDef
     ((fline, fcol), fname) = fvar
 
+
 functionNamesMatch :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
 functionNamesMatch (GeneratedAbstractSyntax.FunDecl funType funDef) = varName == functionName
   where
@@ -237,7 +261,7 @@ functionNamesMatch (GeneratedAbstractSyntax.FunDecl funType funDef) = varName ==
     (GeneratedAbstractSyntax.FunType fname _) = funType
     (GeneratedAbstractSyntax.Var ((_, _), varName)) = fname
 
--- TODO: DO I WANT TO CATCH INCORRECTLY NAMED GATES DURING PARSING OR HERE?
+
 getUnknownGates :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
 getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody []
   where
@@ -245,49 +269,55 @@ getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbo
     collectUnknowns :: GeneratedAbstractSyntax.Term -> [String] -> [String]
     collectUnknowns _ _ = []
 
-getNotDistinctQubits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
-getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistinct fbody
+
+collectNotDistinctQbits :: GeneratedAbstractSyntax.Term -> String -> String
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermQuantumVCtrlsGate controlVars _) notDistinctQbits =
+  if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables
   where
-    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-    collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumTCtrlsGate controlTerms _) notDistinctQubits =
-      if distinct then notDistinctQubits else notDistinctQubits ++ [" and "] ++ termVariables
-      where
-        distinct = length termVariables == length (uniquify termVariables)
-        GeneratedAbstractSyntax.CtrlTerms term terms = controlTerms
-        termVariables = getQubitFromControlTerm term : map getQubitFromControlTerm terms
-        getQubitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
-        getQubitFromControlTerm term = qubit
-          where (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, qubit))) = term
-    collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctQubits = notDistinctQubits
-    collectNotDistinct _ _ = undefined
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctQubits = 
-    --   notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctQubits = notDistinctQubits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQubits = notDistinctQubits
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQubits = notDistinctQubits
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) notDistinctQubits = notDistinctQubits
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctQubits = notDistinctQubits
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctQubits = notDistinctQubits
-    -- collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctQubits = notDistinctQubits
-    -- --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctQubits = notDistinctQubits
-    -- --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctQubits = notDistinctQubits
-    
+    distinct = length termVariables == length (uniquify termVariables)
+    GeneratedAbstractSyntax.CtrlVars var vars = controlVars
+    termVariables = getQbitFromControlVar var : map getQbitFromControlVar vars
+    getQbitFromControlVar :: GeneratedAbstractSyntax.Var -> String
+    getQbitFromControlVar (GeneratedAbstractSyntax.Var (_, varName)) = varName
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermQuantumTCtrlsGate controlTerms _) notDistinctQbits =
+  if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables
+  where
+    distinct = length termVariables == length (uniquify termVariables)
+    GeneratedAbstractSyntax.CtrlTerms term terms = controlTerms
+    termVariables = filter (not . null) $ getQbitFromControlTerm term : map getQbitFromControlTerm terms
+    getQbitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
+    getQbitFromControlTerm (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, varName))) = varName
+    getQbitFromControlTerm _ = ""
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement _ _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits GeneratedAbstractSyntax.TermUnit notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermBasisState _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermBoolExpression _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermIntegerExpression _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermGate _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle term)) notDistinctQbits 
+  = notDistinctQbits ++ collectNotDistinctQbits "" term
+
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctQbits = 
+--   notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 [] ++ collectNotDistinctQbits t3 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctQbits = notDistinctQbits ++ collectNotDistinctQbits t1 [] ++ collectNotDistinctQbits t2 []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQbits = notDistinctQbits
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQbits = notDistinctQbits
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) notDistinctQbits = notDistinctQbits
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermVariable _) notDistinctQbits = notDistinctQbits
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermBasisState _) notDistinctQbits = notDistinctQbits
+-- --collectNotDistinctQbits (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits _ _ = undefined
 
 
-    -- = TermListElement List Integer
-    -- | TermUnit
-    -- | TermBasisState BasisState
-    -- | TermBoolExpression BoolExpression
-    -- | TermIntegerExpression IntegerExpression
-    -- | TermGate Gate
+
     -- | TermList List
     -- | TermVariable Var
     -- | TermTupleOfTerms Term [Term]
@@ -311,75 +341,74 @@ getNotDistinctQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDist
     -- | TermDollar Term Term
 
 
-getNotDistinctBits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
-getNotDistinctBits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNotDistinct fbody
+
+collectNotDistinctBits :: GeneratedAbstractSyntax.Term -> String -> String
+collectNotDistinctBits (GeneratedAbstractSyntax.TermClassicTCtrlsGate controlTerms _) notDistinctBits =
+  if distinct then notDistinctBits else notDistinctBits ++ " and " ++ intercalate ", " termVariables
   where
-    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-    collectNotDistinct :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicTCtrlsGate controlTerms _) notDistinctBits =
-      if distinct then notDistinctBits else notDistinctBits ++ [" and "] ++ termVariables
-      where
-        distinct = length termVariables == length (uniquify termVariables)
-        GeneratedAbstractSyntax.CtrlTerms term terms = controlTerms
-        termVariables = getBitFromControlTerm term : map getBitFromControlTerm terms
-        getBitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
-        getBitFromControlTerm term = qubit
-          where (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, qubit))) = term
-    collectNotDistinct (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 [] ++ collectNotDistinct t3 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctBits = notDistinctBits ++ collectNotDistinct t []
-    collectNotDistinct (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinct t1 [] ++ collectNotDistinct t2 []
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermVariable _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermBasisState _) notDistinctBits = notDistinctBits
-    collectNotDistinct (GeneratedAbstractSyntax.TermGate _) notDistinctBits = notDistinctBits
-    --collectNotDistinct (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctBits = notDistinctBits
-    --collectNotDistinct (GeneratedAbstractSyntax.TermBit _) notDistinctBits = notDistinctBits
-    collectNotDistinct GeneratedAbstractSyntax.TermUnit notDistinctBits = notDistinctBits
+    distinct = length termVariables == length (uniquify termVariables)
+    GeneratedAbstractSyntax.CtrlTerms term terms = controlTerms
+    termVariables = getBitFromControlTerm term : map getBitFromControlTerm terms
+    getBitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
+    getBitFromControlTerm term = qubit
+      where (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, qubit))) = term
+collectNotDistinctBits (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 [] ++ collectNotDistinctBits t3 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermLambda _ _ _  t) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermApply t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermDollar t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermCompose t1 t2) notDistinctBits = notDistinctBits ++ collectNotDistinctBits t1 [] ++ collectNotDistinctBits t2 []
+collectNotDistinctBits (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctBits = notDistinctBits
+collectNotDistinctBits (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) notDistinctBits = notDistinctBits
+collectNotDistinctBits (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctBits = notDistinctBits
+collectNotDistinctBits (GeneratedAbstractSyntax.TermVariable _) notDistinctBits = notDistinctBits
+collectNotDistinctBits (GeneratedAbstractSyntax.TermBasisState _) notDistinctBits = notDistinctBits
+collectNotDistinctBits (GeneratedAbstractSyntax.TermGate _) notDistinctBits = notDistinctBits
+--collectNotDistinctBits (GeneratedAbstractSyntax.TermTupleOfTerm _) notDistinctBits = notDistinctBits
+--collectNotDistinctBits (GeneratedAbstractSyntax.TermBit _) notDistinctBits = notDistinctBits
+collectNotDistinctBits GeneratedAbstractSyntax.TermUnit notDistinctBits = notDistinctBits
+
 
 -- TODO multiple qubits gates not supported yet
-getDuplicatedCtrlAndTgtQubits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
-getDuplicatedCtrlAndTgtQubits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectDuplicated fbody
+getDuplicatedCtrlAndTgtQbits :: GeneratedAbstractSyntax.FunctionDeclaration -> [String] -> [String]
+getDuplicatedCtrlAndTgtQbits (GeneratedAbstractSyntax.FunDecl _ funDef) = collectDuplicated fbody
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
     collectDuplicated :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectDuplicated (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 [] ++ collectDuplicated t3 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermLambda _ _ _ t) duplicatedQubits = duplicatedQubits ++ collectDuplicated t []
-    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) _) term) duplicatedQubits
-      = if termQubit == controlQubit then  duplicatedQubits ++ [controlQubit] else duplicatedQubits
+    collectDuplicated (GeneratedAbstractSyntax.TermIfElse t1 t2 t3) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 [] ++ collectDuplicated t3 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSingle _ t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermLambda _ _ _ t) duplicatedQbits = duplicatedQbits ++ collectDuplicated t []
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) _) term) duplicatedQbits
+      = if termQbit == controlQbit then  duplicatedQbits ++ [controlQbit] else duplicatedQbits
       where
-        controlQubit = getQubit ctrlTerm
-        termQubit = getQubit term
-    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQubits
-      = duplicatedQubits ++ [q | q <- controlQubits, q == termQubit]
+        controlQbit = getQbit ctrlTerm
+        termQbit = getQbit term
+    collectDuplicated (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits
+      = duplicatedQbits ++ [q | q <- controlQbits, q == termQbit]
       where
-        controlQubits = getQubit ctrlTerm : map getQubit ctrlTerms
-        termQubit = getQubit term
-    collectDuplicated (GeneratedAbstractSyntax.TermApply t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermDollar t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermCompose t1 t2) duplicatedQubits = duplicatedQubits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
-    collectDuplicated (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermVariable _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermBasisState _) duplicatedQubits = duplicatedQubits
-    collectDuplicated (GeneratedAbstractSyntax.TermGate _) duplicatedQubits = duplicatedQubits
-    --collectDuplicated (GeneratedAbstractSyntax. _) duplicatedQubits = duplicatedQubits
-    --collectDuplicated (GeneratedAbstractSyntax.TermBit _) duplicatedQubits = duplicatedQubits
-    collectDuplicated GeneratedAbstractSyntax.TermUnit duplicatedQubits = duplicatedQubits
+        controlQbits = getQbit ctrlTerm : map getQbit ctrlTerms
+        termQbit = getQbit term
+    collectDuplicated (GeneratedAbstractSyntax.TermApply t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermDollar t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermCompose t1 t2) duplicatedQbits = duplicatedQbits ++ collectDuplicated t1 [] ++ collectDuplicated t2 []
+    collectDuplicated (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermQuantumTCtrlsGate _ _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermClassicTCtrlsGate _ _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermVariable _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermBasisState _) duplicatedQbits = duplicatedQbits
+    collectDuplicated (GeneratedAbstractSyntax.TermGate _) duplicatedQbits = duplicatedQbits
+    --collectDuplicated (GeneratedAbstractSyntax. _) duplicatedQbits = duplicatedQbits
+    --collectDuplicated (GeneratedAbstractSyntax.TermBit _) duplicatedQbits = duplicatedQbits
+    collectDuplicated GeneratedAbstractSyntax.TermUnit duplicatedQbits = duplicatedQbits
 
-getQubit ctrlTerm = qubit
+
+getQbit ctrlTerm = qubit
   where GeneratedAbstractSyntax.TermVariable ( GeneratedAbstractSyntax.Var (_, qubit)) = ctrlTerm
 
