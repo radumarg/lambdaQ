@@ -3,7 +3,7 @@ module Frontend.SemanticAnalyser (
   runSemanticAnalyser
 ) where
 
-import Data.List (intercalate)
+import Data.List (intercalate, isPrefixOf)
 import Data.Set (toList, fromList)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
@@ -179,7 +179,7 @@ verifyControlQbitsAreDistinct (fun:funs) errorMessages =
       duplicatedQbits = collectNotDistinctQbits fbody ""
       (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
       (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-      newErrorMessage = "  " ++ show (ControlQbitsNotDistinct funInfo) ++ " for the following qubits: " ++ duplicatedQbits
+      newErrorMessage = "  " ++ show (ControlQbitsNotDistinct funInfo) ++ " for the following qubits: " ++ stripFirstSubstring " and " duplicatedQbits
       funInfo = getFunctionNameAndPosition fun
 
 
@@ -195,7 +195,7 @@ verifyControlBitsAreDistinct (fun:funs) errorMessages =
       duplicatedBits = collectNotDistinctBits fbody ""
       (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
       (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-      newErrorMessage = "  " ++ show (ControlBitsNotDistinct funInfo) ++ " for the following bits: " ++ duplicatedBits
+      newErrorMessage = "  " ++ show (ControlBitsNotDistinct funInfo) ++ " for the following bits: " ++ stripFirstSubstring " and " duplicatedBits
       funInfo = getFunctionNameAndPosition fun
 
 
@@ -288,7 +288,32 @@ collectNotDistinctQbits (GeneratedAbstractSyntax.TermQuantumTCtrlsGate controlTe
     getQbitFromControlTerm :: GeneratedAbstractSyntax.Term -> String
     getQbitFromControlTerm (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var (_, varName))) = varName
     getQbitFromControlTerm _ = ""
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement _ _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement GeneratedAbstractSyntax.ListNil _) notDistinctQbits = notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListSingle term) _) notDistinctQbits 
+  = collectNotDistinctQbits term notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term []) _) notDistinctQbits 
+  = collectNotDistinctQbits term notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) no) notDistinctQbits 
+  = collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term2 terms) no) notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term GeneratedAbstractSyntax.ListNil) _) notDistinctQbits 
+  = collectNotDistinctQbits term notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListSingle term2)) _) notDistinctQbits 
+  = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle term2)) notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term2 [])) _) notDistinctQbits 
+  = collectNotDistinctQbits term2 notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term2 (term3 : terms))) no) notDistinctQbits 
+  = collectNotDistinctQbits (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term3 terms)) no) notDistinctQbitsTmp 
+  where
+    notDistinctQbitsTmp' = collectNotDistinctQbits term1 notDistinctQbits
+    notDistinctQbitsTmp = collectNotDistinctQbits term2 notDistinctQbitsTmp'
+    
+
 collectNotDistinctQbits GeneratedAbstractSyntax.TermUnit notDistinctQbits = notDistinctQbits
 collectNotDistinctQbits (GeneratedAbstractSyntax.TermBasisState _) notDistinctQbits = notDistinctQbits
 collectNotDistinctQbits (GeneratedAbstractSyntax.TermBoolExpression _) notDistinctQbits = notDistinctQbits
@@ -304,61 +329,69 @@ collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSynt
   where
     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
 
--- List expressions add
----- ListNil and ListNil
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil GeneratedAbstractSyntax.ListNil)) notDistinctQbits = notDistinctQbits
----- ListNil and ListSingle
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
-----  ListSingle and ListNil
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
----- ListSingle and ListSingle
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term1) (GeneratedAbstractSyntax.ListSingle term2))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
+-- -- List expressions add
+-- ---- ListNil and ListNil
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil GeneratedAbstractSyntax.ListNil)) notDistinctQbits = notDistinctQbits
+-- ---- ListNil and ListSingle
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
+-- ----  ListSingle and ListNil
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
+-- ---- ListSingle and ListSingle
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term1) (GeneratedAbstractSyntax.ListSingle term2))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- ---- ListNil and ListMultiple (term [])
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
+-- ---- ListMultiple (term []) and ListNil
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term []) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
+-- ---- ListNil and ListMultiple term1 terms
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- ----  ListMultiple term1 terms and ListNil
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- -- ListSingle and ListMultiple term1 terms
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
+-- -- ListMultiple term1 terms and ListSingle
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term2 terms) (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
+-- -- ListSingle and ListMultiple (term [])
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term1) (GeneratedAbstractSyntax.ListMultiple term2 []))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- -- ListMultiple (term []) and ListSingle
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 []) (GeneratedAbstractSyntax.ListSingle term2))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- --  ListMultiple term [] and ListMultiple term1 terms
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term []) (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
+-- -- ListMultiple (term []) and ListMultiple (term [])
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 []) (GeneratedAbstractSyntax.ListMultiple term2 []))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
+-- -- ListMultiple term1 terms and ListMultiple term []
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term2 terms) (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbitsTmp
+--   where
+--     notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
+--     notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
+-- ---- ListCons and ListNil
+-- collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListCons term GeneratedAbstractSyntax.ListNil))) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
+-- ---- ListNile and ListCons
+
+collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2)) notDistinctQbits =
+  collectNotDistinctQbits (GeneratedAbstractSyntax.TermList l2) notDistinctQbitsTmp
   where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
----- ListNil and ListMultiple (term [])
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
----- ListMultiple (term []) and ListNil
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term []) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
----- ListNil and ListMultiple term1 terms
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
-----  ListMultiple term1 terms and ListNil
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) GeneratedAbstractSyntax.ListNil)) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd GeneratedAbstractSyntax.ListNil (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
--- ListSingle and ListMultiple term1 terms
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
--- ListMultiple term1 terms and ListSingle
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term2 terms) (GeneratedAbstractSyntax.ListSingle term))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
--- ListSingle and ListMultiple (term [])
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term1) (GeneratedAbstractSyntax.ListMultiple term2 []))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
--- ListMultiple (term []) and ListSingle
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 []) (GeneratedAbstractSyntax.ListSingle term2))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
---  ListMultiple term [] and ListMultiple term1 terms
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term []) (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListSingle term) (GeneratedAbstractSyntax.ListMultiple term2 terms))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
--- ListMultiple (term []) and ListMultiple (term [])
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 []) (GeneratedAbstractSyntax.ListMultiple term2 []))) notDistinctQbits = collectNotDistinctQbits term2 notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbits
--- ListMultiple term1 terms and ListMultiple term []
-collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbits = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd (GeneratedAbstractSyntax.ListMultiple term2 terms) (GeneratedAbstractSyntax.ListMultiple term []))) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits term notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits term1 notDistinctQbitsTmp'
+    notDistinctQbitsTmp = collectNotDistinctQbits (GeneratedAbstractSyntax.TermList l1) notDistinctQbits
 
 collectNotDistinctQbits (GeneratedAbstractSyntax.TermVariable _) notDistinctQbits = notDistinctQbits
 collectNotDistinctQbits (GeneratedAbstractSyntax.TermTupleOfTerms term []) notDistinctQbits = collectNotDistinctQbits term notDistinctQbits
@@ -509,3 +542,8 @@ getDuplicatedCtrlAndTgtQbits = undefined
 getQbit ctrlTerm = qubit
   where GeneratedAbstractSyntax.TermVariable ( GeneratedAbstractSyntax.Var (_, qubit)) = ctrlTerm
 
+stripFirstSubstring :: String -> String -> String
+stripFirstSubstring _ "" = ""
+stripFirstSubstring substr str@(x:xs)
+  | substr `isPrefixOf` str = drop (length substr) str
+  | otherwise               = x : stripFirstSubstring substr xs
