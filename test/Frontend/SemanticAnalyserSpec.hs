@@ -80,15 +80,15 @@ spec =  do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__FunctionNamesAreNotUnique.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Function name is not unique" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"coinFlip\" at line: 2 and column: 1" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"coinFlip\" at line: 5 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"coinFlip\" at line: 2 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"coinFlip\" at line: 5 and column: 1" `isInfixOf` str)
 
     context "when provided with a Grover algorithm program where function names are not unique" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__FunctionNamesAreNotUnique.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Function name is not unique" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"groverDiffusionOperator\" at line: 6 and column: 1" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"groverDiffusionOperator\" at line: 15 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"groverDiffusionOperator\" at line: 6 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"groverDiffusionOperator\" at line: 15 and column: 1" `isInfixOf` str)
 
     -- EXPECT SOME ERRORS: FUNCTION NAME AND FUNCTION NAME IN TYPE DECLARATION DO NOT MATCH  --
 
@@ -96,14 +96,14 @@ spec =  do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"coinFlip'\" at line: 2 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"coinFlip'\" at line: 2 and column: 1" `isInfixOf` str)
 
     context "when provided with a Grover algorithm program where two function names do not match declaration" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__FunctionNamesDefinitionDoesNotMatchDeclaration.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Function name in type definition does not match the function name in declaration" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"oracle'\" at line: 2 and column: 1" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"groverDiffusionOperator'\" at line: 6 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"oracle'\" at line: 2 and column: 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"groverDiffusionOperator'\" at line: 6 and column: 1" `isInfixOf` str)
         
     -- EXPECT NO ERRORS: FUNCTION NAME AND FUNCTION ARGUMENTS IS NOT CORRECT  --
 
@@ -117,95 +117,95 @@ spec =  do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_unit_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_bit_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_qubit_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_integer_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_integer_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_boolean_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_list_arg__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     -- TODO: fix
     -- context "when provided with a program where number of function arguments is incorrect" $ do
     --   it "returns an error" $ do
     --     result <- testSemanticAnalyser "test/programs/bad/function_has_sum_arg__IncorrectNumberOfFunctionArguments.lq"
     --     result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/function_has_exponential_args__IncorrectNumberOfFunctionArguments.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"fun\" at line: 2 and column: 1, the function has 4 arguments but expects as most 3" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 4 arguments but expects as most 3" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_1.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_2.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 9 and column: 1, the function has 3 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"main\" at line: 9 and column: 1, the function has 3 arguments but expects as most 0" `isInfixOf` str)
 
     context "when provided with a program where number of function arguments is incorrect" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example00-CoinFlip__IncorrectNumberOfFunctionArguments_3.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function: \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL QUBITS ARE NOT DISTINCT  --
 
     context "when provided with a four qubit adder program where controls qubits are not distinct" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
-        putStrLn result
-        --result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
-        --result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'carry' at line: 8 and column: 1" `isInfixOf` str)
-        --result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubits: q1,q1, and ,q3,q3" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"sum\" at line: 2 and column: 1 for the following qubits: q0, q0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"carry\" at line: 8 and column: 1 for the following qubits: q1, q1 and q3, q3" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL BITS ARE NOT DISTINCT  --
 
-    -- context "when provided with a bogus program where controls bits are not distinct" $ do
-    --   it "returns an error" $ do
-    --     result <- testSemanticAnalyser "test/programs/bad/example-Bogus__ControlBitsNotDistinct.lq"
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "The control bits for classical controlled gate(s) are not distinct" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'fun' at line: 3 and column: 1" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for the following bits: b1,b1, and ,b2,b1,b2" `isInfixOf` str)
+    context "when provided with a bogus program where controls bits are not distinct" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example-ClassicCtrlGates__ControlQbitsNotDistinct.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for classical controlled gate(s) are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 3 and column: 1" `isInfixOf` str)
+        putStrLn result
+        --result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubits: b1,b1, and ,b2,b1,b2" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL QUBITS AND TARGET QUBITS ARE NOT DISTINCT  --
 
@@ -213,8 +213,8 @@ spec =  do
     --   it "returns an error" $ do
     --     result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__ControlAnTargetQubitsNotDifferent.lq"
     --     result `Test.Hspec.shouldSatisfy` (\str -> "The control and target qubits are not distinct" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'oracle' at line: 2 and column: 1 for qubits identified with names: q6" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function: 'oracle'' at line: 6 and column: 1 for qubits identified with names: q0" `isInfixOf` str)
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function 'oracle' at line: 2 and column: 1 for qubits identified with names: q6" `isInfixOf` str)
+    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function 'oracle'' at line: 6 and column: 1 for qubits identified with names: q0" `isInfixOf` str)
 
     -- -- TODO add support and test for multiple controlled gates
     
