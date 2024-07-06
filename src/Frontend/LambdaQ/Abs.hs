@@ -156,6 +156,7 @@ data Term
     | TermVariableList Var [Var]
     | TermApply Term Term
     | TermCompose Term Term
+    | TermTensorProduct Term Term
     | TermIfElse Term Term Term
     | TermLetSingle Var Term Term
     | TermLetMultiple Var [Var] Term Term

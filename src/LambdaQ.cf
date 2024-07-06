@@ -136,7 +136,7 @@ TermBasisState            . Term3 ::= BasisState ;
 TermBoolExpression        . Term3 ::= BoolExpression ;
 TermIntegerExpression     . Term3 ::= IntegerExpression ;
 TermGate                  . Term3 ::= "gate" Gate ;
-TermList                  . Term4 ::= List ;
+TermList                  . Term3 ::= List ;
 TermVariable              . Term3 ::= Var ;
 TermTupleOfTerms          . Term3 ::= "(" Term "," [Term] ")"  ;
 TermTupleOfVars           . Term3 ::= "(" Var "," [Var] ")"  ;
@@ -149,6 +149,7 @@ TermClassicVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBits ;
 TermVariableList          . Term2 ::= Var "," [Var] ;
 TermApply                 . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermCompose               . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
+TermTensorProduct         . Term2 ::= Term2 "*" Term3 ;  -- left-associative  --
 TermIfElse                . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;

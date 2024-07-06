@@ -182,6 +182,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermVariableList var vars -> failure x
   Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
+  Frontend.LambdaQ.Abs.TermTensorProduct term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermIfElse term1 term2 term3 -> failure x
   Frontend.LambdaQ.Abs.TermLetSingle var term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermLetMultiple var vars term1 term2 -> failure x

@@ -325,7 +325,6 @@ ListTerm : Term { (:[]) $1 } | Term ',' ListTerm { (:) $1 $3 }
 Term4 :: { Frontend.LambdaQ.Abs.Term }
 Term4
   : List '!!' Integer { Frontend.LambdaQ.Abs.TermListElement $1 $3 }
-  | List { Frontend.LambdaQ.Abs.TermList $1 }
   | '(' Term ')' { $2 }
 
 Term3 :: { Frontend.LambdaQ.Abs.Term }
@@ -335,6 +334,7 @@ Term3
   | BoolExpression { Frontend.LambdaQ.Abs.TermBoolExpression $1 }
   | IntegerExpression { Frontend.LambdaQ.Abs.TermIntegerExpression $1 }
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
+  | List { Frontend.LambdaQ.Abs.TermList $1 }
   | Var { Frontend.LambdaQ.Abs.TermVariable $1 }
   | '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.TermTupleOfTerms $2 $4 }
   | '(' Var ',' ListVar ')' { Frontend.LambdaQ.Abs.TermTupleOfVars $2 $4 }
@@ -351,6 +351,7 @@ Term2
   | Var ',' ListVar { Frontend.LambdaQ.Abs.TermVariableList $1 $3 }
   | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
   | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
+  | Term2 '*' Term3 { Frontend.LambdaQ.Abs.TermTensorProduct $1 $3 }
   | Term3 { $1 }
 
 Term1 :: { Frontend.LambdaQ.Abs.Term }
