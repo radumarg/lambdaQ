@@ -335,38 +335,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList (GeneratedAbstrac
   where
     notDistinctQbitsTmp = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l1) notDistinctQbits
 -- TermListElement
-collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermListElement GeneratedAbstractSyntax.ListNil _) notDistinctQbits = notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListSingle term) _) notDistinctQbits 
-  = collectNotDistinctQbits mode term notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term []) _) notDistinctQbits 
-  = collectNotDistinctQbits mode term notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term1 (term2 : terms)) no) notDistinctQbits 
-  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListMultiple term2 terms) no) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term GeneratedAbstractSyntax.ListNil) _) notDistinctQbits 
-  = collectNotDistinctQbits mode term notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListSingle term2)) _) notDistinctQbits 
-  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle term2)) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term2 [])) _) notDistinctQbits 
-  = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term2 (term3 : terms))) no) notDistinctQbits 
-  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term1  (GeneratedAbstractSyntax.ListMultiple term3 terms)) no) notDistinctQbitsTmp 
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term2 notDistinctQbits
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListCons term (GeneratedAbstractSyntax.ListExpressionAdd l1 l2)) _) notDistinctQbits 
-  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l2) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits mode term notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l1) notDistinctQbitsTmp'
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement (GeneratedAbstractSyntax.ListExpressionAdd l1 l2) _) notDistinctQbits 
-  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l2) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l1) notDistinctQbits
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermListElement l _) notDistinctQbits = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermList l) notDistinctQbits
 -- TermUnit    
 collectNotDistinctQbits _ GeneratedAbstractSyntax.TermUnit notDistinctQbits = notDistinctQbits
 -- TermBasisState
@@ -401,6 +370,10 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermApply term1 term2) not
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCompose term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
   where
     notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
+-- TermTensorProduct
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTensorProduct term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
 -- TermIfElse
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermIfElse term1 term2 term3) notDistinctQbits = collectNotDistinctQbits mode term3 notDistinctQbitsTmp
   where
@@ -422,23 +395,23 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermLetSugarSingle _ term1
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermLetSugarMultiple _  _ term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
   where
     notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
--- TermCase
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 [GeneratedAbstractSyntax.CaseExpr term2 term3]) notDistinctQbits = collectNotDistinctQbits mode term3 notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits mode term1 notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term2 notDistinctQbitsTmp'
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 ((GeneratedAbstractSyntax.CaseExpr term2 term3):caseExpressions)) notDistinctQbits = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 caseExpressions) notDistinctQbitsTmp
-  where
-    notDistinctQbitsTmp' = collectNotDistinctQbits mode term2 notDistinctQbits
-    notDistinctQbitsTmp = collectNotDistinctQbits mode term3 notDistinctQbitsTmp'
 -- TermLambda
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermLambda _ _ _ term) notDistinctQbits = collectNotDistinctQbits mode term notDistinctQbits
 -- TermDollar
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermDollar term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
   where
     notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
-
-collectNotDistinctQbits _ _ _ = undefined
+-- TermCase
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term []) notDistinctQbits = collectNotDistinctQbits mode term notDistinctQbits
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 [GeneratedAbstractSyntax.CaseExpr term2 term3]) notDistinctQbits = collectNotDistinctQbits mode term3 notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp' = collectNotDistinctQbits mode term1 notDistinctQbits
+    notDistinctQbitsTmp = collectNotDistinctQbits mode term2 notDistinctQbitsTmp'
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 ((GeneratedAbstractSyntax.CaseExpr term2 term3):caseExpressions)) notDistinctQbits 
+  = collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 caseExpressions) notDistinctQbitsTmp
+  where
+    notDistinctQbitsTmp' = collectNotDistinctQbits mode term2 notDistinctQbits
+    notDistinctQbitsTmp = collectNotDistinctQbits mode term3 notDistinctQbitsTmp'
 
 
 -- TODO multiple qubits gates not supported yet
