@@ -188,33 +188,38 @@ spec =  do
         result `Test.Hspec.shouldSatisfy` (\str -> "for function \"other\" at line: 5 and column: 1, the function has 2 arguments but expects as most 0" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for function \"main\" at line: 8 and column: 1, the function has 1 arguments but expects as most 0" `isInfixOf` str)
 
-    -- -- EXPECT SOME ERRORS: CONTROL QUBITS ARE NOT DISTINCT  --
+    -- EXPECT SOME ERRORS: CONTROL QUBITS FOR QUANTUM CONTROLLED GATES ARE NOT DISTINCT  --
 
     context "when provided with a four qubit adder program where controls qubits are not distinct" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example07-fourQubitAdder__ControlQubitsNotDistinct.lq"
-        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for controlled gate(s) are not distinct" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"sum\" at line: 2 and column: 1 for the following qubits: q0, q0" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"carry\" at line: 8 and column: 1 for the following qubits: q1, q1 and q3, q3" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for some quantum controlled gate(s) are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"sum\" at line: 2 and column: 1 for the following qubit sequence(s): q0, q0" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"carry\" at line: 8 and column: 1 for the following qubit sequence(s): q1, q1 and q3, q3" `isInfixOf` str)
 
-    -- -- EXPECT SOME ERRORS: CONTROL BITS ARE NOT DISTINCT  --
+    -- EXPECT SOME ERRORS: CONTROL QUBITS FOR CLASSICALLY CONTROLLED GATES ARE NOT DISTINCT  --
 
     context "when provided with a bogus program where controls bits are not distinct" $ do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/example-ClassicCtrlGates__ControlQbitsNotDistinct.lq"
-        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for classical controlled gate(s) are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "The control qubits for some classically controlled gate(s) are not distinct" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 3 and column: 1" `isInfixOf` str)
-        putStrLn result
-        --result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubits: b1,b1, and ,b2,b1,b2" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for the following qubit sequence(s): q1, q1 and q2, q1, q2" `isInfixOf` str)
 
     -- -- EXPECT SOME ERRORS: CONTROL QUBITS AND TARGET QUBITS ARE NOT DISTINCT  --
 
-    -- context "when provided with a Grover algorithm program where control and target qubits are not different" $ do
-    --   it "returns an error" $ do
-    --     result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__ControlAnTargetQubitsNotDifferent.lq"
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "The control and target qubits are not distinct" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function 'oracle' at line: 2 and column: 1 for qubits identified with names: q6" `isInfixOf` str)
-    --     result `Test.Hspec.shouldSatisfy` (\str -> "for function 'oracle'' at line: 6 and column: 1 for qubits identified with names: q0" `isInfixOf` str)
+    context "when provided with a program where for a quantum controlled gate with single control where control and target qubits are not different" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__ControlAndTargetQubitNotDifferent_QuantumControlledGate.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "For some quantum controlled gate(s) the control and target qubits are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"oracle\" at line: 5 and column: 1 for qubits identified with variable names: q0" `isInfixOf` str)
+
+    context "when provided with a program where for a classically controlled gate with single control where control and target qubits are not different" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/example08-groverAlgorithm__ControlAndTargetQubitNotDifferent_ClassicControlledGate.lq"
+        result `Test.Hspec.shouldSatisfy` (\str -> "For some classically controlled gate(s) the control and target qubits are not distinct" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for function \"oracle\" at line: 5 and column: 1 for qubits identified with variable names: q0" `isInfixOf` str)
 
     -- -- TODO add support and test for multiple controlled gates
     
+    -- putStrLn result
