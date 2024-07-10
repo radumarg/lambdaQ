@@ -1,4 +1,4 @@
 fun :: Bit
-fun = q1, q2, q3, q4 <- (new @0, new @0, new @0, new @0);
+fun = (q1, q2, q3, q4) <- (new @0, new @0, new @0, new @0);
       measr (with [ q1, q3, q4 ] ctrl [ @1, @1, @1 ] gate Y q2)
       --TODO: how will select qubit to apply measure gate

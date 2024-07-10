@@ -5,7 +5,7 @@ fun2 :: Bit -> Bit
 fun2 bit = bit
 
 main :: Bit ** 4
-main = q1, q2, q3 <- fun1;
+main = (q1, q2, q3) <- fun1;
        b1 <- measr q1;
        b2 <- measr q2;
        b3 <- fun2 0;

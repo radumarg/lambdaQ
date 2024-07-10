@@ -1,2 +1,0 @@
-fun :: Qbit
-fun = var1 <- term1 ; v1, v2

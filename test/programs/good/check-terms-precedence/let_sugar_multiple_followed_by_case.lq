@@ -1,5 +1,5 @@
 fun :: Bit
-fun = var1, var2 <- term ; case x of  
+fun = (var1, var2) <- term ; case x of  
    a1 -> a2 
    b1 -> b2
 

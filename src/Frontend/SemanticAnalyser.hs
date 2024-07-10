@@ -334,7 +334,7 @@ collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notD
 
 collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQbits = notDistinctQbits
 
-collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermVariableList _ _) notDistinctQbits = notDistinctQbits
+--collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermVariableList _ _) notDistinctQbits = notDistinctQbits
 
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermApply term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
   where
@@ -410,11 +410,35 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
 
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
   if (mode == "quantum-ctrl-gates") && not (null termQbit) && (termQbit `elem` controlQbits) then
-    duplicatedQbits ++ " and " ++ intercalate " "  [q | q <- controlQbits, q == termQbit]
+    duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
    else duplicatedQbits
       where
         controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
         termQbit = getTermVariableName term
+
+collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
+  if (mode == "classic-ctrl-gates") && not (null termQbit) && (termQbit `elem` controlQbits) then
+    duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
+   else duplicatedQbits
+      where
+        controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
+        termQbit = getTermVariableName term
+
+collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits =
+  if (mode == "quantum-ctrl-gates") then -- && not (null termQbit) && (termQbit `elem` controlQbits) then
+    duplicatedQbits ++ " and " ++ show ctrlTerms  -- ++ unwords [q | q <- controlQbits, q == termQbit]
+   else duplicatedQbits
+      where
+        controlQbits = getTermVariableName ctrlTerm : map getTermVariableName ctrlTerms
+        termQbit = getTermVariableName term
+
+-- collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
+--   if (mode == "quantum-ctrl-gates") && not (null termQbit) && (termQbit `elem` controlQbits) then
+--     duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
+--    else duplicatedQbits
+--       where
+--         controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
+--         termQbit = getTermVariableName term
 
 -- collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits =
 --   if (mode == "quantum-ctrl-gates") && not (null termQbit) && (termQbit `elem` controlQbits) then
@@ -482,7 +506,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTupleOfTerms term1
 
 collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermTupleOfVars _ _) duplicatedQubits = duplicatedQubits
 
-collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermVariableList _ _) duplicatedQubits = duplicatedQubits
+--collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermVariableList _ _) duplicatedQubits = duplicatedQubits
 
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply term1 term2) duplicatedQubits = collectDuplicatedTgtAndCtrl mode term2 duplicatedQubitsTmp
   where

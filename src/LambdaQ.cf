@@ -146,7 +146,6 @@ TermQuantumVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBasisStat
 TermClassicCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
 TermClassicTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
 TermClassicVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBits ;
-TermVariableList          . Term2 ::= Var "," [Var] ;
 TermApply                 . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermCompose               . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermTensorProduct         . Term2 ::= Term2 "*" Term3 ;  -- left-associative  --
@@ -154,7 +153,7 @@ TermIfElse                . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
 TermLetSugarSingle        . Term1 ::= Var "<-" Term ";" Term ;
-TermLetSugarMultiple      . Term1 ::= Var "," [Var] "<-" Term ";" Term ;
+TermLetSugarMultiple      . Term1 ::= "(" Var "," [Var] ")" "<-" Term ";" Term ;
 TermCase                  . Term1 ::= "case" Term "of" "{" [CaseExpression] "}" ;
 TermLambda                . Term1 ::= Lambda Var Type "." Term ;
 TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --

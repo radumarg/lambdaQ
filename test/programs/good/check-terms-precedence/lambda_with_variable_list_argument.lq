@@ -1,3 +1,0 @@
-fun :: Bit
-fun = \var Bit . v1, v2
-

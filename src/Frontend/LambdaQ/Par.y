@@ -348,7 +348,6 @@ Term2
   | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermClassicCtrlGate $2 $4 }
   | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicTCtrlsGate $2 $4 }
   | 'with' ControlVars 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicVCtrlsGate $2 $4 }
-  | Var ',' ListVar { Frontend.LambdaQ.Abs.TermVariableList $1 $3 }
   | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
   | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
   | Term2 '*' Term3 { Frontend.LambdaQ.Abs.TermTensorProduct $1 $3 }
@@ -360,7 +359,7 @@ Term1
   | 'let' '{' Var '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetSingle $3 $5 $8 }
   | 'let' '{' '(' Var ',' ListVar ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
   | Var '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
-  | Var ',' ListVar '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $1 $3 $5 $7 }
+  | '(' Var ',' ListVar ')' '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $2 $4 $7 $9 }
   | 'case' Term 'of' '{' ListCaseExpression '}' { Frontend.LambdaQ.Abs.TermCase $2 $5 }
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 { $1 }

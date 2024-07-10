@@ -1,2 +1,2 @@
 fun :: Qbit
-fun = term . (var1, var2 <- term1; term2) 
+fun = term . ((var1, var2) <- term1; term2) 

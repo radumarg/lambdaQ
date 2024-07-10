@@ -179,7 +179,6 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermClassicCtrlGate controlterm controlbit -> failure x
   Frontend.LambdaQ.Abs.TermClassicTCtrlsGate controlterms controlbits -> failure x
   Frontend.LambdaQ.Abs.TermClassicVCtrlsGate controlvars controlbits -> failure x
-  Frontend.LambdaQ.Abs.TermVariableList var vars -> failure x
   Frontend.LambdaQ.Abs.TermApply term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermCompose term1 term2 -> failure x
   Frontend.LambdaQ.Abs.TermTensorProduct term1 term2 -> failure x

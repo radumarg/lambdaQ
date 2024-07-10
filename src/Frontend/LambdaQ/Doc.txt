@@ -198,7 +198,6 @@ All other symbols are terminals.
   |  |  **|**  | ``with`` //ControlTerm// ``ctrl`` //ControlBit//
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBits//
   |  |  **|**  | ``with`` //ControlVars// ``ctrl`` //ControlBits//
-  |  |  **|**  | //Var// ``,`` //[Var]//
   |  |  **|**  | //Term2// //Term3//
   |  |  **|**  | //Term2// ``.`` //Term3//
   |  |  **|**  | //Term2// ``*`` //Term3//
@@ -207,7 +206,7 @@ All other symbols are terminals.
   |  |  **|**  | ``let`` ``{`` //Var// ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | //Var// ``<-`` //Term// ``;`` //Term//
-  |  |  **|**  | //Var// ``,`` //[Var]// ``<-`` //Term// ``;`` //Term//
+  |  |  **|**  | ``(`` //Var// ``,`` //[Var]// ``)`` ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` ``{`` //[CaseExpression]// ``}``
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2//

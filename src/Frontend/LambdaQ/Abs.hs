@@ -153,7 +153,6 @@ data Term
     | TermClassicCtrlGate ControlTerm ControlBit
     | TermClassicTCtrlsGate ControlTerms ControlBits
     | TermClassicVCtrlsGate ControlVars ControlBits
-    | TermVariableList Var [Var]
     | TermApply Term Term
     | TermCompose Term Term
     | TermTensorProduct Term Term
