@@ -138,8 +138,7 @@ TermIntegerExpression     . Term3 ::= IntegerExpression ;
 TermGate                  . Term3 ::= "gate" Gate ;
 TermList                  . Term3 ::= List ;
 TermVariable              . Term3 ::= Var ;
-TermTupleOfTerms          . Term3 ::= "(" Term "," [Term] ")"  ;
-TermTupleOfVars           . Term3 ::= "(" Var "," [Var] ")"  ;
+TermTuple                 . Term3 ::= "(" Term "," [Term] ")"  ;
 TermQuantumCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
 TermQuantumTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
 TermQuantumVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBasisStates ;
@@ -153,7 +152,7 @@ TermIfElse                . Term1 ::= "if" Term "then" Term "else" Term ;
 TermLetSingle             . Term1 ::= "let" "{" Var "=" Term "}" "in" Term ;
 TermLetMultiple           . Term1 ::= "let" "{" "(" Var "," [Var] ")" "=" Term "}" "in" Term ;
 TermLetSugarSingle        . Term1 ::= Var "<-" Term ";" Term ;
-TermLetSugarMultiple      . Term1 ::= "(" Var "," [Var] ")" "<-" Term ";" Term ;
+TermLetSugarMultiple      . Term1 ::= "|" Var "," [Var] "|" "<-" Term ";" Term ;
 TermCase                  . Term1 ::= "case" Term "of" "{" [CaseExpression] "}" ;
 TermLambda                . Term1 ::= Lambda Var Type "." Term ;
 TermDollar                . Term  ::= Term1 "$" Term ;  -- right-associative --

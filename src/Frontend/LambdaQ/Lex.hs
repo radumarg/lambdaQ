@@ -52,14 +52,14 @@ alex_deflt = AlexA#
 alex_accept = listArray (0 :: Int, 52)
   [ AlexAccNone
   , AlexAccNone
-  , AlexAcc 18
+  , AlexAcc 19
   , AlexAccNone
+  , AlexAcc 18
   , AlexAcc 17
   , AlexAcc 16
   , AlexAcc 15
   , AlexAcc 14
   , AlexAcc 13
-  , AlexAccNone
   , AlexAcc 12
   , AlexAcc 11
   , AlexAccNone
@@ -105,8 +105,9 @@ alex_accept = listArray (0 :: Int, 52)
   , AlexAcc 0
   ]
 
-alex_actions = array (0 :: Int, 19)
-  [ (18,alex_action_3)
+alex_actions = array (0 :: Int, 20)
+  [ (19,alex_action_3)
+  , (18,alex_action_3)
   , (17,alex_action_3)
   , (16,alex_action_3)
   , (15,alex_action_3)
@@ -234,8 +235,8 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "ROOT_SWAP_DAG" 46
-    (b "<=" 23
+  b "ROOT_X" 47
+    (b "=" 24
        (b "," 12
           (b "()" 6
              (b "$" 3 (b "!!" 2 (b "!" 1 N N) N) (b "(" 5 (b "&&" 4 N N) N))
@@ -243,42 +244,42 @@ resWords =
           (b ":" 18
              (b "." 15
                 (b "->" 14 (b "-" 13 N N) N) (b "/=" 17 (b "/" 16 N N) N))
-             (b "<" 21 (b ";" 20 (b "::" 19 N N) N) (b "<-" 22 N N))))
-       (b "Bool" 35
-          (b "@+i" 29
-             (b ">" 26
-                (b "==" 25 (b "=" 24 N N) N) (b "@+" 28 (b ">=" 27 N N) N))
-             (b "@0" 32
-                (b "@-i" 31 (b "@-" 30 N N) N) (b "Bit" 34 (b "@1" 33 N N) N)))
-          (b "Int" 41
-             (b "H" 38
-                (b "False" 37 (b "FSWAP" 36 N N) N)
-                (b "ISWAP" 40 (b "ID" 39 N N) N))
-             (b "Qbit" 44
-                (b "QFT_DAG" 43 (b "QFT" 42 N N) N) (b "ROOT_SWAP" 45 N N)))))
-    (b "U1" 69
-       (b "SQRT_SWAP_DAG" 58
-          (b "ROOT_Z_DAG" 52
-             (b "ROOT_Y" 49
-                (b "ROOT_X_DAG" 48 (b "ROOT_X" 47 N N) N)
-                (b "ROOT_Z" 51 (b "ROOT_Y_DAG" 50 N N) N))
-             (b "RZ" 55
-                (b "RY" 54 (b "RX" 53 N N) N) (b "SQRT_SWAP" 57 (b "S" 56 N N) N)))
-          (b "SWAP_THETA" 64
-             (b "SQRT_Y" 61
-                (b "SQRT_X_DAG" 60 (b "SQRT_X" 59 N N) N)
-                (b "SWAP" 63 (b "SQRT_Y_DAG" 62 N N) N))
-             (b "T_DAG" 67 (b "T" 66 (b "S_DAG" 65 N N) N) (b "True" 68 N N))))
-       (b "gate" 81
-          (b "[" 75
-             (b "X" 72
-                (b "U3" 71 (b "U2" 70 N N) N) (b "Z" 74 (b "Y" 73 N N) N))
-             (b "case" 78
-                (b "]" 77 (b "[]" 76 N N) N) (b "else" 80 (b "ctrl" 79 N N) N)))
-          (b "then" 87
-             (b "let" 84
-                (b "in" 83 (b "if" 82 N N) N) (b "of" 86 (b "not" 85 N N) N))
-             (b "||" 90 (b "{" 89 (b "with" 88 N N) N) (b "}" 91 N N)))))
+             (b "<" 21
+                (b ";" 20 (b "::" 19 N N) N) (b "<=" 23 (b "<-" 22 N N) N))))
+       (b "FSWAP" 36
+          (b "@-" 30
+             (b ">=" 27
+                (b ">" 26 (b "==" 25 N N) N) (b "@+i" 29 (b "@+" 28 N N) N))
+             (b "@1" 33
+                (b "@0" 32 (b "@-i" 31 N N) N) (b "Bool" 35 (b "Bit" 34 N N) N)))
+          (b "QFT" 42
+             (b "ID" 39
+                (b "H" 38 (b "False" 37 N N) N) (b "Int" 41 (b "ISWAP" 40 N N) N))
+             (b "ROOT_SWAP" 45
+                (b "Qbit" 44 (b "QFT_DAG" 43 N N) N) (b "ROOT_SWAP_DAG" 46 N N)))))
+    (b "U2" 70
+       (b "SQRT_X" 59
+          (b "RX" 53
+             (b "ROOT_Y_DAG" 50
+                (b "ROOT_Y" 49 (b "ROOT_X_DAG" 48 N N) N)
+                (b "ROOT_Z_DAG" 52 (b "ROOT_Z" 51 N N) N))
+             (b "S" 56
+                (b "RZ" 55 (b "RY" 54 N N) N)
+                (b "SQRT_SWAP_DAG" 58 (b "SQRT_SWAP" 57 N N) N)))
+          (b "S_DAG" 65
+             (b "SQRT_Y_DAG" 62
+                (b "SQRT_Y" 61 (b "SQRT_X_DAG" 60 N N) N)
+                (b "SWAP_THETA" 64 (b "SWAP" 63 N N) N))
+             (b "True" 68 (b "T_DAG" 67 (b "T" 66 N N) N) (b "U1" 69 N N))))
+       (b "if" 82
+          (b "[]" 76
+             (b "Y" 73 (b "X" 72 (b "U3" 71 N N) N) (b "[" 75 (b "Z" 74 N N) N))
+             (b "ctrl" 79
+                (b "case" 78 (b "]" 77 N N) N) (b "gate" 81 (b "else" 80 N N) N)))
+          (b "with" 88
+             (b "not" 85
+                (b "let" 84 (b "in" 83 N N) N) (b "then" 87 (b "of" 86 N N) N))
+             (b "||" 91 (b "|" 90 (b "{" 89 N N) N) (b "}" 92 N N)))))
   where
   b s n = B bs (TS bs n)
     where

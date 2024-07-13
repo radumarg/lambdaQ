@@ -1,2 +1,2 @@
 fun :: Qbit
-fun = (t1 t2, t3) ((var1, var2) <- term1; term2) 
+fun = (t1 t2, t3) (|var1, var2| <- term1; term2) 

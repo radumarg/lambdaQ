@@ -34,7 +34,7 @@
     "operators": {
 			"patterns": [{
 				"name": "keyword.type.operator.lambdaq",
-				"match": "<-|\\.|\\$|=|\\[|\\]|;"
+				"match": "<-|\\.|\\$|=|\\[|\\]|;|>|<|\\*|\\+|/|\\|"
 			}]
 		},
     "typeoperators": {

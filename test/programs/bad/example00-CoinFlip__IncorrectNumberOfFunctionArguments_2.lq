@@ -2,7 +2,7 @@ coinFlip :: !Bit
 coinFlip  = measr (gate H (new @0)) 
 
 other :: !(Bit * Bit) -> !Bit
-other qubits = (q0, q1) <- qubits;
+other qubits = |q0, q1| <- qubits;
                coinFlip
 
 main :: !Bit

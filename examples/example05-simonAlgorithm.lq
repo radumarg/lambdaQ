@@ -2,26 +2,26 @@
 
 -- the '<-' syntax is just syntactic sugar for let expressions (see example01-deutschAlgorithm.lq)
 twoToOneOracle :: Qbit ** 6 -> Qbit ** 6
-twoToOneOracle qubits = (q0, q1, q2, q3, q4, q5) <- qubits;
-                        (q0, q3) <- with [ q0 ] ctrl [ @1 ] gate X q3;
-                        (q1, q4) <- with [ q1 ] ctrl [ @1 ] gate X q4;
-                        (q2, q5) <- with [ q2 ] ctrl [ @1 ] gate X q5;
-                        (q1, q4) <- with [ q1 ] ctrl [ @1 ] gate X q4;
-                        (q1, q5) <- with [ q1 ] ctrl [ @1 ] gate X q5;
+twoToOneOracle qubits = |q0, q1, q2, q3, q4, q5| <- qubits;
+                        |q0, q3| <- with [ q0 ] ctrl [ @1 ] gate X q3;
+                        |q1, q4| <- with [ q1 ] ctrl [ @1 ] gate X q4;
+                        |q2, q5| <- with [ q2 ] ctrl [ @1 ] gate X q5;
+                        |q1, q4| <- with [ q1 ] ctrl [ @1 ] gate X q4;
+                        |q1, q5| <- with [ q1 ] ctrl [ @1 ] gate X q5;
                         (q0, q1, q2, q3, q4, q5)
 
 oneToOneOracle :: Qbit ** 6 -> Qbit ** 6
-oneToOneOracle qubits = (q0, q1, q2, q3, q4, q5) <- qubits;
-                        (q0, q3) <- with [ q0 ] ctrl [ @1 ] gate X q3;
-                        (q1, q4) <- with [ q1 ] ctrl [ @1 ] gate X q4;
-                        (q2, q5) <- with [ q2 ] ctrl [ @1 ] gate X q5;
+oneToOneOracle qubits = |q0, q1, q2, q3, q4, q5| <- qubits;
+                        |q0, q3| <- with [ q0 ] ctrl [ @1 ] gate X q3;
+                        |q1, q4| <- with [ q1 ] ctrl [ @1 ] gate X q4;
+                        |q2, q5| <- with [ q2 ] ctrl [ @1 ] gate X q5;
                         (q0, q1, q2, q3, q4, q5)
 
 simon :: Qbit ** 6 -> Qbit ** 6 -> !(Bit * Bit * Bit)
-simon oracle = (q0, q1, q2, q3, q4, q5) <- (new @0, new @0, new @0, new @0, new @0, new @0);
-       (q0, q1, q2) <- (gate H q0, gate H q1, gate H q2);
-       (q0, q1, q2, q3, q4, q5) <- oracle q0 q1 q2 q3 q4 q5;
-       (q0, q1, q2) <- (gate H q0, gate H q1, gate H q2);
+simon oracle = |q0, q1, q2, q3, q4, q5| <- (new @0, new @0, new @0, new @0, new @0, new @0);
+       |q0, q1, q2| <- (gate H q0, gate H q1, gate H q2);
+       |q0, q1, q2, q3, q4, q5| <- oracle q0 q1 q2 q3 q4 q5;
+       |q0, q1, q2| <- (gate H q0, gate H q1, gate H q2);
        (measr q0, measr q1, measr q2)
 
 main :: !(Bit ** 3)

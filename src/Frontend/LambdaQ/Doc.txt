@@ -61,8 +61,8 @@ The symbols used in LambdaQ are the following:
   | @0 | @1 | @+ | @-
   | @+i | @-i | , | !!
   | . | { | = | }
-  | <- | ; | $ | []
-  | ++ | : | :: |
+  | <- | ; | | | $
+  | [] | ++ | : | ::
 
 ===Comments===
 Single-line comments begin with --.Multiple-line comments are  enclosed with {- and -}.
@@ -190,7 +190,6 @@ All other symbols are terminals.
   |  |  **|**  | //List//
   |  |  **|**  | //Var//
   |  |  **|**  | ``(`` //Term// ``,`` //[Term]// ``)``
-  |  |  **|**  | ``(`` //Var// ``,`` //[Var]// ``)``
   |  |  **|**  | //Term4//
   | //Term2// | -> | ``with`` //ControlTerm// ``ctrl`` //ControlBasisState//
   |  |  **|**  | ``with`` //ControlTerms// ``ctrl`` //ControlBasisStates//
@@ -206,7 +205,7 @@ All other symbols are terminals.
   |  |  **|**  | ``let`` ``{`` //Var// ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | ``let`` ``{`` ``(`` //Var// ``,`` //[Var]// ``)`` ``=`` //Term// ``}`` ``in`` //Term//
   |  |  **|**  | //Var// ``<-`` //Term// ``;`` //Term//
-  |  |  **|**  | ``(`` //Var// ``,`` //[Var]// ``)`` ``<-`` //Term// ``;`` //Term//
+  |  |  **|**  | ``|`` //Var// ``,`` //[Var]// ``|`` ``<-`` //Term// ``;`` //Term//
   |  |  **|**  | ``case`` //Term// ``of`` ``{`` //[CaseExpression]// ``}``
   |  |  **|**  | //Lambda// //Var// //Type// ``.`` //Term//
   |  |  **|**  | //Term2//

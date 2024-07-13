@@ -171,8 +171,7 @@ transTerm x = case x of
   Frontend.LambdaQ.Abs.TermGate gate -> failure x
   Frontend.LambdaQ.Abs.TermList list -> failure x
   Frontend.LambdaQ.Abs.TermVariable var -> failure x
-  Frontend.LambdaQ.Abs.TermTupleOfTerms term terms -> failure x
-  Frontend.LambdaQ.Abs.TermTupleOfVars var vars -> failure x
+  Frontend.LambdaQ.Abs.TermTuple term terms -> failure x
   Frontend.LambdaQ.Abs.TermQuantumCtrlGate controlterm controlbasisstate -> failure x
   Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate controlterms controlbasisstates -> failure x
   Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate controlvars controlbasisstates -> failure x

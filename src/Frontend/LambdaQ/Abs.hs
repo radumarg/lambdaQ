@@ -145,8 +145,7 @@ data Term
     | TermGate Gate
     | TermList List
     | TermVariable Var
-    | TermTupleOfTerms Term [Term]
-    | TermTupleOfVars Var [Var]
+    | TermTuple Term [Term]
     | TermQuantumCtrlGate ControlTerm ControlBasisState
     | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
     | TermQuantumVCtrlsGate ControlVars ControlBasisStates

@@ -4,14 +4,14 @@ someState = gate U3 (0.1, 0.2, 0.3) (new @0)
 -- the: '<-' syntax is just syntactic sugar for let expressions --
 bellState :: Qbit * Qbit -> Qbit * Qbit
 bellState qAlice qBob = qAlice <- gate H qAlice;
-                        (qAlice, qBob) <- with [ qAlice ] ctrl [ @1 ] gate X qBob;
+                        |qAlice, qBob| <- with [ qAlice ] ctrl [ @1 ] gate X qBob;
                         (qAlice, qBob)
 
 -- the: Qbit * Qbit * Qbit type declaration is the same with: Qbit ** 3
 prepare :: Qbit ** 3 -> Qbit ** 3 
-prepare qubits = (qAncilla, qAlice, qBob) <- qubits;
-                 (qAlice, qBob) <- bellState (qAlice, qBob);
-                 (qAncilla, qAlice) <- with [ qAncilla ] ctrl [ @1 ] gate X qAlice;
+prepare qubits = |qAncilla, qAlice, qBob| <- qubits;
+                 |qAlice, qBob| <- bellState (qAlice, qBob);
+                 |qAncilla, qAlice| <- with [ qAncilla ] ctrl [ @1 ] gate X qAlice;
                  qAncilla <- gate H qAncilla;
                  (qAncilla, qAlice, qBob)
 

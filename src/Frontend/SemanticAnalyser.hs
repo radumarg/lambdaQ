@@ -321,20 +321,16 @@ collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermGate _) notDistinctQbits 
 
 collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermVariable _) notDistinctQbits = notDistinctQbits
 
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTupleOfTerms term []) notDistinctQbits = collectNotDistinctQbits mode term notDistinctQbits
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTuple term []) notDistinctQbits = collectNotDistinctQbits mode term notDistinctQbits
 
-collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTupleOfTerms term1 (term2:terms)) notDistinctQbits = 
-  collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTupleOfTerms term2 terms) notDistinctQbitsTmp
+collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTuple term1 (term2:terms)) notDistinctQbits = 
+  collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermTuple term2 terms) notDistinctQbitsTmp
   where 
     notDistinctQbitsTmp = collectNotDistinctQbits mode term1 notDistinctQbits
-
-collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermTupleOfVars _ _) notDistinctQbits = notDistinctQbits
 
 collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) notDistinctQbits = notDistinctQbits
 
 collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermClassicCtrlGate _ _) notDistinctQbits = notDistinctQbits
-
---collectNotDistinctQbits _ (GeneratedAbstractSyntax.TermVariableList _ _) notDistinctQbits = notDistinctQbits
 
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermApply term1 term2) notDistinctQbits = collectNotDistinctQbits mode term2 notDistinctQbitsTmp
   where
@@ -498,15 +494,11 @@ collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermGate _) duplicatedQub
 
 collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermVariable _) duplicatedQubits = duplicatedQubits
 
-collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTupleOfTerms term []) duplicatedQubits = collectDuplicatedTgtAndCtrl mode term duplicatedQubits
-collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTupleOfTerms term1 (term2:terms)) duplicatedQubits 
-  = collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTupleOfTerms term2 terms) duplicatedQubitsTmp
+collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTuple term []) duplicatedQubits = collectDuplicatedTgtAndCtrl mode term duplicatedQubits
+collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTuple term1 (term2:terms)) duplicatedQubits 
+  = collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermTuple term2 terms) duplicatedQubitsTmp
   where 
     duplicatedQubitsTmp = collectDuplicatedTgtAndCtrl mode term1 duplicatedQubits
-
-collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermTupleOfVars _ _) duplicatedQubits = duplicatedQubits
-
---collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermVariableList _ _) duplicatedQubits = duplicatedQubits
 
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply term1 term2) duplicatedQubits = collectDuplicatedTgtAndCtrl mode term2 duplicatedQubitsTmp
   where

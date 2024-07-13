@@ -112,8 +112,9 @@ import Frontend.LambdaQ.Lex
   'then'          { PT _ (TS _ 87)     }
   'with'          { PT _ (TS _ 88)     }
   '{'             { PT _ (TS _ 89)     }
-  '||'            { PT _ (TS _ 90)     }
-  '}'             { PT _ (TS _ 91)     }
+  '|'             { PT _ (TS _ 90)     }
+  '||'            { PT _ (TS _ 91)     }
+  '}'             { PT _ (TS _ 92)     }
   L_doubl         { PT _ (TD $$)       }
   L_integ         { PT _ (TI $$)       }
   L_GateVar       { PT _ (T_GateVar _) }
@@ -336,8 +337,7 @@ Term3
   | 'gate' Gate { Frontend.LambdaQ.Abs.TermGate $2 }
   | List { Frontend.LambdaQ.Abs.TermList $1 }
   | Var { Frontend.LambdaQ.Abs.TermVariable $1 }
-  | '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.TermTupleOfTerms $2 $4 }
-  | '(' Var ',' ListVar ')' { Frontend.LambdaQ.Abs.TermTupleOfVars $2 $4 }
+  | '(' Term ',' ListTerm ')' { Frontend.LambdaQ.Abs.TermTuple $2 $4 }
   | Term4 { $1 }
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }
@@ -359,7 +359,7 @@ Term1
   | 'let' '{' Var '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetSingle $3 $5 $8 }
   | 'let' '{' '(' Var ',' ListVar ')' '=' Term '}' 'in' Term { Frontend.LambdaQ.Abs.TermLetMultiple $4 $6 $9 $12 }
   | Var '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarSingle $1 $3 $5 }
-  | '(' Var ',' ListVar ')' '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $2 $4 $7 $9 }
+  | '|' Var ',' ListVar '|' '<-' Term ';' Term { Frontend.LambdaQ.Abs.TermLetSugarMultiple $2 $4 $7 $9 }
   | 'case' Term 'of' '{' ListCaseExpression '}' { Frontend.LambdaQ.Abs.TermCase $2 $5 }
   | Lambda Var Type '.' Term { Frontend.LambdaQ.Abs.TermLambda $1 $2 $3 $5 }
   | Term2 { $1 }
