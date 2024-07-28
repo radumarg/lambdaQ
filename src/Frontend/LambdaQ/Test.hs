@@ -2,7 +2,7 @@
 
 -- | Program to test parser.
 
-module Frontend.LambdaQ.Test where
+module Main where
 
 import Prelude
   ( ($), (.)

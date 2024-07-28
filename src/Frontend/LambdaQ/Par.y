@@ -243,12 +243,12 @@ Gate
   | 'Y' { Frontend.LambdaQ.Abs.GateY }
   | 'Z' { Frontend.LambdaQ.Abs.GateZ }
   | 'ID' { Frontend.LambdaQ.Abs.GateID }
-  | 'ROOT_X' Integer { Frontend.LambdaQ.Abs.GateXRoot $2 }
-  | 'ROOT_X_DAG' Integer { Frontend.LambdaQ.Abs.GateXRootDag $2 }
-  | 'ROOT_Y' Integer { Frontend.LambdaQ.Abs.GateYRoot $2 }
-  | 'ROOT_Y_DAG' Integer { Frontend.LambdaQ.Abs.GateYRootDag $2 }
-  | 'ROOT_Z' Integer { Frontend.LambdaQ.Abs.GateZRoot $2 }
-  | 'ROOT_Z_DAG' Integer { Frontend.LambdaQ.Abs.GateZRootDag $2 }
+  | 'ROOT_X' '[' Integer ']' { Frontend.LambdaQ.Abs.GateXRoot $3 }
+  | 'ROOT_X_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateXRootDag $3 }
+  | 'ROOT_Y' '[' Integer ']' { Frontend.LambdaQ.Abs.GateYRoot $3 }
+  | 'ROOT_Y_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateYRootDag $3 }
+  | 'ROOT_Z' '[' Integer ']' { Frontend.LambdaQ.Abs.GateZRoot $3 }
+  | 'ROOT_Z_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateZRootDag $3 }
   | 'S' { Frontend.LambdaQ.Abs.GateS }
   | 'S_DAG' { Frontend.LambdaQ.Abs.GateSDag }
   | 'T' { Frontend.LambdaQ.Abs.GateT }
@@ -257,26 +257,26 @@ Gate
   | 'SQRT_X_DAG' { Frontend.LambdaQ.Abs.GateSqrtXDag }
   | 'SQRT_Y' { Frontend.LambdaQ.Abs.GateSqrtY }
   | 'SQRT_Y_DAG' { Frontend.LambdaQ.Abs.GateSqrtYDag }
-  | 'RX' Angle { Frontend.LambdaQ.Abs.GateRxTheta $2 }
-  | 'RY' Angle { Frontend.LambdaQ.Abs.GateRyTheta $2 }
-  | 'RZ' Angle { Frontend.LambdaQ.Abs.GateRzTheta $2 }
-  | 'U1' Angle { Frontend.LambdaQ.Abs.GateU1 $2 }
-  | 'U2' '(' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateU2 $3 $5 }
-  | 'U3' '(' Angle ',' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateU3 $3 $5 $7 }
+  | 'RX' '[' Angle ']' { Frontend.LambdaQ.Abs.GateRxTheta $3 }
+  | 'RY' '[' Angle ']' { Frontend.LambdaQ.Abs.GateRyTheta $3 }
+  | 'RZ' '[' Angle ']' { Frontend.LambdaQ.Abs.GateRzTheta $3 }
+  | 'U1' '[' Angle ']' { Frontend.LambdaQ.Abs.GateU1 $3 }
+  | 'U2' '[' Angle ',' Angle ']' { Frontend.LambdaQ.Abs.GateU2 $3 $5 }
+  | 'U3' '[' Angle ',' Angle ',' Angle ']' { Frontend.LambdaQ.Abs.GateU3 $3 $5 $7 }
   | 'SWAP' { Frontend.LambdaQ.Abs.GateSwp }
   | 'SQRT_SWAP' { Frontend.LambdaQ.Abs.GateSqrtSwp }
   | 'SQRT_SWAP_DAG' { Frontend.LambdaQ.Abs.GateSqrtSwpDag }
   | 'ISWAP' { Frontend.LambdaQ.Abs.GateISwp }
   | 'FSWAP' { Frontend.LambdaQ.Abs.GateFSwp }
-  | 'SWAP_THETA' Angle { Frontend.LambdaQ.Abs.GateSwpTheta $2 }
-  | 'ROOT_SWAP' Integer { Frontend.LambdaQ.Abs.GateSwpRt $2 }
-  | 'ROOT_SWAP_DAG' Integer { Frontend.LambdaQ.Abs.GateSwpRtDag $2 }
-  | 'QFT' Integer { Frontend.LambdaQ.Abs.GateQft $2 }
-  | 'QFT_DAG' Integer { Frontend.LambdaQ.Abs.GateQftDag $2 }
-  | GateVar '(' Angle ',' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateUknown3Angle $1 $3 $5 $7 }
-  | GateVar '(' Angle ',' Angle ')' { Frontend.LambdaQ.Abs.GateUknown2Angle $1 $3 $5 }
-  | GateVar Angle { Frontend.LambdaQ.Abs.GateUknown1Angle $1 $2 }
-  | GateVar Integer { Frontend.LambdaQ.Abs.GateUknownInt $1 $2 }
+  | 'SWAP_THETA' '[' Angle ']' { Frontend.LambdaQ.Abs.GateSwpTheta $3 }
+  | 'ROOT_SWAP' '[' Integer ']' { Frontend.LambdaQ.Abs.GateSwpRt $3 }
+  | 'ROOT_SWAP_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateSwpRtDag $3 }
+  | 'QFT' '[' Integer ']' { Frontend.LambdaQ.Abs.GateQft $3 }
+  | 'QFT_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateQftDag $3 }
+  | GateVar '[' Angle ',' Angle ',' Angle ']' { Frontend.LambdaQ.Abs.GateUknown3Angle $1 $3 $5 $7 }
+  | GateVar '[' Angle ',' Angle ']' { Frontend.LambdaQ.Abs.GateUknown2Angle $1 $3 $5 }
+  | GateVar '[' Angle ']' { Frontend.LambdaQ.Abs.GateUknown1Angle $1 $3 }
+  | GateVar '[' Integer ']' { Frontend.LambdaQ.Abs.GateUknownInt $1 $3 }
   | GateVar { Frontend.LambdaQ.Abs.GateUnknownSimple $1 }
 
 ListVar :: { [Frontend.LambdaQ.Abs.Var] }

@@ -1,5 +1,5 @@
 someState :: Qbit
-someState = gate U3 (0.1, 0.2, 0.3) (new @0)
+someState = gate U3 [0.1, 0.2, 0.3] (new @0)
 
 -- the: '<-' syntax is just syntactic sugar for let expressions --
 bellState :: Qbit * Qbit -> Qbit * Qbit

@@ -5,10 +5,10 @@
 qft_pass_5 :: Qbit ** 5 -> Qbit ** 5
 qft_pass_5 qubits = |q0, q1, q2, q3, q4| <- qubits;
                     q0 <- gate H q0;
-                    |q0, q1| <- gate ROOT_Z 4 q0 q1;
-                    |q0, q2|<- gate ROOT_Z 4 q0 q2;
-                    |q0, q3| <- gate ROOT_Z 4 q0 q3;
-                    |q0, q1| <- gate ROOT_Z 4 q0 q1;
+                    |q0, q1| <- gate ROOT_Z [ 4 ] q0 q1;
+                    |q0, q2| <- gate ROOT_Z [ 4 ] q0 q2;
+                    |q0, q3| <- gate ROOT_Z [ 4 ] q0 q3;
+                    |q0, q1| <- gate ROOT_Z [ 4 ] q0 q1;
                     (q0, q1, q2, q3, q4)
 
 qft_pass_4 :: Qbit ** 4 -> Qbit ** 4

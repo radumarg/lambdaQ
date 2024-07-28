@@ -1,0 +1,2 @@
+fun1 :: Qbit
+fun1 = gate HH (aa bb)
