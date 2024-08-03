@@ -130,11 +130,17 @@ All other symbols are terminals.
   |  |  **|**  | ``Z``
   |  |  **|**  | ``ID``
   |  |  **|**  | ``ROOT_X`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_X`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_X_DAG`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_X_DAG`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_Y`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_Y`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_Y_DAG`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_Y_DAG`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_Z`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_Z`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_Z_DAG`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_Z_DAG`` ``[`` //Var// ``]``
   |  |  **|**  | ``S``
   |  |  **|**  | ``S_DAG``
   |  |  **|**  | ``T``
@@ -156,13 +162,18 @@ All other symbols are terminals.
   |  |  **|**  | ``FSWAP``
   |  |  **|**  | ``SWAP_THETA`` ``[`` //Angle// ``]``
   |  |  **|**  | ``ROOT_SWAP`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_SWAP`` ``[`` //Var// ``]``
   |  |  **|**  | ``ROOT_SWAP_DAG`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``ROOT_SWAP_DAG`` ``[`` //Var// ``]``
   |  |  **|**  | ``QFT`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``QFT`` ``[`` //Var// ``]``
   |  |  **|**  | ``QFT_DAG`` ``[`` //Integer// ``]``
+  |  |  **|**  | ``QFT_DAG`` ``[`` //Var// ``]``
   |  |  **|**  | //GateVar// ``[`` //Angle// ``,`` //Angle// ``,`` //Angle// ``]``
   |  |  **|**  | //GateVar// ``[`` //Angle// ``,`` //Angle// ``]``
   |  |  **|**  | //GateVar// ``[`` //Angle// ``]``
   |  |  **|**  | //GateVar// ``[`` //Integer// ``]``
+  |  |  **|**  | //GateVar// ``[`` //Var// ``]``
   |  |  **|**  | //GateVar//
   | //[Var]// | -> | //Var//
   |  |  **|**  | //Var// ``,`` //[Var]//

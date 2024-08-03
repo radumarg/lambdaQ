@@ -75,12 +75,18 @@ data Gate
     | GateY
     | GateZ
     | GateID
-    | GateXRoot Integer
-    | GateXRootDag Integer
-    | GateYRoot Integer
-    | GateYRootDag Integer
-    | GateZRoot Integer
-    | GateZRootDag Integer
+    | GateXRootInt Integer
+    | GateXRootVar Var
+    | GateXRootDagInt Integer
+    | GateXRootDagVar Var
+    | GateYRootInt Integer
+    | GateYRootvar Var
+    | GateYRootDagInt Integer
+    | GateYRootDagVar Var
+    | GateZRootInt Integer
+    | GateZRootVar Var
+    | GateZRootDagInt Integer
+    | GateZRootDagVar Var
     | GateS
     | GateSDag
     | GateT
@@ -101,14 +107,19 @@ data Gate
     | GateISwp
     | GateFSwp
     | GateSwpTheta Angle
-    | GateSwpRt Integer
-    | GateSwpRtDag Integer
-    | GateQft Integer
-    | GateQftDag Integer
-    | GateUknown3Angle GateVar Angle Angle Angle
-    | GateUknown2Angle GateVar Angle Angle
-    | GateUknown1Angle GateVar Angle
-    | GateUknownInt GateVar Integer
+    | GateSwpRtInt Integer
+    | GateSwpRtVar Var
+    | GateSwpRtDagInt Integer
+    | GateSwpRtDagVar Var
+    | GateQftInt Integer
+    | GateQftVar Var
+    | GateQftDagInt Integer
+    | GateQftDagVar Var
+    | GateUnknown3Angle GateVar Angle Angle Angle
+    | GateUnknown2Angle GateVar Angle Angle
+    | GateUnknown1Angle GateVar Angle
+    | GateUnknownInt GateVar Integer
+    | GateUnknownVar GateVar Var
     | GateUnknownSimple GateVar
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 

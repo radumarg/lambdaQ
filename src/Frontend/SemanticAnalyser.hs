@@ -27,7 +27,7 @@ instance Show SemanticError where
     show (ControlQbitsNotDistinctCCtrlGates err) = "The control qubits for some classically controlled gate(s) are not distinct, " ++ err
     show (CtrlAndTgtQubitsNotDistinctQCtrlGates err) = "For some quantum controlled gate(s) the control and target qubits are not distinct, " ++ err
     show (CtrlAndTgtQubitsNotDistinctCCtrlGates err) = "For some classically controlled gate(s) the control and target qubits are not distinct, " ++ err
-    show (UnknownGate err) = "This gate is not supported: " ++ err
+    show (UnknownGate err) = "Detected gate(s) which are not supported " ++ err
     show (CaseTermsNotDistinct err) = "Some case terms are duplicated: " ++ err
 
 
@@ -42,7 +42,8 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err5 = toString $ ctrlQbitsAreDistinctClassicCtrlGates functions
     err6 = toString $ ctrlAndTgtQubitsAreDistinctQuantumCtrlGates functions
     err7 = toString $ ctrlAndTgtQubitsAreDistinctClassicCtrlGates functions
-    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7
+    err8 = toString $ gateNamesAreValid functions
+    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 ++ err8
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
@@ -71,7 +72,7 @@ functionsHaveCorrectNumberOfArguments functions = if null allErrors then Right (
 gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 gateNamesAreValid functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ testGateNamesAndGetErrors functions []
+    allErrors = unlines $ verifyGatesNames functions []
 
 
 ctrlQbitsAreDistinctQuantumCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -209,17 +210,17 @@ verifyControlAndTargetQbitsAreDistinct mode (fun:funs) errorMessages =
       newErrorMessage = "  " ++ intro ++ " for qubit(s) identified with variable name(s): " ++ stripFirstSubstring " and " notDistinctQubits
       funInfo = getFunctionNameAndPosition fun
 
-testGateNamesAndGetErrors :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-testGateNamesAndGetErrors [] errorMessages = reverse errorMessages
-testGateNamesAndGetErrors (fun:funs)  errorMessages =
+verifyGatesNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyGatesNames [] errorMessages = reverse errorMessages
+verifyGatesNames (fun:funs)  errorMessages =
   if null unknownGates
     then
-      testGateNamesAndGetErrors funs errorMessages
+      verifyGatesNames funs errorMessages
     else
-      testGateNamesAndGetErrors funs (newErrorMessage : errorMessages)
+      verifyGatesNames funs (newErrorMessage : errorMessages)
     where
       unknownGates = getUnknownGates fun
-      newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gates named: " ++ unlines unknownGates
+      newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gates named: " ++ intercalate ", " unknownGates
       funInfo = getFunctionNameAndPosition fun
 
 
@@ -554,11 +555,48 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermCase term1 ((Gener
 
 
 getUnknownGates :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
-getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody []
+getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbody
   where
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-    collectUnknowns :: GeneratedAbstractSyntax.Term -> [String] -> [String]
-    collectUnknowns _ _ = []
+    collectUnknowns :: GeneratedAbstractSyntax.Term -> [String]
+    collectUnknowns (GeneratedAbstractSyntax.TermListElement l _) = collectUnknowns (GeneratedAbstractSyntax.TermList l)
+    collectUnknowns (GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil) = []
+    collectUnknowns (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle term)) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListMultiple term terms)) =
+      collectUnknowns term ++ concatMap collectUnknowns terms
+    collectUnknowns (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2)) =
+      collectUnknowns (GeneratedAbstractSyntax.TermList l1) ++ collectUnknowns (GeneratedAbstractSyntax.TermList l2)
+    collectUnknowns (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons term list)) =
+      collectUnknowns term ++ collectUnknowns (GeneratedAbstractSyntax.TermList list)
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknownSimple gateVar)) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknownInt gateVar _)) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknownVar gateVar _)) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknown1Angle gateVar _ )) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknown2Angle gateVar _ _ )) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknown3Angle gateVar _ _ _)) = [getGateName gateVar]
+    collectUnknowns (GeneratedAbstractSyntax.TermTuple term terms) = collectUnknowns term ++ concatMap collectUnknowns terms
+    collectUnknowns (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
+      collectUnknowns term ++ concatMap collectUnknowns terms
+    collectUnknowns (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
+      collectUnknowns term ++ concatMap collectUnknowns terms
+    collectUnknowns (GeneratedAbstractSyntax.TermApply term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermCompose term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermTensorProduct term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermIfElse term1 term2 term3) = collectUnknowns term1 ++ collectUnknowns term2 ++ collectUnknowns term3
+    collectUnknowns (GeneratedAbstractSyntax.TermLetSingle _ term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermLetMultiple _ _ term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermLetSugarSingle _ term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermLetSugarMultiple _ _ term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns (GeneratedAbstractSyntax.TermCase term []) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermCase term1 [GeneratedAbstractSyntax.CaseExpr term2 term3]) =
+      collectUnknowns term1 ++ collectUnknowns term2 ++ collectUnknowns term3
+    collectUnknowns (GeneratedAbstractSyntax.TermCase term1 ((GeneratedAbstractSyntax.CaseExpr term2 term3):caseExpressions)) =
+      collectUnknowns term2 ++ collectUnknowns term3 ++ collectUnknowns (GeneratedAbstractSyntax.TermCase term1 caseExpressions)
+    collectUnknowns (GeneratedAbstractSyntax.TermLambda _ _ _ term) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermDollar term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
+    collectUnknowns _ = []
 
 
 -- Some helper functions --
@@ -566,11 +604,16 @@ getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbo
 
 getTermVariableName:: GeneratedAbstractSyntax.Term -> String
 getTermVariableName (GeneratedAbstractSyntax.TermVariable ( GeneratedAbstractSyntax.Var (_, qubit))) = qubit
-getTermVariableName term = ""
+getTermVariableName _ = undefined
+
 
 getVariableName:: GeneratedAbstractSyntax.Var -> String
 getVariableName ( GeneratedAbstractSyntax.Var (_, qubit)) = qubit
-getVariableName term = ""
+
+
+getGateName:: GeneratedAbstractSyntax.GateVar -> String
+getGateName ( GeneratedAbstractSyntax.GateVar (_, name)) = name
+
 
 getFunctionName :: GeneratedAbstractSyntax.FunctionDeclaration -> String
 getFunctionName (GeneratedAbstractSyntax.FunDecl _ funDef) = fname

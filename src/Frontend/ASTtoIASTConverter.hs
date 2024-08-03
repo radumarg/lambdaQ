@@ -179,12 +179,12 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateY -> GateY
     GeneratedAbstractSyntax.GateZ -> GateZ
     GeneratedAbstractSyntax.GateID -> GateID
-    GeneratedAbstractSyntax.GateXRoot rt -> GateXRoot rt
-    GeneratedAbstractSyntax.GateXRootDag rt -> GateXRootDag rt
-    GeneratedAbstractSyntax.GateYRoot rt -> GateYRoot rt
-    GeneratedAbstractSyntax.GateYRootDag rt -> GateYRootDag rt
-    GeneratedAbstractSyntax.GateZRoot rt -> GateZRoot rt
-    GeneratedAbstractSyntax.GateZRootDag rt -> GateZRootDag rt
+    -- GeneratedAbstractSyntax.GateXRoot rt -> GateXRoot rt
+    -- GeneratedAbstractSyntax.GateXRootDag rt -> GateXRootDag rt
+    -- GeneratedAbstractSyntax.GateYRoot rt -> GateYRoot rt
+    -- GeneratedAbstractSyntax.GateYRootDag rt -> GateYRootDag rt
+    -- GeneratedAbstractSyntax.GateZRoot rt -> GateZRoot rt
+    -- GeneratedAbstractSyntax.GateZRootDag rt -> GateZRootDag rt
     GeneratedAbstractSyntax.GateS -> GateS
     GeneratedAbstractSyntax.GateSDag -> GateSDag
     GeneratedAbstractSyntax.GateT -> GateT
@@ -205,10 +205,10 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateISwp -> GateISwp
     GeneratedAbstractSyntax.GateFSwp -> GateFSwp
     GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
-    GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt
-    GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt
-    GeneratedAbstractSyntax.GateQft n -> GateQft n
-    GeneratedAbstractSyntax.GateQftDag n -> GateQftDag n
+    -- GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt
+    -- GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt
+    -- GeneratedAbstractSyntax.GateQft n -> GateQft n
+    -- GeneratedAbstractSyntax.GateQftDag n -> GateQftDag n
 
 -- convert function to Church-style lambda abstractions
 toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term

@@ -93,12 +93,18 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateY -> failure x
   Frontend.LambdaQ.Abs.GateZ -> failure x
   Frontend.LambdaQ.Abs.GateID -> failure x
-  Frontend.LambdaQ.Abs.GateXRoot integer -> failure x
-  Frontend.LambdaQ.Abs.GateXRootDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRoot integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRootDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRoot integer -> failure x
-  Frontend.LambdaQ.Abs.GateZRootDag integer -> failure x
+  Frontend.LambdaQ.Abs.GateXRootInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateXRootVar var -> failure x
+  Frontend.LambdaQ.Abs.GateXRootDagInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateXRootDagVar var -> failure x
+  Frontend.LambdaQ.Abs.GateYRootInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateYRootvar var -> failure x
+  Frontend.LambdaQ.Abs.GateYRootDagInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateYRootDagVar var -> failure x
+  Frontend.LambdaQ.Abs.GateZRootInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateZRootVar var -> failure x
+  Frontend.LambdaQ.Abs.GateZRootDagInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateZRootDagVar var -> failure x
   Frontend.LambdaQ.Abs.GateS -> failure x
   Frontend.LambdaQ.Abs.GateSDag -> failure x
   Frontend.LambdaQ.Abs.GateT -> failure x
@@ -119,14 +125,19 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateISwp -> failure x
   Frontend.LambdaQ.Abs.GateFSwp -> failure x
   Frontend.LambdaQ.Abs.GateSwpTheta angle -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRt integer -> failure x
-  Frontend.LambdaQ.Abs.GateSwpRtDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateQft integer -> failure x
-  Frontend.LambdaQ.Abs.GateQftDag integer -> failure x
-  Frontend.LambdaQ.Abs.GateUknown3Angle gatevar angle1 angle2 angle3 -> failure x
-  Frontend.LambdaQ.Abs.GateUknown2Angle gatevar angle1 angle2 -> failure x
-  Frontend.LambdaQ.Abs.GateUknown1Angle gatevar angle -> failure x
-  Frontend.LambdaQ.Abs.GateUknownInt gatevar integer -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtVar var -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtDagInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateSwpRtDagVar var -> failure x
+  Frontend.LambdaQ.Abs.GateQftInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateQftVar var -> failure x
+  Frontend.LambdaQ.Abs.GateQftDagInt integer -> failure x
+  Frontend.LambdaQ.Abs.GateQftDagVar var -> failure x
+  Frontend.LambdaQ.Abs.GateUnknown3Angle gatevar angle1 angle2 angle3 -> failure x
+  Frontend.LambdaQ.Abs.GateUnknown2Angle gatevar angle1 angle2 -> failure x
+  Frontend.LambdaQ.Abs.GateUnknown1Angle gatevar angle -> failure x
+  Frontend.LambdaQ.Abs.GateUnknownInt gatevar integer -> failure x
+  Frontend.LambdaQ.Abs.GateUnknownVar gatevar var -> failure x
   Frontend.LambdaQ.Abs.GateUnknownSimple gatevar -> failure x
 
 transControlBasisState :: Frontend.LambdaQ.Abs.ControlBasisState -> Result

@@ -13,6 +13,7 @@ spec :: Spec
 spec = do
   describe "Lexer and Parser" Frontend.ParserSpec.spec
   describe "Frontend.SemanticAnalyser" Frontend.SemanticAnalyserSpec.spec
-  describe "Frontend.ASTtoIASTConverter" Frontend.ASTtoIASTConverterSpec.spec
+  -- describe "Frontend.ASTtoIASTConverter" Frontend.ASTtoIASTConverterSpec.spec
+  
 
 

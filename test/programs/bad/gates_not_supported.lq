@@ -1,2 +1,14 @@
 fun1 :: Qbit
-fun1 = gate HH (aa bb)
+fun1 = gate HH q
+
+fun2 :: Qbit
+fun2 = gate QFT2 [v]
+
+fun3 :: Qbit
+fun3 = gate QFT3 [2]
+
+fun4 :: Qbit
+fun4 = gate UU1 [1.0]
+
+fun5 :: Qbit
+fun5 = (gate UU2 [1.0, 2.0], gate UU3 [1.0, 2.0, 3.0])
