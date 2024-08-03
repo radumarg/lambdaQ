@@ -220,7 +220,7 @@ verifyGatesNames (fun:funs)  errorMessages =
       verifyGatesNames funs (newErrorMessage : errorMessages)
     where
       unknownGates = getUnknownGates fun
-      newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gates named: " ++ intercalate ", " unknownGates
+      newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gate(s) named: " ++ intercalate ", " unknownGates
       funInfo = getFunctionNameAndPosition fun
 
 

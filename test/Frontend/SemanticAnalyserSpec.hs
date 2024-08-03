@@ -239,10 +239,10 @@ spec =  do
       it "returns an error" $ do
         result <- testSemanticAnalyser "test/programs/bad/gates_not_supported.lq"
         result `Test.Hspec.shouldSatisfy` (\str -> "Detected gate(s) which are not supported" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for gates named: HH" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for gates named: QFT2" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for gates named: QFT3" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for gates named: UU1" `isInfixOf` str)
-        result `Test.Hspec.shouldSatisfy` (\str -> "for gates named: UU2, UU3" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: HH" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: QFT2" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: QFT3" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: UU1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: UU2, UU3" `isInfixOf` str)
 
     -- putStrLn result
