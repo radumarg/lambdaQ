@@ -248,7 +248,7 @@ Gate
   | 'ROOT_X_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateXRootDagInt $3 }
   | 'ROOT_X_DAG' '[' Var ']' { Frontend.LambdaQ.Abs.GateXRootDagVar $3 }
   | 'ROOT_Y' '[' Integer ']' { Frontend.LambdaQ.Abs.GateYRootInt $3 }
-  | 'ROOT_Y' '[' Var ']' { Frontend.LambdaQ.Abs.GateYRootvar $3 }
+  | 'ROOT_Y' '[' Var ']' { Frontend.LambdaQ.Abs.GateYRootVar $3 }
   | 'ROOT_Y_DAG' '[' Integer ']' { Frontend.LambdaQ.Abs.GateYRootDagInt $3 }
   | 'ROOT_Y_DAG' '[' Var ']' { Frontend.LambdaQ.Abs.GateYRootDagVar $3 }
   | 'ROOT_Z' '[' Integer ']' { Frontend.LambdaQ.Abs.GateZRootInt $3 }

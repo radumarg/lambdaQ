@@ -98,7 +98,7 @@ transGate x = case x of
   Frontend.LambdaQ.Abs.GateXRootDagInt integer -> failure x
   Frontend.LambdaQ.Abs.GateXRootDagVar var -> failure x
   Frontend.LambdaQ.Abs.GateYRootInt integer -> failure x
-  Frontend.LambdaQ.Abs.GateYRootvar var -> failure x
+  Frontend.LambdaQ.Abs.GateYRootVar var -> failure x
   Frontend.LambdaQ.Abs.GateYRootDagInt integer -> failure x
   Frontend.LambdaQ.Abs.GateYRootDagVar var -> failure x
   Frontend.LambdaQ.Abs.GateZRootInt integer -> failure x

@@ -1137,7 +1137,7 @@ happyReduction_67 (happy_x_4 `HappyStk`
 	happyRest)
 	 = case happyOut7 happy_x_3 of { (HappyWrap7 happy_var_3) -> 
 	happyIn26
-		 (Frontend.LambdaQ.Abs.GateYRootvar happy_var_3
+		 (Frontend.LambdaQ.Abs.GateYRootVar happy_var_3
 	) `HappyStk` happyRest}
 
 happyReduce_68 = happyReduce 4# 22# happyReduction_68

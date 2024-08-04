@@ -12,7 +12,7 @@ data SemanticError =
     MismatchedFunctionNameInTypeAndDeclaration String   |  -- function name in type declaration does not match function name in definition
     TooManyFunctionArguments String                     |  -- number of function arguments for a function exceeds the number of arguments in signature
     ControlQbitsNotDistinctQCtrlGates String            |  -- control qubits for controlled gates are not distinct
-    ControlQbitsNotDistinctCCtrlGates String            |  -- control bits for classically controlled gates are not distinct
+    ControlQbitsNotDistinctCCtrlGates String            |  -- control qubits for classically controlled gates are not distinct
     CtrlAndTgtQubitsNotDistinctQCtrlGates String        |  -- for a quantum controlled gate the control and target qubits are not distinct
     CtrlAndTgtQubitsNotDistinctCCtrlGates String        |  -- for a classicallly controlled gate the control and target qubits are not distinct
     UnknownGate String                                  |  -- gate names should be recognized as belonging to the set of supported gates
@@ -210,6 +210,7 @@ verifyGatesNames (fun:funs)  errorMessages =
       funInfo = getFunctionNameAndPosition fun
 
 
+--TODO
 verifyCaseTerms :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
 verifyCaseTerms [] errorMessages = reverse errorMessages
 verifyCaseTerms (fun:funs)  errorMessages = undefined
@@ -374,6 +375,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 ((Generated
 
 
 -- TODO multiple qubits gates not supported yet
+-- TODO: start from here
 collectDuplicatedTgtAndCtrl :: String -> GeneratedAbstractSyntax.Term -> String -> String
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) _) term) duplicatedQubits =
   if (mode == "mode-quantum") && not (null termQbit) && (termQbit == controlQbit) then
@@ -399,6 +401,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
         controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
         termQbit = getTermVariableName term
 
+-- TODO: test and fix if needed
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
   if (mode == "mode-classic") && not (null termQbit) && (termQbit `elem` controlQbits) then
     duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
@@ -407,29 +410,14 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
         controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
         termQbit = getTermVariableName term
 
+-- TODO: test and fix if needed
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits =
-  if (mode == "mode-quantum") then -- && not (null termQbit) && (termQbit `elem` controlQbits) then
-    duplicatedQbits ++ " and " ++ show ctrlTerms  -- ++ unwords [q | q <- controlQbits, q == termQbit]
+  if (mode == "mode-quantum") && not (null termQbit) && (termQbit `elem` controlQbits) then
+    duplicatedQbits ++ " and "  ++ unwords [q | q <- controlQbits, q == termQbit]
    else duplicatedQbits
       where
         controlQbits = getTermVariableName ctrlTerm : map getTermVariableName ctrlTerms
         termQbit = getTermVariableName term
-
--- collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
---   if (mode == "mode-quantum") && not (null termQbit) && (termQbit `elem` controlQbits) then
---     duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
---    else duplicatedQbits
---       where
---         controlQbits = getVariableName ctrlVar : map getVariableName ctrlVars
---         termQbit = getTermVariableName term
-
--- collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits =
---   if (mode == "mode-quantum") && not (null termQbit) && (termQbit `elem` controlQbits) then
---     duplicatedQbits ++  intercalate " " controlQbits -- ++ " and " ++ intercalate " "  [q | q <- controlQbits, q == termQbit]
---    else duplicatedQbits
---       where
---         controlQbits = getVariableName ctrlTerm : map getVariableName ctrlTerms
---         termQbit = getVariableName term
 
 collectDuplicatedTgtAndCtrl _ (GeneratedAbstractSyntax.TermQuantumCtrlGate _ _) duplicatedQubits = duplicatedQubits
 

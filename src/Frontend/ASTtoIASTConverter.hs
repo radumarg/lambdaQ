@@ -15,16 +15,16 @@ module Frontend.ASTtoIASTConverter (
 ) where
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
-import Frontend.LambdaQ.Print ( printTree )
-import Frontend.LambdaQ.Par ( myLexer, pProgram )
 import qualified Data.Map
-
 
 data Type =
    TypeBit             |
    TypeQbit            |
-   TypeNonLinear Type  |
+   TypeBool            |
+   TypeInteger         |
    TypeUnit            |
+   TypeList Type       |
+   TypeNonLinear Type  |
    Type :->: Type      |
    Type :*: Type       |
    Type :**: Integer
@@ -33,6 +33,41 @@ data Type =
 infixr 1 :->:
 infixr 3 :*:
 infixr 4 :**:
+
+data BoolValue = BoolValueTrue | BoolValueFalse
+  deriving (Eq, Ord, Show, Read)
+
+data IntegerExpression
+    = ArithmExprMinus IntegerExpression
+    | ArithmExprAdd IntegerExpression IntegerExpression
+    | ArithmExprSub IntegerExpression IntegerExpression
+    | ArithmExprMul IntegerExpression IntegerExpression
+    | ArithmExprDiv IntegerExpression IntegerExpression
+    | ArithmExprInt Integer
+  deriving (Eq, Ord, Show, Read)
+
+data BoolExpression
+    = BoolExpressionAnd BoolExpression BoolExpression
+    | BoolExpressionOr BoolExpression BoolExpression
+    | BoolExpressionNot BoolExpression
+    | BoolExpressionEq BoolExpression BoolExpression
+    | BoolExpressionDif BoolExpression BoolExpression
+    | BoolExpressionEqInt IntegerExpression IntegerExpression
+    | BoolExpressionDifInt IntegerExpression IntegerExpression
+    | BoolExpressionGt IntegerExpression IntegerExpression
+    | BoolExpressionGe IntegerExpression IntegerExpression
+    | BoolExpressionLt IntegerExpression IntegerExpression
+    | BoolExpressionLe IntegerExpression IntegerExpression
+    | BoolExpressionVal BoolValue
+  deriving (Eq, Ord, Show, Read)
+
+data List
+    = ListNil
+    | ListSingle Term
+    | ListMultiple Term [Term]
+    | ListExpressionAdd List List
+    | ListCons Term List
+  deriving (Eq, Ord, Show, Read)
 
 data BasisState =
     BasisStateZero   |
@@ -61,12 +96,18 @@ data Gate =
     GateY                      |
     GateZ                      |
     GateID                     |
-    GateXRoot Integer          |
-    GateXRootDag Integer       |
-    GateYRoot Integer          |
-    GateYRootDag Integer       |
-    GateZRoot Integer          |
-    GateZRootDag Integer       |
+    GateXRootInt Integer       |
+    GateXRootVar Var           |
+    GateXRootDagInt Integer    |
+    GateXRootDagVar Var        |
+    GateYRootInt Integer       |
+    GateYRootVar Var           |
+    GateYRootDagInt Integer    |
+    GateYRootDagVar Var        |
+    GateZRootInt Integer       |
+    GateZRootVar Var           |
+    GateZRootDagInt Integer    |
+    GateZRootDagVar Var        |
     GateS                      |
     GateSDag                   |
     GateT                      |
@@ -87,35 +128,38 @@ data Gate =
     GateISwp                   |
     GateFSwp                   |
     GateSwpTheta Angle         |
-    GateSwpRt Integer          |
-    GateSwpRtDag Integer       |
-    GateQft Integer            |
-    GateQftDag Integer
+    GateSwpRtInt Integer       |
+    GateSwpRtVar Var           |
+    GateSwpRtDagInt Integer    |
+    GateSwpRtDagVar Var        |
+    GateQftInt Integer         |
+    GateQftVar Var             |
+    GateQftDagInt Integer      |
+    GateQftDagVar Var
   deriving (Eq, Ord, Read, Show)
 
 data Term =
-    TermBoundVariable Integer                     |
-    TermFreeVariable String                       |
+    TermList List                                 |
+    TermListElement List Integer                  |
+    TermBoolExpression BoolExpression             |
+    TermIntegerExpression IntegerExpression       |
+    TermVariable Var                              |
     TermIfElse Term Term Term                     |
-    TermLetSingle Term Term                       |
-    TermLetMultiple Term Term                     |
-    TermLetSugarSingle Term Term                  |
-    TermLetSugarMultiple Term Term                |
+    TermLet [Var] Term Term                       |
     TermCase Term [Term]                          |
     TermLambda Type Term                          |
     TermGate Gate                                 |
-    TermQuantumCtrlGate Term BasisState           |
-    TermQuantumCtrlsGate [Term] [BasisState]      |
-    TermClassicCtrlGate Term Bit                  |
-    TermClassicCtrlsGate [Term] [Bit]             |
+    TermQuantumControlGate [Term] [BasisState]    |
+    TermClassicControlGate [Term] [Bit]           |
     TermApply Term Term                           |
     TermDollar Term Term                          |
     TermCompose Term Term                         |
     TermNew  (Int, Int)                           |
     TermMeasure (Int, Int)                        |
     TermBasisState BasisState                     |
-    TermTuple Term Term                           |
+    TermTuple Term [Term]                         |
     TermBit Bit                                   |
+    TermTensorProduct Term Term                   |
     TermUnit
   deriving (Eq, Ord, Read, Show)
 
@@ -139,14 +183,31 @@ newtype Var = Var ((Int, Int), String)
 
 type Program = [Function]
 
+type Environment = Data.Map.Map String Integer
+
+mapProgram :: GeneratedAbstractSyntax.Program -> Program
+mapProgram (GeneratedAbstractSyntax.ProgDef functions) = map mapFunction functions
+
+runAstToIastConverter :: GeneratedAbstractSyntax.Program -> Either String Program
+runAstToIastConverter program = if substring "error" programString then Left programString else Right mappedProgram
+    where
+      mappedProgram = mapProgram program
+      programString = show mappedProgram
+
 mapType :: GeneratedAbstractSyntax.Type -> Type
-mapType GeneratedAbstractSyntax.TypeBit   = TypeBit
-mapType GeneratedAbstractSyntax.TypeQbit  = TypeQbit
-mapType GeneratedAbstractSyntax.TypeUnit  = TypeUnit
+mapType GeneratedAbstractSyntax.TypeBool = TypeBool
+mapType GeneratedAbstractSyntax.TypeInteger = TypeInteger
+mapType GeneratedAbstractSyntax.TypeBit = TypeBit
+mapType GeneratedAbstractSyntax.TypeQbit = TypeQbit
+mapType GeneratedAbstractSyntax.TypeUnit = TypeUnit
 mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
 mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r
 mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = mapType l :*: mapType r
 mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
+mapType (GeneratedAbstractSyntax.TypeList t) = TypeList (mapType t)
+
+mapVariable :: GeneratedAbstractSyntax.Var -> Var
+mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
 
 mapBasisState :: GeneratedAbstractSyntax.BasisState -> BasisState
 mapBasisState GeneratedAbstractSyntax.BasisStateZero = BasisStateZero
@@ -156,21 +217,8 @@ mapBasisState GeneratedAbstractSyntax.BasisStateMinus = BasisStateMinus
 mapBasisState GeneratedAbstractSyntax.BasisStatePlusI = BasisStatePlusI
 mapBasisState GeneratedAbstractSyntax.BasisStateMinusI = BasisStateMinusI
 
-mapControlTerm :: Environment -> GeneratedAbstractSyntax.ControlTerm -> ControlTerm
-mapControlTerm env (GeneratedAbstractSyntax.CtrlTerm term) = CtrlTerm (mapTerm env term)
-
-mapControlTerms :: Environment -> GeneratedAbstractSyntax.ControlTerms -> ControlTerms
-mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term []) = CtrlTerms (mapTerm env term) []
-mapControlTerms env (GeneratedAbstractSyntax.CtrlTerms term [terms]) = CtrlTerms (mapTerm env term) (map (mapTerm env) [terms])
-mapControlTerms _ _ = undefined
-
 mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.AngleValue value) = Angle value
-
--- mapBit :: GeneratedAbstractSyntax.Bit -> Bit
--- mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "0")) = BitZero
--- mapBit (GeneratedAbstractSyntax.BitValue (GeneratedAbstractSyntax.BitVariable "1")) = BitOne
--- mapBit _ = undefined
 
 mapGate :: GeneratedAbstractSyntax.Gate -> Gate
 mapGate g = case g of
@@ -179,12 +227,18 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateY -> GateY
     GeneratedAbstractSyntax.GateZ -> GateZ
     GeneratedAbstractSyntax.GateID -> GateID
-    -- GeneratedAbstractSyntax.GateXRoot rt -> GateXRoot rt
-    -- GeneratedAbstractSyntax.GateXRootDag rt -> GateXRootDag rt
-    -- GeneratedAbstractSyntax.GateYRoot rt -> GateYRoot rt
-    -- GeneratedAbstractSyntax.GateYRootDag rt -> GateYRootDag rt
-    -- GeneratedAbstractSyntax.GateZRoot rt -> GateZRoot rt
-    -- GeneratedAbstractSyntax.GateZRootDag rt -> GateZRootDag rt
+    GeneratedAbstractSyntax.GateXRootInt rt -> GateXRootInt rt
+    GeneratedAbstractSyntax.GateXRootVar rt -> GateXRootVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateXRootDagInt rt -> GateXRootDagInt rt
+    GeneratedAbstractSyntax.GateXRootDagVar rt -> GateXRootDagVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateYRootInt rt -> GateYRootInt rt
+    GeneratedAbstractSyntax.GateYRootVar rt -> GateYRootVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateYRootDagInt rt -> GateYRootDagInt rt
+    GeneratedAbstractSyntax.GateYRootDagVar rt -> GateYRootDagVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateZRootInt rt -> GateZRootInt rt
+    GeneratedAbstractSyntax.GateZRootVar rt -> GateZRootVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateZRootDagInt rt -> GateZRootDagInt rt
+    GeneratedAbstractSyntax.GateZRootDagVar rt -> GateZRootDagVar (mapVariable rt)
     GeneratedAbstractSyntax.GateS -> GateS
     GeneratedAbstractSyntax.GateSDag -> GateSDag
     GeneratedAbstractSyntax.GateT -> GateT
@@ -205,122 +259,40 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateISwp -> GateISwp
     GeneratedAbstractSyntax.GateFSwp -> GateFSwp
     GeneratedAbstractSyntax.GateSwpTheta angle -> GateSwpTheta (mapAngle angle)
-    -- GeneratedAbstractSyntax.GateSwpRt rt -> GateSwpRt rt
-    -- GeneratedAbstractSyntax.GateSwpRtDag rt -> GateSwpRtDag rt
-    -- GeneratedAbstractSyntax.GateQft n -> GateQft n
-    -- GeneratedAbstractSyntax.GateQftDag n -> GateQftDag n
-
--- convert function to Church-style lambda abstractions
-toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
-
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeNonLinear ftype) farg fbody = toLambdaAbstraction ftype farg fbody
-
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction (GeneratedAbstractSyntax.TypeNonLinear ltype) rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
-  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
-
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype (GeneratedAbstractSyntax.TypeNonLinear rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
-  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
-
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
-  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
-
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction _ _) [] fbody = fbody
-
-toLambdaAbstraction ftype _ fbody = fbody
+    GeneratedAbstractSyntax.GateSwpRtInt rt -> GateSwpRtInt rt
+    GeneratedAbstractSyntax.GateSwpRtVar rt -> GateSwpRtVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateSwpRtDagInt rt -> GateSwpRtDagInt rt
+    GeneratedAbstractSyntax.GateSwpRtDagVar rt -> GateSwpRtDagVar (mapVariable rt)
+    GeneratedAbstractSyntax.GateQftInt n -> GateQftInt n
+    GeneratedAbstractSyntax.GateQftVar n -> GateQftVar (mapVariable n)
+    GeneratedAbstractSyntax.GateQftDagInt n -> GateQftDagInt n
+    GeneratedAbstractSyntax.GateQftDagVar n -> GateQftDagVar (mapVariable n)
+    GeneratedAbstractSyntax.GateUnknown3Angle {} -> undefined
+    GeneratedAbstractSyntax.GateUnknown2Angle {}  -> undefined
+    GeneratedAbstractSyntax.GateUnknown1Angle _ _  -> undefined
+    GeneratedAbstractSyntax.GateUnknownInt _ _ -> undefined
+    GeneratedAbstractSyntax.GateUnknownVar _ _ -> undefined
+    GeneratedAbstractSyntax.GateUnknownSimple _ -> undefined
 
 mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
 mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
    where
-     (GeneratedAbstractSyntax.FunType var ftype) = funType
+     (GeneratedAbstractSyntax.FunType _ ftype) = funType
      (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var fvar) fargs fbody) = funDef
      ((fline, fcol), fname) = fvar
      term = mapTerm Data.Map.empty $ toLambdaAbstraction ftype fargs fbody
 
-mapVariable :: GeneratedAbstractSyntax.Var -> Var
-mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
+-- convert functions to Church-style lambda abstractions --
 
-type Environment = Data.Map.Map String Integer
+toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
+toLambdaAbstraction = undefined
 
-toVariableName :: GeneratedAbstractSyntax.Var -> String
-toVariableName (GeneratedAbstractSyntax.Var var) = snd var
-
--- Section: mapping terms --
+-- mapping terms --
 
 mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
+mapTerm = undefined
 
-mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
-
-mapTerm env (GeneratedAbstractSyntax.TermLetSingle var letEq letIn) = TermLetSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
-
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var letEq letIn) = TermLetSugarSingle (mapTerm env letEq) (mapTerm inEnv letIn)
-  where inEnv = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
-
-mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x [] letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
-  where letEnv = updateEnv x [] env
-mapTerm env (GeneratedAbstractSyntax.TermLetMultiple x (y:ys) letEq letIn) = TermLetMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
-  where letEnv = updateEnv x (y:ys) env
-
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple x [] letEq letIn) = TermLetSugarMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
-  where letEnv = updateEnv x [] env
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple x (y:ys) letEq letIn) = TermLetSugarMultiple (mapTerm env letEq) (mapTerm letEnv letIn)
-  where letEnv = updateEnv x (y:ys) env
-
-mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBasisState basisState)) =
-    TermQuantumCtrlGate (mapTerm env term) (mapBasisState basisState)
-mapTerm env (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBasisStates basisState basisStates)) =
-    TermQuantumCtrlsGate (mapTerm env term : map (mapTerm env) terms) (mapBasisState basisState : map mapBasisState basisStates)
--- TODO: fix
--- mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit ctrlBit)) =
---     TermClassicCtrlGate (mapTerm env term) ctrlBit
--- mapTerm env (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits ctrlBit ctrlBits)) =
---     TermClassicTCtrlsGate (mapTerm env term : map (mapTerm env) terms) (ctrlBit : ctrlBits)
-
-mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
-mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
-mapTerm env (GeneratedAbstractSyntax.TermCompose l r) = TermCompose (mapTerm env l) (mapTerm env r)
-mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup varName env of
-    Just int -> TermBoundVariable int
-    Nothing  -> TermFreeVariable varName
-  where
-    varName = toVariableName var
-
---mapTerm env (GeneratedAbstractSyntax.TermTuple (GeneratedAbstractSyntax.Tupl term terms)) = foldr1 TermTuple $ map (mapTerm env) (term:terms)
-
-mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
-  where envUpdated = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
-
-mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
-mapTerm _ (GeneratedAbstractSyntax.TermGate gate) = TermGate (mapGate gate)
--- mapTerm _ (GeneratedAbstractSyntax.TermBit bit) = TermBit $ mapBit bit
-mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
-
-updateEnv :: GeneratedAbstractSyntax.Var -> [GeneratedAbstractSyntax.Var] -> Environment -> Environment
-updateEnv x [] env = Data.Map.insert (toVariableName x) 0 (Data.Map.map succ env)
-updateEnv x (y:ys) env = updateEnv y ys (updateEnv x [] env)
-
--- Done mapping terms --
-
-mapProgram :: GeneratedAbstractSyntax.Program -> Program
-mapProgram (GeneratedAbstractSyntax.ProgDef functions) = map mapFunction functions
-
-runAstToIastConverter :: GeneratedAbstractSyntax.Program -> Either String Program
-runAstToIastConverter program = if substring "error" programString then Left programString else Right mappedProgram
-    where
-      mappedProgram = mapProgram program
-      programString = show mappedProgram
-
-parseAndPrintTreeFromString :: String -> String
-parseAndPrintTreeFromString str = case Frontend.LambdaQ.Par.pProgram (Frontend.LambdaQ.Par.myLexer str) of
-    Left str -> errorWithoutStackTrace str
-    Right program -> Frontend.LambdaQ.Print.printTree program
-
-parseAndPrintTreeFromFile :: FilePath -> IO String
-parseAndPrintTreeFromFile path = parseAndPrintTreeFromString <$> readFile path
-
--- some utility functions, but there must be a better way to do this ..
+-- some utility functions --
 
 substring :: String -> String -> Bool
 substring (_:_) [] = False

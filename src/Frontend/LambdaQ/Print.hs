@@ -214,7 +214,7 @@ instance Print Frontend.LambdaQ.Abs.Gate where
     Frontend.LambdaQ.Abs.GateXRootDagInt n -> prPrec i 0 (concatD [doc (showString "ROOT_X_DAG"), doc (showString "["), prt 0 n, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateXRootDagVar var -> prPrec i 0 (concatD [doc (showString "ROOT_X_DAG"), doc (showString "["), prt 0 var, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateYRootInt n -> prPrec i 0 (concatD [doc (showString "ROOT_Y"), doc (showString "["), prt 0 n, doc (showString "]")])
-    Frontend.LambdaQ.Abs.GateYRootvar var -> prPrec i 0 (concatD [doc (showString "ROOT_Y"), doc (showString "["), prt 0 var, doc (showString "]")])
+    Frontend.LambdaQ.Abs.GateYRootVar var -> prPrec i 0 (concatD [doc (showString "ROOT_Y"), doc (showString "["), prt 0 var, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateYRootDagInt n -> prPrec i 0 (concatD [doc (showString "ROOT_Y_DAG"), doc (showString "["), prt 0 n, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateYRootDagVar var -> prPrec i 0 (concatD [doc (showString "ROOT_Y_DAG"), doc (showString "["), prt 0 var, doc (showString "]")])
     Frontend.LambdaQ.Abs.GateZRootInt n -> prPrec i 0 (concatD [doc (showString "ROOT_Z"), doc (showString "["), prt 0 n, doc (showString "]")])

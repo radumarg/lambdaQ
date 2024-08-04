@@ -80,7 +80,7 @@ data Gate
     | GateXRootDagInt Integer
     | GateXRootDagVar Var
     | GateYRootInt Integer
-    | GateYRootvar Var
+    | GateYRootVar Var
     | GateYRootDagInt Integer
     | GateYRootDagVar Var
     | GateZRootInt Integer
