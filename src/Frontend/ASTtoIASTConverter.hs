@@ -156,6 +156,8 @@ data Term =
     TermCompose Term Term                         |
     TermNew  (Int, Int)                           |
     TermMeasure (Int, Int)                        |
+    TermInverse  (Int, Int)                       |
+    TermPower (Int, Int)                          |
     TermBasisState BasisState                     |
     TermTuple Term [Term]                         |
     TermBit Bit                                   |
@@ -285,12 +287,31 @@ mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (f
 -- convert functions to Church-style lambda abstractions --
 
 toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
-toLambdaAbstraction = undefined
+
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeNonLinear ftype) farg fbody = toLambdaAbstraction ftype farg fbody
+
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction (GeneratedAbstractSyntax.TypeNonLinear ltype) rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
+  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
+
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype (GeneratedAbstractSyntax.TypeNonLinear rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
+  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
+
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
+  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
+
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction _ _) [] fbody = fbody
+
+toLambdaAbstraction _ _ _ = undefined
 
 -- mapping terms --
 
 mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
-mapTerm = undefined
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "inv"))) = TermInverse (l, c)
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "pow"))) = TermPower (l, c)
+
+mapTerm _ _= undefined
 
 -- some utility functions --
 
