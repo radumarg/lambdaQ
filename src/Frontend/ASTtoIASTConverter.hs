@@ -139,6 +139,8 @@ data Gate =
   deriving (Eq, Ord, Read, Show)
 
 data Term =
+    TermBoundVariable Integer                     |
+    TermFreeVariable String                       |
     TermList List                                 |
     TermListElement List Integer                  |
     TermBoolExpression BoolExpression             |
@@ -146,7 +148,7 @@ data Term =
     TermVariable Var                              |
     TermIfElse Term Term Term                     |
     TermLet [Var] Term Term                       |
-    TermCase Term [Term]                          |
+    TermCase Term [CaseExpression]                |
     TermLambda Type Term                          |
     TermGate Gate                                 |
     TermQuantumControlGate [Term] [BasisState]    |
@@ -164,6 +166,9 @@ data Term =
     TermTensorProduct Term Term                   |
     TermUnit
   deriving (Eq, Ord, Read, Show)
+
+data CaseExpression = CaseExpr Term Term
+  deriving (Eq, Ord, Show, Read)
 
 newtype ControlTerm = CtrlTerm Term
   deriving (Eq, Ord, Show, Read)
@@ -210,6 +215,9 @@ mapType (GeneratedAbstractSyntax.TypeList t) = TypeList (mapType t)
 
 mapVariable :: GeneratedAbstractSyntax.Var -> Var
 mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
+
+toVariableName :: GeneratedAbstractSyntax.Var -> String
+toVariableName (GeneratedAbstractSyntax.Var var) = snd var
 
 mapBasisState :: GeneratedAbstractSyntax.BasisState -> BasisState
 mapBasisState GeneratedAbstractSyntax.BasisStateZero = BasisStateZero
@@ -276,6 +284,55 @@ mapGate g = case g of
     GeneratedAbstractSyntax.GateUnknownVar _ _ -> undefined
     GeneratedAbstractSyntax.GateUnknownSimple _ -> undefined
 
+mapList :: Environment -> GeneratedAbstractSyntax.List -> List
+mapList _ GeneratedAbstractSyntax.ListNil = ListNil
+mapList env (GeneratedAbstractSyntax.ListSingle term) = ListSingle (mapTerm env term)
+mapList env (GeneratedAbstractSyntax.ListMultiple term terms) = ListMultiple (mapTerm env term) (map (mapTerm env) terms)
+mapList env (GeneratedAbstractSyntax.ListExpressionAdd l1 l2) = ListExpressionAdd (mapList env l1) (mapList env l2)
+mapList env (GeneratedAbstractSyntax.ListCons term list) = ListCons (mapTerm env term) (mapList env list)
+
+mapIntegerExpression :: GeneratedAbstractSyntax.IntegerExpression -> IntegerExpression
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprMinus expr) =
+  ArithmExprMinus (mapIntegerExpression expr)
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprAdd expr1 expr2) =
+    ArithmExprAdd (mapIntegerExpression expr1) (mapIntegerExpression expr2)
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprSub expr1 expr2) =
+    ArithmExprSub (mapIntegerExpression expr1) (mapIntegerExpression expr2)
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprMul expr1 expr2) =
+    ArithmExprMul (mapIntegerExpression expr1) (mapIntegerExpression expr2)
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprDiv expr1 expr2) =
+    ArithmExprDiv (mapIntegerExpression expr1) (mapIntegerExpression expr2)
+mapIntegerExpression (GeneratedAbstractSyntax.ArithmExprInt n) = ArithmExprInt n
+
+mapBoolExpression :: GeneratedAbstractSyntax.BoolExpression -> BoolExpression
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionAnd expr1 expr2) =
+    BoolExpressionAnd (mapBoolExpression expr1) (mapBoolExpression expr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionOr expr1 expr2) =
+    BoolExpressionOr (mapBoolExpression expr1) (mapBoolExpression expr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionNot expr) =
+    BoolExpressionNot (mapBoolExpression expr)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionEq expr1 expr2) =
+    BoolExpressionEq (mapBoolExpression expr1) (mapBoolExpression expr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionDif expr1 expr2) =
+    BoolExpressionDif (mapBoolExpression expr1) (mapBoolExpression expr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionEqInt intExpr1 intExpr2) =
+    BoolExpressionEqInt (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionDifInt intExpr1 intExpr2) =
+    BoolExpressionDifInt (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionGt intExpr1 intExpr2) =
+    BoolExpressionGt (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionGe intExpr1 intExpr2) =
+    BoolExpressionGe (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionLt intExpr1 intExpr2) =
+    BoolExpressionLt (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionLe intExpr1 intExpr2) =
+    BoolExpressionLe (mapIntegerExpression intExpr1) (mapIntegerExpression intExpr2)
+-- mapBoolExpression (GeneratedAbstractSyntax.BoolExpressionVal val) = BoolExpressionVal val
+
+mapCaseExpression :: Environment -> GeneratedAbstractSyntax.CaseExpression -> CaseExpression
+mapCaseExpression env (GeneratedAbstractSyntax.CaseExpr term1 term2) =
+    CaseExpr (mapTerm env term1) (mapTerm env term2)
+
 mapFunction :: GeneratedAbstractSyntax.FunctionDeclaration -> Function
 mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (fline, fcol) (mapType ftype) term
    where
@@ -285,7 +342,6 @@ mapFunction (GeneratedAbstractSyntax.FunDecl funType funDef) = Function fname (f
      term = mapTerm Data.Map.empty $ toLambdaAbstraction ftype fargs fbody
 
 -- convert functions to Church-style lambda abstractions --
-
 toLambdaAbstraction :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Arg] ->  GeneratedAbstractSyntax.Term -> GeneratedAbstractSyntax.Term
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeNonLinear ftype) farg fbody = toLambdaAbstraction ftype farg fbody
@@ -304,14 +360,64 @@ toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction _ _) [] fbody = fbody
 toLambdaAbstraction _ _ _ = undefined
 
 -- mapping terms --
-
 mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
+
+mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
+  where envUpdated = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
+
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "inv"))) = TermInverse (l, c)
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "pow"))) = TermPower (l, c)
 
+mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup varName env of
+    Just int -> TermBoundVariable int
+    Nothing  -> TermFreeVariable varName
+  where
+    varName = toVariableName var
+
+mapTerm _ (GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil) = TermList ListNil
+mapTerm env (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle term)) = TermList (ListSingle (mapTerm env term))
+mapTerm env (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListMultiple term terms)) 
+  = TermList (ListMultiple (mapTerm env term) (map (mapTerm env) terms))
+mapTerm env (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2)) 
+  = TermList (ListExpressionAdd (mapList env l1) (mapList env l2))
+mapTerm env (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons term list)) =
+    TermList (ListCons (mapTerm env term) (mapList env list))
+
+mapTerm env (GeneratedAbstractSyntax.TermListElement l index) = TermListElement (mapList env l) index
+
+mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
+mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
+mapTerm _ (GeneratedAbstractSyntax.TermBoolExpression be) = TermBoolExpression (mapBoolExpression be)
+mapTerm _ (GeneratedAbstractSyntax.TermIntegerExpression be) = TermIntegerExpression (mapIntegerExpression be)
+mapTerm _ (GeneratedAbstractSyntax.TermGate g) = TermGate (mapGate g)
+mapTerm env (GeneratedAbstractSyntax.TermTuple term terms) = TermTuple (mapTerm env term)  (map (mapTerm env) (term:terms))
+mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
+mapTerm env (GeneratedAbstractSyntax.TermDollar l r) = TermDollar (mapTerm env l) (mapTerm env r)
+mapTerm env (GeneratedAbstractSyntax.TermCompose l r) = TermCompose (mapTerm env l) (mapTerm env r)
+mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm env cond) (mapTerm env t) (mapTerm env f)
+mapTerm env (GeneratedAbstractSyntax.TermTensorProduct t1 t2) = TermTensorProduct (mapTerm env t1) (mapTerm env t2)
+mapTerm env (GeneratedAbstractSyntax.TermCase t exprs) = TermCase (mapTerm env t) (map (mapCaseExpression env) exprs)
+
 mapTerm _ _= undefined
+
+
+
+
+
+    -- | TermQuantumCtrlGate ControlTerm ControlBasisState
+    -- | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
+    -- | TermQuantumVCtrlsGate ControlVars ControlBasisStates
+    -- | TermClassicCtrlGate ControlTerm ControlBit
+    -- | TermClassicTCtrlsGate ControlTerms ControlBits
+    -- | TermClassicVCtrlsGate ControlVars ControlBits
+
+    -- | TermLetSingle Var Term Term
+    -- | TermLetMultiple Var [Var] Term Term
+    -- | TermLetSugarSingle Var Term Term
+    -- | TermLetSugarMultiple Var [Var] Term Term
+ 
 
 -- some utility functions --
 
