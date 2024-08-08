@@ -1,0 +1,12 @@
+fun1 :: Bit
+fun1 = case x of  
+   a1 -> b1 
+   a1 -> b2
+
+fun2 :: Bit
+fun2 = case x of
+   (a b) -> b1; 
+   (a b) -> b2;
+   (a b) -> b3;
+	
+
