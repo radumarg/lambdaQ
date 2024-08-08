@@ -37,6 +37,7 @@ library
       Frontend.LambdaQ.Print
       Frontend.LambdaQ.Skel
       Frontend.LambdaQ.Test
+      Frontend.PrettyPrinter
       Frontend.SemanticAnalyser
       Frontend.TypeChecker
   other-modules:

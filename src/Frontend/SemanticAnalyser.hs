@@ -16,11 +16,11 @@ module Frontend.SemanticAnalyser (
 ) where
 
 import qualified Data.Map as Map
-import Data.List (nub)
 
 import Data.List (intercalate, isPrefixOf)
 import Data.Set (toList, fromList)
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
+import qualified Frontend.PrettyPrinter as PP
 
 data SemanticError =
     DuplicatedFunctionName String                       |  -- function name is not uniquely defined
@@ -31,7 +31,8 @@ data SemanticError =
     CtrlAndTgtQubitsNotDistinctQCtrlGates String        |  -- for a quantum controlled gate the control and target qubits are not distinct
     CtrlAndTgtQubitsNotDistinctCCtrlGates String        |  -- for a classicallly controlled gate the control and target qubits are not distinct
     UnknownGate String                                  |  -- gate names should be recognized as belonging to the set of supported gates
-    CaseTermsNotDistinct String                            -- case terms should be distinct
+    CaseTermsNotDistinct String                         |  -- case terms should be distinct
+    InvalidClassicControlBits String                       -- bits for classicaly controlled gates must either 0 or 1
 
 
 instance Show SemanticError where
@@ -43,7 +44,8 @@ instance Show SemanticError where
     show (CtrlAndTgtQubitsNotDistinctQCtrlGates err) = "For some quantum controlled gate(s) the control and target qubits are not distinct, " ++ err
     show (CtrlAndTgtQubitsNotDistinctCCtrlGates err) = "For some classically controlled gate(s) the control and target qubits are not distinct, " ++ err
     show (UnknownGate err) = "Detected gate(s) which are not supported " ++ err
-    show (CaseTermsNotDistinct err) = "Some case terms are duplicated: " ++ err
+    show (CaseTermsNotDistinct err) = "Some case terms are duplicated " ++ err
+    show (InvalidClassicControlBits err) = "Some bits for classically controlled gates are neither 0 or 1 " ++ err
 
 
 runSemanticAnalyser :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
@@ -59,7 +61,8 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err7 = toString $ ctrlAndTgtQubitsAreDistinctClassicCtrlGates functions
     err8 = toString $ gateNamesAreValid functions
     err9 = toString $ caseTermsAreDistinct functions
-    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 ++ err8 ++ err9
+    err10 = toString $ classicCtrlGatesBitsAreValid functions
+    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 ++ err8 ++ err9 ++ err10
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
@@ -117,8 +120,14 @@ ctrlAndTgtQubitsAreDistinctClassicCtrlGates functions = if null allErrors then R
 caseTermsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 caseTermsAreDistinct functions = if null duplicatedCaseTerms then Right () else Left duplicatedCaseTerms
   where
-    duplicatedCaseTerms = unlines $ filterInRepeatedStrings $ extractCaseExprFstTerms functions []
+    duplicatedCaseTerms = unlines $ reverse $ extractDuplicatedStrings $ extractCaseExprFstTerms functions []
 
+
+classicCtrlGatesBitsAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+classicCtrlGatesBitsAreValid functions = if null invalidBits then Right () else Left invalidBits
+  where
+    invalidBits = unlines $ extractInvalidBitTerms functions []
+extractInvalidBitTerms _ _ = []
 
 getDuplicatedFunctionNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
 getDuplicatedFunctionNames [] _  errorMessages = reverse errorMessages
@@ -227,15 +236,16 @@ verifyGatesNames (fun:funs)  errorMessages =
 
 
 extractCaseExprFstTerms :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-extractCaseExprFstTerms [] caseExprFstTerms = reverse caseExprFstTerms
-extractCaseExprFstTerms (GeneratedAbstractSyntax.FunDecl _ (GeneratedAbstractSyntax.FunDef _ _ term) : funs) caseExprFstTerms 
+extractCaseExprFstTerms [] caseExprFstTerms = caseExprFstTerms
+extractCaseExprFstTerms (GeneratedAbstractSyntax.FunDecl _ (GeneratedAbstractSyntax.FunDef fname _ term) : funs) caseExprFstTerms
   = extractCaseExprFstTerms funs (extractFromTerm term caseExprFstTerms)
   where
     extractFromTerm :: GeneratedAbstractSyntax.Term -> [String] -> [String]
     extractFromTerm (GeneratedAbstractSyntax.TermCase _ caseExprs) termsList = foldr extractFromCaseExpr termsList caseExprs
     extractFromTerm _ termsList = termsList
     extractFromCaseExpr :: GeneratedAbstractSyntax.CaseExpression -> [String] -> [String]
-    extractFromCaseExpr (GeneratedAbstractSyntax.CaseExpr term1 _) termsList = show term1 : termsList
+    extractFromCaseExpr (GeneratedAbstractSyntax.CaseExpr term1 _) termsList
+      = ("Duplicated case term: '" ++ PP.showTerm term1 ++ "' found in a case expression declared in the function named: " ++ getVariableName fname) : termsList
 
 
 functionNamesMatch :: GeneratedAbstractSyntax.FunctionDeclaration -> Bool
@@ -641,7 +651,7 @@ countOccurrences :: [String] -> Map.Map String Int
 countOccurrences = foldr (\s -> Map.insertWith (+) s 1) Map.empty
 
 
-filterInRepeatedStrings :: [String] -> [String]
-filterInRepeatedStrings strs = Map.keys $ Map.filter (> 1) occurences
+extractDuplicatedStrings :: [String] -> [String]
+extractDuplicatedStrings strs = Map.keys $ Map.filter (> 1) occurences
   where
     occurences = countOccurrences strs

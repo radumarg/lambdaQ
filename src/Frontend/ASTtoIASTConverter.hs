@@ -386,10 +386,10 @@ mapTerm :: Environment -> GeneratedAbstractSyntax.Term -> Term
 mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (mapType typ) (mapTerm envUpdated term)
   where envUpdated = Data.Map.insert (toVariableName var) 0 (Data.Map.map succ env)
 
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "inv"))) = TermInverse (l, c)
-mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "pow"))) = TermPower (l, c)
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)         -- special function --
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)   -- special function --
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "inv"))) = TermInverse (l, c)     -- special function --
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "pow"))) = TermPower (l, c)       -- special function --
 
 mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup varName env of
     Just int -> TermBoundVariable int

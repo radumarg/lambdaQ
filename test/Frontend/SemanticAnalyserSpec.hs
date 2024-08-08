@@ -245,4 +245,14 @@ spec =  do
         result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: UU1" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for gate(s) named: UU2, UU3" `isInfixOf` str)
 
+    -- -- EXPECT SOME ERRORS: CASE TERMS ARE NOT UNIQUE  --
+
+    context "when provided with a program where for some case terms are duplicated" $ do
+      it "returns an error" $ do
+        result <- testSemanticAnalyser "test/programs/bad/case_terms_not_unique.lq"
+        result `Test.Hspec.shouldSatisfy` 
+          (\str -> "Duplicated case term: 'a1' found in a case expression declared in the function named: fun1" `isInfixOf` str)
+        result `Test.Hspec.shouldSatisfy` 
+          (\str -> "Duplicated case term: 'a b' found in a case expression declared in the function named: fun2" `isInfixOf` str)
+
     -- putStrLn result
