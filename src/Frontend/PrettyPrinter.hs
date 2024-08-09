@@ -30,7 +30,7 @@ showTerm (TermClassicTCtrlsGate cts cbs) = showControlTerms cts ++ " # " ++ show
 showTerm (TermClassicVCtrlsGate cvs cbs) = showControlVars cvs ++ " # " ++ showControlBits cbs
 showTerm (TermApply t1 t2) = showTerm t1 ++ " " ++ showTerm t2
 showTerm (TermCompose t1 t2) = showTerm t1 ++ " . " ++ showTerm t2
-showTerm (TermTensorProduct t1 t2) = showTerm t1 ++ " * " ++ showTerm t2
+showTerm (TermTensorProduct t1 t2) = showTerm t1 ++ " ⊗ " ++ showTerm t2
 showTerm (TermIfElse t1 t2 t3) = "if " ++ showTerm t1 ++ " then " ++ showTerm t2 ++ " else " ++ showTerm t3
 showTerm (TermLetSingle v t1 t2) = "let " ++ showVar v ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
 showTerm (TermLetMultiple v vs t1 t2) = "let " ++ showVar v ++ " " ++ showVars vs ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
@@ -178,7 +178,7 @@ showType TypeInteger = "Int"
 showType TypeQbit = "Qbit"
 showType TypeUnit = "Unit"
 showType (TypeFunction t1 t2) = showType t1 ++ " -> " ++ showType t2
-showType (TypeTensorProd t1 t2) = showType t1 ++ " * " ++ showType t2
+showType (TypeTensorProd t1 t2) = showType t1 ++ " ⊗ " ++ showType t2
 showType (TypeExp t i) = showType t ++ "^" ++ show i
 showType (TypeNonLinear t) = "!" ++ showType t
 showType (TypeList t) = "[" ++ showType t ++ "]"

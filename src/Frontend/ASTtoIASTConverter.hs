@@ -170,6 +170,8 @@ data Term =
     TermMeasure (Int, Int)                        |
     TermInverse  (Int, Int)                       |
     TermPower (Int, Int)                          |
+    TermReset (Int, Int)                          |
+    TermId (Int, Int)                             |
     TermBasisState BasisState                     |
     TermTuple Term [Term]                         |
     TermBit Bit                                   |
@@ -388,8 +390,10 @@ mapTerm env (GeneratedAbstractSyntax.TermLambda _ var typ term) = TermLambda (ma
 
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "new"))) = TermNew (l, c)         -- special function --
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "measr"))) = TermMeasure (l, c)   -- special function --
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "id"))) = TermId (l, c)           -- special function --
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "inv"))) = TermInverse (l, c)     -- special function --
 mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "pow"))) = TermPower (l, c)       -- special function --
+mapTerm _ (GeneratedAbstractSyntax.TermVariable (GeneratedAbstractSyntax.Var ((l, c), "reset"))) = TermReset (l, c)     -- special function --
 
 mapTerm env (GeneratedAbstractSyntax.TermVariable var) = case Data.Map.lookup varName env of
     Just int -> TermBoundVariable int

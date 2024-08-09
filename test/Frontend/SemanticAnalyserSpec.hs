@@ -155,7 +155,7 @@ spec =  do
         result `Test.Hspec.shouldSatisfy` (\str -> "Number of function arguments exceeds the number of arguments in signature" `isInfixOf` str)
         result `Test.Hspec.shouldSatisfy` (\str -> "for function \"fun\" at line: 2 and column: 1, the function has 2 arguments but expects as most 1" `isInfixOf` str)
 
-    -- TODO: fix
+    -- TODO: FIX NOW
     -- context "when provided with a program where number of function arguments is incorrect" $ do
     --   it "returns an error" $ do
     --     result <- testSemanticAnalyser "test/programs/bad/function_has_sum_arg__IncorrectNumberOfFunctionArguments.lq"
