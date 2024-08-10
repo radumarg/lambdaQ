@@ -101,27 +101,32 @@ gateNamesAreValid functions = if null allErrors then Right () else Left allError
     allErrors = unlines $ verifyGatesNames functions []
 
 
+classicCtrlGatesBitsAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
+classicCtrlGatesBitsAreValid functions = if null allErrors then Right () else Left allErrors
+  where
+    allErrors = unlines $ verifyBitValues functions []
+
 ctrlQbitsAreDistinctQuantumCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 ctrlQbitsAreDistinctQuantumCtrlGates functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyCtrlsQbitsAreDistinct "mode-quantum" functions []
+    allErrors = unlines $ verifyCtrlsQbitsAreDistinct "ModeQuantumCtrl" functions []
 
 
 ctrlQbitsAreDistinctClassicCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 ctrlQbitsAreDistinctClassicCtrlGates functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyCtrlsQbitsAreDistinct "mode-classic" functions []
+    allErrors = unlines $ verifyCtrlsQbitsAreDistinct "ModeClassicCtrl" functions []
 
 
 ctrlAndTgtQubitsAreDistinctQuantumCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 ctrlAndTgtQubitsAreDistinctQuantumCtrlGates functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyControlAndTargetQbitsAreDistinct "mode-quantum" functions []
+    allErrors = unlines $ verifyControlAndTargetQbitsAreDistinct "ModeQuantumCtrl" functions []
 
 ctrlAndTgtQubitsAreDistinctClassicCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 ctrlAndTgtQubitsAreDistinctClassicCtrlGates functions = if null allErrors then Right () else Left allErrors
   where
-    allErrors = unlines $ verifyControlAndTargetQbitsAreDistinct "mode-classic" functions []
+    allErrors = unlines $ verifyControlAndTargetQbitsAreDistinct "ModeClassicCtrl" functions []
 
 
 caseTermsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -133,23 +138,13 @@ caseTermsAreDistinct functions = if null duplicatedCaseTerms then Right () else 
 noCtrlQubitsMatchNoCtrTermsQuantumCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 noCtrlQubitsMatchNoCtrTermsQuantumCtrlGates functions = if null incorrectCtrlTerms then Right () else Left incorrectCtrlTerms
   where
-    incorrectCtrlTerms = unlines $ reverse $ extractNonCongruentCtrlTerms "mode-quantum" functions []
+    incorrectCtrlTerms = unlines $ reverse $ verifyCtrlTermsAreCongruent "ModeQuantumCtrl" functions []
 
 noCtrlQubitsMatchNoCtrTermsClassicCtrlGates :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
 noCtrlQubitsMatchNoCtrTermsClassicCtrlGates functions = if null incorrectCtrlTerms then Right () else Left incorrectCtrlTerms
   where
-    incorrectCtrlTerms = unlines $ reverse $ extractNonCongruentCtrlTerms "mode-quantum" functions []
+    incorrectCtrlTerms = unlines $ reverse $ verifyCtrlTermsAreCongruent "ModeClassicCtrl" functions []
 
--- TODO: FIX NOW
-extractNonCongruentCtrlTerms _ _ _ = []
-
-classicCtrlGatesBitsAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-classicCtrlGatesBitsAreValid functions = if null invalidBits then Right () else Left invalidBits
-  where
-    invalidBits = unlines $ extractInvalidBitTerms functions []
-
--- TODO: FIX NOW
-extractInvalidBitTerms _ _ = []
 
 getDuplicatedFunctionNames :: [GeneratedAbstractSyntax.FunctionDeclaration] -> (GeneratedAbstractSyntax.FunctionDeclaration -> Bool) -> [String] -> [String]
 getDuplicatedFunctionNames [] _  errorMessages = reverse errorMessages
@@ -221,7 +216,7 @@ verifyCtrlsQbitsAreDistinct mode (fun:funs) errorMessages =
       duplicatedQbits = collectNotDistinctQbits mode fbody ""
       (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
       (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-      newErrorMessage = if mode == "mode-quantum"
+      newErrorMessage = if mode == "ModeQuantumCtrl"
         then "  " ++ show (ControlQbitsNotDistinctQCtrlGates funInfo) ++ " for the following qubit sequence(s): " ++ stripFirstSubstring " and " duplicatedQbits
         else "  " ++ show (ControlQbitsNotDistinctCCtrlGates funInfo) ++ " for the following qubit sequence(s): " ++ stripFirstSubstring " and " duplicatedQbits
       funInfo = getFunctionNameAndPosition fun
@@ -239,7 +234,7 @@ verifyControlAndTargetQbitsAreDistinct mode (fun:funs) errorMessages =
       notDistinctQubits = collectDuplicatedTgtAndCtrl mode fbody ""
       (GeneratedAbstractSyntax.FunDecl _ funDef) = fun
       (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-      intro = if mode == "mode-quantum" then show (CtrlAndTgtQubitsNotDistinctQCtrlGates funInfo) else  show (CtrlAndTgtQubitsNotDistinctCCtrlGates funInfo)
+      intro = if mode == "ModeQuantumCtrl" then show (CtrlAndTgtQubitsNotDistinctQCtrlGates funInfo) else  show (CtrlAndTgtQubitsNotDistinctCCtrlGates funInfo)
       newErrorMessage = "  " ++ intro ++ " for qubit(s) identified with variable name(s): " ++ stripFirstSubstring " and " notDistinctQubits
       funInfo = getFunctionNameAndPosition fun
 
@@ -255,6 +250,35 @@ verifyGatesNames (fun:funs)  errorMessages =
       unknownGates = getUnknownGates fun
       newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gate(s) named: " ++ intercalate ", " unknownGates
       funInfo = getFunctionNameAndPosition fun
+
+verifyBitValues :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyBitValues [] errorMessages = reverse errorMessages
+verifyBitValues (fun:funs)  errorMessages =
+  if null invalidBitTerms
+    then
+      verifyBitValues funs errorMessages
+    else
+      verifyBitValues funs (newErrorMessage : errorMessages)
+    where
+      invalidBitTerms = extractInvalidBitTerms fun
+      newErrorMessage = "  " ++ funInfo ++ ", the following control bit term(s) are different from 0 or 1: " ++ intercalate " and " invalidBitTerms
+      funInfo = getFunctionNameAndPosition fun
+
+
+verifyCtrlTermsAreCongruent :: String -> [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
+verifyCtrlTermsAreCongruent _ [] errorMessages = errorMessages
+verifyCtrlTermsAreCongruent mode  (fun:funs)  errorMessages =
+  if null nonCongruentCtrlTerms
+    then
+      verifyCtrlTermsAreCongruent mode funs errorMessages
+    else
+      verifyCtrlTermsAreCongruent mode funs (newErrorMessage : errorMessages)
+    where
+      nonCongruentCtrlTerms = extractNonCongruentCtrlTerms mode fun
+      newErrorMessage = if mode == "ModeQuantumCtrl" 
+        then "  " ++ funInfo ++ ", for some quantum controlled gates the number of control qubits differ from number of basis states controls: " ++    intercalate " and " nonCongruentCtrlTerms 
+        else "  " ++ funInfo ++ ", for some classically controlled gates the number of control qubits differ from number of bits controls: " ++ intercalate " and " nonCongruentCtrlTerms 
+      funInfo = getFunctionNameAndPosition fun    
 
 
 extractCaseExprFstTerms :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
@@ -280,7 +304,7 @@ functionNamesMatch (GeneratedAbstractSyntax.FunDecl funType funDef) = varName ==
 
 collectNotDistinctQbits :: String -> GeneratedAbstractSyntax.Term ->  String -> String
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermQuantumVCtrlsGate controlVars _) notDistinctQbits =
-  if mode == "mode-quantum" then
+  if mode == "ModeQuantumCtrl" then
     (if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables)
   else notDistinctQbits
     where
@@ -291,7 +315,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermQuantumVCtrlsGate cont
       getQbitFromControlVar (GeneratedAbstractSyntax.Var (_, varName)) = varName
 
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermQuantumTCtrlsGate controlTerms _) notDistinctQbits =
-  if mode == "mode-quantum" then
+  if mode == "ModeQuantumCtrl" then
     (if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables)
   else notDistinctQbits
     where
@@ -303,7 +327,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermQuantumTCtrlsGate cont
       getQbitFromControlTerm _ = ""
 
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermClassicVCtrlsGate controlVars _) notDistinctQbits =
-  if mode == "mode-classic" then
+  if mode == "ModeClassicCtrl" then
     (if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables)
   else notDistinctQbits
     where
@@ -314,7 +338,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermClassicVCtrlsGate cont
       getBitFromControlVar (GeneratedAbstractSyntax.Var (_, varName)) = varName
 
 collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermClassicTCtrlsGate controlTerms _) notDistinctQbits =
-  if mode == "mode-classic" then
+  if mode == "ModeClassicCtrl" then
     (if distinct then notDistinctQbits else notDistinctQbits ++ " and " ++ intercalate ", " termVariables)
   else notDistinctQbits
     where
@@ -431,7 +455,7 @@ collectNotDistinctQbits mode (GeneratedAbstractSyntax.TermCase term1 ((Generated
 -- TODO multiple qubits gates not supported yet
 collectDuplicatedTgtAndCtrl :: String -> GeneratedAbstractSyntax.Term -> String -> String
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) _) term) duplicatedQubits =
-  if (mode == "mode-quantum") && not (null termQbit) && (termQbit == controlQbit) then
+  if (mode == "ModeQuantumCtrl") && not (null termQbit) && (termQbit == controlQbit) then
     duplicatedQubits ++ " and " ++ controlQbit
   else duplicatedQubits
       where
@@ -439,7 +463,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
       termQbit = getTermVariableName term
 
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm ctrlTerm) _) _) term) duplicatedQubits =
-  if (mode == "mode-classic") && not (null termQbit) && (termQbit == controlQbit) then
+  if (mode == "ModeClassicCtrl") && not (null termQbit) && (termQbit == controlQbit) then
     duplicatedQubits ++ " and " ++ controlQbit
   else duplicatedQubits
       where
@@ -447,7 +471,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
       termQbit = getTermVariableName term
 
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
-  if (mode == "mode-quantum") && not (null termQbit) && (termQbit `elem` controlQbits) then
+  if (mode == "ModeQuantumCtrl") && not (null termQbit) && (termQbit `elem` controlQbits) then
     duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
    else duplicatedQbits
       where
@@ -456,7 +480,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
 
 -- TODO: test and fix (implementation note finished)
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars ctrlVar ctrlVars) _) _) term) duplicatedQbits =
-  if (mode == "mode-classic") && not (null termQbit) && (termQbit `elem` controlQbits) then
+  if (mode == "ModeClassicCtrl") && not (null termQbit) && (termQbit `elem` controlQbits) then
     duplicatedQbits ++ " and " ++ unwords [q | q <- controlQbits, q == termQbit]
    else duplicatedQbits
       where
@@ -465,7 +489,7 @@ collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAb
 
 -- TODO: test and fix (implementation note finished)
 collectDuplicatedTgtAndCtrl mode (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermApply (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms ctrlTerm ctrlTerms) _) _) term) duplicatedQbits =
-  if (mode == "mode-quantum") && not (null termQbit) && (termQbit `elem` controlQbits) then
+  if (mode == "ModeQuantumCtrl") && not (null termQbit) && (termQbit `elem` controlQbits) then
     duplicatedQbits ++ " and "  ++ unwords [q | q <- controlQbits, q == termQbit]
    else duplicatedQbits
       where
@@ -624,6 +648,109 @@ getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbo
     collectUnknowns (GeneratedAbstractSyntax.TermLambda _ _ _ term) = collectUnknowns term
     collectUnknowns (GeneratedAbstractSyntax.TermDollar term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
     collectUnknowns _ = []
+
+
+extractInvalidBitTerms :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
+extractInvalidBitTerms (GeneratedAbstractSyntax.FunDecl _ funDef) = collectInvalidBitTerms fbody
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
+    collectInvalidBitTerms :: GeneratedAbstractSyntax.Term -> [String]
+    collectInvalidBitTerms term = case term of
+        GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) (GeneratedAbstractSyntax.CtrlBit b)
+            | b /= 0 && b /= 1 -> PP.showTerm term : collectInvalidBitTerms t
+            | otherwise -> collectInvalidBitTerms t
+        GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBits b bs)
+            | b /= 0 && b /= 1 || any (\x -> x /= 0 && x /= 1) bs -> [PP.showTerm term] ++ collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
+            | otherwise -> collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
+        GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _  _) (GeneratedAbstractSyntax.CtrlBits b bs)
+            | b /= 0 && b /= 1 || any (\x -> x /= 0 && x /= 1) bs -> [PP.showTerm term]
+            | otherwise -> []
+        GeneratedAbstractSyntax.TermListElement l _ -> collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l)
+        GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil -> []
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle t) -> collectInvalidBitTerms t
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListMultiple t ts) ->
+            collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2) ->
+            collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l1) ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l2)
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons t l) ->
+            collectInvalidBitTerms t ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l)
+        GeneratedAbstractSyntax.TermTuple t ts -> collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
+        GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectInvalidBitTerms t
+        GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) _ ->
+            collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
+        GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ _) _ -> []
+        GeneratedAbstractSyntax.TermApply t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermCompose t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermTensorProduct t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermIfElse t1 t2 t3 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2 ++ collectInvalidBitTerms t3
+        GeneratedAbstractSyntax.TermLetSingle _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermCase t [] -> collectInvalidBitTerms t
+        GeneratedAbstractSyntax.TermCase t1 (GeneratedAbstractSyntax.CaseExpr t2 t3 : caseExprs) ->
+            collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2 ++ collectInvalidBitTerms t3 ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermCase t1 caseExprs)
+        GeneratedAbstractSyntax.TermLambda _ _ _ t -> collectInvalidBitTerms t
+        GeneratedAbstractSyntax.TermDollar t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
+        GeneratedAbstractSyntax.TermGate _ -> []
+        GeneratedAbstractSyntax.TermUnit -> []
+        GeneratedAbstractSyntax.TermBasisState _ -> []
+        GeneratedAbstractSyntax.TermBoolExpression _ -> []
+        GeneratedAbstractSyntax.TermIntegerExpression _ -> []
+        GeneratedAbstractSyntax.TermVariable _ -> []
+
+
+extractNonCongruentCtrlTerms :: String -> GeneratedAbstractSyntax.FunctionDeclaration -> [String]
+extractNonCongruentCtrlTerms mode (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNonCongruentTerms mode fbody
+  where
+    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
+    collectNonCongruentTerms :: String -> GeneratedAbstractSyntax.Term -> [String]
+    collectNonCongruentTerms md term = case term of
+        GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
+            | md == "ModeQuantumCtrl" && length vs /= length bs -> [PP.showTerm term]
+            | otherwise -> []
+        GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
+            | md == "ModeQuantumCtrl" && length ts /= length bs
+              -> [PP.showTerm term] ++ collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+            | otherwise -> collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+        GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBits _ bs) 
+            | md == "ModeClassicCtrl" && length vs /= length bs -> [PP.showTerm term]
+            | otherwise -> []
+        GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBits _ bs)
+            | md == "ModeClassicCtrl" && length ts /= length bs
+              -> [PP.showTerm term] ++ collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+            | otherwise -> collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+        GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermListElement l _ -> collectNonCongruentTerms md (GeneratedAbstractSyntax.TermList l)
+        GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil -> []
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle t) -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListMultiple t ts) ->
+            collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2) ->
+            collectNonCongruentTerms md (GeneratedAbstractSyntax.TermList l1) ++ collectNonCongruentTerms md (GeneratedAbstractSyntax.TermList l2)
+        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons t l) ->
+            collectNonCongruentTerms md t ++ collectNonCongruentTerms md (GeneratedAbstractSyntax.TermList l)
+        GeneratedAbstractSyntax.TermTuple t ts -> collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
+        GeneratedAbstractSyntax.TermApply t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermCompose t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermTensorProduct t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermIfElse t1 t2 t3 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2 ++ collectNonCongruentTerms md t3
+        GeneratedAbstractSyntax.TermLetSingle _ t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermCase t [] -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermCase t1 (GeneratedAbstractSyntax.CaseExpr t2 t3 : caseExprs) ->
+            collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2 ++ collectNonCongruentTerms md t3 ++ collectNonCongruentTerms md (GeneratedAbstractSyntax.TermCase t1 caseExprs)
+        GeneratedAbstractSyntax.TermLambda _ _ _ t -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermDollar t1 t2 -> collectNonCongruentTerms md t1 ++ collectNonCongruentTerms md t2
+        GeneratedAbstractSyntax.TermGate _ -> []
+        GeneratedAbstractSyntax.TermUnit -> []
+        GeneratedAbstractSyntax.TermBasisState _ -> []
+        GeneratedAbstractSyntax.TermBoolExpression _ -> []
+        GeneratedAbstractSyntax.TermIntegerExpression _ -> []
+        GeneratedAbstractSyntax.TermVariable _ -> []
 
 
 -- Some helper functions --

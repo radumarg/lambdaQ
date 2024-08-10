@@ -4,6 +4,7 @@ module Frontend.PrettyPrinter (
 ) where
 
 import Frontend.LambdaQ.Abs
+import Data.List (intercalate)
 
 -- Helper function to show a list of terms
 showTerms :: [Term] -> String
@@ -25,17 +26,17 @@ showTerm (TermTuple t ts) = "(" ++ showTerm t ++ ", " ++ showTerms ts ++ ")"
 showTerm (TermQuantumCtrlGate ct cbs) = showControlTerm ct ++ " @ " ++ showControlBasisState cbs
 showTerm (TermQuantumTCtrlsGate cts cbss) = showControlTerms cts ++ " @ " ++ showControlBasisStates cbss
 showTerm (TermQuantumVCtrlsGate cvs cbss) = showControlVars cvs ++ " @ " ++ showControlBasisStates cbss
-showTerm (TermClassicCtrlGate ct cb) = showControlTerm ct ++ " # " ++ showControlBit cb
-showTerm (TermClassicTCtrlsGate cts cbs) = showControlTerms cts ++ " # " ++ showControlBits cbs
-showTerm (TermClassicVCtrlsGate cvs cbs) = showControlVars cvs ++ " # " ++ showControlBits cbs
+showTerm (TermClassicCtrlGate ct cb) = showControlTerm ct ++ " values: " ++ showControlBit cb
+showTerm (TermClassicTCtrlsGate cts cbs) = showControlTerms cts ++ " values: " ++ showControlBits cbs
+showTerm (TermClassicVCtrlsGate cvs cbs) = showControlVars cvs ++ " values: " ++ showControlBits cbs
 showTerm (TermApply t1 t2) = showTerm t1 ++ " " ++ showTerm t2
 showTerm (TermCompose t1 t2) = showTerm t1 ++ " . " ++ showTerm t2
 showTerm (TermTensorProduct t1 t2) = showTerm t1 ++ " ⊗ " ++ showTerm t2
 showTerm (TermIfElse t1 t2 t3) = "if " ++ showTerm t1 ++ " then " ++ showTerm t2 ++ " else " ++ showTerm t3
 showTerm (TermLetSingle v t1 t2) = "let " ++ showVar v ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
-showTerm (TermLetMultiple v vs t1 t2) = "let " ++ showVar v ++ " " ++ showVars vs ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
+showTerm (TermLetMultiple v vs t1 t2) = "let " ++ showVar v ++ ", " ++ showVars vs ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
 showTerm (TermLetSugarSingle v t1 t2) = "let " ++ showVar v ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
-showTerm (TermLetSugarMultiple v vs t1 t2) = "let " ++ showVar v ++ " " ++ showVars vs ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
+showTerm (TermLetSugarMultiple v vs t1 t2) = "let " ++ showVar v ++ ", " ++ showVars vs ++ " = " ++ showTerm t1 ++ " in " ++ showTerm t2
 showTerm (TermCase t ces) = "case " ++ showTerm t ++ " of " ++ showCaseExpressions ces
 showTerm (TermLambda (Lambda l) v typ t) = "\\" ++ l ++ " " ++ showVar v ++ " : " ++ showType typ ++ " -> " ++ showTerm t
 showTerm (TermDollar t1 t2) = showTerm t1 ++ " $ " ++ showTerm t2
@@ -142,25 +143,25 @@ showControlTerm :: ControlTerm -> String
 showControlTerm (CtrlTerm t) = showTerm t
 
 showControlTerms :: ControlTerms -> String
-showControlTerms (CtrlTerms t ts) = showTerm t ++ " " ++ showTerms ts
+showControlTerms (CtrlTerms t ts) = showTerm t ++ ", " ++ showTerms ts
 
 showControlVar :: ControlVar -> String
 showControlVar (CtrlVar v) = showVar v
 
 showControlVars :: ControlVars -> String
-showControlVars (CtrlVars v vs) = showVar v ++ " " ++ showVars vs
+showControlVars (CtrlVars v vs) = showVar v ++ ", " ++ showVars vs
 
 showControlBasisState :: ControlBasisState -> String
 showControlBasisState (CtrlBasisState bs) = showBasisState bs
 
 showControlBasisStates :: ControlBasisStates -> String
-showControlBasisStates (CtrlBasisStates bs bss) = showBasisState bs ++ " " ++ unwords (map showBasisState bss)
+showControlBasisStates (CtrlBasisStates bs bss) = showBasisState bs ++ ", " ++ intercalate ", " (map showBasisState bss)
 
 showControlBit :: ControlBit -> String
 showControlBit (CtrlBit i) = show i
 
 showControlBits :: ControlBits -> String
-showControlBits (CtrlBits i is) = show i ++ " " ++ unwords (map show is)
+showControlBits (CtrlBits i is) = show i ++ ", " ++ intercalate ", " (map show is)
 
 showGateVar :: GateVar -> String
 showGateVar (GateVar (_, s)) = s

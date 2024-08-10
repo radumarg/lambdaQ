@@ -1,0 +1,9 @@
+fun1 :: Qbit ** 2 -> Qbit ** 2
+fun1 q1 q2 = |q1, q2| <- with [ q1 ] ctrl [ 7 ] gate X q2;
+             with [ q1 ] ctrl [ 5 ] gate X q2
+
+
+fun2 :: Qbit ** 3 -> Qbit ** 3
+fun2 q1 q2 q3 = with [ q1, q2 ] ctrl [ 0, 3 ] gate X q3
+
+
