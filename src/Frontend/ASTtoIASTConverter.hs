@@ -7,6 +7,7 @@
 --   * syntactic sugar is removed for let sugar terms, let sugar terms are consolidated in a unique term
 --   * quantum controlled gates variants are consolidated in a unique term
 --   * classsical controlled gates variants are consolidated in a unique term
+--   * special functions are replaced with dedicated terms
 
 module Frontend.ASTtoIASTConverter (
   Function(..),
@@ -157,7 +158,7 @@ data Term =
     TermIntegerExpression IntegerExpression       |
     TermVariable Var                              |
     TermIfElse Term Term Term                     |
-    TermLet [Var] Term Term                       |
+    TermLet Term Term                             |
     TermCase Term [CaseExpression]                |
     TermLambda Type Term                          |
     TermGate Gate                                 |
@@ -449,17 +450,44 @@ mapTerm env (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyn
 mapTerm env (GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars var vars) (GeneratedAbstractSyntax.CtrlBits bit bits)) 
   = TermClassicControlGate (mapTerm env (GeneratedAbstractSyntax.TermVariable var) : map (mapTerm env . GeneratedAbstractSyntax.TermVariable) vars) (mapControlBit bit : map mapControlBit bits)
 
-mapTerm env (GeneratedAbstractSyntax.TermLetSingle var term1 term2) 
-  = TermLet [mapVariable var] (mapTerm env term1) (mapTerm env term2)
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var term1 term2) 
-  = TermLet [mapVariable var] (mapTerm env term1) (mapTerm env term2)
-mapTerm env (GeneratedAbstractSyntax.TermLetMultiple var vars term1 term2) 
-  = TermLet (mapVariable var : map mapVariable vars) (mapTerm env term1) (mapTerm env term2)
-mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple var vars term1 term2) 
-  = TermLet (mapVariable var : map mapVariable vars) (mapTerm env term1) (mapTerm env term2)
+mapTerm env (GeneratedAbstractSyntax.TermLetSingle var term1 term2) = TermLet (mapTerm env term1) (mapTerm env' term2)
+  where
+    env' = Data.Map.insert (getVariableName var) 0 (Data.Map.map succ env)
 
+mapTerm env (GeneratedAbstractSyntax.TermLetSugarSingle var term1 term2) = TermLet (mapTerm env term1) (mapTerm env' term2)
+  where
+    env' = Data.Map.insert (getVariableName var) 0 (Data.Map.map succ env)
+
+mapTerm env (GeneratedAbstractSyntax.TermLetMultiple var1 [var2] term1 term2) = TermLet (mapTerm env term1) (mapTerm env' term2)
+  where
+    env' = Data.Map.insert (getVariableName var2) 1 $ Data.Map.insert (getVariableName var1) 0 (Data.Map.map (succ . succ) env)
+
+mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple var1 [var2] term1 term2) = TermLet (mapTerm env term1) (mapTerm env' term2)
+  where
+    env' = Data.Map.insert (getVariableName var2) 1 $ Data.Map.insert (getVariableName var1) 0 (Data.Map.map (succ . succ) env)
+
+mapTerm env (GeneratedAbstractSyntax.TermLetMultiple var1 (var2 : vars) term1 term2) =
+  if null vars
+      then TermLet (mapTerm env term1) (mapTerm env' (GeneratedAbstractSyntax.TermLetSingle var2 (GeneratedAbstractSyntax.TermVariable var2) term2))
+      else TermLet (mapTerm env term1) (mapTerm env' (GeneratedAbstractSyntax.TermLetMultiple var2 vars (GeneratedAbstractSyntax.TermVariable var2) term2))
+  where
+    env' = Data.Map.insert (getVariableName var1) 1 $ Data.Map.insert (getVariableName var2) 0 (Data.Map.map (succ . succ) env)
+
+mapTerm env (GeneratedAbstractSyntax.TermLetSugarMultiple var1 (var2 : vars) term1 term2) =
+  if null vars
+      then TermLet (mapTerm env term1) (mapTerm env' (GeneratedAbstractSyntax.TermLetSugarSingle var2 (GeneratedAbstractSyntax.TermVariable var2) term2))
+      else TermLet (mapTerm env term1) (mapTerm env' (GeneratedAbstractSyntax.TermLetSugarMultiple var2 vars (GeneratedAbstractSyntax.TermVariable var2) term2))
+  where
+    env' = Data.Map.insert (getVariableName var1) 1 $ Data.Map.insert (getVariableName var2) 0 (Data.Map.map (succ . succ) env)
+
+-- forbidden by grammar
+mapTerm _ (GeneratedAbstractSyntax.TermLetMultiple _ [] _ _) = undefined
+mapTerm _ (GeneratedAbstractSyntax.TermLetSugarMultiple _ [] _ _) = undefined
 
 -- some utility functions --
+
+getVariableName:: GeneratedAbstractSyntax.Var -> String
+getVariableName ( GeneratedAbstractSyntax.Var (_, qubit)) = qubit
 
 substring :: String -> String -> Bool
 substring (_:_) [] = False
