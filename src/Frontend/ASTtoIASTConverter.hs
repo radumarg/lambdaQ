@@ -10,6 +10,7 @@
 --   * special functions are replaced with dedicated terms
 
 module Frontend.ASTtoIASTConverter (
+  BasisState,
   Function(..),
   Gate(..),
   mapProgram,
