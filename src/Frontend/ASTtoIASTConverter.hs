@@ -223,9 +223,34 @@ mapType GeneratedAbstractSyntax.TypeQbit = TypeQbit
 mapType GeneratedAbstractSyntax.TypeUnit = TypeUnit
 mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
 mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r
-mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = mapType l :*: mapType r
-mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
 mapType (GeneratedAbstractSyntax.TypeList t) = TypeList (mapType t)
+mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
+mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = simplifyTensorProd $ (mapType l) :*: (mapType r)
+
+simplifyTensorProd :: Type -> Type
+simplifyTensorProd (t1 :*: t2)
+    | t1 == t2  = simplifyTensorProd t1 :**: 2
+    | otherwise = simplifyTensorProd t1 :*: simplifyTensorProd t2
+simplifyTensorProd (t :**: i) = (simplifyTensorProd t) :**: i
+simplifyTensorProd (t1 :*: ( t2 :**: i))
+    | t1 == t2  = simplifyTensorProd t1 :**: (i + 1)
+    | otherwise = (simplifyTensorProd t1) :*: ( (simplifyTensorProd t2) :**: i)
+simplifyTensorProd (( t1 :**: i) :*: t2)
+    | t1 == t2  = simplifyTensorProd t1 :**: (i + 1)
+    | otherwise = ((simplifyTensorProd t1) :**: i) :*: (simplifyTensorProd t2)
+simplifyTensorProd TypeBool = TypeBool
+simplifyTensorProd TypeInteger = TypeInteger
+simplifyTensorProd TypeBit = TypeBit
+simplifyTensorProd TypeQbit = TypeQbit
+simplifyTensorProd TypeUnit = TypeUnit
+simplifyTensorProd (TypeNonLinear t) = TypeNonLinear (simplifyTensorProd t)
+simplifyTensorProd (l :->: r) = (simplifyTensorProd l) :->: (simplifyTensorProd r)
+simplifyTensorProd (TypeList l) = TypeList (simplifyTensorProd l)
+
+
+exponentFromType :: Type -> Integer
+exponentFromType (t :**: i) = i
+exponentFromType _ = 0
 
 mapVariable :: GeneratedAbstractSyntax.Var -> Var
 mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)

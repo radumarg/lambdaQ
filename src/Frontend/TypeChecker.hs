@@ -111,7 +111,40 @@ isSubtype (TypeList t1) (TypeList t2) = isSubtype t1 t2
 isSubtype (t1 :->: t2) (t1' :->: t2') = isSubtype t1' t1 && isSubtype t2 t2'
 isSubtype (t1 :*: t2) (t1' :*: t2') = isSubtype t1 t1' && isSubtype t2 t2'
 isSubtype (t1 :**: n1) (t2 :**: n2) = n1 == n2 && isSubtype t1 t2
-isSubtype t1 t2  = t1 == t2
+isSubtype t1 t2 = t1 == t2
 
 inferType :: [Type] -> Term -> (Int, Int, String) -> Check Type
-inferType = undefined
+inferType _ (TermNew _) _  = return $ TypeNonLinear (TypeBit :->: TypeQbit)
+inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLinear TypeBit)
+inferType _ (TermReset _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
+inferType _ (TermId _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
+--inferType _ (TermPower _) _  = return $ TypeNonLinear ()
+--inferType _ (TermInverse _) _  = return $ TypeNonLinear ()
+inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
+inferType _ (TermGate gate) _ = return $ inferGateType gate
+inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
+
+inferType _ _ _ = undefined
+
+inferGateType :: Gate -> Type
+inferGateType gate
+    | qubits > 2 = TypeQbit :**: qubits
+    | qubits == 2 = TypeQbit :*: TypeQbit
+    | otherwise = TypeQbit
+    where
+        qubits = case gate of
+          GateQftInt nq -> nq
+          -- GateQftVar nq -> nq
+          GateQftDagInt nq -> nq
+          -- GateQftDagVar nq -> nq
+          GateSwp -> 2
+          GateSqrtSwp -> 2
+          GateSqrtSwpDag -> 2
+          GateISwp -> 2
+          GateFSwp -> 2
+          GateSwpTheta _ -> 2
+          GateSwpRtInt _ -> 2
+          GateSwpRtVar _ -> 2
+          GateSwpRtDagInt _ -> 2
+          GateSwpRtDagVar _ -> 2
+          _ -> 1
