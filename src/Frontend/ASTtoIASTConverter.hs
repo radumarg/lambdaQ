@@ -216,41 +216,34 @@ runAstToIastConverter program = if substring "error" programString then Left pro
       programString = show mappedProgram
 
 mapType :: GeneratedAbstractSyntax.Type -> Type
-mapType GeneratedAbstractSyntax.TypeBool = TypeBool
-mapType GeneratedAbstractSyntax.TypeInteger = TypeInteger
-mapType GeneratedAbstractSyntax.TypeBit = TypeBit
-mapType GeneratedAbstractSyntax.TypeQbit = TypeQbit
-mapType GeneratedAbstractSyntax.TypeUnit = TypeUnit
-mapType (GeneratedAbstractSyntax.TypeNonLinear t) = TypeNonLinear (mapType t)
-mapType (GeneratedAbstractSyntax.TypeFunction l r) = mapType l :->: mapType r
-mapType (GeneratedAbstractSyntax.TypeList t) = TypeList (mapType t)
-mapType (GeneratedAbstractSyntax.TypeExp t i) = mapType t :**: i
-mapType (GeneratedAbstractSyntax.TypeTensorProd l r) = simplifyTensorProd $ (mapType l) :*: (mapType r)
+mapType t = case t of
+    GeneratedAbstractSyntax.TypeBool          -> TypeBool
+    GeneratedAbstractSyntax.TypeInteger       -> TypeInteger
+    GeneratedAbstractSyntax.TypeBit           -> TypeBit
+    GeneratedAbstractSyntax.TypeQbit          -> TypeQbit
+    GeneratedAbstractSyntax.TypeUnit          -> TypeUnit
+    GeneratedAbstractSyntax.TypeNonLinear t'  -> TypeNonLinear (mapAndSimplify t')
+    GeneratedAbstractSyntax.TypeFunction l r  -> mapAndSimplify l :->: mapAndSimplify r
+    GeneratedAbstractSyntax.TypeList t'       -> TypeList (mapAndSimplify t')
+    GeneratedAbstractSyntax.TypeExp t' i      -> simplifyTensorProd $ mapType t' :**: i
+    GeneratedAbstractSyntax.TypeTensorProd l r -> simplifyTensorProd $ mapType l :*: mapType r
+  where
+    mapAndSimplify = simplifyTensorProd . mapType
 
 simplifyTensorProd :: Type -> Type
-simplifyTensorProd (t1 :*: t2)
-    | t1 == t2  = simplifyTensorProd t1 :**: 2
-    | otherwise = simplifyTensorProd t1 :*: simplifyTensorProd t2
-simplifyTensorProd (t :**: i) = (simplifyTensorProd t) :**: i
-simplifyTensorProd (t1 :*: ( t2 :**: i))
-    | t1 == t2  = simplifyTensorProd t1 :**: (i + 1)
-    | otherwise = (simplifyTensorProd t1) :*: ( (simplifyTensorProd t2) :**: i)
-simplifyTensorProd (( t1 :**: i) :*: t2)
-    | t1 == t2  = simplifyTensorProd t1 :**: (i + 1)
-    | otherwise = ((simplifyTensorProd t1) :**: i) :*: (simplifyTensorProd t2)
-simplifyTensorProd TypeBool = TypeBool
-simplifyTensorProd TypeInteger = TypeInteger
-simplifyTensorProd TypeBit = TypeBit
-simplifyTensorProd TypeQbit = TypeQbit
-simplifyTensorProd TypeUnit = TypeUnit
-simplifyTensorProd (TypeNonLinear t) = TypeNonLinear (simplifyTensorProd t)
-simplifyTensorProd (l :->: r) = (simplifyTensorProd l) :->: (simplifyTensorProd r)
-simplifyTensorProd (TypeList l) = TypeList (simplifyTensorProd l)
+simplifyTensorProd t = foldl1 accumulatePowers (flattenTensorProd t)
 
+accumulatePowers :: Type -> Type -> Type
+accumulatePowers (t1 :*: (t2 :**: i)) t3 = if t2 == t3 then t1 :*: (t2 :**: (i + 1)) else t1 :*: (t2 :**: i) :*: t3
+accumulatePowers (t1 :*: t2) t3 = if t2 == t3 then t1 :*: (t2 :**: 2) else t1 :*: t2 :*: t3
+accumulatePowers (t1 :**: i) t2 =  if t1 == t2 then t1 :**: (i + 1) else (t1 :**: i) :*: t2
+accumulatePowers t1 t2 = if t1 == t2 then t1 :**: 2 else t1 :*: t2
 
-exponentFromType :: Type -> Integer
-exponentFromType (t :**: i) = i
-exponentFromType _ = 0
+flattenTensorProd :: Type -> [Type]
+flattenTensorProd (t1 :*: t2) = flattenTensorProd t1 ++ flattenTensorProd t2
+flattenTensorProd (t :**: 1) = flattenTensorProd t
+flattenTensorProd (t :**: i) = flattenTensorProd t ++ flattenTensorProd (t :**: (i -1))
+flattenTensorProd t = [t]
 
 mapVariable :: GeneratedAbstractSyntax.Var -> Var
 mapVariable (GeneratedAbstractSyntax.Var ((l, c), var)) = Var ((l, c), var)
