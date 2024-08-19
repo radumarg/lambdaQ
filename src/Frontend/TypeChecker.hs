@@ -114,7 +114,7 @@ isSubtype (t1 :**: n1) (t2 :**: n2) = n1 == n2 && isSubtype t1 t2
 isSubtype t1 t2 = t1 == t2
 
 inferType :: [Type] -> Term -> (Int, Int, String) -> Check Type
-inferType _ (TermNew _) _  = return $ TypeNonLinear (TypeBit :->: TypeQbit)
+inferType _ (TermNew _) _  = return $ TypeNonLinear (TypeBasisState :->: TypeQbit)
 inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLinear TypeBit)
 inferType _ (TermReset _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
 inferType _ (TermId _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
@@ -123,13 +123,22 @@ inferType _ (TermId _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
+inferType _ (TermBasisState _) _ = return TypeBasisState
+
+inferType context (TermApply termLeft termRight) (line, col, fname) = do
+    leftTermType <- inferType context termLeft (line, col, fname)
+    rightTermType <- inferType context termRight (line, col, fname)
+    case removeBangs leftTermType of
+        (argsType :->: returnsType)
+            | isSubtype rightTermType argsType -> return returnsType
+            | otherwise -> Control.Monad.Except.throwError $ TypeMismatch argsType rightTermType (line, col, fname)
+        _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType _ _ _ = undefined
 
 inferGateType :: Gate -> Type
 inferGateType gate
-    | qubits > 2 = TypeQbit :**: qubits
-    | qubits == 2 = TypeQbit :*: TypeQbit
+    | qubits >= 2 = TypeQbit :**: qubits
     | otherwise = TypeQbit
     where
         qubits = case gate of
@@ -148,3 +157,7 @@ inferGateType gate
           GateSwpRtDagInt _ -> 2
           GateSwpRtDagVar _ -> 2
           _ -> 1
+
+removeBangs :: Type -> Type
+removeBangs (TypeNonLinear t) = removeBangs t
+removeBangs t = t

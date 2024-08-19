@@ -24,11 +24,15 @@ Integer literals //Integer// are nonempty sequences of digits.
 
 
 
+
 GateVar literals are recognized by the regular expression
 `````upper ('_' | digit | upper)*`````
 
 Var literals are recognized by the regular expression
 `````('_' | lower) (["'_"] | digit | letter)*`````
+
+Bit literals are recognized by the regular expression
+`````{"0b"} ["01"]`````
 
 Lambda literals are recognized by the regular expression
 `````'\'`````
@@ -38,19 +42,20 @@ Lambda literals are recognized by the regular expression
 The set of reserved words is the set of terminals appearing in the grammar. Those reserved words that consist of non-letter characters are called symbols, and they are treated in a different way from those that are similar to identifiers. The lexer follows rules familiar from languages like Haskell, C, and Java, including longest match and spacing conventions.
 
 The reserved words used in LambdaQ are the following:
-  | ``Bit`` | ``Bool`` | ``FSWAP`` | ``False``
-  | ``H`` | ``ID`` | ``ISWAP`` | ``Int``
-  | ``QFT`` | ``QFT_DAG`` | ``Qbit`` | ``ROOT_SWAP``
-  | ``ROOT_SWAP_DAG`` | ``ROOT_X`` | ``ROOT_X_DAG`` | ``ROOT_Y``
-  | ``ROOT_Y_DAG`` | ``ROOT_Z`` | ``ROOT_Z_DAG`` | ``RX``
-  | ``RY`` | ``RZ`` | ``S`` | ``SQRT_SWAP``
-  | ``SQRT_SWAP_DAG`` | ``SQRT_X`` | ``SQRT_X_DAG`` | ``SQRT_Y``
-  | ``SQRT_Y_DAG`` | ``SWAP`` | ``SWAP_THETA`` | ``S_DAG``
-  | ``T`` | ``T_DAG`` | ``True`` | ``U1``
-  | ``U2`` | ``U3`` | ``X`` | ``Y``
-  | ``Z`` | ``case`` | ``ctrl`` | ``else``
-  | ``gate`` | ``if`` | ``in`` | ``let``
-  | ``not`` | ``of`` | ``then`` | ``with``
+  | ``BasisState`` | ``Bit`` | ``Bool`` | ``FSWAP``
+  | ``False`` | ``H`` | ``ID`` | ``ISWAP``
+  | ``Int`` | ``QFT`` | ``QFT_DAG`` | ``Qbit``
+  | ``ROOT_SWAP`` | ``ROOT_SWAP_DAG`` | ``ROOT_X`` | ``ROOT_X_DAG``
+  | ``ROOT_Y`` | ``ROOT_Y_DAG`` | ``ROOT_Z`` | ``ROOT_Z_DAG``
+  | ``RX`` | ``RY`` | ``RZ`` | ``S``
+  | ``SQRT_SWAP`` | ``SQRT_SWAP_DAG`` | ``SQRT_X`` | ``SQRT_X_DAG``
+  | ``SQRT_Y`` | ``SQRT_Y_DAG`` | ``SWAP`` | ``SWAP_THETA``
+  | ``S_DAG`` | ``T`` | ``T_DAG`` | ``True``
+  | ``U1`` | ``U2`` | ``U3`` | ``X``
+  | ``Y`` | ``Z`` | ``case`` | ``ctrl``
+  | ``else`` | ``gate`` | ``if`` | ``in``
+  | ``let`` | ``not`` | ``of`` | ``then``
+  | ``with`` |  |  |
 
 The symbols used in LambdaQ are the following:
   | - | + | * | /
@@ -112,6 +117,7 @@ All other symbols are terminals.
   |  |  **|**  | ``Bit``
   |  |  **|**  | ``Int``
   |  |  **|**  | ``Qbit``
+  |  |  **|**  | ``BasisState``
   |  |  **|**  | ``()``
   |  |  **|**  | ``[`` //Type// ``]``
   |  |  **|**  | ``(`` //Type// ``)``
@@ -177,12 +183,14 @@ All other symbols are terminals.
   |  |  **|**  | //GateVar//
   | //[Var]// | -> | //Var//
   |  |  **|**  | //Var// ``,`` //[Var]//
+  | //[Bit]// | -> | //Bit//
+  |  |  **|**  | //Bit// ``,`` //[Bit]//
   | //ControlBasisState// | -> | ``[`` //BasisState// ``]``
   | //ControlBasisStates// | -> | ``[`` //BasisState// ``,`` //[BasisState]// ``]``
   | //[BasisState]// | -> | //BasisState//
   |  |  **|**  | //BasisState// ``,`` //[BasisState]//
-  | //ControlBit// | -> | ``[`` //Integer// ``]``
-  | //ControlBits// | -> | ``[`` //Integer// ``,`` //[Integer]// ``]``
+  | //ControlBit// | -> | ``[`` //Bit// ``]``
+  | //ControlBits// | -> | ``[`` //Bit// ``,`` //[Bit]// ``]``
   | //[Integer]// | -> | //Integer//
   |  |  **|**  | //Integer// ``,`` //[Integer]//
   | //ControlTerm// | -> | ``[`` //Term// ``]``
@@ -194,6 +202,7 @@ All other symbols are terminals.
   | //Term4// | -> | //List// ``!!`` //Integer//
   |  |  **|**  | ``(`` //Term// ``)``
   | //Term3// | -> | ``()``
+  |  |  **|**  | //Bit//
   |  |  **|**  | //BasisState//
   |  |  **|**  | //BoolExpression//
   |  |  **|**  | //IntegerExpression//

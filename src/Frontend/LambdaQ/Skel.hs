@@ -23,6 +23,10 @@ transVar :: Frontend.LambdaQ.Abs.Var -> Result
 transVar x = case x of
   Frontend.LambdaQ.Abs.Var string -> failure x
 
+transBit :: Frontend.LambdaQ.Abs.Bit -> Result
+transBit x = case x of
+  Frontend.LambdaQ.Abs.Bit string -> failure x
+
 transLambda :: Frontend.LambdaQ.Abs.Lambda -> Result
 transLambda x = case x of
   Frontend.LambdaQ.Abs.Lambda string -> failure x
@@ -70,6 +74,7 @@ transType x = case x of
   Frontend.LambdaQ.Abs.TypeBit -> failure x
   Frontend.LambdaQ.Abs.TypeInteger -> failure x
   Frontend.LambdaQ.Abs.TypeQbit -> failure x
+  Frontend.LambdaQ.Abs.TypeState -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
   Frontend.LambdaQ.Abs.TypeList type_ -> failure x
 
@@ -150,11 +155,11 @@ transControlBasisStates x = case x of
 
 transControlBit :: Frontend.LambdaQ.Abs.ControlBit -> Result
 transControlBit x = case x of
-  Frontend.LambdaQ.Abs.CtrlBit integer -> failure x
+  Frontend.LambdaQ.Abs.CtrlBit bit -> failure x
 
 transControlBits :: Frontend.LambdaQ.Abs.ControlBits -> Result
 transControlBits x = case x of
-  Frontend.LambdaQ.Abs.CtrlBits integer integers -> failure x
+  Frontend.LambdaQ.Abs.CtrlBits bit bits -> failure x
 
 transControlTerm :: Frontend.LambdaQ.Abs.ControlTerm -> Result
 transControlTerm x = case x of
@@ -176,6 +181,7 @@ transTerm :: Frontend.LambdaQ.Abs.Term -> Result
 transTerm x = case x of
   Frontend.LambdaQ.Abs.TermListElement list integer -> failure x
   Frontend.LambdaQ.Abs.TermUnit -> failure x
+  Frontend.LambdaQ.Abs.TermBit bit -> failure x
   Frontend.LambdaQ.Abs.TermBasisState basisstate -> failure x
   Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> failure x
   Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> failure x

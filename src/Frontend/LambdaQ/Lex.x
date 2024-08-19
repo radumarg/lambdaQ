@@ -53,6 +53,10 @@ $c (\_ | ($d | $c)) *
 (\_ | $s)([\' \_]| ($d | $l)) *
     { tok (eitherResIdent T_Var) }
 
+-- token Bit
+0 b [0 1]
+    { tok (eitherResIdent T_Bit) }
+
 -- token Lambda
 \\
     { tok (eitherResIdent T_Lambda) }
@@ -84,6 +88,7 @@ data Tok
   | TC !String                    -- ^ Character literal.
   | T_GateVar !String
   | T_Var !String
+  | T_Bit !String
   | T_Lambda !String
   deriving (Eq, Show, Ord)
 
@@ -149,6 +154,7 @@ tokenText t = case t of
   Err _         -> "#error"
   PT _ (T_GateVar s) -> s
   PT _ (T_Var s) -> s
+  PT _ (T_Bit s) -> s
   PT _ (T_Lambda s) -> s
 
 -- | Convert a token to a string.
@@ -176,7 +182,7 @@ eitherResIdent tv s = treeFind resWords
 -- | The keywords and symbols of the language organized as binary search tree.
 resWords :: BTree
 resWords =
-  b "ROOT_X" 47
+  b "ROOT_SWAP_DAG" 47
     (b "=" 24
        (b "," 12
           (b "()" 6
@@ -187,40 +193,42 @@ resWords =
                 (b "->" 14 (b "-" 13 N N) N) (b "/=" 17 (b "/" 16 N N) N))
              (b "<" 21
                 (b ";" 20 (b "::" 19 N N) N) (b "<=" 23 (b "<-" 22 N N) N))))
-       (b "FSWAP" 36
+       (b "Bool" 36
           (b "@-" 30
              (b ">=" 27
                 (b ">" 26 (b "==" 25 N N) N) (b "@+i" 29 (b "@+" 28 N N) N))
              (b "@1" 33
-                (b "@0" 32 (b "@-i" 31 N N) N) (b "Bool" 35 (b "Bit" 34 N N) N)))
-          (b "QFT" 42
-             (b "ID" 39
-                (b "H" 38 (b "False" 37 N N) N) (b "Int" 41 (b "ISWAP" 40 N N) N))
-             (b "ROOT_SWAP" 45
-                (b "Qbit" 44 (b "QFT_DAG" 43 N N) N) (b "ROOT_SWAP_DAG" 46 N N)))))
-    (b "U2" 70
-       (b "SQRT_X" 59
-          (b "RX" 53
-             (b "ROOT_Y_DAG" 50
-                (b "ROOT_Y" 49 (b "ROOT_X_DAG" 48 N N) N)
-                (b "ROOT_Z_DAG" 52 (b "ROOT_Z" 51 N N) N))
-             (b "S" 56
-                (b "RZ" 55 (b "RY" 54 N N) N)
-                (b "SQRT_SWAP_DAG" 58 (b "SQRT_SWAP" 57 N N) N)))
-          (b "S_DAG" 65
-             (b "SQRT_Y_DAG" 62
-                (b "SQRT_Y" 61 (b "SQRT_X_DAG" 60 N N) N)
-                (b "SWAP_THETA" 64 (b "SWAP" 63 N N) N))
-             (b "True" 68 (b "T_DAG" 67 (b "T" 66 N N) N) (b "U1" 69 N N))))
-       (b "if" 82
-          (b "[]" 76
-             (b "Y" 73 (b "X" 72 (b "U3" 71 N N) N) (b "[" 75 (b "Z" 74 N N) N))
-             (b "ctrl" 79
-                (b "case" 78 (b "]" 77 N N) N) (b "gate" 81 (b "else" 80 N N) N)))
-          (b "with" 88
-             (b "not" 85
-                (b "let" 84 (b "in" 83 N N) N) (b "then" 87 (b "of" 86 N N) N))
-             (b "||" 91 (b "|" 90 (b "{" 89 N N) N) (b "}" 92 N N)))))
+                (b "@0" 32 (b "@-i" 31 N N) N)
+                (b "Bit" 35 (b "BasisState" 34 N N) N)))
+          (b "Int" 42
+             (b "H" 39
+                (b "False" 38 (b "FSWAP" 37 N N) N)
+                (b "ISWAP" 41 (b "ID" 40 N N) N))
+             (b "Qbit" 45
+                (b "QFT_DAG" 44 (b "QFT" 43 N N) N) (b "ROOT_SWAP" 46 N N)))))
+    (b "U2" 71
+       (b "SQRT_SWAP_DAG" 59
+          (b "ROOT_Z_DAG" 53
+             (b "ROOT_Y" 50
+                (b "ROOT_X_DAG" 49 (b "ROOT_X" 48 N N) N)
+                (b "ROOT_Z" 52 (b "ROOT_Y_DAG" 51 N N) N))
+             (b "RZ" 56
+                (b "RY" 55 (b "RX" 54 N N) N) (b "SQRT_SWAP" 58 (b "S" 57 N N) N)))
+          (b "SWAP_THETA" 65
+             (b "SQRT_Y" 62
+                (b "SQRT_X_DAG" 61 (b "SQRT_X" 60 N N) N)
+                (b "SWAP" 64 (b "SQRT_Y_DAG" 63 N N) N))
+             (b "T_DAG" 68
+                (b "T" 67 (b "S_DAG" 66 N N) N) (b "U1" 70 (b "True" 69 N N) N))))
+       (b "if" 83
+          (b "[]" 77
+             (b "Y" 74 (b "X" 73 (b "U3" 72 N N) N) (b "[" 76 (b "Z" 75 N N) N))
+             (b "ctrl" 80
+                (b "case" 79 (b "]" 78 N N) N) (b "gate" 82 (b "else" 81 N N) N)))
+          (b "with" 89
+             (b "not" 86
+                (b "let" 85 (b "in" 84 N N) N) (b "then" 88 (b "of" 87 N N) N))
+             (b "||" 92 (b "|" 91 (b "{" 90 N N) N) (b "}" 93 N N)))))
   where
   b s n = B bs (TS bs n)
     where

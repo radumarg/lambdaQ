@@ -28,16 +28,16 @@ data LayoutDelimiters
 
 layoutWords :: [(TokSymbol, LayoutDelimiters)]
 layoutWords =
-  [ ( TokSymbol "let" 84
-    , LayoutDelimiters (TokSymbol ";" 20) (Just (TokSymbol "{" 89)) (Just (TokSymbol "}" 92))
+  [ ( TokSymbol "let" 85
+    , LayoutDelimiters (TokSymbol ";" 20) (Just (TokSymbol "{" 90)) (Just (TokSymbol "}" 93))
     )
-  , ( TokSymbol "of" 86
-    , LayoutDelimiters (TokSymbol ";" 20) (Just (TokSymbol "{" 89)) (Just (TokSymbol "}" 92))
+  , ( TokSymbol "of" 87
+    , LayoutDelimiters (TokSymbol ";" 20) (Just (TokSymbol "{" 90)) (Just (TokSymbol "}" 93))
     )
   ]
 
 layoutStopWords :: [TokSymbol]
-layoutStopWords = [TokSymbol "in" 83]
+layoutStopWords = [TokSymbol "in" 84]
 
 -- layout separators
 
@@ -49,11 +49,11 @@ layoutSep   = List.nub $ TokSymbol ";" 20 : map (delimSep . snd) layoutWords
 parenOpen, parenClose :: [TokSymbol]
 parenOpen  =
   [ TokSymbol "(" 5
-  , TokSymbol "[" 75
+  , TokSymbol "[" 76
   ]
 parenClose =
   [ TokSymbol ")" 7
-  , TokSymbol "]" 77
+  , TokSymbol "]" 78
   ]
 
 -- | Report an error during layout resolution.

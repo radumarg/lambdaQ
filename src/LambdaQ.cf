@@ -49,6 +49,7 @@ TypeBool       . Type5  ::= "Bool" ;
 TypeBit        . Type5  ::= "Bit" ;
 TypeInteger    . Type5  ::= "Int" ;
 TypeQbit       . Type5  ::= "Qbit" ;
+TypeState      . Type5  ::= "BasisState" ;
 TypeUnit       . Type5  ::= "()" ;
 TypeList       . Type5  ::= "[" Type "]" ; 
 coercions Type 5 ;
@@ -123,13 +124,16 @@ GateUnknownSimple  . Gate ::= GateVar ;                                    -- Un
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 separator nonempty Var "," ;
 
+token Bit (('0') ('b') ('0' | '1')) ;
+separator nonempty Bit "," ;
+
 -- Declaring Control states --
 CtrlBasisState . ControlBasisState ::= "[" BasisState  "]" ;
 CtrlBasisStates . ControlBasisStates ::= "[" BasisState "," [BasisState] "]" ;
 separator nonempty BasisState "," ;
 
-CtrlBit . ControlBit   ::= "[" Integer "]" ;
-CtrlBits . ControlBits ::= "[" Integer "," [Integer] "]" ;
+CtrlBit . ControlBit   ::= "[" Bit "]" ;
+CtrlBits . ControlBits ::= "[" Bit "," [Bit] "]" ;
 separator nonempty Integer "," ;
 
 -- Lambda token --
@@ -145,6 +149,7 @@ separator nonempty Term "," ;
 -- Terms --
 TermListElement           . Term4 ::= List "!!" Integer ;
 TermUnit                  . Term3 ::= "()" ;
+TermBit                   . Term3 ::= Bit ;
 TermBasisState            . Term3 ::= BasisState ;
 TermBoolExpression        . Term3 ::= BoolExpression ;
 TermIntegerExpression     . Term3 ::= IntegerExpression ;

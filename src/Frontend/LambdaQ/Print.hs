@@ -141,6 +141,8 @@ instance Print Frontend.LambdaQ.Abs.GateVar where
   prt _ (Frontend.LambdaQ.Abs.GateVar (_,i)) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Var where
   prt _ (Frontend.LambdaQ.Abs.Var (_,i)) = doc $ showString i
+instance Print Frontend.LambdaQ.Abs.Bit where
+  prt _ (Frontend.LambdaQ.Abs.Bit i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Lambda where
   prt _ (Frontend.LambdaQ.Abs.Lambda i) = doc $ showString i
 instance Print Frontend.LambdaQ.Abs.Program where
@@ -186,6 +188,7 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
+    Frontend.LambdaQ.Abs.TypeState -> prPrec i 5 (concatD [doc (showString "BasisState")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TypeList type_ -> prPrec i 5 (concatD [doc (showString "["), prt 0 type_, doc (showString "]")])
 
@@ -261,6 +264,11 @@ instance Print [Frontend.LambdaQ.Abs.Var] where
   prt _ [x] = concatD [prt 0 x]
   prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
 
+instance Print [Frontend.LambdaQ.Abs.Bit] where
+  prt _ [] = concatD []
+  prt _ [x] = concatD [prt 0 x]
+  prt _ (x:xs) = concatD [prt 0 x, doc (showString ","), prt 0 xs]
+
 instance Print Frontend.LambdaQ.Abs.ControlBasisState where
   prt i = \case
     Frontend.LambdaQ.Abs.CtrlBasisState basisstate -> prPrec i 0 (concatD [doc (showString "["), prt 0 basisstate, doc (showString "]")])
@@ -276,11 +284,11 @@ instance Print [Frontend.LambdaQ.Abs.BasisState] where
 
 instance Print Frontend.LambdaQ.Abs.ControlBit where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlBit n -> prPrec i 0 (concatD [doc (showString "["), prt 0 n, doc (showString "]")])
+    Frontend.LambdaQ.Abs.CtrlBit bit -> prPrec i 0 (concatD [doc (showString "["), prt 0 bit, doc (showString "]")])
 
 instance Print Frontend.LambdaQ.Abs.ControlBits where
   prt i = \case
-    Frontend.LambdaQ.Abs.CtrlBits n ns -> prPrec i 0 (concatD [doc (showString "["), prt 0 n, doc (showString ","), prt 0 ns, doc (showString "]")])
+    Frontend.LambdaQ.Abs.CtrlBits bit bits -> prPrec i 0 (concatD [doc (showString "["), prt 0 bit, doc (showString ","), prt 0 bits, doc (showString "]")])
 
 instance Print [Integer] where
   prt _ [] = concatD []
@@ -312,6 +320,7 @@ instance Print Frontend.LambdaQ.Abs.Term where
   prt i = \case
     Frontend.LambdaQ.Abs.TermListElement list n -> prPrec i 4 (concatD [prt 0 list, doc (showString "!!"), prt 0 n])
     Frontend.LambdaQ.Abs.TermUnit -> prPrec i 3 (concatD [doc (showString "()")])
+    Frontend.LambdaQ.Abs.TermBit bit -> prPrec i 3 (concatD [prt 0 bit])
     Frontend.LambdaQ.Abs.TermBasisState basisstate -> prPrec i 3 (concatD [prt 0 basisstate])
     Frontend.LambdaQ.Abs.TermBoolExpression boolexpression -> prPrec i 3 (concatD [prt 0 boolexpression])
     Frontend.LambdaQ.Abs.TermIntegerExpression integerexpression -> prPrec i 3 (concatD [prt 0 integerexpression])

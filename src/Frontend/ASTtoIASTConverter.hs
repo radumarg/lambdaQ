@@ -26,6 +26,7 @@ import qualified Data.Map
 data Type =
    TypeBit             |
    TypeQbit            |
+   TypeBasisState    |
    TypeBool            |
    TypeInteger         |
    TypeUnit            |
@@ -151,6 +152,8 @@ data Gate =
   deriving (Eq, Ord, Read, Show)
 
 data Term =
+    TermUnit                                      |
+    TermBit Bit                                   |
     TermBoundVariable Integer                     |
     TermFreeVariable String                       |
     TermList List                                 |
@@ -176,9 +179,7 @@ data Term =
     TermId (Int, Int)                             |
     TermBasisState BasisState                     |
     TermTuple Term [Term]                         |
-    TermBit Bit                                   |
-    TermTensorProduct Term Term                   |
-    TermUnit
+    TermTensorProduct Term Term
   deriving (Eq, Ord, Read, Show)
 
 data CaseExpression = CaseExpr Term Term
@@ -221,6 +222,7 @@ mapType t = case t of
     GeneratedAbstractSyntax.TypeInteger       -> TypeInteger
     GeneratedAbstractSyntax.TypeBit           -> TypeBit
     GeneratedAbstractSyntax.TypeQbit          -> TypeQbit
+    GeneratedAbstractSyntax.TypeState         -> TypeBasisState
     GeneratedAbstractSyntax.TypeUnit          -> TypeUnit
     GeneratedAbstractSyntax.TypeNonLinear t'  -> TypeNonLinear (mapAndSimplify t')
     GeneratedAbstractSyntax.TypeFunction l r  -> mapAndSimplify l :->: mapAndSimplify r
@@ -262,10 +264,8 @@ mapBasisState GeneratedAbstractSyntax.BasisStateMinusI = BasisStateMinusI
 mapAngle :: GeneratedAbstractSyntax.Angle -> Angle
 mapAngle (GeneratedAbstractSyntax.AngleValue value) = Angle value
 
-mapControlBit :: Integer -> Bit
-mapControlBit 0 = BitZero
-mapControlBit 1 = BitOne
-mapControlBit _ = undefined
+mapControlBit :: GeneratedAbstractSyntax.Bit -> Bit
+mapControlBit (GeneratedAbstractSyntax.Bit bit) = if bit == "0b0" then BitZero else BitOne
 
 mapBoolValue :: GeneratedAbstractSyntax.BoolValue -> BoolValue
 mapBoolValue GeneratedAbstractSyntax.BoolValueTrue = BoolValueTrue
@@ -399,7 +399,7 @@ toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (Generate
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction _ _) [] fbody = fbody
 
-toLambdaAbstraction _ _ _ = undefined
+toLambdaAbstraction _ _ fbody = fbody -- TODO: revisit
 
 -- mapping terms --
 
@@ -432,6 +432,7 @@ mapTerm env (GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons 
 
 mapTerm env (GeneratedAbstractSyntax.TermListElement l index) = TermListElement (mapList env l) index
 
+mapTerm _ (GeneratedAbstractSyntax.TermBit (GeneratedAbstractSyntax.Bit bit)) = if bit == "0b0" then TermBit BitZero else TermBit BitOne
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
 mapTerm _ (GeneratedAbstractSyntax.TermBoolExpression be) = TermBoolExpression (mapBoolExpression be)

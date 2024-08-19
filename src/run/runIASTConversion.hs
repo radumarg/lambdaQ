@@ -2,11 +2,8 @@
 
 import System.Environment ( getArgs )  
 import Control.Monad.Except ( runExceptT)
-import Frontend.ASTtoIASTConverter (Program, mapProgram)
+import Frontend.ASTtoIASTConverter (Program)
 import CompilationEngine (Exec, readFileContents, parseProgram, semanticAnalysis, convertAstToIast)
-import Frontend.LambdaQ.Print ( printTree )
-
-import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
 
 runIASTConversion :: FilePath -> Exec Program
 runIASTConversion filePath = readFileContents filePath
@@ -26,7 +23,7 @@ main = do
         let filePath = head args
         runExceptT (runIASTConversion filePath) >>= \case
           Left err -> putStrLn $ "Error: " ++ show err ++ "!"
-          Right program -> putStrLn "hei" -- $ printTree reverseMapProgram program
+          Right program -> print program
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
   where

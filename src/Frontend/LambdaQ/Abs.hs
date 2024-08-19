@@ -53,6 +53,7 @@ data Type
     | TypeBit
     | TypeInteger
     | TypeQbit
+    | TypeState
     | TypeUnit
     | TypeList Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
@@ -129,10 +130,10 @@ data ControlBasisState = CtrlBasisState BasisState
 data ControlBasisStates = CtrlBasisStates BasisState [BasisState]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBit = CtrlBit Integer
+data ControlBit = CtrlBit Bit
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
-data ControlBits = CtrlBits Integer [Integer]
+data ControlBits = CtrlBits Bit [Bit]
   deriving (C.Eq, C.Ord, C.Show, C.Read)
 
 data ControlTerm = CtrlTerm Term
@@ -150,6 +151,7 @@ data ControlVars = CtrlVars Var [Var]
 data Term
     = TermListElement List Integer
     | TermUnit
+    | TermBit Bit
     | TermBasisState BasisState
     | TermBoolExpression BoolExpression
     | TermIntegerExpression IntegerExpression
@@ -204,6 +206,9 @@ newtype GateVar = GateVar ((C.Int, C.Int), String)
 
 newtype Var = Var ((C.Int, C.Int), String)
   deriving (C.Eq, C.Ord, C.Show, C.Read)
+
+newtype Bit = Bit String
+  deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)
 
 newtype Lambda = Lambda String
   deriving (C.Eq, C.Ord, C.Show, C.Read, Data.String.IsString)

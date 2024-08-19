@@ -18,8 +18,7 @@ data SemanticError =
     NoCtrlQubitsDifferentFromCtrlTerms String           |  -- number of control qubits different from control terms for quantum controlled gates
     NoCtrlQubitsDifferentFromCtrlBits String            |  -- number of control qubits different from control bits for classically controlles gates
     UnknownGate String                                  |  -- gate names should be recognized as belonging to the set of supported gates
-    CaseTermsNotDistinct String                         |  -- case terms should be distinct
-    InvalidClassicControlBits String                       -- bits for classicaly controlled gates must either 0 or 1
+    CaseTermsNotDistinct String
 
 
 instance Show SemanticError where
@@ -37,8 +36,6 @@ instance Show SemanticError where
       = "Detected gate(s) which are not supported " ++ err
     show (CaseTermsNotDistinct err) 
       = "Some case terms are duplicated " ++ err
-    show (InvalidClassicControlBits err) 
-      = "Some bits for classically controlled gates are neither 0 or 1 " ++ err
 
 
 runSemanticAnalyser :: GeneratedAbstractSyntax.Program -> Either String GeneratedAbstractSyntax.Program
@@ -50,11 +47,10 @@ runSemanticAnalyser (GeneratedAbstractSyntax.ProgDef functions) =
     err3 = toString $ functionsHaveCorrectNumberOfArguments functions
     err4 = toString $ gateNamesAreValid functions
     err5 = toString $ caseTermsAreDistinct functions
-    err6 = toString $ classicCtrlGatesBitsAreValid functions
-    err7 = toString $ noCtrlQubitsMatchNoCtrTermsQuantumCtrlGates functions
-    err8 = toString $ noCtrlQubitsMatchNoCtrTermsClassicCtrlGates functions
+    err6 = toString $ noCtrlQubitsMatchNoCtrTermsQuantumCtrlGates functions
+    err7 = toString $ noCtrlQubitsMatchNoCtrTermsClassicCtrlGates functions
     
-    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7 ++ err8
+    err = err1 ++ err2 ++ err3 ++ err4 ++ err5 ++ err6 ++ err7
     toString::Either String () -> String
     toString (Left str) = str
     toString (Right ()) = ""
@@ -84,12 +80,6 @@ gateNamesAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either Str
 gateNamesAreValid functions = if null allErrors then Right () else Left allErrors
   where
     allErrors = unlines $ verifyGatesNames functions []
-
-
-classicCtrlGatesBitsAreValid :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
-classicCtrlGatesBitsAreValid functions = if null allErrors then Right () else Left allErrors
-  where
-    allErrors = unlines $ verifyBitValues functions []
 
 
 caseTermsAreDistinct :: [GeneratedAbstractSyntax.FunctionDeclaration] -> Either String ()
@@ -147,7 +137,7 @@ verifyNumberOfFunctionArguments (fun:funs)  errorMessages =
       noFunctionArgs = getNoFunctionArgs funDef
       maxTypeArgs = getMaxArgs funType
       newErrorMessage = "  " ++ show (TooManyFunctionArguments innerErrorMessage)
-      innerErrorMessage = funInfo ++ ", the function has " ++ show noFunctionArgs ++ " arguments but expects as most " ++ show maxTypeArgs
+      innerErrorMessage = funInfo ++ ", the function has " ++ show noFunctionArgs ++ " arguments but expects at most " ++ show maxTypeArgs
       funInfo = getFunctionNameAndPosition fun
       (GeneratedAbstractSyntax.FunDecl (GeneratedAbstractSyntax.FunType _ funType) funDef) = fun
       getNoFunctionArgs :: GeneratedAbstractSyntax.FunctionDefinition -> Int
@@ -160,6 +150,7 @@ verifyNumberOfFunctionArguments (fun:funs)  errorMessages =
       getNumberOfTypes (GeneratedAbstractSyntax.TypeExp t i) = getNumberOfTypes t * i
       getNumberOfTypes (GeneratedAbstractSyntax.TypeNonLinear t) = getNumberOfTypes t
       getNumberOfTypes (GeneratedAbstractSyntax.TypeList _) = 1
+      getNumberOfTypes GeneratedAbstractSyntax.TypeState = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeBool = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeBit = 1
       getNumberOfTypes GeneratedAbstractSyntax.TypeInteger = 1
@@ -178,20 +169,6 @@ verifyGatesNames (fun:funs)  errorMessages =
     where
       unknownGates = getUnknownGates fun
       newErrorMessage = "  " ++ show (UnknownGate funInfo) ++ " for gate(s) named: " ++ intercalate ", " unknownGates
-      funInfo = getFunctionNameAndPosition fun
-
-
-verifyBitValues :: [GeneratedAbstractSyntax.FunctionDeclaration] -> [String] -> [String]
-verifyBitValues [] errorMessages = reverse errorMessages
-verifyBitValues (fun:funs)  errorMessages =
-  if null invalidBitTerms
-    then
-      verifyBitValues funs errorMessages
-    else
-      verifyBitValues funs (newErrorMessage : errorMessages)
-    where
-      invalidBitTerms = extractInvalidBitTerms fun
-      newErrorMessage = "  " ++ funInfo ++ ", the following control bit term(s) are different from 0 or 1: " ++ intercalate " and " invalidBitTerms
       funInfo = getFunctionNameAndPosition fun
 
 
@@ -277,55 +254,6 @@ getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbo
     collectUnknowns _ = []
 
 
-extractInvalidBitTerms :: GeneratedAbstractSyntax.FunctionDeclaration -> [String]
-extractInvalidBitTerms (GeneratedAbstractSyntax.FunDecl _ funDef) = collectInvalidBitTerms fbody
-  where
-    (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
-    collectInvalidBitTerms :: GeneratedAbstractSyntax.Term -> [String]
-    collectInvalidBitTerms term = case term of
-        GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) (GeneratedAbstractSyntax.CtrlBit b)
-            | b /= 0 && b /= 1 -> PP.showTerm term : collectInvalidBitTerms t
-            | otherwise -> collectInvalidBitTerms t
-        GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBits b bs)
-            | b /= 0 && b /= 1 || any (\x -> x /= 0 && x /= 1) bs -> [PP.showTerm term] ++ collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
-            | otherwise -> collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
-        GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _  _) (GeneratedAbstractSyntax.CtrlBits b bs)
-            | b /= 0 && b /= 1 || any (\x -> x /= 0 && x /= 1) bs -> [PP.showTerm term]
-            | otherwise -> []
-        GeneratedAbstractSyntax.TermListElement l _ -> collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l)
-        GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil -> []
-        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle t) -> collectInvalidBitTerms t
-        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListMultiple t ts) ->
-            collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
-        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListExpressionAdd l1 l2) ->
-            collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l1) ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l2)
-        GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListCons t l) ->
-            collectInvalidBitTerms t ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermList l)
-        GeneratedAbstractSyntax.TermTuple t ts -> collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
-        GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectInvalidBitTerms t
-        GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) _ ->
-            collectInvalidBitTerms t ++ concatMap collectInvalidBitTerms ts
-        GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ _) _ -> []
-        GeneratedAbstractSyntax.TermApply t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermCompose t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermTensorProduct t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermIfElse t1 t2 t3 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2 ++ collectInvalidBitTerms t3
-        GeneratedAbstractSyntax.TermLetSingle _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermLetMultiple _ _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermLetSugarSingle _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermLetSugarMultiple _ _ t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermCase t [] -> collectInvalidBitTerms t
-        GeneratedAbstractSyntax.TermCase t1 (GeneratedAbstractSyntax.CaseExpr t2 t3 : caseExprs) ->
-            collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2 ++ collectInvalidBitTerms t3 ++ collectInvalidBitTerms (GeneratedAbstractSyntax.TermCase t1 caseExprs)
-        GeneratedAbstractSyntax.TermLambda _ _ _ t -> collectInvalidBitTerms t
-        GeneratedAbstractSyntax.TermDollar t1 t2 -> collectInvalidBitTerms t1 ++ collectInvalidBitTerms t2
-        GeneratedAbstractSyntax.TermGate _ -> []
-        GeneratedAbstractSyntax.TermUnit -> []
-        GeneratedAbstractSyntax.TermBasisState _ -> []
-        GeneratedAbstractSyntax.TermBoolExpression _ -> []
-        GeneratedAbstractSyntax.TermIntegerExpression _ -> []
-        GeneratedAbstractSyntax.TermVariable _ -> []
-
 
 extractNonCongruentCtrlTerms :: String -> GeneratedAbstractSyntax.FunctionDeclaration -> [String]
 extractNonCongruentCtrlTerms mode (GeneratedAbstractSyntax.FunDecl _ funDef) = collectNonCongruentTerms mode fbody
@@ -375,6 +303,7 @@ extractNonCongruentCtrlTerms mode (GeneratedAbstractSyntax.FunDecl _ funDef) = c
         GeneratedAbstractSyntax.TermGate _ -> []
         GeneratedAbstractSyntax.TermUnit -> []
         GeneratedAbstractSyntax.TermBasisState _ -> []
+        GeneratedAbstractSyntax.TermBit _ -> []
         GeneratedAbstractSyntax.TermBoolExpression _ -> []
         GeneratedAbstractSyntax.TermIntegerExpression _ -> []
         GeneratedAbstractSyntax.TermVariable _ -> []
