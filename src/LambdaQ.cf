@@ -49,7 +49,7 @@ TypeBool       . Type5  ::= "Bool" ;
 TypeBit        . Type5  ::= "Bit" ;
 TypeInteger    . Type5  ::= "Int" ;
 TypeQbit       . Type5  ::= "Qbit" ;
-TypeState      . Type5  ::= "BasisState" ;
+TypeBasisState . Type5  ::= "BasisState" ;
 TypeUnit       . Type5  ::= "()" ;
 TypeList       . Type5  ::= "[" Type "]" ; 
 coercions Type 5 ;

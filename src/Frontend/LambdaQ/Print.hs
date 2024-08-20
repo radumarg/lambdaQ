@@ -188,7 +188,7 @@ instance Print Frontend.LambdaQ.Abs.Type where
     Frontend.LambdaQ.Abs.TypeBit -> prPrec i 5 (concatD [doc (showString "Bit")])
     Frontend.LambdaQ.Abs.TypeInteger -> prPrec i 5 (concatD [doc (showString "Int")])
     Frontend.LambdaQ.Abs.TypeQbit -> prPrec i 5 (concatD [doc (showString "Qbit")])
-    Frontend.LambdaQ.Abs.TypeState -> prPrec i 5 (concatD [doc (showString "BasisState")])
+    Frontend.LambdaQ.Abs.TypeBasisState -> prPrec i 5 (concatD [doc (showString "BasisState")])
     Frontend.LambdaQ.Abs.TypeUnit -> prPrec i 5 (concatD [doc (showString "()")])
     Frontend.LambdaQ.Abs.TypeList type_ -> prPrec i 5 (concatD [doc (showString "["), prt 0 type_, doc (showString "]")])
 

@@ -1,6 +1,6 @@
 oracle ::  !(Qbit ** 8 -> Qbit ** 8)
 oracle' qubits = |q0, q1, q2, q3, q4, q5, q6, q7| <- qubits;
-                q0 <- with [ q0 ] ctrl [ 1 ] gate ID q0;
+                q0 <- with [ q0 ] ctrl [ 0b1 ] gate ID q0;
                 with [ q0, q1, q2, q3, q4, q5, q7 ] ctrl [ @1, @0, @1, @1, @1, @1, @1] gate H q3
 
 
@@ -11,7 +11,7 @@ oracle2 qubits = |q0, q1, q2| <- qubits;
 
 oracle3 :: Qbit ** 3 -> Qbit ** 3
 oracle3 qubits = |q0, q1, q2| <- qubits;
-                 q0 <-  with [ q1, q2 ] ctrl [ 1, 1 ] gate H q2;
+                 q0 <-  with [ q1, q2 ] ctrl [ 0b1, 0b1 ] gate H q2;
 		   q0
 
 oracle4 :: Qbit ** 3 -> Qbit ** 3

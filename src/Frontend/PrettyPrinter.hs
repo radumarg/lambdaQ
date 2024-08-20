@@ -40,6 +40,7 @@ showTerm (TermLetSugarMultiple v vs t1 t2) = "let " ++ showVar v ++ ", " ++ show
 showTerm (TermCase t ces) = "case " ++ showTerm t ++ " of " ++ showCaseExpressions ces
 showTerm (TermLambda (Lambda l) v typ t) = "\\" ++ l ++ " " ++ showVar v ++ " : " ++ showType typ ++ " -> " ++ showTerm t
 showTerm (TermDollar t1 t2) = showTerm t1 ++ " $ " ++ showTerm t2
+showTerm (TermBit (Bit b)) = b 
 
 -- Helper functions for other data types
 showTermList :: List -> String
@@ -177,6 +178,7 @@ showType TypeBool = "Bool"
 showType TypeBit = "Bit"
 showType TypeInteger = "Int"
 showType TypeQbit = "Qbit"
+showType TypeBasisState = "BasisState"
 showType TypeUnit = "Unit"
 showType (TypeFunction t1 t2) = showType t1 ++ " -> " ++ showType t2
 showType (TypeTensorProd t1 t2) = showType t1 ++ " ⊗ " ++ showType t2

@@ -992,7 +992,7 @@ happyReduction_45 happy_x_1
 happyReduce_46 = happySpecReduce_1  18# happyReduction_46
 happyReduction_46 happy_x_1
 	 =  happyIn22
-		 (Frontend.LambdaQ.Abs.TypeState
+		 (Frontend.LambdaQ.Abs.TypeBasisState
 	)
 
 happyReduce_47 = happySpecReduce_1  18# happyReduction_47

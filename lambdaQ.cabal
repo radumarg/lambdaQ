@@ -170,6 +170,7 @@ test-suite lambdaQ-test
       Frontend.ASTtoIASTConverterSpec
       Frontend.ParserSpec
       Frontend.SemanticAnalyserSpec
+      Frontend.TypeCheckerSpec
       Paths_lambdaQ
   hs-source-dirs:
       test

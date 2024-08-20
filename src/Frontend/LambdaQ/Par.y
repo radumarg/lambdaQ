@@ -219,7 +219,7 @@ Type5
   | 'Bit' { Frontend.LambdaQ.Abs.TypeBit }
   | 'Int' { Frontend.LambdaQ.Abs.TypeInteger }
   | 'Qbit' { Frontend.LambdaQ.Abs.TypeQbit }
-  | 'BasisState' { Frontend.LambdaQ.Abs.TypeState }
+  | 'BasisState' { Frontend.LambdaQ.Abs.TypeBasisState }
   | '()' { Frontend.LambdaQ.Abs.TypeUnit }
   | '[' Type ']' { Frontend.LambdaQ.Abs.TypeList $2 }
   | '(' Type ')' { $2 }

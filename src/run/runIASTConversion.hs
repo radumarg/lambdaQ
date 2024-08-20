@@ -23,7 +23,7 @@ main = do
         let filePath = head args
         runExceptT (runIASTConversion filePath) >>= \case
           Left err -> putStrLn $ "Error: " ++ show err ++ "!"
-          Right program -> print program
+          Right program -> mapM_ (\f -> print f >> putStrLn "") program
       else
         putStrLn "Please supply one argument: a path to a lambdaQ program file!"
   where

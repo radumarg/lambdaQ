@@ -1,2 +1,2 @@
 fun :: Qbit
-fun = let var = term in with [ t ] ctrl [ 0 ] gate H
+fun = let var = term in with [ t ] ctrl [ 0b0 ] gate H

@@ -42,29 +42,26 @@ data TypeError
 
 instance Show TypeError where
   show :: TypeError -> String
-  show (NotAFunction typ (line, _, fname)) = "The inferred type: '" ++ show typ ++  "' of the function named: " ++ fname ++ " defined at line: " 
-    ++ show line ++ " should be a function type but it is not"
+  show (NotAFunction typ (line, _, fname)) = "The inferred type: '" ++ show typ ++  "' of the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " should be a function type but it is not"
     
-  show (FunctionNotInScope var (line, _, fname)) = "The variable named " ++ var ++ " in the function named: " ++ fname ++ " defined at line: " 
-    ++ show line ++ " denotes a function which is not in scope."
+  show (FunctionNotInScope var (line, _, fname)) = "The variable named '" ++ var ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " 
+    ++ show line ++ " denotes a function which is not in scope"
 
-  show (TypeMismatch type1 type2 (line, _, fname)) = "The expected type '" ++ show type1 ++  "' of the function named: " ++ fname ++ " defined at line: " 
-    ++ show line ++ " cannot be matched with actual type: " ++ show type2 ++ "'."
+  show (TypeMismatch type1 type2 (line, _, fname)) = "The expected type '" ++ show type1 ++  "' of the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " cannot be matched with actual type: '" ++ show type2 ++ "'"
 
-  show (NotAProductType typ (line, _, fname)) = "The type '" ++ show typ ++ "' in the function named: " ++ fname ++ " defined at line: " 
-    ++ show line ++ " is not a product type."
+  show (NotAProductType typ (line, _, fname)) = "The type '" ++ show typ ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " 
+    ++ show line ++ " is not a product type"
 
-  show (DuplicatedLinearVariable var (line, _, fname)) = "The linear variable '" ++ var ++ "' in the function named: " ++ fname ++ " defined at line: " 
-    ++ show line ++ " is used more than once."
+  show (DuplicatedLinearVariable var (line, _, fname)) = "The linear variable '" ++ var ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " is used more than once"
 
-  show (NotALinearFunction fun (line, _, fname)) = "The function named: '" ++ show fun ++ "' which is used in the function named: " ++ fname 
-    ++ " defined at line: " ++ show line ++ " is used more than once despite being declared linear."
+  show (NotALinearFunction fun (line, _, fname)) = "The function named: '" ++ show fun ++ "' which is used in the top level function named: '" ++ fname 
+    ++ ". defined at line: " ++ show line ++ " is used more than once despite being declared linear"
 
   show (NotALinearTerm term typ (line, _, fname)) = "Term: '" ++ show term ++ "' having as type: " ++ show typ 
     ++ " which occurs in function " ++ fname ++ " defined at line: " ++ show line  ++ " is not linear"
 
   show (NoCommonSupertype type1 type2 (line, _, fname)) = "Could not find a common super-type for types '" 
-    ++ show type1 ++ " and '" ++ show type2 ++ "' expected by function " ++ fname ++ " defined at line: " ++ show line ++ "."
+    ++ show type1 ++ " and '" ++ show type2 ++ "' expected by top level function '" ++ fname ++ "' defined at line: " ++ show line ++ "."
 
 type LinearEnvironment = Data.Set.Set String
 type MainEnvironment = Data.Map.Map String Type
@@ -118,8 +115,8 @@ inferType _ (TermNew _) _  = return $ TypeNonLinear (TypeBasisState :->: TypeQbi
 inferType _ (TermMeasure _) _ = return $ TypeNonLinear (TypeQbit :->: TypeNonLinear TypeBit)
 inferType _ (TermReset _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
 inferType _ (TermId _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
---inferType _ (TermPower _) _  = return $ TypeNonLinear ()
---inferType _ (TermInverse _) _  = return $ TypeNonLinear ()
+inferType _ (TermPower _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
+inferType _ (TermInverse _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
@@ -134,18 +131,29 @@ inferType context (TermApply termLeft termRight) (line, col, fname) = do
             | otherwise -> Control.Monad.Except.throwError $ TypeMismatch argsType rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
+inferType _ (TermFreeVariable var) (line, col, fname) = do
+    mainEnv <- Control.Monad.Reader.ask
+    linearEnv <- Control.Monad.State.gets linearEnvironment
+    case Data.Map.lookup var mainEnv of
+        Nothing -> Control.Monad.Except.throwError $ FunctionNotInScope var (line, col, fname)
+        Just typ
+            | isLinear typ -> if Data.Set.member var linearEnv
+                                then Control.Monad.Except.throwError $ NotALinearFunction var (line, col, fname)
+                                else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert var linearEnv}) >> return typ
+            | otherwise -> return typ
+
 inferType _ _ _ = undefined
 
 inferGateType :: Gate -> Type
+inferGateType  (GateQftVar _) = TypeQbits
+inferGateType  (GateQftDagVar _) = TypeQbits
 inferGateType gate
     | qubits >= 2 = TypeQbit :**: qubits
     | otherwise = TypeQbit
     where
         qubits = case gate of
           GateQftInt nq -> nq
-          -- GateQftVar nq -> nq
           GateQftDagInt nq -> nq
-          -- GateQftDagVar nq -> nq
           GateSwp -> 2
           GateSqrtSwp -> 2
           GateSqrtSwpDag -> 2
@@ -157,6 +165,10 @@ inferGateType gate
           GateSwpRtDagInt _ -> 2
           GateSwpRtDagVar _ -> 2
           _ -> 1
+
+isLinear :: Type -> Bool
+isLinear (TypeNonLinear _) = False
+isLinear _  = True
 
 removeBangs :: Type -> Type
 removeBangs (TypeNonLinear t) = removeBangs t

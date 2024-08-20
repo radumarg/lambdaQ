@@ -74,7 +74,7 @@ transType x = case x of
   Frontend.LambdaQ.Abs.TypeBit -> failure x
   Frontend.LambdaQ.Abs.TypeInteger -> failure x
   Frontend.LambdaQ.Abs.TypeQbit -> failure x
-  Frontend.LambdaQ.Abs.TypeState -> failure x
+  Frontend.LambdaQ.Abs.TypeBasisState -> failure x
   Frontend.LambdaQ.Abs.TypeUnit -> failure x
   Frontend.LambdaQ.Abs.TypeList type_ -> failure x
 

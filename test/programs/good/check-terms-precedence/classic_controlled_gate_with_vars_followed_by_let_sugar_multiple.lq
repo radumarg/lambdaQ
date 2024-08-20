@@ -1,2 +1,2 @@
 fun :: Qbit
-fun = with [ v1, v2 ] ctrl [ 1, 1 ] gate H (var1 <- term1 ; term2)
+fun = with [ v1, v2 ] ctrl [ 0b1, 0b1 ] gate H (var1 <- term1 ; term2)

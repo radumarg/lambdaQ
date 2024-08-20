@@ -26,7 +26,8 @@ import qualified Data.Map
 data Type =
    TypeBit             |
    TypeQbit            |
-   TypeBasisState    |
+   TypeQbits           |
+   TypeBasisState      |
    TypeBool            |
    TypeInteger         |
    TypeUnit            |
@@ -222,7 +223,7 @@ mapType t = case t of
     GeneratedAbstractSyntax.TypeInteger       -> TypeInteger
     GeneratedAbstractSyntax.TypeBit           -> TypeBit
     GeneratedAbstractSyntax.TypeQbit          -> TypeQbit
-    GeneratedAbstractSyntax.TypeState         -> TypeBasisState
+    GeneratedAbstractSyntax.TypeBasisState    -> TypeBasisState
     GeneratedAbstractSyntax.TypeUnit          -> TypeUnit
     GeneratedAbstractSyntax.TypeNonLinear t'  -> TypeNonLinear (mapAndSimplify t')
     GeneratedAbstractSyntax.TypeFunction l r  -> mapAndSimplify l :->: mapAndSimplify r

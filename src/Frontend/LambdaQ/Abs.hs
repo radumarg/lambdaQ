@@ -53,7 +53,7 @@ data Type
     | TypeBit
     | TypeInteger
     | TypeQbit
-    | TypeState
+    | TypeBasisState
     | TypeUnit
     | TypeList Type
   deriving (C.Eq, C.Ord, C.Show, C.Read)
