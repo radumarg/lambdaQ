@@ -158,11 +158,14 @@ showControlBasisState (CtrlBasisState bs) = showBasisState bs
 showControlBasisStates :: ControlBasisStates -> String
 showControlBasisStates (CtrlBasisStates bs bss) = showBasisState bs ++ ", " ++ intercalate ", " (map showBasisState bss)
 
+showBit :: Bit -> String
+showBit (Bit b) = b
+
 showControlBit :: ControlBit -> String
-showControlBit (CtrlBit i) = show i
+showControlBit (CtrlBit b) = showBit b
 
 showControlBits :: ControlBits -> String
-showControlBits (CtrlBits i is) = show i ++ ", " ++ intercalate ", " (map show is)
+showControlBits (CtrlBits b bs) = showBit b ++ ", " ++ intercalate ", " (map showBit bs)
 
 showGateVar :: GateVar -> String
 showGateVar (GateVar (_, s)) = s

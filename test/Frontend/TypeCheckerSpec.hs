@@ -32,7 +32,7 @@ spec :: Test.Hspec.Spec
 spec =  do
   Test.Hspec.describe "Testing TypeChecker on example programs:" $ do
 
-    -- EXPECT NO ERRORS --
+    -- EXAMPLE PROGRAMS, EXPECT NO ERRORS --
 
     -- Test.Hspec.context "when provided with a valid coinflip program" $ do
     --   Test.Hspec.it "returns no error" $ do
@@ -82,10 +82,13 @@ spec =  do
     --   Test.Hspec.it "returns no error" $ do
     --     testTypeCheckerReturnsOK "test/programs/examples/example11-qft.lq" `Test.Hspec.shouldReturn` "OK"
 
-    -- SMALL PROGRAMS --
+    -- SMALL PROGRAMS, EXPECT NO ERRORS --
 
     Test.Hspec.context "when provided with a valid QFT program" $ do
       Test.Hspec.it "returns no error" $ do
         testTypeCheckerReturnsOK "test/programs/examples/example11-qft.lq" `Test.Hspec.shouldReturn` "OK"
+
+
+    -- SMALL PROGRAMS, EXPECT ERRORS --
 
 
