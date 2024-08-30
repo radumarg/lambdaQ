@@ -26,7 +26,6 @@ source-repository head
 library
   exposed-modules:
       Backend.CodeGenerator
-      Common
       CompilationEngine
       Frontend.ASTtoIASTConverter
       Frontend.LambdaQ.Abs

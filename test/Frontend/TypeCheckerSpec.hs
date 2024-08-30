@@ -17,8 +17,8 @@ runTypeChecker filePath = readFileContents filePath
                             >>= convertAstToIast
                             >>= typeCheck
 
-testTypeCheckerReturnsOK :: FilePath -> IO String
-testTypeCheckerReturnsOK filePath = runExceptT (runTypeChecker filePath)  >>= \case
+testTypeChecker :: FilePath -> IO String
+testTypeChecker filePath = runExceptT (runTypeChecker filePath)  >>= \case
                 Left err -> return (show err)
                 Right _ -> return "OK"
 
@@ -36,59 +36,92 @@ spec =  do
 
     -- Test.Hspec.context "when provided with a valid coinflip program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example00-CoinFlip.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example00-CoinFlip.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Deutsch algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example01-deutschAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example01-deutschAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Deutsch Jozsa algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example02-deutschJozsaAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example02-deutschJozsaAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid phase kick back program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example03-phaseKickBack.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example03-phaseKickBack.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Bernstein Vazirani algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example04-bernsteinVaziraniAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example04-bernsteinVaziraniAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Simon algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example05-simonAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example05-simonAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid teleportation protocol program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example06-teleportationProtocol.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example06-teleportationProtocol.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid four qubit adder program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example07-fourQubitAdder.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example07-fourQubitAdder.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Grover algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example08-groverAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example08-groverAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid quantum phase estimation program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example09-quantumPhaseEstimation.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example09-quantumPhaseEstimation.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid Shor algorithm program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example10-shorAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example10-shorAlgorithm.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- Test.Hspec.context "when provided with a valid QFT program" $ do
     --   Test.Hspec.it "returns no error" $ do
-    --     testTypeCheckerReturnsOK "test/programs/examples/example11-qft.lq" `Test.Hspec.shouldReturn` "OK"
+    --     testTypeChecker "test/programs/examples/example11-qft.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- SMALL PROGRAMS, EXPECT NO ERRORS --
 
-    Test.Hspec.context "when provided with a valid QFT program" $ do
+    Test.Hspec.context "when provided with a valid program" $ do
       Test.Hspec.it "returns no error" $ do
-        testTypeCheckerReturnsOK "test/programs/examples/example11-qft.lq" `Test.Hspec.shouldReturn` "OK"
+        testTypeChecker "test/programs/good/typechecker/new_1.lq" `Test.Hspec.shouldReturn` "OK"
 
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/measr_1.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/bit_1.lq" `Test.Hspec.shouldReturn` "OK"
 
     -- SMALL PROGRAMS, EXPECT ERRORS --
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/new_1.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeBit' of the top level function named: 'main' defined at line: 2 cannot be matched with actual type: 'TypeQbit'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/measr_1.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The variable named 'a' in the top level function named: 'main' defined at line: 2 denotes a function which is not in scope" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/new_1.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeBit' of the top level function named: 'main' defined at line: 2 cannot be matched with actual type: 'TypeQbit'" `isInfixOf` str)
+
+    -- Test.Hspec.context "when provided with an invalid program" $ do
+    --   Test.Hspec.it "returns an error" $ do
+    --     result <- testTypeChecker "test/programs/bad/typechecker/?.lq"
+    --     result `Test.Hspec.shouldSatisfy`
+    --       (\str -> "?" `isInfixOf` str)
+
+    --  putStrLn result
 
 

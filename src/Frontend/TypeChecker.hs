@@ -19,15 +19,15 @@ where
 --import Data.Map (Map, lookup)
 --import Data.Set (Set, member, insert)
 
-import qualified Common
-import qualified Data.Map
 import qualified Control.Monad.Except
 import qualified Control.Monad.Reader
 import qualified Control.Monad.State
 import qualified Control.Monad.State.Class
+import qualified Data.Map
+import qualified Data.Maybe
 import qualified Data.Set
 
-import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..))
+import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), simplifyTensorProd)
 
 data TypeError
   = NotAFunction Type (Int, Int, String)               -- this type should be a function but it is not
@@ -35,7 +35,7 @@ data TypeError
   | TypeMismatch Type Type (Int, Int, String)          -- this type does not match the type expected at the point where it was declared
   | NotAProductType Type (Int, Int, String)            -- this type should be a product type but it is not
   | DuplicatedLinearVariable String (Int, Int, String) -- this linear variable is used more than once
-  | NotALinearFunction String (Int, Int, String)       -- this function is used more than once despite being declared linear
+  | NotALinearFunction String (Int, Int, String)       -- this function is used more than once despite not being declared linear
   | NotALinearTerm Term Type (Int, Int, String)        -- this term should be linear but is is not
   | NoCommonSupertype Type Type (Int, Int, String)     -- these two types have no common supertype
   deriving (Eq, Ord, Read)
@@ -54,8 +54,8 @@ instance Show TypeError where
 
   show (DuplicatedLinearVariable var (line, _, fname)) = "The linear variable '" ++ var ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " is used more than once"
 
-  show (NotALinearFunction fun (line, _, fname)) = "The function named: '" ++ show fun ++ "' which is used in the top level function named: '" ++ fname 
-    ++ ". defined at line: " ++ show line ++ " is used more than once despite being declared linear"
+  show (NotALinearFunction fun (line, _, fname)) = "The function named: '" ++  fun ++ "' which is used in the top level function named: '" ++ fname 
+    ++ "' defined at line: " ++ show line ++ " is used more than once despite not being declared linear"
 
   show (NotALinearTerm term typ (line, _, fname)) = "Term: '" ++ show term ++ "' having as type: " ++ show typ 
     ++ " which occurs in function " ++ fname ++ " defined at line: " ++ show line  ++ " is not linear"
@@ -75,7 +75,7 @@ data ErrorEnvironment = ErrorEnvironment
 
 type Check = Control.Monad.Except.ExceptT TypeError (Control.Monad.Reader.ReaderT MainEnvironment (Control.Monad.State.State ErrorEnvironment))
 
-runTypeChecker :: Program -> Either Common.ErrorMessage Program
+runTypeChecker :: Program -> Either String Program
 runTypeChecker program = 
   case Control.Monad.State.evalState (Control.Monad.Reader.runReaderT (Control.Monad.Except.runExceptT (typeCheckProgram program)) mainEnv) errorEnv of
     Left err -> Left (show err)
@@ -97,17 +97,23 @@ typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
     Control.Monad.State.Class.modify $ \x -> x {currentFunction = functionName}
     inferredType <- inferType [] term (line, col, functionName)
-    if isSubtype inferredType functionType
+    if isSubtype inferredType functionType 
         then return ()
         else Control.Monad.Except.throwError (TypeMismatch functionType inferredType (line, col, functionName))
 
+-- typesMatch :: Type -> Type -> Bool
+-- typesMatch tl tr = (tl' == tr') || isSubtype tl tr
+--   where
+--     tl' = removeBangs $ pullOutBangs tl
+--     tr' = removeBangs $ pullOutBangs tr
+
 isSubtype :: Type -> Type -> Bool
+isSubtype (TypeNonLinear t1) (TypeNonLinear t2) = isSubtype (TypeNonLinear t1) t2
 isSubtype (TypeNonLinear t1) t2 = isSubtype t1 t2
-isSubtype _ (TypeNonLinear _) = False
-isSubtype (TypeList t1) (TypeList t2) = isSubtype t1 t2
 isSubtype (t1 :->: t2) (t1' :->: t2') = isSubtype t1' t1 && isSubtype t2 t2'
 isSubtype (t1 :*: t2) (t1' :*: t2') = isSubtype t1 t1' && isSubtype t2 t2'
 isSubtype (t1 :**: n1) (t2 :**: n2) = n1 == n2 && isSubtype t1 t2
+isSubtype (TypeList t1) (TypeList t2) = isSubtype t1 t2
 isSubtype t1 t2 = t1 == t2
 
 inferType :: [Type] -> Term -> (Int, Int, String) -> Check Type
@@ -119,8 +125,20 @@ inferType _ (TermPower _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
 inferType _ (TermInverse _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermGate gate) _ = return $ inferGateType gate
+inferType _ (TermBool _) _ = return $ TypeNonLinear TypeBool
+inferType _ (TermInteger _) _ = return $ TypeNonLinear TypeInteger
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 inferType _ (TermBasisState _) _ = return TypeBasisState
+
+inferType context (TermLambda typ term) (line, col, fname) = do
+    mainEnv <- Control.Monad.Reader.ask
+    checkLinearExpression term typ (line, col, fname)
+    termTyp <- inferType (typ:context) term (line, col, fname)
+    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVariables (TermLambda typ term))
+    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFunctionNames term)
+    if boundedLinearVars || freeLinearVars
+        then return (typ :->: termTyp)
+        else return $ TypeNonLinear (typ :->: termTyp)
 
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
@@ -130,6 +148,16 @@ inferType context (TermApply termLeft termRight) (line, col, fname) = do
             | isSubtype rightTermType argsType -> return returnsType
             | otherwise -> Control.Monad.Except.throwError $ TypeMismatch argsType rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
+
+inferType context (TermTuple l [r]) (line, col, fname) = do
+    leftTyp <- inferType context l (line, col, fname)
+    rightTyp <- inferType context r (line, col, fname)
+    return $ simplifyTensorProd $ pullOutBangs (leftTyp :*: rightTyp)
+
+inferType context (TermTuple l (r:rs)) (line, col, fname) = do
+    leftTyp <- inferType context l (line, col, fname)
+    rightTyp <- inferType context (TermTuple r rs) (line, col, fname)
+    return $ simplifyTensorProd $ pullOutBangs (leftTyp :*: rightTyp)
 
 inferType _ (TermFreeVariable var) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
@@ -173,3 +201,59 @@ isLinear _  = True
 removeBangs :: Type -> Type
 removeBangs (TypeNonLinear t) = removeBangs t
 removeBangs t = t
+
+pullOutBangs :: Type -> Type
+pullOutBangs (TypeNonLinear l :*: TypeNonLinear r) = TypeNonLinear (pullOutBangs (l :*: r))
+pullOutBangs (TypeNonLinear t :**: n) = TypeNonLinear (pullOutBangs (t :**: n))
+pullOutBangs t = t
+
+checkLinearExpression :: Term -> Type -> (Int, Int, String) -> Check ()
+checkLinearExpression term typ (line, col, fname) = case typ of
+    TypeNonLinear _ -> return ()
+    t  -> if headBoundVariableCount term <= 1
+            then return ()
+            else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
+
+headBoundVariableCount :: Term -> Integer
+headBoundVariableCount = headBoundVariableCount' 0
+    where
+        headBoundVariableCount' :: Integer -> Term -> Integer
+        headBoundVariableCount' cnt term = case term of
+            TermBoundVariable i -> if cnt == i then 1 else 0
+            TermLambda _ lambdaTerm -> headBoundVariableCount' (cnt + 1) lambdaTerm
+            TermApply termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
+            TermCompose termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
+            TermDollar termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
+            TermIfElse cond t f -> headBoundVariableCount' cnt cond + max (headBoundVariableCount' cnt t) (headBoundVariableCount' cnt f)
+            --TermTuple left right -> headBoundVariableCount' cnt left + headBoundVariableCount' cnt right
+            -- TermList ListNil -> 0
+            -- TermLetSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn        --TODO: verify
+            -- TermLetSugarSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn   --TODO: verify
+            -- TermLetMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
+            -- TermLetSugarMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
+            _  -> 0
+
+freeVariables :: Term -> [Integer]
+freeVariables = freeVariables' 0
+    where
+        freeVariables' :: Integer -> Term -> [Integer]
+        --freeVariables' cnt (TermTuple left right)    = freeVariables' cnt left ++ freeVariables' cnt right
+        freeVariables' cnt (TermApply termLeft termRight)    = freeVariables' cnt termLeft ++ freeVariables' cnt termRight
+        -- freeVariables' cnt (TermLetSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn         --TODO: verify
+        -- freeVariables' cnt (TermLetSugarSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn    --TODO: verify
+        -- freeVariables' cnt (TermLetMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
+        -- freeVariables' cnt (TermLetSugarMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
+        freeVariables' cnt (TermLambda _ lambdaTerm)    = freeVariables' (cnt + 1) lambdaTerm
+        freeVariables' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
+        freeVariables' _ _ = []
+
+extractFunctionNames :: Term -> [String]
+--extractFunctionNames (TermTuple left right) = extractFunctionNames left ++ extractFunctionNames right
+extractFunctionNames (TermApply termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
+-- extractFunctionNames (TermLetSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+-- extractFunctionNames (TermLetSugarSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+-- extractFunctionNames (TermLetMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+-- extractFunctionNames (TermLetSugarMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermLambda _ lambdaTerm) = extractFunctionNames lambdaTerm
+extractFunctionNames (TermFreeVariable fun) = [fun]
+extractFunctionNames _ = []

@@ -16,6 +16,7 @@ module Frontend.ASTtoIASTConverter (
   mapProgram,
   Program,
   runAstToIastConverter,
+  simplifyTensorProd,
   Term(..),
   Type(..),
 ) where
@@ -159,8 +160,8 @@ data Term =
     TermFreeVariable String                       |
     TermList List                                 |
     TermListElement List Integer                  |
-    TermBoolExpression BoolExpression             |
-    TermIntegerExpression IntegerExpression       |
+    TermBool BoolExpression                       |
+    TermInteger IntegerExpression                 |
     TermVariable Var                              |
     TermIfElse Term Term Term                     |
     TermLet Term Term                             |
@@ -436,8 +437,8 @@ mapTerm env (GeneratedAbstractSyntax.TermListElement l index) = TermListElement 
 mapTerm _ (GeneratedAbstractSyntax.TermBit (GeneratedAbstractSyntax.Bit bit)) = if bit == "0b0" then TermBit BitZero else TermBit BitOne
 mapTerm _ GeneratedAbstractSyntax.TermUnit = TermUnit
 mapTerm _ (GeneratedAbstractSyntax.TermBasisState bs) = TermBasisState (mapBasisState bs)
-mapTerm _ (GeneratedAbstractSyntax.TermBoolExpression be) = TermBoolExpression (mapBoolExpression be)
-mapTerm _ (GeneratedAbstractSyntax.TermIntegerExpression be) = TermIntegerExpression (mapIntegerExpression be)
+mapTerm _ (GeneratedAbstractSyntax.TermBoolExpression be) = TermBool (mapBoolExpression be)
+mapTerm _ (GeneratedAbstractSyntax.TermIntegerExpression be) = TermInteger (mapIntegerExpression be)
 mapTerm _ (GeneratedAbstractSyntax.TermGate g) = TermGate (mapGate g)
 mapTerm env (GeneratedAbstractSyntax.TermTuple term terms) = TermTuple (mapTerm env term)  (map (mapTerm env) (term:terms))
 mapTerm env (GeneratedAbstractSyntax.TermApply l r) = TermApply (mapTerm env l) (mapTerm env r)
