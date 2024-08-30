@@ -363,12 +363,12 @@ Term3
 
 Term2 :: { Frontend.LambdaQ.Abs.Term }
 Term2
-  : 'with' ControlTerm 'ctrl' ControlBasisState { Frontend.LambdaQ.Abs.TermQuantumCtrlGate $2 $4 }
-  | 'with' ControlTerms 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate $2 $4 }
-  | 'with' ControlVars 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate $2 $4 }
-  | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermClassicCtrlGate $2 $4 }
-  | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicTCtrlsGate $2 $4 }
-  | 'with' ControlVars 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermClassicVCtrlsGate $2 $4 }
+  : 'with' ControlTerm 'ctrl' ControlBasisState { Frontend.LambdaQ.Abs.TermGateQuantumCtrl $2 $4 }
+  | 'with' ControlTerms 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermGateQuantumTCtrls $2 $4 }
+  | 'with' ControlVars 'ctrl' ControlBasisStates { Frontend.LambdaQ.Abs.TermGateQuantumVCtrls $2 $4 }
+  | 'with' ControlTerm 'ctrl' ControlBit { Frontend.LambdaQ.Abs.TermGateClassicCtrl $2 $4 }
+  | 'with' ControlTerms 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermGateClassicTCtrls $2 $4 }
+  | 'with' ControlVars 'ctrl' ControlBits { Frontend.LambdaQ.Abs.TermGateClassicVCtrls $2 $4 }
   | Term2 Term3 { Frontend.LambdaQ.Abs.TermApply $1 $2 }
   | Term2 '.' Term3 { Frontend.LambdaQ.Abs.TermCompose $1 $3 }
   | Term2 '*' Term3 { Frontend.LambdaQ.Abs.TermTensorProduct $1 $3 }

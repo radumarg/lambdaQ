@@ -1,0 +1,3 @@
+main :: Bit
+main = new @1
+

@@ -19,6 +19,8 @@ module Frontend.ASTtoIASTConverter (
   simplifyTensorProd,
   Term(..),
   Type(..),
+  List(..),
+  CaseExpression(..),
 ) where
 
 import qualified Frontend.LambdaQ.Abs as GeneratedAbstractSyntax
@@ -168,8 +170,8 @@ data Term =
     TermCase Term [CaseExpression]                |
     TermLambda Type Term                          |
     TermGate Gate                                 |
-    TermQuantumControlGate [Term] [BasisState]    |
-    TermClassicControlGate [Term] [Bit]           |
+    TermGateQuantumControl [Term] [BasisState]    |
+    TermGateClassicControl [Term] [Bit]           |
     TermApply Term Term                           |
     TermDollar Term Term                          |
     TermCompose Term Term                         |
@@ -448,29 +450,29 @@ mapTerm env (GeneratedAbstractSyntax.TermIfElse cond t f) = TermIfElse (mapTerm 
 mapTerm env (GeneratedAbstractSyntax.TermTensorProduct t1 t2) = TermTensorProduct (mapTerm env t1) (mapTerm env t2)
 mapTerm env (GeneratedAbstractSyntax.TermCase t exprs) = TermCase (mapTerm env t) (map (mapCaseExpression env) exprs)
 
-mapTerm env (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBasisState bst)) 
-  = TermQuantumControlGate [mapTerm env term] [mapBasisState bst]
+mapTerm env (GeneratedAbstractSyntax.TermGateQuantumCtrl (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBasisState bst)) 
+  = TermGateQuantumControl [mapTerm env term] [mapBasisState bst]
 
-mapTerm env (GeneratedAbstractSyntax.TermQuantumTCtrlsGate termList bsList)   
-  = TermQuantumControlGate (mapTerm env term : map (mapTerm env) terms) (mapBasisState bst : map mapBasisState bsts)
+mapTerm env (GeneratedAbstractSyntax.TermGateQuantumTCtrls termList bsList)   
+  = TermGateQuantumControl (mapTerm env term : map (mapTerm env) terms) (mapBasisState bst : map mapBasisState bsts)
   where
     (GeneratedAbstractSyntax.CtrlTerms term terms) = termList
     (GeneratedAbstractSyntax.CtrlBasisStates bst bsts) = bsList
 
-mapTerm env (GeneratedAbstractSyntax.TermQuantumVCtrlsGate varList bsList) 
-  = TermQuantumControlGate (mapTerm env (GeneratedAbstractSyntax.TermVariable var) : map (mapTerm env . GeneratedAbstractSyntax.TermVariable) vars) (mapBasisState bst : map mapBasisState bsts)
+mapTerm env (GeneratedAbstractSyntax.TermGateQuantumVCtrls varList bsList) 
+  = TermGateQuantumControl (mapTerm env (GeneratedAbstractSyntax.TermVariable var) : map (mapTerm env . GeneratedAbstractSyntax.TermVariable) vars) (mapBasisState bst : map mapBasisState bsts)
   where
       (GeneratedAbstractSyntax.CtrlVars var vars) = varList
       (GeneratedAbstractSyntax.CtrlBasisStates bst bsts) = bsList
 
-mapTerm env (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit bit)) 
-  = TermClassicControlGate [mapTerm env term] [mapControlBit bit]
+mapTerm env (GeneratedAbstractSyntax.TermGateClassicCtrl (GeneratedAbstractSyntax.CtrlTerm term) (GeneratedAbstractSyntax.CtrlBit bit)) 
+  = TermGateClassicControl [mapTerm env term] [mapControlBit bit]
 
-mapTerm env (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits bit bits)) 
-  = TermClassicControlGate (mapTerm env term : map (mapTerm env) terms) (mapControlBit bit : map mapControlBit bits)
+mapTerm env (GeneratedAbstractSyntax.TermGateClassicTCtrls (GeneratedAbstractSyntax.CtrlTerms term terms) (GeneratedAbstractSyntax.CtrlBits bit bits)) 
+  = TermGateClassicControl (mapTerm env term : map (mapTerm env) terms) (mapControlBit bit : map mapControlBit bits)
 
-mapTerm env (GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars var vars) (GeneratedAbstractSyntax.CtrlBits bit bits)) 
-  = TermClassicControlGate (mapTerm env (GeneratedAbstractSyntax.TermVariable var) : map (mapTerm env . GeneratedAbstractSyntax.TermVariable) vars) (mapControlBit bit : map mapControlBit bits)
+mapTerm env (GeneratedAbstractSyntax.TermGateClassicVCtrls (GeneratedAbstractSyntax.CtrlVars var vars) (GeneratedAbstractSyntax.CtrlBits bit bits)) 
+  = TermGateClassicControl (mapTerm env (GeneratedAbstractSyntax.TermVariable var) : map (mapTerm env . GeneratedAbstractSyntax.TermVariable) vars) (mapControlBit bit : map mapControlBit bits)
 
 mapTerm env (GeneratedAbstractSyntax.TermLetSingle var term1 term2) = TermLet (mapTerm env term1) (mapTerm env' term2)
   where

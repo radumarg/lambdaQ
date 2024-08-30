@@ -230,11 +230,11 @@ getUnknownGates (GeneratedAbstractSyntax.FunDecl _ funDef) = collectUnknowns fbo
     collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknown2Angle gateVar _ _ )) = [getGateName gateVar]
     collectUnknowns (GeneratedAbstractSyntax.TermGate (GeneratedAbstractSyntax.GateUnknown3Angle gateVar _ _ _)) = [getGateName gateVar]
     collectUnknowns (GeneratedAbstractSyntax.TermTuple term terms) = collectUnknowns term ++ concatMap collectUnknowns terms
-    collectUnknowns (GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
-    collectUnknowns (GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
+    collectUnknowns (GeneratedAbstractSyntax.TermGateQuantumCtrl (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermGateQuantumTCtrls (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
       collectUnknowns term ++ concatMap collectUnknowns terms
-    collectUnknowns (GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
-    collectUnknowns (GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
+    collectUnknowns (GeneratedAbstractSyntax.TermGateClassicCtrl (GeneratedAbstractSyntax.CtrlTerm term) _) = collectUnknowns term
+    collectUnknowns (GeneratedAbstractSyntax.TermGateClassicTCtrls (GeneratedAbstractSyntax.CtrlTerms term terms) _) =
       collectUnknowns term ++ concatMap collectUnknowns terms
     collectUnknowns (GeneratedAbstractSyntax.TermApply term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
     collectUnknowns (GeneratedAbstractSyntax.TermCompose term1 term2) = collectUnknowns term1 ++ collectUnknowns term2
@@ -261,22 +261,22 @@ extractNonCongruentCtrlTerms mode (GeneratedAbstractSyntax.FunDecl _ funDef) = c
     (GeneratedAbstractSyntax.FunDef (GeneratedAbstractSyntax.Var _) _ fbody) = funDef
     collectNonCongruentTerms :: String -> GeneratedAbstractSyntax.Term -> [String]
     collectNonCongruentTerms md term = case term of
-        GeneratedAbstractSyntax.TermQuantumVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
+        GeneratedAbstractSyntax.TermGateQuantumVCtrls (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
             | md == "ModeQuantumCtrl" && length vs /= length bs -> [PP.showTerm term]
             | otherwise -> []
-        GeneratedAbstractSyntax.TermQuantumTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
+        GeneratedAbstractSyntax.TermGateQuantumTCtrls (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBasisStates _ bs) 
             | md == "ModeQuantumCtrl" && length ts /= length bs
               -> [PP.showTerm term] ++ collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
             | otherwise -> collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
-        GeneratedAbstractSyntax.TermClassicVCtrlsGate (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBits _ bs) 
+        GeneratedAbstractSyntax.TermGateClassicVCtrls (GeneratedAbstractSyntax.CtrlVars _ vs) (GeneratedAbstractSyntax.CtrlBits _ bs) 
             | md == "ModeClassicCtrl" && length vs /= length bs -> [PP.showTerm term]
             | otherwise -> []
-        GeneratedAbstractSyntax.TermClassicTCtrlsGate (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBits _ bs)
+        GeneratedAbstractSyntax.TermGateClassicTCtrls (GeneratedAbstractSyntax.CtrlTerms t ts) (GeneratedAbstractSyntax.CtrlBits _ bs)
             | md == "ModeClassicCtrl" && length ts /= length bs
               -> [PP.showTerm term] ++ collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
             | otherwise -> collectNonCongruentTerms md t ++ concatMap (collectNonCongruentTerms md) ts
-        GeneratedAbstractSyntax.TermQuantumCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
-        GeneratedAbstractSyntax.TermClassicCtrlGate (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermGateQuantumCtrl (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
+        GeneratedAbstractSyntax.TermGateClassicCtrl (GeneratedAbstractSyntax.CtrlTerm t) _ -> collectNonCongruentTerms md t
         GeneratedAbstractSyntax.TermListElement l _ -> collectNonCongruentTerms md (GeneratedAbstractSyntax.TermList l)
         GeneratedAbstractSyntax.TermList GeneratedAbstractSyntax.ListNil -> []
         GeneratedAbstractSyntax.TermList (GeneratedAbstractSyntax.ListSingle t) -> collectNonCongruentTerms md t

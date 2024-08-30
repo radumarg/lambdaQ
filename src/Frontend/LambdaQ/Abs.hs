@@ -159,12 +159,12 @@ data Term
     | TermList List
     | TermVariable Var
     | TermTuple Term [Term]
-    | TermQuantumCtrlGate ControlTerm ControlBasisState
-    | TermQuantumTCtrlsGate ControlTerms ControlBasisStates
-    | TermQuantumVCtrlsGate ControlVars ControlBasisStates
-    | TermClassicCtrlGate ControlTerm ControlBit
-    | TermClassicTCtrlsGate ControlTerms ControlBits
-    | TermClassicVCtrlsGate ControlVars ControlBits
+    | TermGateQuantumCtrl ControlTerm ControlBasisState
+    | TermGateQuantumTCtrls ControlTerms ControlBasisStates
+    | TermGateQuantumVCtrls ControlVars ControlBasisStates
+    | TermGateClassicCtrl ControlTerm ControlBit
+    | TermGateClassicTCtrls ControlTerms ControlBits
+    | TermGateClassicVCtrls ControlVars ControlBits
     | TermApply Term Term
     | TermCompose Term Term
     | TermTensorProduct Term Term

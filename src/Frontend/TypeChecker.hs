@@ -11,14 +11,6 @@ module Frontend.TypeChecker
   )
 where
 
---import Control.Monad.Except (ExceptT (..), throwError, runExceptT)
---import Control.Monad.Reader (ReaderT, MonadReader (ask), runReaderT)
---import Control.Monad.State (State, gets, evalState)
---import Control.Monad.State.Class (modify)
---import Data.Maybe (mapMaybe)
---import Data.Map (Map, lookup)
---import Data.Set (Set, member, insert)
-
 import qualified Control.Monad.Except
 import qualified Control.Monad.Reader
 import qualified Control.Monad.State
@@ -27,7 +19,7 @@ import qualified Data.Map
 import qualified Data.Maybe
 import qualified Data.Set
 
-import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), simplifyTensorProd)
+import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), List(..), CaseExpression(..), simplifyTensorProd)
 
 data TypeError
   = NotAFunction Type (Int, Int, String)               -- this type should be a function but it is not
@@ -140,6 +132,15 @@ inferType context (TermLambda typ term) (line, col, fname) = do
         then return (typ :->: termTyp)
         else return $ TypeNonLinear (typ :->: termTyp)
 
+inferType context (TermIfElse cond t f) (line, col, fname) = do
+    typCond <- inferType context cond (line, col, fname)
+    -- TODO: are the two lines below correct?
+    typT <- inferType context t (line, col, fname)
+    typF <- inferType context f (line, col, fname)
+    if isSubtype typCond TypeBit
+        then supremum typT typF (line, col, fname)
+        else Control.Monad.Except.throwError (TypeMismatch TypeBit typCond (line, col, fname))
+
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
     rightTermType <- inferType context termRight (line, col, fname)
@@ -214,46 +215,167 @@ checkLinearExpression term typ (line, col, fname) = case typ of
             then return ()
             else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
 
+-- THIS SHOULD BE REVIEWD AND FIXED
 headBoundVariableCount :: Term -> Integer
-headBoundVariableCount = headBoundVariableCount' 0
+headBoundVariableCount = headBoundVarCount 0
     where
-        headBoundVariableCount' :: Integer -> Term -> Integer
-        headBoundVariableCount' cnt term = case term of
+        headBoundVarCount :: Integer -> Term -> Integer
+        headBoundVarCount cnt term = case term of
             TermBoundVariable i -> if cnt == i then 1 else 0
-            TermLambda _ lambdaTerm -> headBoundVariableCount' (cnt + 1) lambdaTerm
-            TermApply termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
-            TermCompose termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
-            TermDollar termLeft termRight -> headBoundVariableCount' cnt termLeft + headBoundVariableCount' cnt termRight
-            TermIfElse cond t f -> headBoundVariableCount' cnt cond + max (headBoundVariableCount' cnt t) (headBoundVariableCount' cnt f)
-            --TermTuple left right -> headBoundVariableCount' cnt left + headBoundVariableCount' cnt right
-            -- TermList ListNil -> 0
-            -- TermLetSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn        --TODO: verify
-            -- TermLetSugarSingle termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 1) termIn   --TODO: verify
-            -- TermLetMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
-            -- TermLetSugarMultiple termEq termIn -> headBoundVariableCount' cnt termEq + headBoundVariableCount' (cnt + 2) termIn
-            _  -> 0
+            TermFreeVariable _ -> 0
+            TermVariable _ -> undefined -- should not happen
+            TermLambda _ lambdaTerm -> headBoundVarCount (cnt + 1) lambdaTerm
+            TermLet termEq termIn -> headBoundVarCount cnt termEq + headBoundVarCount (cnt + 1) termIn --TODO: verify
+            TermIfElse cond t f -> headBoundVarCount cnt cond + max (headBoundVarCount cnt t)  (headBoundVarCount cnt f)
+            TermTuple left right -> headBoundVarCount cnt left + sum  (map (headBoundVarCount cnt) right)
+            TermApply termLeft termRight  -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
+            TermCompose termLeft termRight -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
+            TermDollar termLeft termRight -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
+            TermTensorProduct t1 t2 -> headBoundVarCount cnt t1 + headBoundVarCount cnt t2
+            TermCase t exprs -> headBoundVarCount cnt t + sum  (map extractFromCaseExpr exprs)
+              where
+                extractFromCaseExpr :: CaseExpression -> Integer
+                extractFromCaseExpr (CaseExpr t1 t2) = headBoundVarCount cnt t1 + headBoundVarCount cnt t2
+            TermList  Frontend.ASTtoIASTConverter.ListNil -> 0
+            TermList  (ListSingle t) -> headBoundVarCount cnt t
+            TermList  (ListMultiple t ts) -> headBoundVarCount cnt t + sum (map (headBoundVarCount cnt) ts)
+            TermList  (ListExpressionAdd l1 l2) -> headBoundVarCount cnt (TermList l1) + headBoundVarCount cnt (TermList l2)
+            TermList  (ListCons t l) -> headBoundVarCount cnt t + headBoundVarCount cnt (TermList l)
+            TermListElement l _ -> headBoundVarCount cnt  (TermList l)
+            TermGateQuantumControl terms _ -> sum $ map (headBoundVarCount cnt) terms
+            TermGateClassicControl terms _ -> sum $ map (headBoundVarCount cnt) terms
+            TermNew _ -> 0
+            TermMeasure _ -> 0
+            TermInverse _ -> 0
+            TermPower _ -> 0
+            TermReset _ -> 0
+            TermId _ -> 0
+            TermBit _ -> 0
+            TermBool _ -> 0
+            TermInteger _ -> 0
+            TermGate _ -> 0
+            TermBasisState _ -> 0
+            TermUnit -> 0
 
 freeVariables :: Term -> [Integer]
-freeVariables = freeVariables' 0
+freeVariables = freeVars 0
     where
-        freeVariables' :: Integer -> Term -> [Integer]
-        --freeVariables' cnt (TermTuple left right)    = freeVariables' cnt left ++ freeVariables' cnt right
-        freeVariables' cnt (TermApply termLeft termRight)    = freeVariables' cnt termLeft ++ freeVariables' cnt termRight
-        -- freeVariables' cnt (TermLetSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn         --TODO: verify
-        -- freeVariables' cnt (TermLetSugarSingle termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 1) termIn    --TODO: verify
-        -- freeVariables' cnt (TermLetMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
-        -- freeVariables' cnt (TermLetSugarMultiple termEq termIn) = freeVariables' cnt termEq ++ freeVariables' (cnt + 2) termIn
-        freeVariables' cnt (TermLambda _ lambdaTerm)    = freeVariables' (cnt + 1) lambdaTerm
-        freeVariables' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
-        freeVariables' _ _ = []
+        freeVars :: Integer -> Term -> [Integer]
+        freeVars cnt (TermLambda _ term)    = freeVars (cnt + 1) term
+        freeVars cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
+        freeVars cnt (TermFreeVariable _) = [cnt]
+        freeVars _ (TermVariable _) = undefined -- should not happen
+        freeVars cnt (TermIfElse cond t f) = freeVars cnt cond ++ freeVars cnt t ++ freeVars cnt f
+        freeVars cnt (TermTuple left right) = freeVars cnt left ++ concatMap (freeVars cnt) right
+        freeVars cnt (TermApply termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
+        freeVars cnt (TermCompose termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
+        freeVars cnt (TermDollar termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
+        freeVars cnt (TermLet termEq termIn) = freeVars cnt termEq ++ freeVars cnt termIn
+        freeVars cnt (TermTensorProduct t1 t2) = freeVars cnt t1 ++ freeVars cnt t2
+        freeVars cnt (TermCase t exprs) = freeVars cnt t ++ concatMap extractFromCaseExpr exprs
+          where
+            extractFromCaseExpr :: CaseExpression -> [Integer]
+            extractFromCaseExpr (CaseExpr t1 t2) = freeVars cnt t1 ++ freeVars cnt t2
+        freeVars _ (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
+        freeVars cnt (TermList  (ListSingle term)) = freeVars cnt term
+        freeVars cnt (TermList  (ListMultiple term terms)) = freeVars cnt term ++ concatMap (freeVars cnt) terms
+        freeVars cnt (TermList  (ListExpressionAdd l1 l2)) = freeVars cnt (TermList l1) ++ freeVars cnt (TermList l2)
+        freeVars cnt (TermList  (ListCons t l)) = freeVars cnt t ++ freeVars cnt (TermList l)
+        freeVars cnt (TermListElement l _) = freeVars cnt (TermList l)
+        freeVars cnt (TermGateQuantumControl terms _) = concatMap (freeVars cnt) terms
+        freeVars cnt (TermGateClassicControl terms _) = concatMap (freeVars cnt) terms
+        freeVars _ (TermNew _) = []
+        freeVars _ (TermMeasure _) = []
+        freeVars _ (TermInverse _) = []
+        freeVars _ (TermPower _) = []
+        freeVars _ (TermReset _) = []
+        freeVars _ (TermId _) = []
+        freeVars _ (TermBit _) = []
+        freeVars _ (TermBool _) = []
+        freeVars _ (TermInteger _) = []
+        freeVars _ (TermGate _) = []
+        freeVars _ (TermBasisState _) = []
+        freeVars _ TermUnit = []
 
 extractFunctionNames :: Term -> [String]
---extractFunctionNames (TermTuple left right) = extractFunctionNames left ++ extractFunctionNames right
-extractFunctionNames (TermApply termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
--- extractFunctionNames (TermLetSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
--- extractFunctionNames (TermLetSugarSingle termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
--- extractFunctionNames (TermLetMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
--- extractFunctionNames (TermLetSugarMultiple termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
-extractFunctionNames (TermLambda _ lambdaTerm) = extractFunctionNames lambdaTerm
 extractFunctionNames (TermFreeVariable fun) = [fun]
-extractFunctionNames _ = []
+extractFunctionNames (TermBoundVariable _) = []
+extractFunctionNames (TermVariable _) = undefined -- should not happen
+extractFunctionNames (TermLambda _ lambdaTerm) = extractFunctionNames lambdaTerm
+extractFunctionNames (TermIfElse cond t f) = extractFunctionNames cond ++ extractFunctionNames t ++ extractFunctionNames f
+extractFunctionNames (TermTuple left right) = extractFunctionNames left ++ concatMap extractFunctionNames right
+extractFunctionNames (TermApply termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
+extractFunctionNames (TermCompose termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
+extractFunctionNames (TermDollar termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
+extractFunctionNames (TermLet termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
+extractFunctionNames (TermTensorProduct t1 t2) = extractFunctionNames t1 ++ extractFunctionNames t2
+extractFunctionNames (TermCase t exprs) = extractFunctionNames t ++ concatMap extractFromCaseExpr exprs
+  where
+    extractFromCaseExpr :: CaseExpression -> [String]
+    extractFromCaseExpr (CaseExpr t1 t2) = extractFunctionNames t1 ++ extractFunctionNames t2
+extractFunctionNames (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
+extractFunctionNames (TermList  (ListSingle term)) = extractFunctionNames term
+extractFunctionNames (TermList  (ListMultiple term terms)) = extractFunctionNames term ++ concatMap extractFunctionNames terms
+extractFunctionNames (TermList  (ListExpressionAdd l1 l2)) = extractFunctionNames (TermList l1) ++ extractFunctionNames (TermList l2)
+extractFunctionNames (TermList  (ListCons t l)) = extractFunctionNames t ++ extractFunctionNames (TermList l)
+extractFunctionNames (TermListElement l _) = extractFunctionNames (TermList l)
+extractFunctionNames (TermGateQuantumControl terms _) = concatMap extractFunctionNames terms
+extractFunctionNames (TermGateClassicControl terms _) = concatMap extractFunctionNames terms
+extractFunctionNames (TermNew _) = ["new"]
+extractFunctionNames (TermMeasure _) = ["measr"]
+extractFunctionNames (TermInverse _) = ["inv"]
+extractFunctionNames (TermPower _) = ["pow"]
+extractFunctionNames (TermReset _) = ["reset"]
+extractFunctionNames (TermId _) = ["id"]
+extractFunctionNames (TermBit _) = []
+extractFunctionNames (TermBool _) = []
+extractFunctionNames (TermInteger _) = []
+extractFunctionNames (TermGate _) = []
+extractFunctionNames (TermBasisState _) = []
+extractFunctionNames TermUnit = []
+
+supremum :: Type -> Type -> (Int, Int, String) -> Check Type
+supremum t1 t2 _
+ | t1 == t2 = return t1
+supremum (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fname)
+    = (:*:) <$> supremum  (TypeNonLinear t1) t1' (line, col, fname) <*> supremum (TypeNonLinear t2) t2' (line, col, fname)
+supremum (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
+    = (:*:) <$> supremum  t1 (TypeNonLinear t1') (line, col, fname)  <*> supremum t2  (TypeNonLinear t2') (line, col, fname)
+supremum (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
+    | i == j =  (:**: i) <$> supremum (TypeNonLinear t1) t2 (line, col, fname)
+supremum (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
+    | i == j =  (:**: i) <$> supremum t1 (TypeNonLinear t2) (line, col, fname)
+supremum (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
+    TypeNonLinear <$> supremum t1 t2 (line, col, fname)
+supremum (TypeNonLinear t1) t2 (line, col, fname) = supremum t1 t2 (line, col, fname)
+supremum t1 (TypeNonLinear t2) (line, col, fname) = supremum t1 t2 (line, col, fname)
+supremum (t1 :**: i) (t2 :**: j) (line, col, fname)
+    | i == j = (:**: i) <$> supremum t1 t2  (line, col, fname)
+supremum (t1 :*: t2) (t1' :*: t2') (line, col, fname)
+    = (:*:) <$> supremum t1 t1' (line, col, fname) <*> supremum t2 t2' (line, col, fname)
+supremum (t1 :->: t2) (t1' :->: t2') (line, col, fname)
+    = (:->:) <$> infimum t1 t1' (line, col, fname) <*> supremum t2 t2' (line, col, fname)
+supremum t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
+
+infimum :: Type -> Type -> (Int, Int, String) -> Check Type
+infimum t1 t2 _
+    | t1 == t2 = return t1
+infimum (TypeNonLinear (t1 :*: t2)) (t1' :*: t2') (line, col, fname)
+    = (:*:) <$> infimum  (TypeNonLinear t1) t1' (line, col, fname) <*> infimum (TypeNonLinear t2) t2' (line, col, fname)
+infimum (t1 :*: t2) (TypeNonLinear (t1' :*: t2')) (line, col, fname)
+    = (:*:) <$> infimum  t1 (TypeNonLinear t1') (line, col, fname)  <*> infimum t2  (TypeNonLinear t2') (line, col, fname)
+infimum (TypeNonLinear (t1 :**: i)) (t2 :**: j) (line, col, fname)
+    | i == j =  (:**: i) <$> infimum (TypeNonLinear t1) t2 (line, col, fname)
+infimum (t1 :**: i) (TypeNonLinear (t2 :**: j)) (line, col, fname)
+    | i == j =  (:**: i) <$> infimum t1 (TypeNonLinear t2) (line, col, fname)
+infimum (TypeNonLinear t1) (TypeNonLinear t2) (line, col, fname) =
+    TypeNonLinear <$> infimum t1 t2 (line, col, fname)
+infimum (TypeNonLinear t1) t2 (line, col, fname) = TypeNonLinear <$> infimum t1 t2 (line, col, fname)
+infimum t1 (TypeNonLinear t2) (line, col, fname) = TypeNonLinear <$> infimum t1 t2 (line, col, fname)
+infimum (t1 :**: i) (t2 :**: j) (line, col, fname)
+    | i == j = (:**: i) <$> infimum t1 t2  (line, col, fname)
+infimum (t1 :*: t2) (t1' :*: t2') (line, col, fname)
+    = (:*:) <$> infimum t1 t1' (line, col, fname) <*> infimum t2 t2' (line, col, fname)
+infimum (t1 :->: t2) (t1' :->: t2') (line, col, fname)
+    = (:->:) <$> supremum t1 t1' (line, col, fname) <*> infimum t2 t2' (line, col, fname)
+infimum t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))

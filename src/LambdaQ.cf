@@ -121,6 +121,7 @@ GateUnknownVar     . Gate ::= GateVar "[" Var "]" ;                        -- Un
 GateUnknownSimple  . Gate ::= GateVar ;                                    -- Unsupported gate
 
 -- Names for Variables --
+--position token Var ( '(' ')' | (lower | '_') (letter | digit | '_' | '\'')*) ;
 position token Var ((lower | '_') (letter | digit | '_' | '\'')*) ;
 separator nonempty Var "," ;
 
@@ -157,12 +158,12 @@ TermGate                  . Term3 ::= "gate" Gate ;
 TermList                  . Term3 ::= List ;
 TermVariable              . Term3 ::= Var ;
 TermTuple                 . Term3 ::= "(" Term "," [Term] ")"  ;
-TermQuantumCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
-TermQuantumTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
-TermQuantumVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBasisStates ;
-TermClassicCtrlGate       . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
-TermClassicTCtrlsGate     . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
-TermClassicVCtrlsGate     . Term2 ::= "with" ControlVars "ctrl" ControlBits ;
+TermGateQuantumCtrl       . Term2 ::= "with" ControlTerm "ctrl" ControlBasisState ;
+TermGateQuantumTCtrls     . Term2 ::= "with" ControlTerms "ctrl" ControlBasisStates ;
+TermGateQuantumVCtrls     . Term2 ::= "with" ControlVars "ctrl" ControlBasisStates ;
+TermGateClassicCtrl       . Term2 ::= "with" ControlTerm "ctrl" ControlBit ;
+TermGateClassicTCtrls     . Term2 ::= "with" ControlTerms "ctrl" ControlBits ;
+TermGateClassicVCtrls     . Term2 ::= "with" ControlVars "ctrl" ControlBits ;
 TermApply                 . Term2 ::= Term2 Term3 ;      -- left-associative  --
 TermCompose               . Term2 ::= Term2 "." Term3 ;  -- left-associative  --
 TermTensorProduct         . Term2 ::= Term2 "*" Term3 ;  -- left-associative  --

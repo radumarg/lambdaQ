@@ -1,0 +1,5 @@
+a :: Qbit
+a = new @1
+
+main :: Bit
+main = measr a

@@ -1843,7 +1843,7 @@ happyReduction_140 (happy_x_4 `HappyStk`
 	 = case happyOut36 happy_x_2 of { (HappyWrap36 happy_var_2) -> 
 	case happyOut30 happy_x_4 of { (HappyWrap30 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermQuantumCtrlGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateQuantumCtrl happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_141 = happyReduce 4# 39# happyReduction_141
@@ -1855,7 +1855,7 @@ happyReduction_141 (happy_x_4 `HappyStk`
 	 = case happyOut37 happy_x_2 of { (HappyWrap37 happy_var_2) -> 
 	case happyOut31 happy_x_4 of { (HappyWrap31 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermQuantumTCtrlsGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateQuantumTCtrls happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_142 = happyReduce 4# 39# happyReduction_142
@@ -1867,7 +1867,7 @@ happyReduction_142 (happy_x_4 `HappyStk`
 	 = case happyOut39 happy_x_2 of { (HappyWrap39 happy_var_2) -> 
 	case happyOut31 happy_x_4 of { (HappyWrap31 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermQuantumVCtrlsGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateQuantumVCtrls happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_143 = happyReduce 4# 39# happyReduction_143
@@ -1879,7 +1879,7 @@ happyReduction_143 (happy_x_4 `HappyStk`
 	 = case happyOut36 happy_x_2 of { (HappyWrap36 happy_var_2) -> 
 	case happyOut33 happy_x_4 of { (HappyWrap33 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermClassicCtrlGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateClassicCtrl happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_144 = happyReduce 4# 39# happyReduction_144
@@ -1891,7 +1891,7 @@ happyReduction_144 (happy_x_4 `HappyStk`
 	 = case happyOut37 happy_x_2 of { (HappyWrap37 happy_var_2) -> 
 	case happyOut34 happy_x_4 of { (HappyWrap34 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermClassicTCtrlsGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateClassicTCtrls happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_145 = happyReduce 4# 39# happyReduction_145
@@ -1903,7 +1903,7 @@ happyReduction_145 (happy_x_4 `HappyStk`
 	 = case happyOut39 happy_x_2 of { (HappyWrap39 happy_var_2) -> 
 	case happyOut34 happy_x_4 of { (HappyWrap34 happy_var_4) -> 
 	happyIn43
-		 (Frontend.LambdaQ.Abs.TermClassicVCtrlsGate happy_var_2 happy_var_4
+		 (Frontend.LambdaQ.Abs.TermGateClassicVCtrls happy_var_2 happy_var_4
 	) `HappyStk` happyRest}}
 
 happyReduce_146 = happySpecReduce_2  39# happyReduction_146
