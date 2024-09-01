@@ -1,0 +1,3 @@
+initBit :: !(() -> Qbit)
+initBit _ = new
+

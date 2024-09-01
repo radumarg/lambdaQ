@@ -1,2 +1,2 @@
-a :: Bit
+a :: !Bit
 a = new @1

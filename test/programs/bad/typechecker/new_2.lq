@@ -1,5 +1,6 @@
-a :: Qbit
-a = new @1
+initQubit :: !(() -> Qbit)
+initQubit _ = new @0
 
 main :: Bit
-main = measr a
+main = initQubit ()
+

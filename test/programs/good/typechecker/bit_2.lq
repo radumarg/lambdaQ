@@ -1,0 +1,8 @@
+initQubit :: !(() -> Qbit)
+initQubit _ = new @0
+
+initBit :: !(() -> Bit)
+initBit _ = 0b0
+
+main :: Qbit * Bit
+main = (initQubit (), initBit ())

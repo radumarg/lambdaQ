@@ -18,42 +18,45 @@ import qualified Control.Monad.State.Class
 import qualified Data.Map
 import qualified Data.Maybe
 import qualified Data.Set
+import Text.Format (format)
 
 import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), List(..), CaseExpression(..), simplifyTensorProd)
 
 data TypeError
-  = NotAFunction Type (Int, Int, String)               -- this type should be a function but it is not
-  | FunctionNotInScope String (Int, Int, String)       -- this variable denotes a function which is not in scope at the point where it is used
-  | TypeMismatch Type Type (Int, Int, String)          -- this type does not match the type expected at the point where it was declared
-  | NotAProductType Type (Int, Int, String)            -- this type should be a product type but it is not
-  | DuplicatedLinearVariable String (Int, Int, String) -- this linear variable is used more than once
-  | NotALinearFunction String (Int, Int, String)       -- this function is used more than once despite not being declared linear
-  | NotALinearTerm Term Type (Int, Int, String)        -- this term should be linear but is is not
-  | NoCommonSupertype Type Type (Int, Int, String)     -- these two types have no common supertype
+  = NotAFunction Type (Int, Int, String)                        -- this type should be a function but it is not
+  | FunctionNotInScope String (Int, Int, String)                -- this variable denotes a function which is not in scope at the point where it is used
+  | TypeMismatchFun Type Type (Int, Int, String)                -- this type does not match the type expected at the point where it was declared
+  | TypeMismatchIfElse Term Term Type Type (Int, Int, String)   -- this type does not match the type expected at the point where it was declared
+  | TypeMismatchApply Term Term Type Type (Int, Int, String)    -- this type does not match the type expected at the point where it was declared
+  | NotAProductType Type (Int, Int, String)                     -- this type should be a product type but it is not
+  | DuplicatedLinearVariable String (Int, Int, String)          -- this linear variable is used more than once
+  | NotALinearFunction String (Int, Int, String)                -- this function is used more than once despite not being declared linear
+  | NotALinearTerm Term Type (Int, Int, String)                 -- this term should be linear but is is not
+  | NoCommonSupertype Type Type (Int, Int, String)              -- these two types have no common supertype
   deriving (Eq, Ord, Read)
 
-instance Show TypeError where
+instance Show TypeError where 
   show :: TypeError -> String
-  show (NotAFunction typ (line, _, fname)) = "The inferred type: '" ++ show typ ++  "' of the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " should be a function type but it is not"
+
+  show (NotAFunction typ (line, _, fname)) = format "The inferred type: '{0}' of the top level function named: '{1}' defined at line: {2} should be a function type but it is not" [show typ, fname, show line]
     
-  show (FunctionNotInScope var (line, _, fname)) = "The variable named '" ++ var ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " 
-    ++ show line ++ " denotes a function which is not in scope"
+  show (FunctionNotInScope var (line, _, fname)) = format "The variable named '{0}' in the top level function named: '{1}' defined at line: {2} denotes a function which is not in scope" [var, fname, show line]
 
-  show (TypeMismatch type1 type2 (line, _, fname)) = "The expected type '" ++ show type1 ++  "' of the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " cannot be matched with actual type: '" ++ show type2 ++ "'"
+  show (TypeMismatchFun type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
 
-  show (NotAProductType typ (line, _, fname)) = "The type '" ++ show typ ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " 
-    ++ show line ++ " is not a product type"
+  show (TypeMismatchIfElse term1 term2 type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
 
-  show (DuplicatedLinearVariable var (line, _, fname)) = "The linear variable '" ++ var ++ "' in the top level function named: '" ++ fname ++ "' defined at line: " ++ show line ++ " is used more than once"
+  show (TypeMismatchApply term1 term2 type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
 
-  show (NotALinearFunction fun (line, _, fname)) = "The function named: '" ++  fun ++ "' which is used in the top level function named: '" ++ fname 
-    ++ "' defined at line: " ++ show line ++ " is used more than once despite not being declared linear"
+  show (NotAProductType typ (line, _, fname)) = format "The type '{0}' in the top level function named: '{1}' defined at line: {2} is not a product type" [show typ, fname, show line]
 
-  show (NotALinearTerm term typ (line, _, fname)) = "Term: '" ++ show term ++ "' having as type: " ++ show typ 
-    ++ " which occurs in function " ++ fname ++ " defined at line: " ++ show line  ++ " is not linear"
+  show (DuplicatedLinearVariable var (line, _, fname)) = format "The linear variable '{0}' in the top level function named: '{1}' defined at line: {2} is used more than once" [var, fname, show line]
 
-  show (NoCommonSupertype type1 type2 (line, _, fname)) = "Could not find a common super-type for types '" 
-    ++ show type1 ++ " and '" ++ show type2 ++ "' expected by top level function '" ++ fname ++ "' defined at line: " ++ show line ++ "."
+  show (NotALinearFunction fun (line, _, fname)) = format "The function named: '{0}' which is used in the top level function named: '{1}' defined at line: {2} is used more than once despite not being declared linear" [fun, fname, show line]
+
+  show (NotALinearTerm term typ (line, _, fname)) = format "Term: '{0}' having as type: {1} which occurs in function {2} defined at line: {3} is not linear" [show term, show typ, fname, show line]
+
+  show (NoCommonSupertype type1 type2 (line, _, fname)) = format "Could not find a common super-type for types '{0}' and '{1}' expected by top level function '{2}' defined at line: {3}." [show type1, show type2, fname, show line]
 
 type LinearEnvironment = Data.Set.Set String
 type MainEnvironment = Data.Map.Map String Type
@@ -91,7 +94,7 @@ typeCheckFunction (Function functionName (line, col) functionType term) = do
     inferredType <- inferType [] term (line, col, functionName)
     if isSubtype inferredType functionType 
         then return ()
-        else Control.Monad.Except.throwError (TypeMismatch functionType inferredType (line, col, functionName))
+        else Control.Monad.Except.throwError (TypeMismatchFun functionType inferredType (line, col, functionName))
 
 -- typesMatch :: Type -> Type -> Bool
 -- typesMatch tl tr = (tl' == tr') || isSubtype tl tr
@@ -115,12 +118,25 @@ inferType _ (TermReset _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
 inferType _ (TermId _) _  = return $ TypeNonLinear (TypeQbit :->: TypeQbit)
 inferType _ (TermPower _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
 inferType _ (TermInverse _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbits)
-inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
-inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ (TermBool _) _ = return $ TypeNonLinear TypeBool
+inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermInteger _) _ = return $ TypeNonLinear TypeInteger
-inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 inferType _ (TermBasisState _) _ = return TypeBasisState
+inferType _ (TermGate gate) _ = return $ inferGateType gate
+inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
+
+-- TermVariable
+-- TermBoundVariable
+-- TermFreeVariable
+-- TermList List
+-- TermListElement List Integer
+-- TermLet
+-- TermCase
+-- TermGateQuantumControl
+-- TermGateClassicControl
+-- TermDollar
+-- TermCompose
+-- TermTensorProduct
 
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
@@ -139,7 +155,7 @@ inferType context (TermIfElse cond t f) (line, col, fname) = do
     typF <- inferType context f (line, col, fname)
     if isSubtype typCond TypeBit
         then supremum typT typF (line, col, fname)
-        else Control.Monad.Except.throwError (TypeMismatch TypeBit typCond (line, col, fname))
+        else Control.Monad.Except.throwError (TypeMismatchIfElse undefined undefined TypeBit typCond (line, col, fname))
 
 inferType context (TermApply termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
@@ -147,7 +163,7 @@ inferType context (TermApply termLeft termRight) (line, col, fname) = do
     case removeBangs leftTermType of
         (argsType :->: returnsType)
             | isSubtype rightTermType argsType -> return returnsType
-            | otherwise -> Control.Monad.Except.throwError $ TypeMismatch argsType rightTermType (line, col, fname)
+            | otherwise -> Control.Monad.Except.throwError $ TypeMismatchApply termLeft termRight argsType rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType context (TermTuple l [r]) (line, col, fname) = do
@@ -257,6 +273,7 @@ headBoundVariableCount = headBoundVarCount 0
             TermBasisState _ -> 0
             TermUnit -> 0
 
+-- THIS SHOULD BE REVIEWD
 freeVariables :: Term -> [Integer]
 freeVariables = freeVars 0
     where
@@ -297,6 +314,7 @@ freeVariables = freeVars 0
         freeVars _ (TermBasisState _) = []
         freeVars _ TermUnit = []
 
+-- THIS SHOULD BE REVIEWD
 extractFunctionNames :: Term -> [String]
 extractFunctionNames (TermFreeVariable fun) = [fun]
 extractFunctionNames (TermBoundVariable _) = []
@@ -334,6 +352,7 @@ extractFunctionNames (TermGate _) = []
 extractFunctionNames (TermBasisState _) = []
 extractFunctionNames TermUnit = []
 
+-- smallest common supertype
 supremum :: Type -> Type -> (Int, Int, String) -> Check Type
 supremum t1 t2 _
  | t1 == t2 = return t1
@@ -357,6 +376,7 @@ supremum (t1 :->: t2) (t1' :->: t2') (line, col, fname)
     = (:->:) <$> infimum t1 t1' (line, col, fname) <*> supremum t2 t2' (line, col, fname)
 supremum t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
 
+-- largest common subtype
 infimum :: Type -> Type -> (Int, Int, String) -> Check Type
 infimum t1 t2 _
     | t1 == t2 = return t1

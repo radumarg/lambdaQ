@@ -1,0 +1,3 @@
+initQubit :: !(() -> Bit)
+initQubit _ = new @0
+
