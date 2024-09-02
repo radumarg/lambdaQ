@@ -15,6 +15,7 @@ module Frontend.ASTtoIASTConverter (
   Gate(..),
   mapProgram,
   Program,
+  prnt,
   runAstToIastConverter,
   simplifyTensorProd,
   Term(..),
@@ -185,6 +186,37 @@ data Term =
     TermTuple Term [Term]                         |
     TermTensorProduct Term Term
   deriving (Eq, Ord, Read, Show)
+  
+prnt :: Term -> String
+prnt TermUnit = "Unit"
+prnt (TermBit bit) = "Bit " ++ show bit
+prnt (TermBoundVariable i) = "Bound Variable " ++ show i
+prnt (TermFreeVariable s) = "Free Variable " ++ show s
+prnt (TermList lst) = "List " ++ show lst
+prnt (TermListElement lst i) = "List Element " ++ show lst ++ " " ++ show i
+prnt (TermBool boolExpr) = "Bool " ++ show boolExpr
+prnt (TermInteger intExpr) = "Integer " ++ show intExpr
+prnt (TermVariable var) = "Variable " ++ show var
+prnt (TermIfElse t1 t2 t3) = "If-Else " ++ show t1 ++ " " ++ show t2 ++ " " ++ show t3
+prnt (TermLet t1 t2) = "Let " ++ show t1 ++ " " ++ show t2
+prnt (TermCase t cases) = "Case " ++ show t ++ " " ++ show cases
+prnt (TermLambda typ term) = "Lambda " ++ show typ ++ " " ++ show term
+prnt (TermGate gate) = "Gate " ++ show gate
+prnt (TermGateQuantumControl terms basisStates) = "Quantum Control for Gate " ++ show terms ++ " " ++ show basisStates
+prnt (TermGateClassicControl terms bits) = "Classic Control for Gate" ++ show terms ++ " " ++ show bits
+prnt (TermApply t1 t2) = "Apply " ++ show t1 ++ " " ++ show t2
+prnt (TermDollar t1 t2) = "Dollar " ++ show t1 ++ " " ++ show t2
+prnt (TermCompose t1 t2) = "Function Composition " ++ show t1 ++ " " ++ show t2
+prnt (TermNew (i1, i2)) = "new (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermMeasure (i1, i2)) = "measr (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermInverse (i1, i2)) = "inv (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermPower (i1, i2)) = "pow (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermReset (i1, i2)) = "reset (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermId (i1, i2)) = "id (line: " ++ show i1 ++ ", col: " ++ show i2 ++ ")"
+prnt (TermBasisState basisState) = "Basis State " ++ show basisState
+prnt (TermTuple t terms) = "Tuple " ++ show t ++ " " ++ show terms
+prnt (TermTensorProduct t1 t2) = "Tensor Product " ++ show t1 ++ " " ++ show t2
+
 
 data CaseExpression = CaseExpr Term Term
   deriving (Eq, Ord, Show, Read)

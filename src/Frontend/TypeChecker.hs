@@ -20,7 +20,7 @@ import qualified Data.Maybe
 import qualified Data.Set
 import Text.Format (format)
 
-import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), List(..), CaseExpression(..), simplifyTensorProd)
+import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), List(..), CaseExpression(..), simplifyTensorProd, prnt)
 
 data TypeError
   = NotAFunction Type (Int, Int, String)                        -- this type should be a function but it is not
@@ -28,6 +28,7 @@ data TypeError
   | TypeMismatchFun Type Type (Int, Int, String)                -- this type does not match the type expected at the point where it was declared
   | TypeMismatchIfElse Term Term Type Type (Int, Int, String)   -- this type does not match the type expected at the point where it was declared
   | TypeMismatchApply Term Term Type Type (Int, Int, String)    -- this type does not match the type expected at the point where it was declared
+  | TypeMismatchCompose Term Term Type Type (Int, Int, String)  -- this type does not match the type expected at the point where it was declared
   | NotAProductType Type (Int, Int, String)                     -- this type should be a product type but it is not
   | DuplicatedLinearVariable String (Int, Int, String)          -- this linear variable is used more than once
   | NotALinearFunction String (Int, Int, String)                -- this function is used more than once despite not being declared linear
@@ -38,25 +39,27 @@ data TypeError
 instance Show TypeError where 
   show :: TypeError -> String
 
-  show (NotAFunction typ (line, _, fname)) = format "The inferred type: '{0}' of the top level function named: '{1}' defined at line: {2} should be a function type but it is not" [show typ, fname, show line]
+  show (NotAFunction typ (line, _, fname)) = format "The inferred type: '{0}' of the function named: '{1}' defined at line: {2} should be a function type but it is not" [show typ, fname, show line]
     
-  show (FunctionNotInScope var (line, _, fname)) = format "The variable named '{0}' in the top level function named: '{1}' defined at line: {2} denotes a function which is not in scope" [var, fname, show line]
+  show (FunctionNotInScope var (line, _, fname)) = format "The variable named '{0}' in the function named: '{1}' defined at line: {2} denotes a function which is not in scope" [var, fname, show line]
 
-  show (TypeMismatchFun type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
+  show (TypeMismatchFun type1 type2 (line, _, fname)) = format "The expected type '{0}' of the function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
 
-  show (TypeMismatchIfElse term1 term2 type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
+  show (TypeMismatchIfElse term1 term2 type1 type2 (line, _, fname)) = format "The expected type '{0}' of the function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
 
-  show (TypeMismatchApply term1 term2 type1 type2 (line, _, fname)) = format "The expected type '{0}' of the top level function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
+  show (TypeMismatchApply term1 term2 type1 type2 (line, _, fname)) = format "In the function named '{0}' defined at line {1} the expected type '{2}' of term '{3}' is not compatible with type '{4}' of term '{5}'." [fname, show line, show type1, prnt term1, show type2, prnt term2]
 
-  show (NotAProductType typ (line, _, fname)) = format "The type '{0}' in the top level function named: '{1}' defined at line: {2} is not a product type" [show typ, fname, show line]
+  show (TypeMismatchCompose term1 term2 type1 type2 (line, _, fname)) = format "In the function named '{0}' defined at line {1} the expected type '{2}' of term '{3}' is not compatible with type '{4}' of term '{5}'." [fname, show line, show type1, prnt term1, show type2, prnt term2]
 
-  show (DuplicatedLinearVariable var (line, _, fname)) = format "The linear variable '{0}' in the top level function named: '{1}' defined at line: {2} is used more than once" [var, fname, show line]
+  show (NotAProductType typ (line, _, fname)) = format "The type '{0}' in the function named: '{1}' defined at line: {2} is not a product type" [show typ, fname, show line]
 
-  show (NotALinearFunction fun (line, _, fname)) = format "The function named: '{0}' which is used in the top level function named: '{1}' defined at line: {2} is used more than once despite not being declared linear" [fun, fname, show line]
+  show (DuplicatedLinearVariable var (line, _, fname)) = format "The linear variable '{0}' in the function named: '{1}' defined at line: {2} is used more than once" [var, fname, show line]
+
+  show (NotALinearFunction fun (line, _, fname)) = format "The function named: '{0}' which is used in the function named: '{1}' defined at line: {2} is used more than once despite not being declared linear" [fun, fname, show line]
 
   show (NotALinearTerm term typ (line, _, fname)) = format "Term: '{0}' having as type: {1} which occurs in function {2} defined at line: {3} is not linear" [show term, show typ, fname, show line]
 
-  show (NoCommonSupertype type1 type2 (line, _, fname)) = format "Could not find a common super-type for types '{0}' and '{1}' expected by top level function '{2}' defined at line: {3}." [show type1, show type2, fname, show line]
+  show (NoCommonSupertype type1 type2 (line, _, fname)) = format "Could not find a common super-type for types '{0}' and '{1}' expected by function '{2}' defined at line: {3}." [show type1, show type2, fname, show line]
 
 type LinearEnvironment = Data.Set.Set String
 type MainEnvironment = Data.Map.Map String Type
@@ -125,8 +128,7 @@ inferType _ (TermBasisState _) _ = return TypeBasisState
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 
--- TermVariable
--- TermBoundVariable
+-- TermTensorProduct
 -- TermFreeVariable
 -- TermList List
 -- TermListElement List Integer
@@ -136,7 +138,7 @@ inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 -- TermGateClassicControl
 -- TermDollar
 -- TermCompose
--- TermTensorProduct
+
 
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
@@ -166,6 +168,15 @@ inferType context (TermApply termLeft termRight) (line, col, fname) = do
             | otherwise -> Control.Monad.Except.throwError $ TypeMismatchApply termLeft termRight argsType rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
+inferType context (TermCompose termLeft termRight) (line, col, fname) = do
+    leftTermType <- inferType context termLeft (line, col, fname)
+    rightTermType <- inferType context termRight (line, col, fname)
+    case removeBangs leftTermType of
+        (argsType :->: returnsType)
+            | isSubtype rightTermType argsType -> return returnsType
+            | otherwise -> Control.Monad.Except.throwError $ TypeMismatchCompose termLeft termRight argsType rightTermType (line, col, fname)
+        _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
+
 inferType context (TermTuple l [r]) (line, col, fname) = do
     leftTyp <- inferType context l (line, col, fname)
     rightTyp <- inferType context r (line, col, fname)
@@ -186,6 +197,8 @@ inferType _ (TermFreeVariable var) (line, col, fname) = do
                                 then Control.Monad.Except.throwError $ NotALinearFunction var (line, col, fname)
                                 else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert var linearEnv}) >> return typ
             | otherwise -> return typ
+
+inferType context (TermBoundVariable i) _ = return $ context !! fromIntegral i
 
 inferType _ _ _ = undefined
 

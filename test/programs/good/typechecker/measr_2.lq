@@ -1,0 +1,6 @@
+initBit :: !(() -> Bit)
+initBit _ = measr (new @0)
+
+main :: Bit
+main = initBit ()
+
