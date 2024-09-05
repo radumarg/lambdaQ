@@ -134,6 +134,7 @@ inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 -- TermListElement List Integer
 -- TermLet
 -- TermCase
+-- TermIfElese
 -- TermGateQuantumControl
 -- TermGateClassicControl
 -- TermDollar
@@ -143,12 +144,28 @@ inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     checkLinearExpression term typ (line, col, fname)
-    termTyp <- inferType (typ:context) term (line, col, fname)
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVariables (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFunctionNames term)
-    if boundedLinearVars || freeLinearVars
-        then return (typ :->: termTyp)
-        else return $ TypeNonLinear (typ :->: termTyp)
+    termTyp <- inferType (typ:context) term (line, col, fname)
+    let termTypes1 = extractArgTypes termTyp
+    let fstType = head termTypes1
+    let termTypes2 = tail termTypes1
+    if null termTypes2 then
+      if boundedLinearVars || freeLinearVars
+          then return (typ :->: fstType)
+          else return $ TypeNonLinear (typ :->: fstType)
+    else do
+      let lastType = last termTypes2
+      let termTypes3 = init termTypes2
+      if null termTypes3 then
+        if boundedLinearVars || freeLinearVars
+            then return $ (typ :->: fstType) :->: lastType
+            else return $ TypeNonLinear (typ :->: fstType) :->: lastType
+      else do
+        let funType = reconstructFunction termTypes3 lastType
+        if boundedLinearVars || freeLinearVars
+            then return $ (typ :->: fstType) :->: lastType
+            else return $ TypeNonLinear (typ :->: fstType) :->: funType
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
@@ -412,3 +429,16 @@ infimum (t1 :*: t2) (t1' :*: t2') (line, col, fname)
 infimum (t1 :->: t2) (t1' :->: t2') (line, col, fname)
     = (:->:) <$> supremum t1 t1' (line, col, fname) <*> infimum t2 t2' (line, col, fname)
 infimum t1 t2 (line, col, fname) = Control.Monad.Except.throwError (NoCommonSupertype t1 t2 (line, col, fname))
+
+extractArgTypes :: Type -> [Type]
+extractArgTypes typ = reverse $ extractArgTypes' typ
+  where
+    extractArgTypes' :: Type -> [Type]
+    extractArgTypes' (arg :->: res) = res : extractArgTypes' arg
+    extractArgTypes' t = [t]
+
+-- given a list of types and a return type reconstruct a function type
+-- that takes types in the list as arguments and returns the return type
+reconstructFunction :: [Type] -> Type -> Type
+reconstructFunction [] returnType = returnType
+reconstructFunction (t:ts) returnType = foldl (:->:) t ts :->: returnType
