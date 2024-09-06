@@ -99,12 +99,6 @@ typeCheckFunction (Function functionName (line, col) functionType term) = do
         then return ()
         else Control.Monad.Except.throwError (TypeMismatchFun functionType inferredType (line, col, functionName))
 
--- typesMatch :: Type -> Type -> Bool
--- typesMatch tl tr = (tl' == tr') || isSubtype tl tr
---   where
---     tl' = removeBangs $ pullOutBangs tl
---     tr' = removeBangs $ pullOutBangs tr
-
 isSubtype :: Type -> Type -> Bool
 isSubtype (TypeNonLinear t1) (TypeNonLinear t2) = isSubtype (TypeNonLinear t1) t2
 isSubtype (TypeNonLinear t1) t2 = isSubtype t1 t2
@@ -153,19 +147,19 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     if null termTypes2 then
       if boundedLinearVars || freeLinearVars
           then return (typ :->: fstType)
-          else return $ TypeNonLinear (typ :->: fstType)
+          else return (TypeNonLinear typ :->: fstType)
     else do
       let lastType = last termTypes2
       let termTypes3 = init termTypes2
       if null termTypes3 then
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear (typ :->: fstType) :->: lastType
+            else return $ (TypeNonLinear typ :->: fstType) :->: lastType
       else do
         let funType = reconstructFunction termTypes3 lastType
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear (typ :->: fstType) :->: funType
+            else return $ (TypeNonLinear typ :->: fstType) :->: funType
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
