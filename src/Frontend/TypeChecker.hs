@@ -20,6 +20,9 @@ import qualified Data.Maybe
 import qualified Data.Set
 import Text.Format (format)
 
+import Debug.Trace (trace, traceIO, traceShow)
+-- let tr0 = trace ("What " ++ show term) "?"
+
 import Frontend.ASTtoIASTConverter (Function(..), Gate(..), Program, Term(..), Type(..), List(..), CaseExpression(..), simplifyTensorProd, prnt)
 
 data TypeError
@@ -138,8 +141,8 @@ inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     checkLinearExpression term typ (line, col, fname)
-    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVariables (TermLambda typ term))
-    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFunctionNames term)
+    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
+    let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
     termTyp <- inferType (typ:context) term (line, col, fname)
     let termTypes1 = extractArgTypes termTyp
     let fstType = head termTypes1
@@ -147,19 +150,19 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     if null termTypes2 then
       if boundedLinearVars || freeLinearVars
           then return (typ :->: fstType)
-          else return (TypeNonLinear typ :->: fstType)
+          else return $ TypeNonLinear (typ :->: fstType)
     else do
       let lastType = last termTypes2
       let termTypes3 = init termTypes2
       if null termTypes3 then
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ (TypeNonLinear typ :->: fstType) :->: lastType
+            else return $ TypeNonLinear (typ :->: fstType) :->: lastType
       else do
         let funType = reconstructFunction termTypes3 lastType
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ (TypeNonLinear typ :->: fstType) :->: funType
+            else return $ TypeNonLinear (typ :->: fstType) :->: funType
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
@@ -209,7 +212,9 @@ inferType _ (TermFreeVariable var) (line, col, fname) = do
                                 else Control.Monad.State.Class.modify (\state -> state {linearEnvironment = Data.Set.insert var linearEnv}) >> return typ
             | otherwise -> return typ
 
-inferType context (TermBoundVariable i) _ = return $ context !! fromIntegral i
+inferType context (TermBoundVariable i) _ = do
+    let _ = trace ("context: " ++ show context)
+    return $ context !! fromIntegral i
 
 inferType _ _ _ = undefined
 
@@ -298,83 +303,82 @@ headBoundVariableCount = headBoundVarCount 0
             TermUnit -> 0
 
 -- THIS SHOULD BE REVIEWD
-freeVariables :: Term -> [Integer]
-freeVariables = freeVars 0
+deBruijnVars :: Term -> [Integer]
+deBruijnVars = deBruijnVars' 0
     where
-        freeVars :: Integer -> Term -> [Integer]
-        freeVars cnt (TermLambda _ term)    = freeVars (cnt + 1) term
-        freeVars cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
-        freeVars cnt (TermFreeVariable _) = [cnt]
-        freeVars _ (TermVariable _) = undefined -- should not happen
-        freeVars cnt (TermIfElse cond t f) = freeVars cnt cond ++ freeVars cnt t ++ freeVars cnt f
-        freeVars cnt (TermTuple left right) = freeVars cnt left ++ concatMap (freeVars cnt) right
-        freeVars cnt (TermApply termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
-        freeVars cnt (TermCompose termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
-        freeVars cnt (TermDollar termLeft termRight)  = freeVars cnt termLeft ++ freeVars cnt termRight
-        freeVars cnt (TermLet termEq termIn) = freeVars cnt termEq ++ freeVars cnt termIn
-        freeVars cnt (TermTensorProduct t1 t2) = freeVars cnt t1 ++ freeVars cnt t2
-        freeVars cnt (TermCase t exprs) = freeVars cnt t ++ concatMap extractFromCaseExpr exprs
+        deBruijnVars' :: Integer -> Term -> [Integer]
+        deBruijnVars' cnt (TermLambda _ term) = deBruijnVars' (cnt + 1) term
+        deBruijnVars' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
+        deBruijnVars' _ (TermFreeVariable _) = []
+        deBruijnVars' _ (TermVariable _) = undefined -- should not happen
+        deBruijnVars' cnt (TermIfElse cond t f) = deBruijnVars' cnt cond ++ deBruijnVars' cnt t ++ deBruijnVars' cnt f
+        deBruijnVars' cnt (TermTuple left right) = deBruijnVars' cnt left ++ concatMap (deBruijnVars' cnt) right
+        deBruijnVars' cnt (TermApply termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
+        deBruijnVars' cnt (TermCompose termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
+        deBruijnVars' cnt (TermDollar termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
+        deBruijnVars' cnt (TermLet termEq termIn) = deBruijnVars' cnt termEq ++ deBruijnVars' cnt termIn -- THIS IS NOT RIGHT
+        deBruijnVars' cnt (TermTensorProduct t1 t2) = deBruijnVars' cnt t1 ++ deBruijnVars' cnt t2
+        deBruijnVars' cnt (TermCase t exprs) = deBruijnVars' cnt t ++ concatMap extractFromCaseExpr exprs
           where
             extractFromCaseExpr :: CaseExpression -> [Integer]
-            extractFromCaseExpr (CaseExpr t1 t2) = freeVars cnt t1 ++ freeVars cnt t2
-        freeVars _ (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
-        freeVars cnt (TermList  (ListSingle term)) = freeVars cnt term
-        freeVars cnt (TermList  (ListMultiple term terms)) = freeVars cnt term ++ concatMap (freeVars cnt) terms
-        freeVars cnt (TermList  (ListExpressionAdd l1 l2)) = freeVars cnt (TermList l1) ++ freeVars cnt (TermList l2)
-        freeVars cnt (TermList  (ListCons t l)) = freeVars cnt t ++ freeVars cnt (TermList l)
-        freeVars cnt (TermListElement l _) = freeVars cnt (TermList l)
-        freeVars cnt (TermGateQuantumControl terms _) = concatMap (freeVars cnt) terms
-        freeVars cnt (TermGateClassicControl terms _) = concatMap (freeVars cnt) terms
-        freeVars _ (TermNew _) = []
-        freeVars _ (TermMeasure _) = []
-        freeVars _ (TermInverse _) = []
-        freeVars _ (TermPower _) = []
-        freeVars _ (TermReset _) = []
-        freeVars _ (TermId _) = []
-        freeVars _ (TermBit _) = []
-        freeVars _ (TermBool _) = []
-        freeVars _ (TermInteger _) = []
-        freeVars _ (TermGate _) = []
-        freeVars _ (TermBasisState _) = []
-        freeVars _ TermUnit = []
+            extractFromCaseExpr (CaseExpr t1 t2) = deBruijnVars' cnt t1 ++ deBruijnVars' cnt t2
+        deBruijnVars' _ (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
+        deBruijnVars' cnt (TermList  (ListSingle term)) = deBruijnVars' cnt term
+        deBruijnVars' cnt (TermList  (ListMultiple term terms)) = deBruijnVars' cnt term ++ concatMap (deBruijnVars' cnt) terms
+        deBruijnVars' cnt (TermList  (ListExpressionAdd l1 l2)) = deBruijnVars' cnt (TermList l1) ++ deBruijnVars' cnt (TermList l2)
+        deBruijnVars' cnt (TermList  (ListCons t l)) = deBruijnVars' cnt t ++ deBruijnVars' cnt (TermList l)
+        deBruijnVars' cnt (TermListElement l _) = deBruijnVars' cnt (TermList l)
+        deBruijnVars' cnt (TermGateQuantumControl terms _) = concatMap (deBruijnVars' cnt) terms
+        deBruijnVars' cnt (TermGateClassicControl terms _) = concatMap (deBruijnVars' cnt) terms
+        deBruijnVars' _ (TermNew _) = []
+        deBruijnVars' _ (TermMeasure _) = []
+        deBruijnVars' _ (TermInverse _) = []
+        deBruijnVars' _ (TermPower _) = []
+        deBruijnVars' _ (TermReset _) = []
+        deBruijnVars' _ (TermId _) = []
+        deBruijnVars' _ (TermBit _) = []
+        deBruijnVars' _ (TermBool _) = []
+        deBruijnVars' _ (TermInteger _) = []
+        deBruijnVars' _ (TermGate _) = []
+        deBruijnVars' _ (TermBasisState _) = []
+        deBruijnVars' _ TermUnit = []
 
--- THIS SHOULD BE REVIEWD
-extractFunctionNames :: Term -> [String]
-extractFunctionNames (TermFreeVariable fun) = [fun]
-extractFunctionNames (TermBoundVariable _) = []
-extractFunctionNames (TermVariable _) = undefined -- should not happen
-extractFunctionNames (TermLambda _ lambdaTerm) = extractFunctionNames lambdaTerm
-extractFunctionNames (TermIfElse cond t f) = extractFunctionNames cond ++ extractFunctionNames t ++ extractFunctionNames f
-extractFunctionNames (TermTuple left right) = extractFunctionNames left ++ concatMap extractFunctionNames right
-extractFunctionNames (TermApply termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
-extractFunctionNames (TermCompose termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
-extractFunctionNames (TermDollar termLeft termRight)  = extractFunctionNames termLeft ++ extractFunctionNames termRight
-extractFunctionNames (TermLet termEq termIn) = extractFunctionNames termEq ++ extractFunctionNames termIn
-extractFunctionNames (TermTensorProduct t1 t2) = extractFunctionNames t1 ++ extractFunctionNames t2
-extractFunctionNames (TermCase t exprs) = extractFunctionNames t ++ concatMap extractFromCaseExpr exprs
+extractFreeVarNames :: Term -> [String]
+extractFreeVarNames (TermFreeVariable fun) = [fun]
+extractFreeVarNames (TermBoundVariable _) = []
+extractFreeVarNames (TermVariable _) = undefined -- should not happen
+extractFreeVarNames (TermLambda _ lambdaTerm) = extractFreeVarNames lambdaTerm
+extractFreeVarNames (TermIfElse cond t f) = extractFreeVarNames cond ++ extractFreeVarNames t ++ extractFreeVarNames f
+extractFreeVarNames (TermTuple left right) = extractFreeVarNames left ++ concatMap extractFreeVarNames right
+extractFreeVarNames (TermApply termLeft termRight)  = extractFreeVarNames termLeft ++ extractFreeVarNames termRight
+extractFreeVarNames (TermCompose termLeft termRight)  = extractFreeVarNames termLeft ++ extractFreeVarNames termRight
+extractFreeVarNames (TermDollar termLeft termRight)  = extractFreeVarNames termLeft ++ extractFreeVarNames termRight
+extractFreeVarNames (TermLet termEq termIn) = extractFreeVarNames termEq ++ extractFreeVarNames termIn
+extractFreeVarNames (TermTensorProduct t1 t2) = extractFreeVarNames t1 ++ extractFreeVarNames t2
+extractFreeVarNames (TermCase t exprs) = extractFreeVarNames t ++ concatMap extractFromCaseExpr exprs
   where
     extractFromCaseExpr :: CaseExpression -> [String]
-    extractFromCaseExpr (CaseExpr t1 t2) = extractFunctionNames t1 ++ extractFunctionNames t2
-extractFunctionNames (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
-extractFunctionNames (TermList  (ListSingle term)) = extractFunctionNames term
-extractFunctionNames (TermList  (ListMultiple term terms)) = extractFunctionNames term ++ concatMap extractFunctionNames terms
-extractFunctionNames (TermList  (ListExpressionAdd l1 l2)) = extractFunctionNames (TermList l1) ++ extractFunctionNames (TermList l2)
-extractFunctionNames (TermList  (ListCons t l)) = extractFunctionNames t ++ extractFunctionNames (TermList l)
-extractFunctionNames (TermListElement l _) = extractFunctionNames (TermList l)
-extractFunctionNames (TermGateQuantumControl terms _) = concatMap extractFunctionNames terms
-extractFunctionNames (TermGateClassicControl terms _) = concatMap extractFunctionNames terms
-extractFunctionNames (TermNew _) = ["new"]
-extractFunctionNames (TermMeasure _) = ["measr"]
-extractFunctionNames (TermInverse _) = ["inv"]
-extractFunctionNames (TermPower _) = ["pow"]
-extractFunctionNames (TermReset _) = ["reset"]
-extractFunctionNames (TermId _) = ["id"]
-extractFunctionNames (TermBit _) = []
-extractFunctionNames (TermBool _) = []
-extractFunctionNames (TermInteger _) = []
-extractFunctionNames (TermGate _) = []
-extractFunctionNames (TermBasisState _) = []
-extractFunctionNames TermUnit = []
+    extractFromCaseExpr (CaseExpr t1 t2) = extractFreeVarNames t1 ++ extractFreeVarNames t2
+extractFreeVarNames (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
+extractFreeVarNames (TermList  (ListSingle term)) = extractFreeVarNames term
+extractFreeVarNames (TermList  (ListMultiple term terms)) = extractFreeVarNames term ++ concatMap extractFreeVarNames terms
+extractFreeVarNames (TermList  (ListExpressionAdd l1 l2)) = extractFreeVarNames (TermList l1) ++ extractFreeVarNames (TermList l2)
+extractFreeVarNames (TermList  (ListCons t l)) = extractFreeVarNames t ++ extractFreeVarNames (TermList l)
+extractFreeVarNames (TermListElement l _) = extractFreeVarNames (TermList l)
+extractFreeVarNames (TermGateQuantumControl terms _) = concatMap extractFreeVarNames terms
+extractFreeVarNames (TermGateClassicControl terms _) = concatMap extractFreeVarNames terms
+extractFreeVarNames (TermNew _) = []
+extractFreeVarNames (TermMeasure _) = []
+extractFreeVarNames (TermInverse _) = []
+extractFreeVarNames (TermPower _) = []
+extractFreeVarNames (TermReset _) = []
+extractFreeVarNames (TermId _) = []
+extractFreeVarNames (TermBit _) = []
+extractFreeVarNames (TermBool _) = []
+extractFreeVarNames (TermInteger _) = []
+extractFreeVarNames (TermGate _) = []
+extractFreeVarNames (TermBasisState _) = []
+extractFreeVarNames TermUnit = []
 
 -- smallest common supertype
 supremum :: Type -> Type -> (Int, Int, String) -> Check Type

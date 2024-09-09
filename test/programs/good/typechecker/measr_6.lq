@@ -5,5 +5,5 @@ measrQbit :: Qbit -> Bit
 measrQbit q = measr q 
 
 main :: !(() -> Bit)
-main _ = measrQbit . initQbit ()
+main _ = measrQbit  (initQbit ())
 
