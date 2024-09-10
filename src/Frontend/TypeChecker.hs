@@ -97,6 +97,8 @@ typeCheckProgram = mapM_ typeCheckFunction
 typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
     Control.Monad.State.Class.modify $ \x -> x {currentFunction = functionName}
+    --let tr0 = trace ("Term: " ++ show term) "?"
+    --inferredType <- tr0 `seq` inferType [] term (line, col, functionName)
     inferredType <- inferType [] term (line, col, functionName)
     if isSubtype inferredType functionType 
         then return ()
@@ -143,6 +145,11 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     checkLinearExpression term typ (line, col, fname)
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
+    -- let tr0 = trace ("deBruijnVars: " ++ show (deBruijnVars (TermLambda typ term))) "?"
+    -- let tr1 = trace ("freeLinearVars: " ++ show (Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term))) "?"
+    -- let tr2 =  trace ("boundedLinearVars: " ++ show boundedLinearVars) "?"
+    -- let tr3 =  trace ("freeLinearVars: " ++ show freeLinearVars) "?"
+    --termTyp <- tr0 `seq` tr1 `seq` tr2 `seq` tr3 `seq` inferType (typ:context) term (line, col, fname)
     termTyp <- inferType (typ:context) term (line, col, fname)
     let termTypes1 = extractArgTypes termTyp
     let fstType = head termTypes1
@@ -157,12 +164,12 @@ inferType context (TermLambda typ term) (line, col, fname) = do
       if null termTypes3 then
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear (typ :->: fstType) :->: lastType
+            else return $ TypeNonLinear ((typ :->: fstType) :->: lastType)
       else do
         let funType = reconstructFunction termTypes3 lastType
         if boundedLinearVars || freeLinearVars
             then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear (typ :->: fstType) :->: funType
+            else return $ TypeNonLinear ((typ :->: fstType) :->: funType)
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)

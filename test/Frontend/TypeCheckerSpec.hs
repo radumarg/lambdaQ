@@ -136,6 +136,14 @@ spec =  do
       Test.Hspec.it "returns no error" $ do
         testTypeChecker "test/programs/good/typechecker/measr_5.lq" `Test.Hspec.shouldReturn` "OK"
 
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/measr_6.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/measr_7.lq" `Test.Hspec.shouldReturn` "OK"
+
     -- SMALL PROGRAMS, EXPECT ERRORS --
 
     Test.Hspec.context "when provided with an invalid program" $ do
