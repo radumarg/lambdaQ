@@ -208,6 +208,30 @@ spec =  do
 
     Test.Hspec.context "when provided with an invalid program" $ do
       Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/measr_2.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeQbit' of the function named: 'main' defined at line: 5 cannot be matched with actual type: 'TypeBit'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/measr_3.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeBit :*: TypeQbit' of the function named: 'main' defined at line: 5 cannot be matched with actual type: 'TypeBit :**: 2'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/measr_4.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeQbit :->: TypeQbit' of the function named: 'initBit' defined at line: 2 cannot be matched with actual type: 'TypeNonLinear (TypeQbit :->: TypeNonLinear TypeBit)'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/measr_5.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeBit :->: TypeQbit' of the function named: 'initBit' defined at line: 2 cannot be matched with actual type: 'TypeNonLinear (TypeQbit :->: TypeNonLinear TypeBit)'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
         result <- testTypeChecker "test/programs/bad/typechecker/measr_6.lq"
         result `Test.Hspec.shouldSatisfy`
           (\str -> "The expected type 'TypeNonLinear (TypeUnit :->: TypeBit)' of the function named: 'main' defined at line: 8 cannot be matched with actual type: 'TypeUnit :->: TypeBit'" `isInfixOf` str)

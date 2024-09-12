@@ -1,0 +1,2 @@
+initBit :: Bit -> Qbit
+initBit = measr
