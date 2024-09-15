@@ -39,11 +39,11 @@ data TypeError
   | NoCommonSupertype Type Type (Int, Int, String)              -- these two types have no common supertype
   deriving (Eq, Ord, Read)
 
-instance Show TypeError where 
+instance Show TypeError where
   show :: TypeError -> String
 
   show (NotAFunction typ (line, _, fname)) = format "The inferred type: '{0}' of the function named: '{1}' defined at line: {2} should be a function type but it is not" [show typ, fname, show line]
-    
+
   show (FunctionNotInScope var (line, _, fname)) = format "The variable named '{0}' in the function named: '{1}' defined at line: {2} denotes a function which is not in scope" [var, fname, show line]
 
   show (TypeMismatchFun type1 type2 (line, _, fname)) = format "The expected type '{0}' of the function named: '{1}' defined at line: {2} cannot be matched with actual type: '{3}'" [show type1, fname, show line, show type2]
@@ -77,13 +77,13 @@ data ErrorEnvironment = ErrorEnvironment
 type Check = Control.Monad.Except.ExceptT TypeError (Control.Monad.Reader.ReaderT MainEnvironment (Control.Monad.State.State ErrorEnvironment))
 
 runTypeChecker :: Program -> Either String Program
-runTypeChecker program = 
+runTypeChecker program =
   case Control.Monad.State.evalState (Control.Monad.Reader.runReaderT (Control.Monad.Except.runExceptT (typeCheckProgram program)) mainEnv) errorEnv of
     Left err -> Left (show err)
     Right _  -> Right program
   where
     mainEnv = Data.Map.fromList (map extractFunNameAndType program)
-    errorEnv = 
+    errorEnv =
       ErrorEnvironment {
         linearEnvironment = mempty,
         currentFunction = "noCurrentFunction"
@@ -97,10 +97,8 @@ typeCheckProgram = mapM_ typeCheckFunction
 typeCheckFunction :: Function -> Check ()
 typeCheckFunction (Function functionName (line, col) functionType term) = do
     Control.Monad.State.Class.modify $ \x -> x {currentFunction = functionName}
-    --let tr0 = trace ("Term: " ++ show term) "?"
-    --inferredType <- tr0 `seq` inferType [] term (line, col, functionName)
     inferredType <- inferType [] term (line, col, functionName)
-    if isSubtype inferredType functionType 
+    if isSubtype inferredType functionType
         then return ()
         else Control.Monad.Except.throwError (TypeMismatchFun functionType inferredType (line, col, functionName))
 
@@ -123,7 +121,7 @@ inferType _ (TermInverse _) _  = return $ TypeNonLinear (TypeQbits :->: TypeQbit
 inferType _ (TermBool _) _ = return $ TypeNonLinear TypeBool
 inferType _ (TermBit _) _ = return $ TypeNonLinear TypeBit
 inferType _ (TermInteger _) _ = return $ TypeNonLinear TypeInteger
-inferType _ (TermBasisState _) _ = return TypeBasisState
+inferType _ (TermBasisState _) _ = return $ TypeNonLinear TypeBasisState
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 
@@ -145,31 +143,14 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     checkLinearExpression term typ (line, col, fname)
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
-    -- let tr0 = trace ("deBruijnVars: " ++ show (deBruijnVars (TermLambda typ term))) "?"
-    -- let tr1 = trace ("freeLinearVars: " ++ show (Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term))) "?"
-    -- let tr2 =  trace ("boundedLinearVars: " ++ show boundedLinearVars) "?"
-    -- let tr3 =  trace ("freeLinearVars: " ++ show freeLinearVars) "?"
-    --termTyp <- tr0 `seq` tr1 `seq` tr2 `seq` tr3 `seq` inferType (typ:context) term (line, col, fname)
     termTyp <- inferType (typ:context) term (line, col, fname)
     let termTypes1 = extractArgTypes termTyp
     let fstType = head termTypes1
     let termTypes2 = tail termTypes1
-    if null termTypes2 then
-      if boundedLinearVars || freeLinearVars
-          then return (typ :->: fstType)
-          else return $ TypeNonLinear (typ :->: fstType)
-    else do
-      let lastType = last termTypes2
-      let termTypes3 = init termTypes2
-      if null termTypes3 then
-        if boundedLinearVars || freeLinearVars
-            then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear ((typ :->: fstType) :->: lastType)
-      else do
-        let funType = reconstructFunction termTypes3 lastType
-        if boundedLinearVars || freeLinearVars
-            then return $ (typ :->: fstType) :->: lastType
-            else return $ TypeNonLinear ((typ :->: fstType) :->: funType)
+    let funType = reconstructFunType (typ :->: fstType) termTypes2
+    if boundedLinearVars || freeLinearVars
+        then return funType
+        else return $ TypeNonLinear funType
 
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
@@ -444,6 +425,8 @@ extractArgTypes typ = reverse $ extractArgTypes' typ
 
 -- given a list of types and a return type reconstruct a function type
 -- that takes types in the list as arguments and returns the return type
-reconstructFunction :: [Type] -> Type -> Type
-reconstructFunction [] returnType = returnType
-reconstructFunction (t:ts) returnType = foldl (:->:) t ts :->: returnType
+reconstructFunType :: Type -> [Type] ->  Type
+reconstructFunType returnType [] = returnType
+reconstructFunType returnType ts = foldl (:->:) returnType ts
+                                       
+
