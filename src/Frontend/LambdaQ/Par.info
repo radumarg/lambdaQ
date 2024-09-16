@@ -63,7 +63,7 @@ Grammar
 	BoolExpression2 -> IntegerExpression2 '<=' IntegerExpression2   (32)
 	BoolExpression2 -> BoolValue                       (33)
 	BoolExpression2 -> '(' BoolExpression ')'          (34)
-	Type -> Type '->' Type1                            (35)
+	Type -> Type1 '->' Type                            (35)
 	Type -> Type1                                      (36)
 	Type2 -> Type2 '*' Type3                           (37)
 	Type2 -> Type3                                     (38)
@@ -535,10 +535,8 @@ State 11
 
 State 12
 
-	Type -> Type . '->' Type1                           (rule 35)
 	FunctionType -> Var '::' Type .                     (rule 176)
 
-	'->'           shift, and enter state 38
 	';'            reduce using rule 176
 
 
@@ -548,7 +546,7 @@ State 13
 	Type1 -> Type2 .                                    (rule 50)
 
 	')'            reduce using rule 50
-	'*'            shift, and enter state 37
+	'*'            shift, and enter state 38
 	'->'           reduce using rule 50
 	'.'            reduce using rule 50
 	';'            reduce using rule 50
@@ -582,10 +580,11 @@ State 15
 
 State 16
 
+	Type -> Type1 . '->' Type                           (rule 35)
 	Type -> Type1 .                                     (rule 36)
 
 	')'            reduce using rule 36
-	'->'           reduce using rule 36
+	'->'           shift, and enter state 37
 	'.'            reduce using rule 36
 	';'            reduce using rule 36
 	']'            reduce using rule 36
@@ -798,20 +797,16 @@ State 32
 
 State 33
 
-	Type -> Type . '->' Type1                           (rule 35)
 	Type5 -> '[' Type . ']'                             (rule 48)
 
-	'->'           shift, and enter state 38
 	']'            shift, and enter state 44
 
 
 State 34
 
-	Type -> Type . '->' Type1                           (rule 35)
 	Type5 -> '(' Type . ')'                             (rule 49)
 
 	')'            shift, and enter state 43
-	'->'           shift, and enter state 38
 
 
 State 35
@@ -836,6 +831,27 @@ State 36
 
 State 37
 
+	Type -> Type1 '->' . Type                           (rule 35)
+
+	'!'            shift, and enter state 18
+	'('            shift, and enter state 19
+	'()'           shift, and enter state 20
+	'BasisState'   shift, and enter state 21
+	'Bit'          shift, and enter state 22
+	'Bool'         shift, and enter state 23
+	'Int'          shift, and enter state 24
+	'Qbit'         shift, and enter state 25
+	'['            shift, and enter state 26
+
+	Type           goto state 40
+	Type2          goto state 13
+	Type3          goto state 14
+	Type5          goto state 15
+	Type1          goto state 16
+	Type4          goto state 17
+
+State 38
+
 	Type2 -> Type2 '*' . Type3                          (rule 37)
 
 	'!'            shift, and enter state 18
@@ -848,42 +864,11 @@ State 37
 	'Qbit'         shift, and enter state 25
 	'['            shift, and enter state 26
 
-	Type3          goto state 40
+	Type3          goto state 39
 	Type5          goto state 15
-	Type4          goto state 17
-
-State 38
-
-	Type -> Type '->' . Type1                           (rule 35)
-
-	'!'            shift, and enter state 18
-	'('            shift, and enter state 19
-	'()'           shift, and enter state 20
-	'BasisState'   shift, and enter state 21
-	'Bit'          shift, and enter state 22
-	'Bool'         shift, and enter state 23
-	'Int'          shift, and enter state 24
-	'Qbit'         shift, and enter state 25
-	'['            shift, and enter state 26
-
-	Type2          goto state 13
-	Type3          goto state 14
-	Type5          goto state 15
-	Type1          goto state 39
 	Type4          goto state 17
 
 State 39
-
-	Type -> Type '->' Type1 .                           (rule 35)
-
-	')'            reduce using rule 35
-	'->'           reduce using rule 35
-	'.'            reduce using rule 35
-	';'            reduce using rule 35
-	']'            reduce using rule 35
-
-
-State 40
 
 	Type2 -> Type2 '*' Type3 .                          (rule 37)
 
@@ -893,6 +878,16 @@ State 40
 	'.'            reduce using rule 37
 	';'            reduce using rule 37
 	']'            reduce using rule 37
+
+
+State 40
+
+	Type -> Type1 '->' Type .                           (rule 35)
+
+	')'            reduce using rule 35
+	'.'            reduce using rule 35
+	';'            reduce using rule 35
+	']'            reduce using rule 35
 
 
 State 41
@@ -4723,10 +4718,8 @@ State 170
 
 State 171
 
-	Type -> Type . '->' Type1                           (rule 35)
 	Term1 -> Lambda Var Type . '.' Term                 (rule 156)
 
-	'->'           shift, and enter state 38
 	'.'            shift, and enter state 282
 
 

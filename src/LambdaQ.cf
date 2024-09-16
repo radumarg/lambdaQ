@@ -39,9 +39,7 @@ BoolExpressionVal     . BoolExpression2 ::= BoolValue ;
 coercions BoolExpression 2 ;
 
 -- Types --
-TypeFunction   . Type   ::= Type "->" Type1 ;      -- left-associative
--- TODO: add type of linear functions, using their argument only once
---TypeLinearFunction . Type   ::= Type "-o" Type1 ;
+TypeFunction   . Type  ::= Type1 "->" Type ;
 TypeTensorProd . Type2  ::= Type2 "*" Type3 ;      -- left-associative
 TypeExp        . Type3  ::= Type4 "**" Integer ;
 TypeNonLinear  . Type3  ::= "!" Type4 ;

@@ -106,7 +106,7 @@ All other symbols are terminals.
   |  |  **|**  | //IntegerExpression2// ``<=`` //IntegerExpression2//
   |  |  **|**  | //BoolValue//
   |  |  **|**  | ``(`` //BoolExpression// ``)``
-  | //Type// | -> | //Type// ``->`` //Type1//
+  | //Type// | -> | //Type1// ``->`` //Type//
   |  |  **|**  | //Type1//
   | //Type2// | -> | //Type2// ``*`` //Type3//
   |  |  **|**  | //Type3//

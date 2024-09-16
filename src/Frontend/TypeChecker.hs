@@ -144,14 +144,10 @@ inferType context (TermLambda typ term) (line, col, fname) = do
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
     termTyp <- inferType (typ:context) term (line, col, fname)
-    let termTypes1 = extractArgTypes termTyp
-    let fstType = head termTypes1
-    let termTypes2 = tail termTypes1
-    let funType = reconstructFunType (typ :->: fstType) termTypes2
     if boundedLinearVars || freeLinearVars
-        then return funType
-        else return $ TypeNonLinear funType
-
+        then return (typ :->: termTyp)
+        else return $ TypeNonLinear (typ :->: termTyp)
+        
 inferType context (TermIfElse cond t f) (line, col, fname) = do
     typCond <- inferType context cond (line, col, fname)
     -- TODO: are the two lines below correct?
@@ -423,10 +419,5 @@ extractArgTypes typ = reverse $ extractArgTypes' typ
     extractArgTypes' (arg :->: res) = res : extractArgTypes' arg
     extractArgTypes' t = [t]
 
--- given a list of types and a return type reconstruct a function type
--- that takes types in the list as arguments and returns the return type
-reconstructFunType :: Type -> [Type] ->  Type
-reconstructFunType returnType [] = returnType
-reconstructFunType returnType ts = foldl (:->:) returnType ts
                                        
 

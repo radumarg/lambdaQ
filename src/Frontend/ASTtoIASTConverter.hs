@@ -429,13 +429,7 @@ toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction (GeneratedAbstractSynt
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype (GeneratedAbstractSyntax.TypeNonLinear rtype)) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody
 
-toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody = 
-  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) fstType (toLambdaAbstraction funType vars fbody)
-  where
-    argTypes = extractArgTypes ltype
-    fstType = head argTypes
-    remainingTypes = tail argTypes
-    funType = reconstructFunction remainingTypes rtype
+toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction ltype rtype) (GeneratedAbstractSyntax.FunArg (GeneratedAbstractSyntax.Var var) : vars) fbody =  GeneratedAbstractSyntax.TermLambda (GeneratedAbstractSyntax.Lambda "\\") (GeneratedAbstractSyntax.Var var) ltype (toLambdaAbstraction rtype vars fbody)
 
 toLambdaAbstraction (GeneratedAbstractSyntax.TypeFunction _ _) [] fbody = fbody
 
@@ -560,16 +554,3 @@ prefix :: String -> String -> Bool
 prefix [] _ = True
 prefix (_:_) [] = False
 prefix (x:xs) (y:ys) = (x == y) && prefix xs ys
-
-extractArgTypes :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Type]
-extractArgTypes typ = reverse $ extractArgTypes' typ
-  where
-    extractArgTypes' :: GeneratedAbstractSyntax.Type -> [GeneratedAbstractSyntax.Type]
-    extractArgTypes' (GeneratedAbstractSyntax.TypeFunction arg res) = res : extractArgTypes' arg
-    extractArgTypes' t = [t]
-
--- given a list of types and a return type reconstruct a function type
--- that takes types in the list as arguments and returns the return type
-reconstructFunction :: [GeneratedAbstractSyntax.Type] -> GeneratedAbstractSyntax.Type -> GeneratedAbstractSyntax.Type
-reconstructFunction [] returnType = returnType
-reconstructFunction (t:ts) returnType = foldl GeneratedAbstractSyntax.TypeFunction t ts `GeneratedAbstractSyntax.TypeFunction` returnType

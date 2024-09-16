@@ -199,7 +199,7 @@ BoolExpression2
 
 Type :: { Frontend.LambdaQ.Abs.Type }
 Type
-  : Type '->' Type1 { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
+  : Type1 '->' Type { Frontend.LambdaQ.Abs.TypeFunction $1 $3 }
   | Type1 { $1 }
 
 Type2 :: { Frontend.LambdaQ.Abs.Type }
