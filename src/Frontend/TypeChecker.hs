@@ -141,9 +141,9 @@ inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
     checkLinearExpression term typ (line, col, fname)
+    termTyp <- inferType (typ:context) term (line, col, fname)
     let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
-    termTyp <- inferType (typ:context) term (line, col, fname)
     if boundedLinearVars || freeLinearVars
         then return (typ :->: termTyp)
         else return $ TypeNonLinear (typ :->: termTyp)

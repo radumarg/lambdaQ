@@ -1,0 +1,2 @@
+initBit :: (Qbit -> Int) -> Qbit -> Int
+initBit f q = f q 
