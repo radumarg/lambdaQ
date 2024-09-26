@@ -1,0 +1,2 @@
+main :: Bit
+main = reset (new @1)

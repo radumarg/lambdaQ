@@ -1,0 +1,2 @@
+resetQbit :: () -> Qbit
+resetQbit _ = reset (measure (new @0))

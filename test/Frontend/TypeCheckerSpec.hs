@@ -152,6 +152,14 @@ spec =  do
       Test.Hspec.it "returns no error" $ do
         testTypeChecker "test/programs/good/typechecker/qbit_int_1.lq" `Test.Hspec.shouldReturn` "OK"
 
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/reset_1.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/reset_2.lq" `Test.Hspec.shouldReturn` "OK"
+
     -- SMALL PROGRAMS, EXPECT ERRORS --
 
     Test.Hspec.context "when provided with an invalid program" $ do
@@ -243,6 +251,12 @@ spec =  do
         result <- testTypeChecker "test/programs/bad/typechecker/measr_6.lq"
         result `Test.Hspec.shouldSatisfy`
           (\str -> "The expected type 'TypeNonLinear (TypeUnit :->: TypeBit)' of the function named: 'main' defined at line: 8 cannot be matched with actual type: 'TypeUnit :->: TypeBit'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/reset_1.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "The expected type 'TypeBit' of the function named: 'main' defined at line: 2 cannot be matched with actual type: 'TypeQbit'" `isInfixOf` str)
 
     -- Test.Hspec.context "when provided with an invalid program" $ do
     --   Test.Hspec.it "returns an error" $ do

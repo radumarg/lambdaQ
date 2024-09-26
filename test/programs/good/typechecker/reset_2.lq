@@ -1,0 +1,6 @@
+resetQbit :: () -> Qbit
+resetQbit _ = reset (new @0)
+
+main :: Qbit
+main = resetQbit ()
+
