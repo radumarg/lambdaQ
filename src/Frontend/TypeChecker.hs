@@ -31,7 +31,7 @@ data TypeError
   | TypeMismatchFun Type Type (Int, Int, String)                -- this type does not match the type expected at the point where it was declared
   | TypeMismatchIfElse Term Term Type Type (Int, Int, String)   -- this type does not match the type expected at the point where it was declared
   | TypeMismatchApply Term Term Type Type (Int, Int, String)    -- this type does not match the type expected at the point where it was declared
-  | TypeMismatchCompose Term Term Type Type (Int, Int, String)  -- this type does not match the type expected at the point where it was declared
+  | TypeMismatchCompose Type Term Type Term (Int, Int, String)  -- this type does not match the type expected at the point where it was declared
   | NotAProductType Type (Int, Int, String)                     -- this type should be a product type but it is not
   | DuplicatedLinearVariable String (Int, Int, String)          -- this linear variable is used more than once
   | NotALinearFunction String (Int, Int, String)                -- this function is used more than once despite not being declared linear
@@ -52,7 +52,7 @@ instance Show TypeError where
 
   show (TypeMismatchApply term1 term2 type1 type2 (line, _, fname)) = format "In the function named '{0}' defined at line {1} the expected type '{2}' of term '{3}' is not compatible with type '{4}' of term '{5}'." [fname, show line, show type1, prnt term1, show type2, prnt term2]
 
-  show (TypeMismatchCompose term1 term2 type1 type2 (line, _, fname)) = format "In the function named '{0}' defined at line {1} the expected type '{2}' of term '{3}' is not compatible with type '{4}' of term '{5}'." [fname, show line, show type1, prnt term1, show type2, prnt term2]
+  show (TypeMismatchCompose  type1 term1 type2 term2 (line, _, fname)) = format "In the function named '{0}' defined at line {1} the  type '{2}' of term '{3}' cannot composed with type '{4}' of term '{5}'." [fname, show line, show type1, prnt term1, show type2, prnt term2]
 
   show (NotAProductType typ (line, _, fname)) = format "The type '{0}' in the function named: '{1}' defined at line: {2} is not a product type" [show typ, fname, show line]
 
@@ -170,10 +170,14 @@ inferType context (TermCompose termLeft termRight) (line, col, fname) = do
     leftTermType <- inferType context termLeft (line, col, fname)
     rightTermType <- inferType context termRight (line, col, fname)
     case removeBangs leftTermType of
-        (argsType :->: returnsType)
-            | isSubtype rightTermType argsType -> return returnsType
-            | otherwise -> Control.Monad.Except.throwError $ TypeMismatchCompose termLeft termRight argsType rightTermType (line, col, fname)
+        (argsTypeLeft :->: returnsTypeLeft) ->
+            case removeBangs rightTermType of
+                (argsTypeRight :->: returnsTypeRight)
+                    | isSubtype returnsTypeRight argsTypeLeft -> return (argsTypeRight :->: returnsTypeLeft)
+                    | otherwise -> Control.Monad.Except.throwError $ TypeMismatchCompose  leftTermType termLeft rightTermType termRight (line, col, fname)
+                _ -> Control.Monad.Except.throwError $ NotAFunction rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
+
 
 inferType context (TermTuple l [r]) (line, col, fname) = do
     leftTyp <- inferType context l (line, col, fname)

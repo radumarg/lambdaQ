@@ -1,0 +1,5 @@
+fun :: !(Qbit -> Qbit)
+fun q = reset q
+
+main :: Qbit -> Qbit
+main q = (fun . fun) q

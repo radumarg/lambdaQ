@@ -160,6 +160,22 @@ spec =  do
       Test.Hspec.it "returns no error" $ do
         testTypeChecker "test/programs/good/typechecker/reset_2.lq" `Test.Hspec.shouldReturn` "OK"
 
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/function_compsition_1.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/function_compsition_2.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/function_compsition_3.lq" `Test.Hspec.shouldReturn` "OK"
+
+    Test.Hspec.context "when provided with a valid program" $ do
+      Test.Hspec.it "returns no error" $ do
+        testTypeChecker "test/programs/good/typechecker/function_compsition_3.lq" `Test.Hspec.shouldReturn` "OK"
+
     -- SMALL PROGRAMS, EXPECT ERRORS --
 
     Test.Hspec.context "when provided with an invalid program" $ do
@@ -257,6 +273,12 @@ spec =  do
         result <- testTypeChecker "test/programs/bad/typechecker/reset_1.lq"
         result `Test.Hspec.shouldSatisfy`
           (\str -> "The expected type 'TypeBit' of the function named: 'main' defined at line: 2 cannot be matched with actual type: 'TypeQbit'" `isInfixOf` str)
+
+    Test.Hspec.context "when provided with an invalid program" $ do
+      Test.Hspec.it "returns an error" $ do
+        result <- testTypeChecker "test/programs/bad/typechecker/reset_2.lq"
+        result `Test.Hspec.shouldSatisfy`
+          (\str -> "In the function named 'resetQbit' defined at line 2 the expected type 'TypeQbit' of term 'reset (line: 2, col: 15)' is not compatible with type 'TypeNonLinear TypeBit' of term 'Apply TermMeasure (2,22) TermApply (TermNew (2,29)) (TermBasisState BasisStateZero)'" `isInfixOf` str)
 
     -- Test.Hspec.context "when provided with an invalid program" $ do
     --   Test.Hspec.it "returns an error" $ do
