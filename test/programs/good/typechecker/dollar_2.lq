@@ -1,0 +1,11 @@
+reset_qubits :: Qbit * Qbit -> Qbit * Qbit
+reset_qubits qubits = |q1, q2| <- qubits;
+	              (reset q1, reset q2)
+
+--measure_qubits :: Qbit * Qbit -> Bit * Bit
+--measure_qubits qubits = |q1, q2| <- qubits;
+--                       (measr q1, measr q2)
+
+--main :: Bit * Bit
+--main = measure_qubits $ reset_qubits (new @-, new @+)
+

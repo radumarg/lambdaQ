@@ -1,0 +1,6 @@
+reset_qubit :: Qbit -> Qbit
+reset_qubit q = reset q
+
+main :: Bit
+main = measr $ reset_qubit (new @1)
+

@@ -178,6 +178,14 @@ inferType context (TermCompose termLeft termRight) (line, col, fname) = do
                 _ -> Control.Monad.Except.throwError $ NotAFunction rightTermType (line, col, fname)
         _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
+inferType context (TermDollar termLeft termRight) (line, col, fname) = do
+    leftTermType <- inferType context termLeft (line, col, fname)
+    rightTermType <- inferType context termRight (line, col, fname)
+    case removeBangs leftTermType of
+        (argsType :->: returnsType)
+            | isSubtype rightTermType argsType -> return returnsType
+            | otherwise -> Control.Monad.Except.throwError $ TypeMismatchApply termLeft termRight argsType rightTermType (line, col, fname)
+        _ -> Control.Monad.Except.throwError $ NotAFunction leftTermType (line, col, fname)
 
 inferType context (TermTuple l [r]) (line, col, fname) = do
     leftTyp <- inferType context l (line, col, fname)
@@ -244,39 +252,39 @@ pullOutBangs t = t
 checkLinearExpression :: Term -> Type -> (Int, Int, String) -> Check ()
 checkLinearExpression term typ (line, col, fname) = case typ of
     TypeNonLinear _ -> return ()
-    t  -> if headBoundVariableCount term <= 1
+    t  -> if boundVariableCount term <= 1
             then return ()
             else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
 
 -- THIS SHOULD BE REVIEWD AND FIXED
-headBoundVariableCount :: Term -> Integer
-headBoundVariableCount = headBoundVarCount 0
+boundVariableCount :: Term -> Integer
+boundVariableCount = boundVariableCount' 0
     where
-        headBoundVarCount :: Integer -> Term -> Integer
-        headBoundVarCount cnt term = case term of
+        boundVariableCount' :: Integer -> Term -> Integer
+        boundVariableCount' cnt term = case term of
             TermBoundVariable i -> if cnt == i then 1 else 0
             TermFreeVariable _ -> 0
             TermVariable _ -> undefined -- should not happen
-            TermLambda _ lambdaTerm -> headBoundVarCount (cnt + 1) lambdaTerm
-            TermLet termEq termIn -> headBoundVarCount cnt termEq + headBoundVarCount (cnt + 1) termIn --TODO: verify
-            TermIfElse cond t f -> headBoundVarCount cnt cond + max (headBoundVarCount cnt t)  (headBoundVarCount cnt f)
-            TermTuple left right -> headBoundVarCount cnt left + sum  (map (headBoundVarCount cnt) right)
-            TermApply termLeft termRight  -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
-            TermCompose termLeft termRight -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
-            TermDollar termLeft termRight -> headBoundVarCount cnt termLeft + headBoundVarCount cnt termRight
-            TermTensorProduct t1 t2 -> headBoundVarCount cnt t1 + headBoundVarCount cnt t2
-            TermCase t exprs -> headBoundVarCount cnt t + sum  (map extractFromCaseExpr exprs)
+            TermLambda _ lambdaTerm -> boundVariableCount' (cnt + 1) lambdaTerm
+            TermLet termEq termIn -> boundVariableCount' cnt termEq + boundVariableCount' (cnt + 1) termIn --TODO: verify
+            TermIfElse cond t f -> boundVariableCount' cnt cond + max (boundVariableCount' cnt t)  (boundVariableCount' cnt f)
+            TermTuple left right -> boundVariableCount' cnt left + sum  (map (boundVariableCount' cnt) right)
+            TermApply termLeft termRight  -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
+            TermCompose termLeft termRight -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
+            TermDollar termLeft termRight -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
+            TermTensorProduct t1 t2 -> boundVariableCount' cnt t1 + boundVariableCount' cnt t2
+            TermCase t exprs -> boundVariableCount' cnt t + sum  (map extractFromCaseExpr exprs)
               where
                 extractFromCaseExpr :: CaseExpression -> Integer
-                extractFromCaseExpr (CaseExpr t1 t2) = headBoundVarCount cnt t1 + headBoundVarCount cnt t2
-            TermList  Frontend.ASTtoIASTConverter.ListNil -> 0
-            TermList  (ListSingle t) -> headBoundVarCount cnt t
-            TermList  (ListMultiple t ts) -> headBoundVarCount cnt t + sum (map (headBoundVarCount cnt) ts)
-            TermList  (ListExpressionAdd l1 l2) -> headBoundVarCount cnt (TermList l1) + headBoundVarCount cnt (TermList l2)
-            TermList  (ListCons t l) -> headBoundVarCount cnt t + headBoundVarCount cnt (TermList l)
-            TermListElement l _ -> headBoundVarCount cnt  (TermList l)
-            TermGateQuantumControl terms _ -> sum $ map (headBoundVarCount cnt) terms
-            TermGateClassicControl terms _ -> sum $ map (headBoundVarCount cnt) terms
+                extractFromCaseExpr (CaseExpr t1 t2) = boundVariableCount' cnt t1 + boundVariableCount' cnt t2
+            TermList Frontend.ASTtoIASTConverter.ListNil -> 0
+            TermList (ListSingle t) -> boundVariableCount' cnt t
+            TermList (ListMultiple t ts) -> boundVariableCount' cnt t + sum (map (boundVariableCount' cnt) ts)
+            TermList (ListExpressionAdd l1 l2) -> boundVariableCount' cnt (TermList l1) + boundVariableCount' cnt (TermList l2)
+            TermList (ListCons t l) -> boundVariableCount' cnt t + boundVariableCount' cnt (TermList l)
+            TermListElement l _ -> boundVariableCount' cnt  (TermList l)
+            TermGateQuantumControl terms _ -> sum $ map (boundVariableCount' cnt) terms
+            TermGateClassicControl terms _ -> sum $ map (boundVariableCount' cnt) terms
             TermNew _ -> 0
             TermMeasure _ -> 0
             TermInverse _ -> 0
