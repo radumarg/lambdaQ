@@ -125,24 +125,47 @@ inferType _ (TermBasisState _) _ = return $ TypeNonLinear TypeBasisState
 inferType _ (TermGate gate) _ = return $ inferGateType gate
 inferType _ TermUnit _ = return $ TypeNonLinear TypeUnit
 
+-- new (OK)
+-- measr (OK)
+-- bit (OK)
+-- qbit (OK)
+-- reset (OK)
+-- function composition (OK)
+-- dollar
+
+-- TermCompose
+-- TermApply
+-- unit
+-- TermId
+-- TermPower
+-- TermInverse
+-- TermBool
+-- TermInteger
+-- TermBasisState BasisState
 -- TermTensorProduct
 -- TermFreeVariable
--- TermList List
--- TermListElement List Integer
+-- TermBoundVariable
+-- TermVariable Var
+-- TermLambda
+-- TermIfElse
+-- TermTuple
 -- TermLet
 -- TermCase
 -- TermIfElese
+-- TermGate Gate
 -- TermGateQuantumControl
 -- TermGateClassicControl
--- TermDollar
--- TermCompose
+-- TermList List
+-- TermListElement List Integer
 
 
 inferType context (TermLambda typ term) (line, col, fname) = do
     mainEnv <- Control.Monad.Reader.ask
-    checkLinearExpression term typ (line, col, fname)
+    let tr0 = trace ("Term " ++ show term) "?"
+    let tr1 = trace ("Type " ++ show typ) "?"
+    tr0 `seq` tr1 `seq` checkLinearExpression term typ (line, col, fname)
     termTyp <- inferType (typ:context) term (line, col, fname)
-    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (deBruijnVars (TermLambda typ term))
+    let boundedLinearVars = any (isLinear . (context !!) . fromIntegral) (freeVars (TermLambda typ term))
     let freeLinearVars = any isLinear $ Data.Maybe.mapMaybe (`Data.Map.lookup` mainEnv) (extractFreeVarNames term)
     if boundedLinearVars || freeLinearVars
         then return (typ :->: termTyp)
@@ -252,39 +275,38 @@ pullOutBangs t = t
 checkLinearExpression :: Term -> Type -> (Int, Int, String) -> Check ()
 checkLinearExpression term typ (line, col, fname) = case typ of
     TypeNonLinear _ -> return ()
-    t  -> if boundVariableCount term <= 1
+    t  -> if boundVarsCount term <= 1
             then return ()
             else  Control.Monad.Except.throwError $ NotALinearTerm term t (line, col, fname)
 
--- THIS SHOULD BE REVIEWD AND FIXED
-boundVariableCount :: Term -> Integer
-boundVariableCount = boundVariableCount' 0
+boundVarsCount :: Term -> Integer
+boundVarsCount = boundVarsCount' 0
     where
-        boundVariableCount' :: Integer -> Term -> Integer
-        boundVariableCount' cnt term = case term of
+        boundVarsCount' :: Integer -> Term -> Integer
+        boundVarsCount' cnt term = case term of
             TermBoundVariable i -> if cnt == i then 1 else 0
             TermFreeVariable _ -> 0
             TermVariable _ -> undefined -- should not happen
-            TermLambda _ lambdaTerm -> boundVariableCount' (cnt + 1) lambdaTerm
-            TermLet termEq termIn -> boundVariableCount' cnt termEq + boundVariableCount' (cnt + 1) termIn --TODO: verify
-            TermIfElse cond t f -> boundVariableCount' cnt cond + max (boundVariableCount' cnt t)  (boundVariableCount' cnt f)
-            TermTuple left right -> boundVariableCount' cnt left + sum  (map (boundVariableCount' cnt) right)
-            TermApply termLeft termRight  -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
-            TermCompose termLeft termRight -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
-            TermDollar termLeft termRight -> boundVariableCount' cnt termLeft + boundVariableCount' cnt termRight
-            TermTensorProduct t1 t2 -> boundVariableCount' cnt t1 + boundVariableCount' cnt t2
-            TermCase t exprs -> boundVariableCount' cnt t + sum  (map extractFromCaseExpr exprs)
+            TermLambda _ lambdaTerm -> boundVarsCount' (cnt + 1) lambdaTerm
+            TermLet termEq termIn -> boundVarsCount' cnt termEq + boundVarsCount' (cnt + 2) termIn
+            TermIfElse cond t f -> boundVarsCount' cnt cond + max (boundVarsCount' cnt t)  (boundVarsCount' cnt f)
+            TermTuple left right -> boundVarsCount' cnt left + sum  (map (boundVarsCount' cnt) right)
+            TermApply termLeft termRight  -> boundVarsCount' cnt termLeft + boundVarsCount' cnt termRight
+            TermCompose termLeft termRight -> boundVarsCount' cnt termLeft + boundVarsCount' cnt termRight
+            TermDollar termLeft termRight -> boundVarsCount' cnt termLeft + boundVarsCount' cnt termRight
+            TermTensorProduct t1 t2 -> boundVarsCount' cnt t1 + boundVarsCount' cnt t2
+            TermCase t exprs -> boundVarsCount' cnt t + sum  (map extractFromCaseExpr exprs)
               where
                 extractFromCaseExpr :: CaseExpression -> Integer
-                extractFromCaseExpr (CaseExpr t1 t2) = boundVariableCount' cnt t1 + boundVariableCount' cnt t2
+                extractFromCaseExpr (CaseExpr t1 t2) = boundVarsCount' cnt t1 + boundVarsCount' cnt t2
             TermList Frontend.ASTtoIASTConverter.ListNil -> 0
-            TermList (ListSingle t) -> boundVariableCount' cnt t
-            TermList (ListMultiple t ts) -> boundVariableCount' cnt t + sum (map (boundVariableCount' cnt) ts)
-            TermList (ListExpressionAdd l1 l2) -> boundVariableCount' cnt (TermList l1) + boundVariableCount' cnt (TermList l2)
-            TermList (ListCons t l) -> boundVariableCount' cnt t + boundVariableCount' cnt (TermList l)
-            TermListElement l _ -> boundVariableCount' cnt  (TermList l)
-            TermGateQuantumControl terms _ -> sum $ map (boundVariableCount' cnt) terms
-            TermGateClassicControl terms _ -> sum $ map (boundVariableCount' cnt) terms
+            TermList (ListSingle t) -> boundVarsCount' cnt t
+            TermList (ListMultiple t ts) -> boundVarsCount' cnt t + sum (map (boundVarsCount' cnt) ts)
+            TermList (ListExpressionAdd l1 l2) -> boundVarsCount' cnt (TermList l1) + boundVarsCount' cnt (TermList l2)
+            TermList (ListCons t l) -> boundVarsCount' cnt t + boundVarsCount' cnt (TermList l)
+            TermListElement l _ -> boundVarsCount' cnt  (TermList l)
+            TermGateQuantumControl terms _ -> sum $ map (boundVarsCount' cnt) terms
+            TermGateClassicControl terms _ -> sum $ map (boundVarsCount' cnt) terms
             TermNew _ -> 0
             TermMeasure _ -> 0
             TermInverse _ -> 0
@@ -298,46 +320,45 @@ boundVariableCount = boundVariableCount' 0
             TermBasisState _ -> 0
             TermUnit -> 0
 
--- THIS SHOULD BE REVIEWD
-deBruijnVars :: Term -> [Integer]
-deBruijnVars = deBruijnVars' 0
+freeVars :: Term -> [Integer]
+freeVars = freeVars' 0
     where
-        deBruijnVars' :: Integer -> Term -> [Integer]
-        deBruijnVars' cnt (TermLambda _ term) = deBruijnVars' (cnt + 1) term
-        deBruijnVars' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
-        deBruijnVars' _ (TermFreeVariable _) = []
-        deBruijnVars' _ (TermVariable _) = undefined -- should not happen
-        deBruijnVars' cnt (TermIfElse cond t f) = deBruijnVars' cnt cond ++ deBruijnVars' cnt t ++ deBruijnVars' cnt f
-        deBruijnVars' cnt (TermTuple left right) = deBruijnVars' cnt left ++ concatMap (deBruijnVars' cnt) right
-        deBruijnVars' cnt (TermApply termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
-        deBruijnVars' cnt (TermCompose termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
-        deBruijnVars' cnt (TermDollar termLeft termRight)  = deBruijnVars' cnt termLeft ++ deBruijnVars' cnt termRight
-        deBruijnVars' cnt (TermLet termEq termIn) = deBruijnVars' cnt termEq ++ deBruijnVars' cnt termIn -- THIS IS NOT RIGHT
-        deBruijnVars' cnt (TermTensorProduct t1 t2) = deBruijnVars' cnt t1 ++ deBruijnVars' cnt t2
-        deBruijnVars' cnt (TermCase t exprs) = deBruijnVars' cnt t ++ concatMap extractFromCaseExpr exprs
+        freeVars' :: Integer -> Term -> [Integer]
+        freeVars' cnt (TermLambda _ term) = freeVars' (cnt + 1) term
+        freeVars' cnt (TermBoundVariable i) = [i - cnt | i >= cnt]
+        freeVars' _ (TermFreeVariable _) = []
+        freeVars' _ (TermVariable _) = undefined -- should not happen
+        freeVars' cnt (TermIfElse cond t f) = freeVars' cnt cond ++ freeVars' cnt t ++ freeVars' cnt f
+        freeVars' cnt (TermTuple left right) = freeVars' cnt left ++ concatMap (freeVars' cnt) right
+        freeVars' cnt (TermApply termLeft termRight)  = freeVars' cnt termLeft ++ freeVars' cnt termRight
+        freeVars' cnt (TermCompose termLeft termRight)  = freeVars' cnt termLeft ++ freeVars' cnt termRight
+        freeVars' cnt (TermDollar termLeft termRight)  = freeVars' cnt termLeft ++ freeVars' cnt termRight
+        freeVars' cnt (TermLet termEq termIn) = freeVars' cnt termEq ++ freeVars' (cnt + 2) termIn
+        freeVars' cnt (TermTensorProduct t1 t2) = freeVars' cnt t1 ++ freeVars' cnt t2
+        freeVars' cnt (TermCase t exprs) = freeVars' cnt t ++ concatMap extractFromCaseExpr exprs
           where
             extractFromCaseExpr :: CaseExpression -> [Integer]
-            extractFromCaseExpr (CaseExpr t1 t2) = deBruijnVars' cnt t1 ++ deBruijnVars' cnt t2
-        deBruijnVars' _ (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
-        deBruijnVars' cnt (TermList  (ListSingle term)) = deBruijnVars' cnt term
-        deBruijnVars' cnt (TermList  (ListMultiple term terms)) = deBruijnVars' cnt term ++ concatMap (deBruijnVars' cnt) terms
-        deBruijnVars' cnt (TermList  (ListExpressionAdd l1 l2)) = deBruijnVars' cnt (TermList l1) ++ deBruijnVars' cnt (TermList l2)
-        deBruijnVars' cnt (TermList  (ListCons t l)) = deBruijnVars' cnt t ++ deBruijnVars' cnt (TermList l)
-        deBruijnVars' cnt (TermListElement l _) = deBruijnVars' cnt (TermList l)
-        deBruijnVars' cnt (TermGateQuantumControl terms _) = concatMap (deBruijnVars' cnt) terms
-        deBruijnVars' cnt (TermGateClassicControl terms _) = concatMap (deBruijnVars' cnt) terms
-        deBruijnVars' _ (TermNew _) = []
-        deBruijnVars' _ (TermMeasure _) = []
-        deBruijnVars' _ (TermInverse _) = []
-        deBruijnVars' _ (TermPower _) = []
-        deBruijnVars' _ (TermReset _) = []
-        deBruijnVars' _ (TermId _) = []
-        deBruijnVars' _ (TermBit _) = []
-        deBruijnVars' _ (TermBool _) = []
-        deBruijnVars' _ (TermInteger _) = []
-        deBruijnVars' _ (TermGate _) = []
-        deBruijnVars' _ (TermBasisState _) = []
-        deBruijnVars' _ TermUnit = []
+            extractFromCaseExpr (CaseExpr t1 t2) = freeVars' cnt t1 ++ freeVars' cnt t2
+        freeVars' _ (TermList  Frontend.ASTtoIASTConverter.ListNil) = []
+        freeVars' cnt (TermList  (ListSingle term)) = freeVars' cnt term
+        freeVars' cnt (TermList  (ListMultiple term terms)) = freeVars' cnt term ++ concatMap (freeVars' cnt) terms
+        freeVars' cnt (TermList  (ListExpressionAdd l1 l2)) = freeVars' cnt (TermList l1) ++ freeVars' cnt (TermList l2)
+        freeVars' cnt (TermList  (ListCons t l)) = freeVars' cnt t ++ freeVars' cnt (TermList l)
+        freeVars' cnt (TermListElement l _) = freeVars' cnt (TermList l)
+        freeVars' cnt (TermGateQuantumControl terms _) = concatMap (freeVars' cnt) terms
+        freeVars' cnt (TermGateClassicControl terms _) = concatMap (freeVars' cnt) terms
+        freeVars' _ (TermNew _) = []
+        freeVars' _ (TermMeasure _) = []
+        freeVars' _ (TermInverse _) = []
+        freeVars' _ (TermPower _) = []
+        freeVars' _ (TermReset _) = []
+        freeVars' _ (TermId _) = []
+        freeVars' _ (TermBit _) = []
+        freeVars' _ (TermBool _) = []
+        freeVars' _ (TermInteger _) = []
+        freeVars' _ (TermGate _) = []
+        freeVars' _ (TermBasisState _) = []
+        freeVars' _ TermUnit = []
 
 extractFreeVarNames :: Term -> [String]
 extractFreeVarNames (TermFreeVariable fun) = [fun]
