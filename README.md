@@ -1,5 +1,5 @@
 
-[![Unitary Fund](https://img.shields.io/badge/Supported%20By-UNITARY%20FUND-brightgreen.svg?style=for-the-badge)](https://unitary.fund)
+Work on this project has been stopped in favor this new one: [Leaf](https://github.com/radumarg/leaf) 
 
 ##  lambdaQ - a functional quantum programming language
 A higher-order, functional quantum programming language whose starting point is the [quantum lambda calculus](https://www.mscs.dal.ca/~selinger/papers/qlambdabook.pdf) created by Peter Selinger and Benoît Valiron. This is an ongoing project, very much in the early stages of implementation. The purpose of this document is to answer some general questions I had when I started working on this project. Some additional details regarding the plans made for development can be found in a somewhat older document here: [doc/development-plan.md](https://github.com/radumarg/lambdaQ/blob/main/doc/development-plan.md).
